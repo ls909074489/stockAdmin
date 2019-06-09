@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache updateCheck="false" name="defaultCache">
+
+	<diskStore path="java.io.tmpdir/yy/ehcache/default" />
+	
+	<!-- DefaultCache setting. -->
+	<!-- 配置自定义缓存
+		maxEntriesLocalHeap:堆内存中最大缓存对象数，0没有限制
+		maxElementsInMemory：缓存中允许创建的最大对象数
+		eternal：缓存中对象是否为永久的，如果是，超时设置将被忽略，对象从不过期。 
+		timeToIdleSeconds：缓存数据的钝化时间，也就是在一个元素消亡之前， 两次访问时间的最大时间间隔值，这只能在元素不是永久驻留时有效， 如果该值是 0 就意味着元素可以停顿无穷长的时间。
+		timeToLiveSeconds：缓存数据的生存时间，也就是一个元素从构建到消亡的最大时间间隔值， 这只能在元素不是永久驻留时有效，如果该值是0就意味着元素可以停顿无穷长的时间。 
+		overflowToDisk：内存不足时，是否启用磁盘缓存。 
+		maxEntriesLocalDisk:磁盘中的最大对象数，默认为0不限制
+		memoryStoreEvictionPolicy：缓存满了之后的淘汰算法。
+		diskExpiryThreadIntervalSeconds属性可以设置该线程执行的间隔时间(默认是120秒，不能太小，以免影响效率).
+	-->
+	<defaultCache maxEntriesLocalHeap="10000" eternal="false"
+		timeToIdleSeconds="300" timeToLiveSeconds="600" overflowToDisk="true"
+		maxEntriesLocalDisk="100000" />
+
+	<!-- 平台的缓存类. -->
+	<cache name="yyChcache" maxElementsInMemory="10000" eternal="true"
+		overflowToDisk="true" />
+		
+	<cache name="sysCache" maxElementsInMemory="2000" eternal="true"
+		overflowToDisk="true" />
+
+	<cache name="shiro-activeSessionCache" maxElementsInMemory="1000"
+		overflowToDisk="true" eternal="true" timeToLiveSeconds="0"
+		timeToIdleSeconds="0" diskPersistent="true"
+		diskExpiryThreadIntervalSeconds="600" />
+
+	<cache name="org.apache.shiro.realm.text.PropertiesRealm-0-accounts"
+		maxElementsInMemory="1000" eternal="true" overflowToDisk="true" />
+
+	<cache name="SimplePageCachingFilter" maxElementsInMemory="1000"
+		eternal="false" overflowToDisk="true" timeToIdleSeconds="120"
+		timeToLiveSeconds="120" memoryStoreEvictionPolicy="LFU" />
+
+</ehcache>

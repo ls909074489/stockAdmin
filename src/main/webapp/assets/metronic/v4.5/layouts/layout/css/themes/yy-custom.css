@@ -1,0 +1,67 @@
+/* here you can put your own css to customize and override the theme */
+body { background-color: #ebebeb;}
+.page-header.navbar{ background:#0cbbef url(../img/logo.png) left center no-repeat; height:72px;}
+.page-header.navbar .top-menu .navbar-nav>li.dropdown .dropdown-toggle>i{ color:#fff;}
+.page-header.navbar .top-menu .navbar-nav>li.dropdown-language>.dropdown-toggle>.langname, .page-header.navbar .top-menu .navbar-nav>li.dropdown-user>.dropdown-toggle>.username, .page-header.navbar .top-menu .navbar-nav>li.dropdown-user>.dropdown-toggle>i{color:#fff;}
+.page-header.navbar .top-menu .navbar-nav>li.dropdown .dropdown-toggle:hover>i, .page-header.navbar .top-menu .navbar-nav>li.dropdown.open .dropdown-toggle>i{color:#fff;}
+.page-header.navbar .page-logo{height:72px;}
+.page-header.navbar .page-logo{ padding:0;}
+.page-header.navbar .page-logo .logo-default{ margin:0;}
+.page-header.navbar .top-menu .navbar-nav{ margin:0px;}
+.page-header.navbar .top-menu .navbar-nav>li.dropdown .dropdown-toggle .badge.badge-default{background-color:#f2d19b;}
+.page-header.navbar .top-menu .navbar-nav>li.dropdown{height:72px; padding:0px;}
+.page-header.navbar .top-menu .navbar-nav>li.dropdown>.dropdown-toggle{padding:26px;}
+.page-header.navbar .top-menu .navbar-nav>li.dropdown .dropdown-toggle:hover, .page-header.navbar .top-menu .navbar-nav>li.dropdown.open .dropdown-toggle{background-color:#19c5f8;}
+.page-header .top-menu .dropdown-quick-sidebar-toggler>.dropdown-toggle{padding:26px!important}
+.page-header-fixed .page-container { margin-top: 72px;}
+.page-sidebar, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover {background-color: #fff;}
+.page-sidebar .page-sidebar-menu>li.active.open>a:hover, .page-sidebar .page-sidebar-menu>li.active>a:hover, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu>li.active.open>a:hover, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu>li.active>a:hover {
+background: #fbd79d;
+}
+.page-sidebar .page-sidebar-menu>li>a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu>li>a {
+border-top: 1px solid #ebebeb;color:#333;}
+.page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu>li>a:hover{
+border-top: 1px solid #f1cd94; color: #6c6c6c;}
+.page-sidebar .page-sidebar-menu>li.active.open>a, .page-sidebar .page-sidebar-menu>li.active>a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu>li.active.open>a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu>li.active>a {
+ background: #fbd89c; border-top-color: transparent; color: #856127;}
+ .page-sidebar .page-sidebar-menu .sub-menu>li.active>a, .page-sidebar .page-sidebar-menu .sub-menu>li.open>a, .page-sidebar .page-sidebar-menu .sub-menu>li:hover>a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu>li.active>a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu>li.open>a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu>li:hover>a { background: #fcf0ba!important;}
+.page-sidebar .page-sidebar-menu .sub-menu>li>a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu>li>a {color: #111;} 
+.page-sidebar .page-sidebar-menu .sub-menu>li>a.active{color:#b69c71;}
+.page-sidebar .page-sidebar-menu>li.open>a, .page-sidebar .page-sidebar-menu>li:hover>a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu>li.open>a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu>li:hover>a {
+    background: #fbd89c;
+    color: #000;
+}
+.sidebar-toggler-wrapper{ background:#6cc5e9;}
+.page-sidebar .sidebar-toggler, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .sidebar-toggler {
+display: block;cursor: pointer;width: 100%;height: 44px;margin: 0px;padding:0px;}
+.page-sidebar .sidebar-toggler, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .sidebar-toggler {background: url(../img/sidebar_inline_toggler_icon_light.png) center center no-repeat;}
+.page-sidebar-closed .page-sidebar .page-sidebar-menu.page-sidebar-menu-closed>li.sidebar-toggler-wrapper .sidebar-toggler {
+margin: 0px;}
+
+.page-sidebar .page-sidebar-menu>li.active>a>.selected, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu>li.active>a>.selected {border-right: 12px solid #ebebeb;
+}
+
+.page-sidebar .page-sidebar-menu .sub-menu>li>a, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu>li>a {
+    background: #fff;
+}
+/*@media all and (min-width:992px)*/
+.page-content-wrapper .page-content {
+    margin-left: 235px;
+    margin-top: 0px;
+    border-left: 16px solid #ebebeb;
+    padding: 25px 20px 10px;
+}
+.page-sidebar .page-sidebar-menu .sub-menu, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu {
+list-style: none;
+display: none;
+padding: 0;
+margin: 8px 0 0;
+background:#ebebeb;
+}
+.page-sidebar .page-sidebar-menu .sub-menu li, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu li {
+margin: 0!important;
+border-top: 1px solid #fff!important;border-bottom: 1px solid #fff!important;
+}
+.page-sidebar .page-sidebar-menu .sub-menu li, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu .sub-menu li:hover{
+    border:none;
+}

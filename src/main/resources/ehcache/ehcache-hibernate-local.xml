@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache updateCheck="false" name="hibernateCache">
+
+	<diskStore path="java.io.tmpdir/ehcache/yy/hibernate" />
+
+	<!-- DefaultCache setting. -->
+	<!-- 配置自定义缓存
+		maxEntriesLocalHeap：缓存中允许创建的最大对象数
+		eternal：缓存中对象是否为永久的，如果是，超时设置将被忽略，对象从不过期。 
+		timeToIdleSeconds：设置对象在失效前的允许闲置时间（单位：秒）。仅当eternal=false对象不是永久有效时使用，可选属性，默认值是0，也就是可闲置时间无穷大。
+		timeToLiveSeconds：设置对象在失效前允许存活时间（单位：秒）。最大时间介于创建时间和失效时间之间。仅当eternal=false对象不是永久有效时使用，默认是0.，也就是对象存活时间无穷大。
+		overflowToDisk：内存不足时（即内存中对象数量达到maxElementsInMemory时），是否启用磁盘缓存,true代表启用。 
+		memoryStoreEvictionPolicy：缓存满了之后的淘汰算法。
+	-->
+	<defaultCache maxEntriesLocalHeap="10000" eternal="false"
+		timeToIdleSeconds="300" timeToLiveSeconds="600" overflowToDisk="true"
+		maxEntriesLocalDisk="100000" />
+
+</ehcache>

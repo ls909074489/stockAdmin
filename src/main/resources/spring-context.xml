@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.1.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.1.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.3.xsd"
+	default-lazy-init="true">
+
+	<description>Spring配置 </description>
+
+	<context:property-placeholder
+		ignore-unresolvable="true" location="classpath*:/conf.properties" />
+
+	<!-- 使用annotation 自动注册bean, 并保证@Required、@Autowired的属性被注入 -->
+	<context:component-scan base-package="com.king">
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+	</context:component-scan>
+
+	<aop:aspectj-autoproxy />
+
+	<!-- Spring Data Jpa配置 -->
+	<jpa:repositories base-package="com.king"
+		transaction-manager-ref="transactionManager"
+		entity-manager-factory-ref="entityManagerFactory" />
+
+	<!-- Jpa 事务配置 -->
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+
+	<!-- Jpa Entity Manager 配置 -->
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="jpaVendorAdapter" ref="hibernateJpaVendorAdapter" />
+		<property name="packagesToScan" value="com.king" />
+		<property name="jpaProperties" ref="jpaProperties" />
+	</bean>
+
+	<bean id="jpaProperties" class="java.util.Properties">
+		<constructor-arg>
+			<props>
+				<prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory
+				</prop>
+				<prop key="net.sf.ehcache.configurationResourceName">ehcache/ehcache-hibernate-local.xml</prop>
+				<prop key="hibernate.cache.use_second_level_cache">true</prop>
+				<prop key="hibernate.cache.use_query_cache">true</prop>
+				<!-- 命名规则 My_NAME->MyName -->
+				<prop key="hibernate.ejb.naming_strategy">org.hibernate.cfg.ImprovedNamingStrategy</prop>
+				<!-- 更新数据表update，不更新none -->
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.format_sql">false</prop>
+				<prop key="hibernate.show_sql">true</prop>
+			</props>
+		</constructor-arg>
+	</bean>
+
+	<bean id="hibernateJpaVendorAdapter"
+		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+		<property name="databasePlatform">
+			<bean factory-method="getDialect" class="com.king.common.dao.Hibernates">
+				<constructor-arg ref="dataSource" />
+			</bean>
+		</property>
+	</bean>
+
+	<bean id="jpaVendorAdapterSQLServer"
+		class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+		<property name="generateDdl" value="${jpa.generateDdl}" />
+		<property name="database" value="${jpa.database}" />
+		<property name="databasePlatform" value="${jpa.databasePlatform}" />
+		<property name="showSql" value="${jpa.showSql}" />
+	</bean>
+
+	<!-- 使用annotation定义事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager"
+		proxy-target-class="true" />
+
+	<!-- JSR303 Validator定义 -->
+	<bean id="validator"
+		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+
+	<!-- 配置dao dbutils方式 -->
+	<bean id="dbUtilsDAO" class="com.king.common.dao.DbUtilsDAO">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- 用log4jdbc对datasouce进行包裹实现完整的SQL语句跟踪 -->
+	<bean id="dataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+		<constructor-arg>
+			<ref bean="dataSourceSpied" />
+		</constructor-arg>
+	</bean>
+
+	<!-- Quartz -->
+	<bean lazy-init="true" autowire="no" name="scheduler"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<!--延迟10秒启动 -->
+		<property name="startupDelay" value="10" />
+		<!--applicationContextSchedulerContextKey： 是org.springframework.scheduling.quartz.SchedulerFactoryBean这个类中 
+			把spring上下 文以key/value的方式存放在了quartz的上下文中了，可以用applicationContextSchedulerContextKey所定义的key得到对应的spring上下文 -->
+		<property name="applicationContextSchedulerContextKey" value="applicationContextKey" />
+		<property name="configLocation" value="classpath:quartz.properties" />
+	</bean>
+
+	<!-- 适合用于邮件收件人比较多, 网络连接时间较长的任务 <bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor"> 
+		<property name="corePoolSize" value="1" /> <property name="maxPoolSize" value="100" 
+		/> <property name="queueCapacity" value="500" /> </bean> -->
+
+	<!-- 适用于邮件群发, 邮件数量多, 网络连接时间较短的任务 <bean id="groupsTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor"> 
+		<property name="corePoolSize" value="5" /> <property name="maxPoolSize" value="500" 
+		/> <property name="queueCapacity" value="5000" /> </bean> -->
+
+	<!-- 配置 文件上传 -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="1024000000" />
+		<property name="resolveLazily" value="true" />
+		<property name="maxInMemorySize" value="4096" />
+		<property name="defaultEncoding" value="utf-8" />
+	</bean>
+
+	<!-- 缓存配置 -->
+	<bean id="cacheManager"
+		class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation" value="classpath:${ehcache.configFile}" />
+		<!-- 指定新建的CacheManager的名称 -->
+		<!-- <property name="cacheManagerName" value="cacheManagerName" /> -->
+	</bean>
+
+	<bean id="yyEhcache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+		<property name="cacheManager" ref="cacheManager" />
+		<property name="cacheName" value="yyCache" />
+	</bean>
+
+
+	<!-- redis缓存 -->
+	<bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxIdle" value="${redis.maxIdle}" />
+		<property name="maxTotal" value="${redis.maxActive}" />
+		<property name="maxWaitMillis" value="${redis.maxWait}"></property>
+		<property name="testOnBorrow" value="${redis.testOnBorrow}" />
+	</bean>
+	<bean id="connectionFactory"
+		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+		p:host-name="${redis.host}" p:port="${redis.port}" p:password="${redis.pass}"
+		p:pool-config-ref="poolConfig" />
+
+	<bean id="redisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">
+		<property name="connectionFactory" ref="connectionFactory" />
+	</bean>
+	<bean id="yyRedisCache" class="com.king.frame.redis.YYRedisCache">
+		<property name="redisTemplate" ref="redisTemplate" />
+		<property name="name" value="default" />
+	</bean>
+	<!-- redis缓存 -->
+
+	<!-- 国际化的消息资源文件（本系统中主要用于显示/错误消息定制） -->
+	<bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<!-- 在web环境中一定要定位到classpath 否则默认到当前web应用下找 -->
+				<value>classpath:messages</value>
+				<value>classpath:ValidationMessages</value>
+			</list>
+		</property>
+		<property name="useCodeAsDefaultMessage" value="false" />
+		<property name="defaultEncoding" value="UTF-8" />
+		<property name="cacheSeconds" value="60" />
+	</bean>
+
+	<!-- alibaba连接池 -->
+	<bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
+		<property name="slowSqlMillis" value="3000" />
+		<property name="logSlowSql" value="true" />
+		<property name="mergeSql" value="true" />
+	</bean>
+	<bean id="wall-filter-config" class="com.alibaba.druid.wall.WallConfig"
+		init-method="init">
+		<property name="selectWhereAlwayTrueCheck" value="false" />
+		<property name="updateWhereNoneCheck" value="true" />
+		<property name="mustParameterized" value="false" />
+		<property name="minusAllow" value="false" />
+		<property name="intersectAllow" value="false" />
+		<property name="dir" value="META-INF/druid/wall/mysql" />
+	</bean>
+	<bean id="wall-filter" class="com.alibaba.druid.wall.WallFilter">
+		<property name="dbType" value="mysql" />
+		<property name="config" ref="wall-filter-config" />
+		<property name="logViolation" value="true" />
+		<property name="throwException" value="false" />
+	</bean>
+
+	<!-- production环境 -->
+	<beans profile="production">
+		<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+			init-method="init" destroy-method="close">
+			<property name="driverClassName" value="${jdbc.driver}" />
+			<property name="url" value="${jdbc.url}" />
+			<property name="username" value="${jdbc.username}" />
+			<property name="password" value="${jdbc.password}" />
+			<property name="initialSize" value="10" />
+			<property name="minIdle" value="${dbcp.minIdle}" />
+			<property name="maxActive" value="${dbcp.maxActive}" />
+			<property name="maxWait" value="${dbcp.maxWait}" />
+			<property name="timeBetweenEvictionRunsMillis" value="60000" />
+			<property name="minEvictableIdleTimeMillis" value="300000" />
+			<property name="validationQuery" value="SELECT 1" />
+			<property name="testWhileIdle" value="true" />
+			<property name="testOnBorrow" value="false" />
+			<property name="testOnReturn" value="false" />
+			<property name="poolPreparedStatements" value="true" />
+			<property name="maxOpenPreparedStatements" value="100" />
+			<property name="maxPoolPreparedStatementPerConnectionSize"
+				value="20" />
+			<property name="filters" value="log4j" />
+			<property name="proxyFilters">
+				<list>
+					<ref bean="stat-filter" />
+					<ref bean="wall-filter" />
+				</list>
+			</property>
+		</bean>
+	</beans>
+
+</beans>
