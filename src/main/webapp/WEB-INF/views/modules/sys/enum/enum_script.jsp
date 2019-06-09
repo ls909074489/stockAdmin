@@ -303,8 +303,8 @@
 						onAdd();
 					}
 				} else {
-					//YYUI.failMsg("操作失败：" + data.msg);
-					YYUI.promAlert("操作失败：" + data.msg);
+					//YYUI.failMsg("保存失败：" + data.msg);
+					YYUI.promAlert("保存失败：" + data.msg);
 				}
 			}
 		}

@@ -1,6 +1,6 @@
     <%@ page language="java" contentType="text/html; charset=utf-8"
              pageEncoding="utf-8"%>
-        <%@ page import="com.king.common.utils.Uploader" %>
+        <%@ page import="com.yy.common.utils.Uploader" %>
 
             <%
     request.setCharacterEncoding("utf-8");

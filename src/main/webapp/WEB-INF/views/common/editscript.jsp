@@ -34,12 +34,12 @@
 					doAfterSaveSuccess(data.records);
 				} else {
 					//window.parent.YYUI.failMsg("保存出现错误：" + data.msg);
-					window.parent.YYUI.failMsg("操作失败：" + data.msg);
+					window.parent.YYUI.failMsg("保存失败：" + data.msg);
 					layer.close(editview);
 				}
 			},
 			error : function(XMLHttpRequest, textStatus, errorThrown) {
-				window.parent.YYUI.promAlert("操作失败，HTTP错误。");
+				window.parent.YYUI.promAlert("保存失败，HTTP错误。");
 				layer.close(editview);
 			}
 		}

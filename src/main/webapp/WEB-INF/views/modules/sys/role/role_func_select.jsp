@@ -226,8 +226,8 @@
 					       dataType: 'json',
 					       error: function(){
 					    	   layer.close(saveWaitLoad);
-					    	   //YYUI.failMsg("操作失败!");
-					    	   YYUI.promAlert("操作失败：");
+					    	   //YYUI.failMsg("保存失败!");
+					    	   YYUI.promAlert("保存失败：");
 					       },
 					       success: function(json){
 					    	  layer.close(saveWaitLoad);

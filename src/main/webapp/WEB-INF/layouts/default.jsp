@@ -25,7 +25,7 @@
 <!-- END GLOBAL MANDATORY STYLES -->
 
 <!-- BEGIN PAGE LEVEL PLUGINS -->
-<link href="${ctx}/assets/metronic/v4.5/global/plugins/bootstrap-toastr/toastr.min.css?v=20160803" rel="stylesheet" type="text/css" />
+<link href="${ctx}/assets/metronic/v4.5/global/plugins/bootstrap-toastr/toastr.min.css?v=20160801" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
         
 <!-- BEGIN PAGE LEVEL PLUGINS -->
@@ -61,7 +61,7 @@
 
 <!-- BEGIN YY CSS AND JS -->
 <link rel="stylesheet" type="text/css" href="${ctx}/assets/yy/css/yy.css?v=20160801"/>
-<link rel="stylesheet" type="text/css" href="${ctx}/assets/yy/css/yy_table.css?v=20160802"/>
+<link rel="stylesheet" type="text/css" href="${ctx}/assets/yy/css/yy_table.css?v=20160801"/>
 <!-- end YY CSS AND JS -->
 
 <!-- BEGIN YY Report -->
@@ -94,7 +94,7 @@
 <script src="${ctx}/assets/uilayout/1.4/jquery.layout-latest.js?v=20160801" type="text/javascript"></script>
 
 <!-- BEGIN layer -->
-<script src="${ctx}/assets/layer/layer.js?v=2016080222" type="text/javascript"></script>
+<script src="${ctx}/assets/layer/layer.js?v=20160801" type="text/javascript"></script>
 <script src="${ctx}/assets/layer/extend/layer.ext.js?v=20160801" type="text/javascript"></script>
 
 <!-- 表单相关 -->
@@ -104,7 +104,7 @@
 <script type="text/javascript" src="${ctx}/assets/metronic/v4.5/global/plugins/jquery-validation/js/validate-methods.js?v=20160801"></script>
 
 <!-- 图表相关  --> 
-<%-- <script src="${ctx}/assets/echarts/echarts.min.js?v=20160801" type="text/javascript"></script> --%>
+<script src="${ctx}/assets/echarts/echarts.min.js?v=20160801" type="text/javascript"></script>
 
 <!-- BEGIN YY平台js -->
 <script src="${ctx}/assets/yy/js/yy-msg-utils.js?v=20160801"></script> 
@@ -112,7 +112,7 @@
 <script src="${ctx}/assets/yy/js/yy-form-utils.js?v=20160801"></script>
 <script src="${ctx}/assets/yy/js/yy-form-validate.js?v=20160801"></script>
 <script src="${ctx}/assets/yy/js/yy-ztree-utils.js?v=20160801"></script>
-<script src="${ctx}/assets/yy/js/yy-datatable-utils.js?v=20180823"></script>
+<script src="${ctx}/assets/yy/js/yy-datatable-utils.js?v=20170221"></script>
 <script src="${ctx}/assets/yy/js/yy-ui-utils.js?v=20160801"></script>
 <script src="${ctx}/assets/yy/js/yy-data-utils.js?v=20160801"></script>
 <script src="${ctx}/assets/yy/js/yy.js?v=20160801"></script>

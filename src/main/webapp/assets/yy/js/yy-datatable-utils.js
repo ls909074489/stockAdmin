@@ -96,7 +96,7 @@ YYDataTableUtils.setActions = function(nRow, aData, iDataIndex) {
 	// iDataIndex: {int}: The index of this row in aoData
 	$(nRow).dblclick(function() {
 		//onViewDetailRow(aData, iDataIndex, nRow);
-		//onEditRow(aData, iDataIndex, nRow);
+		onEditRow(aData, iDataIndex, nRow);
 	});
 
 	$('#yy-btn-view-row', nRow).click(function() {

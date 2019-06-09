@@ -3,7 +3,7 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}" />
 <html>
 <head>
-<title>机构选择</title>
+<title>用户选择</title>
 </head>
 <body>
 	<div id="yy-page" class="container-fluid page-container">
@@ -142,6 +142,7 @@
 			});
 
 			function loadList() {
+				var listWaitLoad=layer.load(2);
 				$.ajax({
 					url : '${ctx}/sys/data/dataUser',
 					data : {
@@ -149,6 +150,7 @@
 					},
 					dataType : 'json',
 					success : function(data) {
+						layer.close(listWaitLoad);
 						_tableList.clear();
 						_tableList.rows.add(data.records);
 						_tableList.draw();

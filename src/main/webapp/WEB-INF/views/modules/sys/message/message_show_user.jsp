@@ -56,7 +56,6 @@
 							<th>操作</th>
 							<th>消息类型</th>
 							<th>消息标题</th>
-							<th>消息内容</th>
 							<th>发送人</th>
 							<th>送达时间</th>
 							<th>办理状态</th>
@@ -93,7 +92,7 @@
 					}
 				}, {
 					data : 'msgtype',
-					width : "30",
+					width : "40",
 					className : "center",
 					orderable : true,
 					render : function(data, type, full) {
@@ -101,11 +100,6 @@
 					}
 				}, {
 					data : 'title',
-					width : "40",
-					className : "center",
-					orderable : false
-				}, {
-					data : 'content',
 					width : "90",
 					className : "left",
 					orderable : false
@@ -200,7 +194,7 @@
 
 		//展示消息链接
 		function showMessage(link, id, openType, tabName, dataIndex) {
-			if(link!=null&&link.length > 0){
+			if(link.length > 0){
 				link = '${ctx}' + link;
 				//判断是否以tab方式打开的
 				if (openType != null && openType != '' && openType == '1') {

@@ -319,7 +319,7 @@
 			
 		});
 	}
-	//行编辑   @data 行数据  @rowidx 行下标
+	//行编辑   param data 行数据  param rowidx 行下标
 	function onEditRow(aData, iDataIndex, nRow) {
 		if(!onEditRowBefore(aData, iDataIndex, nRow)) {
 			return;
@@ -334,21 +334,6 @@
 			content : '${serviceurl}/onEdit?uuid=' + aData.uuid, //iframe的url
 		});
 	}
-	
-	//跳转到编辑页面
-	function toEdit(){
-		/* layer.open({
-			type : 2,
-			title : false,//标题
-			shadeClose : false,//是否点击遮罩关闭
-			shade : 0.8,//透明度
-			closeBtn : 0,//关闭按钮
-			area : [ '100%', '100%' ],
-			content : '${serviceurl}/onEdit?uuid=' + $("input[name='uuid']").val() //iframe的url
-		}); */
-		window.location.href='${serviceurl}/onEdit?uuid=' + $("input[name='uuid']").val();
-	}
-	
 	//===================按钮绑定方法===================
 	//绑定查询页面按钮
 	function bindDetailActions() {
@@ -375,9 +360,6 @@
 		$('#yy-btn-approve-look').bind('click', function(){
 			onLookApprove();
 		});//查看审批意见
-		
-		
-		$("#yy-btn-toedit").bind('click', toEdit);//编辑页面
 		
 		bindSysInfo();
 	}

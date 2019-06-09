@@ -50,8 +50,8 @@
 						onAdd();
 					}
 				} else {
-					//YYUI.failMsg("操作失败：" + data.msg);
-					YYUI.promAlert("操作失败：" + data.msg);
+					//YYUI.failMsg("保存失败：" + data.msg);
+					YYUI.promAlert("保存失败：" + data.msg);
 				}
 			}
 		}
@@ -67,8 +67,8 @@
 	}
 
 	//行操作：查看行明细  同时要隐藏子表
-	//@data 行数据
-	//@rowidx 行下标操作事件
+	//param data 行数据
+	//param rowidx 行下标操作事件
 	function onViewDetailRow(data,iDataIndex, nRow) {
 		showData(data);
 		showSub("view",data.uuid);

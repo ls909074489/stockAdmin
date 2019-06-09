@@ -302,7 +302,7 @@
 	 
 	$(document).ready(function() {
 		
-		loadList('${serviceurl}/query?orderby=createtime@asc',false);
+		
 		//生成模板按钮绑定
 	});
 	//加载从表数据 mainTableId主表Id

@@ -76,9 +76,6 @@ nav.page-tabs {
 	font-size: 14px;
 }
 
-.page-header.navbar .page-logo .logo-default{
-   margin: 5px 0 0;
-}
 </style>
 <script type="text/javascript">
 	var ws = null;
@@ -124,7 +121,6 @@ nav.page-tabs {
 			ws = null;
 		}
 	}
-	
 </script>
 </head>
 <body>
@@ -153,25 +149,17 @@ nav.page-tabs {
 			});
 		</script>
 	</c:if>
-	
 	<!-- BEGIN HEADER -->
 	<div class="page-header navbar navbar-fixed-top">
 		<!-- BEGIN HEADER INNER -->
 		<div class="page-header-inner ">
 			<!-- BEGIN LOGO -->
-			<div class="page-logo" style="width: 650px;">
-				<c:if test="${!empty yy_logo_imge}">
-					<a href="#"><img src="${ctx}${yy_logo_imge}" alt="logo" class="logo-default" /> </a>
-				</c:if>
-
-				<label class="yy-logo-title" style="font-size: 20px;">${yy_logo_title}</label>
+			<div class="page-logo">
+				<label class="yy-logo-title" style="font-size: 22px;">${yy_logo_title}</label>
 			</div>
 
-			<span style="display: none;">
-				 <a class="J_menuItem lsDbClickTabMenu" data-index="" href="" id="newTabHrefId"></a>
-			</span> 
-			<span style="display: none;"> 
-				<a class="lsCloseTabMenu" data-index="" href="" id="closeTabHrefId"></a>
+			<span style="display: none;"> <a class="J_menuItem lsDbClickTabMenu" data-index="" href="" id="newTabHrefId"></a>
+			</span> <span style="display: none;"> <a class="lsCloseTabMenu" data-index="" href="" id="closeTabHrefId"></a>
 			</span>
 			<!-- END LOGO -->
 			<!-- BEGIN RESPONSIVE MENU TOGGLER -->
@@ -181,28 +169,42 @@ nav.page-tabs {
 			<!-- BEGIN TOP NAVIGATION MENU -->
 			<div class="top-menu">
 				<ul class="nav navbar-nav pull-right">
-				
+					<!-- 反馈意见start -->
+					<li class="dropdown dropdown-extended dropdown-notification" id="yjfk"><a title="意见反馈" class="dropdown-toggle"
+						data-toggle="dropdown" onclick="Feedback();" data-hover="dropdown" data-close-others="true"> <i
+							class="icon-speech font-green"></i>
+					</a></li>
+					<!-- 反馈意见end -->
+
+					<!-- 使用说明start -->
+					<!-- <li class="dropdown dropdown-extended dropdown-notification" id="bzsc"><a title="帮助手册" class="dropdown-toggle"
+						data-toggle="dropdown" onclick="openHelpDoc();" data-hover="dropdown" data-close-others="true"> <i
+							class="icon-question font-yellow"></i>
+					</a></li> -->
+					<!-- 使用说明end -->
+
 					<!-- BEGIN 个人信息 -->
-					<li class="dropdown dropdown-user">
-						<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown"
-							data-hover="dropdown" data-close-others="true"> <img alt="" class="img-circle"
-								<%-- $src="${ctx}/assets/metronic/v4.5/layouts/layout/img/avatar3_small.jpg"  --%>
-								src="${ctx}/assets/yy/img/user.png" />
-								<span class="username username-hide-on-mobile"> <c:if test="${not empty user.orgname}">${user.orgname}-</c:if> ${user.username}
-							</span> <!-- <i class="fa fa-angle-down"></i> -->
-						</a>
-						<!-- <ul class="dropdown-menu dropdown-menu-default">
+					<li class="dropdown dropdown-user"><a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown"
+						data-hover="dropdown" data-close-others="true"> <img alt="" class="img-circle"
+							<%-- $src="${ctx}/assets/metronic/v4.5/layouts/layout/img/avatar3_small.jpg"  --%>
+							src="${ctx}/assets/yy/img/user.png" />
+							<span class="username username-hide-on-mobile"> <c:if test="${not empty user.orgname}">${user.orgname}-</c:if>${user.username}
+						</span> <i class="fa fa-angle-down"></i>
+					</a>
+						<ul class="dropdown-menu dropdown-menu-default">
 							<li><a onclick="onUserProfile();"> <i class="icon-user"></i> 个人设置
 							</a></li>
 							<li><a onclick="onCalendar();"> <i class="icon-calendar"></i> 我的日历
 							</a></li>
 							<li class="divider"></li>
+							<li><a onclick="lsAddTab('${ctx}/version','版本更新日志','f431561e-228e-41ed3-31da-96f3611232132')"> <i
+									class="fa fa-file-text-o"></i> 版本更新日志
+							</a></li>
 							<li><a onclick="onRevisePassword();"> <i class="icon-lock"></i> 修改密码
 							</a></li>
 							<li><a onclick="onBack();" title="退出系统"> <i class="icon-key"></i> 退出系统
 							</a></li>
-						</ul> -->
-					</li>
+						</ul></li>
 					<!-- END 个人信息 -->
 
 					<!-- BEGIN 退出系统 -->
@@ -230,6 +232,12 @@ nav.page-tabs {
 			<!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
 			<div class="page-sidebar navbar-collapse collapse">
 				<!-- BEGIN SIDEBAR MENU -->
+				<!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
+				<!-- DOC: Apply "page-sidebar-menu-hover-submenu" class right after "page-sidebar-menu" to enable hoverable(hover vs accordion) sub menu mode -->
+				<!-- DOC: Apply "page-sidebar-menu-closed" class right after "page-sidebar-menu" to collapse("page-sidebar-closed" class must be applied to the body element) the sidebar sub menu mode -->
+				<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+				<!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
+				<!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
 				<ul class="page-sidebar-menu" data-auto-scroll="true" data-slide-speed="200">
 					<li class="sidebar-toggler-wrapper">
 						<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
@@ -257,6 +265,7 @@ nav.page-tabs {
 						</c:if>
 
 					</c:forEach>
+
 				</ul>
 				<!-- END SIDEBAR MENU -->
 			</div>
@@ -288,7 +297,7 @@ nav.page-tabs {
 							<li><a onclick="addUserMenu();"><i class="fa fa-plus-circle"></i>添加到快捷菜单</a></li>
 							<li class="J_tabShowActive"><a><i class="fa icon-pointer"></i>定位当前选项卡</a></li>
 							<li class="divider"></li>
-							<li class="J_tabCloseAll" id="closeAllTablLiId"><a><i class="fa fa-times-circle"></i>关闭全部选项卡</a></li>
+							<li class="J_tabCloseAll"><a><i class="fa fa-times-circle"></i>关闭全部选项卡</a></li>
 							<li class="J_tabCloseOther"><a><i class="fa fa-times"></i>关闭其他选项卡</a></li>
 						</ul>
 					</div>
@@ -315,6 +324,9 @@ nav.page-tabs {
 		
 		<div class="page-footer-inner">
 			${yy_footer_title}
+			<!-- 
+			<a href="http://www.flyrise.cn/" title="技术支持QQ:348296009" target="_blank">飞企互联提供技术支持!</a>
+			 -->
 		</div>
 		<!-- 
 		<div class="scroll-to-top">
@@ -401,12 +413,6 @@ nav.page-tabs {
 			$("#closeTabHrefId").attr("data-index", dId);
 			$("#closeTabHrefId").click();
 		}
-		
-		//获取主页的厂站id
-		function getMainStation(){
-			var mStationId='${currentStation.uuid}';//$("#stationId").val();
-			return mStationId;
-		}
 
 		/**
 		 * 加载枚举数据到本地缓存中 xuechen
@@ -419,7 +425,8 @@ nav.page-tabs {
 				"success" : function(data) {
 					if (data.success) {
 						var map = data.records[0];
-						localStorage.setItem("yy-enum-map", JSON.stringify(map));
+						localStorage
+								.setItem("yy-enum-map", JSON.stringify(map));
 					} else {
 						YYUI.failMsg("加载枚举数据失败" + data.msg);
 					}
@@ -523,19 +530,33 @@ nav.page-tabs {
 			});
 		}
 
-		
+		//意见反馈
+		function Feedback() {
+			layer.open({
+				title : '意见反馈',
+				type : 2,
+				area : [ '1000px', '600px' ],
+				fix : false, //不固定
+				// maxmin: true,
+				content : '${ctx}/sys/feedback'
+			});
+		}
+
 		var iframe_height;
 		$(document).ready(function() {
-			 $("#stationId").change(function(){
-				 changeCurrentStation();
-			 });
-			
 			localStorage.clear();
 			setIframeHeight();
 			loadEnumData();
 			loadAlertMsg();
 			// loadAdmin();
 			showUserMenu(); //加载快捷菜单
+			// connect();
+			//测试还有多少的缓存
+			//if(window.localStorage)
+			//{  var aaaaa = 1024 * 1024 * 5 - unescape(encodeURIComponent(JSON.stringify(localStorage))).length;
+			// 	alert(aaaaa);
+			//}
+			//$("#yy-link").click();
 		});
 
 		window.onload = function() {

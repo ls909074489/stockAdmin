@@ -172,7 +172,7 @@
 	function onEditDetail() {
 		onEditRow(_detailRecord);
 	}
-	//行修改   @data 行数据  @rowidx 行下标
+	//行修改   param data 行数据  param rowidx 行下标
 	function onEditRow(aData, iDataIndex, nRow) {
 		if (!onEditRowBefore(aData, iDataIndex, nRow)) {
 			return;
@@ -192,7 +192,7 @@
 			content : '${serviceurl}/onEdit?uuid=' + aData.uuid + '&' + _editParam, //iframe的url
 		});
 	}
-	//行查看 @data 行数据 @rowidx 行下标
+	//行查看 param data 行数据 param rowidx 行下标
 	function onViewDetailRow(data, rowidx, row) {
 		layer.open({
 			type : 2,
@@ -307,7 +307,7 @@
 		var pks = YYDataTableUtils.getSelectPks();
 		exportExcelRecord(url, pks/*, onRefresh*/);
 	}
-	//行删除   @data 行数据 rowidx 行下标
+	//行删除   param data 行数据 rowidx 行下标
 	function onRemoveRow(data, rowidx, row) {
 		if (doBeforeRemoveRow(data)) {
 			removeRecord('${serviceurl}/delete', [ data.uuid ], function() {

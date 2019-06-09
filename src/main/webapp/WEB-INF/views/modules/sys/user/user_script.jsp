@@ -24,12 +24,12 @@
 		data : 'username',
 		width : "100",
 		orderable : true
-	}/* , {
+	}, {
 		data : 'jobnumber',
 		width : "100",
 		className : "center",
 		orderable : true
-	} */, {
+	}, {
 		data : 'sex',
 		width : "50",
 		className : "center",
@@ -96,6 +96,35 @@
 		
 		$('#yy-userref-select-btn').on('click', function() {
 			var tUserType=$("#usertype").val();
+			if(tUserType==null||tUserType==''){
+				YYUI.promMsg('请选择用户类型');
+				return;
+			}else{
+				if(tUserType==3||tUserType==4){
+					if(tUserType==3){
+						layer.open({
+							type : 2,
+							title : '请选择教师',
+							shadeClose : true,
+							shade : 0.8,
+							area : [ '800px', '90%' ],
+							content : '${pageContext.request.contextPath}/sys/ref/refTeacherSel?callBackMethod=window.parent.callBackSelRef'
+						});
+					}else{
+						layer.open({
+							type : 2,
+							title : '请选择学生',
+							shadeClose : true,
+							shade : 0.8,
+							area : [ '800px', '90%' ],
+							content : '${pageContext.request.contextPath}/sys/ref/refStudentSel?callBackMethod=window.parent.callBackSelRef'
+						});
+					}
+				}else{
+					YYUI.promMsg('只有用户类型为老师或学生才能选择关联人员');
+					return;
+				}
+			}
 		});
 		
 		
@@ -245,9 +274,9 @@
                    '<i class="fa fa-angle-down"></i>'+
                 '</a>'+
                ' <ul class="dropdown-menu">'+
-	               '<li>'+
+	               /* '<li>'+
 		               '<a id="yy-btn-grant-row" href="javascript:;"><i class="fa fa-group"></i>单元授权</a>'+
-		           '</li>'+
+		           '</li>'+ */
 		           '<li>'+
 		               '<a id="yy-btn-role-row" href="javascript:;"><i class="fa fa-group"></i>角色授权</a>'+
 		           '</li>'+
@@ -278,6 +307,8 @@
 	
 	$(document).ready(function() {
 		$("#yy-btn-removeuser").bind('click', onRemoveUser);//删
+	
+		//$("select[name='search_usertype']").val(3);
 		
 		_queryData = $("#yy-form-query").serializeArray();
 
@@ -311,6 +342,18 @@
 				}
 			}
 		});
+		
+		//表格绘画完回调方法
+		function fnDrawCallback() {
+			//序列号
+			if (_isNumber) {
+				var pageLength = $('select[name="yy-table-list_length"]').val() || 10;
+				_columnNum = _columnNum || 0;
+				_tableList.column(_columnNum).nodes().each(function(cell, i) {
+					cell.innerHTML = i + 1 + (_pageNumber) * pageLength;
+				});
+			}
+		}
 		
 		//按钮绑定事件
 		bindButtonActions();
@@ -355,7 +398,12 @@
 		$("input[name='validdate']").val(data.validdate);
 		$("textarea[name='description']").val(data.description);
 		$("input[name='invaliddate']").val(data.invaliddate);
-
+		$("input[name='user_refid']").val(data.user_refid);
+		$("input[name='user_refname']").val(data.user_refname);
+		
+		$("input[name='college']").val(data.college);
+		$("input[name='classes']").val(data.classes);
+		$("select[name='grade']").val(data.grade);
 		
 		$("input[name='orgid']").val(data.orgid);
 		/* if(data.corp!=null){
@@ -470,9 +518,6 @@
 		});
 	};
 	
-	//行操作：删除   
-	//@data 行数据
-	//@rowidx 行下标
 	function onRemoveRow(data, rowidx, row) {
 		if (doBeforeRemoveRow(data)) {
 			removeRecord('${serviceurl}/deleUser', [ data.uuid ], function() {
@@ -497,6 +542,7 @@
 				sex : {required : true},
 				orgname : {required : true},
 				usertype : {required : true},
+				jobnumber: {required : true,maxlength:10},
 				description : {maxlength:200}
 			}
 		}); 

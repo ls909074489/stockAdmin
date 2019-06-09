@@ -26,7 +26,7 @@
 				<h6></h6>
 			</div>
 			<!-- BEGIN DASHBOARD STATS 1-->
-			<div class="row" style="display: none;">
+			<div class="row">
 				<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
 					<div class="dashboard-stat blue">
 						<div class="visual">
@@ -84,7 +84,7 @@
 			<div class="clearfix"></div>
 			<!-- END DASHBOARD STATS 1-->
 			<div class="row">
-				<div class="col-md-12">
+				<div class="col-md-6">
 					<div class="portlet box blue tasks-widget">
 						<div class="portlet-title">
 							<div class="caption">
@@ -118,7 +118,39 @@
 						</div>
 					</div>
 				</div>
+				<div class="col-md-6">
+					<!-- BEGIN SAMPLE TABLE PORTLET-->
+					<div class="portlet box blue tasks-widget">
+						<div class="portlet-title">
+							<div class="caption">
+								<i class="fa fa-weixin"></i> 系统消息
+							</div>
+							<div class="tools">
+								<a href="" class="reload" onclick="getMessage()"> </a>
+							</div>
+						</div>
+						<div class="portlet-body">
+							<div class="task-content">
+								<div class="scroller" style="height: 300px;" data-always-visible="1" data-rail-visible1="1">
+									<!-- START TASK LIST -->
+									<ul class="task-list" id="messageList">
+
+									</ul>
+								</div>
+							</div>
+							<div class="task-footer">
+								<div class="btn-arrow-link pull-right">
+									<a href="javascript:;" onclick="seeMoreMsg();" class="J_menuTab" id="msg_seemore">查看更多...</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- END SAMPLE TABLE PORTLET-->
+				</div>
 			</div>
+
+
+
 		</div>
 	</div>
 
@@ -252,14 +284,14 @@
 							if (messageList[i].isnew == '0') {
 								newMsg = 'style="color:green;"';
 							}
-							var t_orgid=messageList[i].orgid;
+							
 							html += '<li style="height: 35px;">'
 									+ '<div class="task-title" >'
 									+ ctg
 									+ '&nbsp;<span class="task-title-sp" style="font-size:14px;" onclick="showMessage(\''
 									+ messageList[i].link + '\',\''+ messageList[i].uuid+ '\',\''+messageList[i].openType
 									+ '\',\''+messageList[i].tabName+ '\',\''+messageList[i].tabDataIndex
-									+ '\',\''+t_orgid+'\')"><a href="javascript:;" '+ newMsg +'>'
+									+ '\')"><a href="javascript:;" '+ newMsg +'>'
 							var title = messageList[i].title;
 							if (title != '' && title.length > 20) {
 								html += title.substring(0, 20) + "...";
@@ -295,49 +327,15 @@
 		}
 
 		//展示消息链接
-		function showMessage(link, id,openType,tabName,dataIndex,orgid) {
-			console.info((orgid!=null)+"==="+orgid);
+		function showMessage(link, id,openType,tabName,dataIndex) {
 			if(link.length > 0){
 				link = '${ctx}' + link;
 				//判断是否以tab方式打开的
 				if(openType!=null&&openType!=''&&openType=='1'){
-					//var mStationId=parent.getMainStation();
-					//如果点击的消息的厂站id和当前的session的不同，则切换
-					if(orgid!='null'&&orgid!=null&&orgid!=''){
-						console.info(111);
-						var changeStationLoading = layer.load(2);
-						$.ajax({
-							type : "POST",
-							data :{"stationId": orgid},
-							url : "${ctx}/sys/org/changeSessionStation",
-							async : true,
-							dataType : "json",
-							success : function(data) {
-								layer.close(changeStationLoading);
-								if (data.success) {
-									console.info(data);
-									parent.setCurrentOrgMsg(data);
-									YYUI.succMsg('切换站点成功！');
-									//先关闭tab（如果不关闭，只刷新页面，无法从首页中根据点击的获取相应的id值）
-									parent.closeTabByDataId(dataIndex);
-									//添加新的tab
-									parent.lsAddTab(link, tabName,dataIndex);
-								}else {
-									YYUI.promAlert('切换站点失败：'+data.msg);
-								}
-							},
-							error : function(data) {
-								layer.close(changeStationLoading);
-								YYUI.promAlert(YYMsg.alertMsg('sys-submit-http',null));
-							}
-						});
-					}else{
-						console.info(222);
-						//先关闭tab（如果不关闭，只刷新页面，无法从首页中根据点击的获取相应的id值）
-						parent.closeTabByDataId(dataIndex);
-						//添加新的tab
-						parent.lsAddTab(link, tabName,dataIndex);
-					}
+					//先关闭tab（如果不关闭，只刷新页面，无法从首页中根据点击的获取相应的id值）
+					parent.closeTabByDataId(dataIndex);
+					//添加新的tab
+					parent.lsAddTab(link, tabName,dataIndex);
 				}else{
 					layer.open({
 						type : 2,

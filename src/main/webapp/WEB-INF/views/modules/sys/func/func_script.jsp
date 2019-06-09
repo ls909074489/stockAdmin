@@ -129,7 +129,7 @@
 			data : subData,
 			error: function(json){
 				layer.close(saveWaitLoad);
-		    	  YYUI.promAlert('操作失败!');
+		    	  YYUI.promAlert('保存失败!');
 		    },
 			success : function(data) {
 				layer.close(saveWaitLoad);
@@ -141,7 +141,7 @@
 					showListToolBar();
 					_selectedId = data.records[0].uuid;
 				} else {
-					YYUI.promAlert("操作失败：" + data.msg);
+					YYUI.promAlert("保存失败：" + data.msg);
 				}
 			}
 		}

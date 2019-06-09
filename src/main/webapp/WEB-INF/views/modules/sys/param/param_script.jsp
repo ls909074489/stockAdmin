@@ -140,8 +140,8 @@
 	}
 	
 	//行操作：删除   
-	//@data 行数据
-	//@rowidx 行下标
+	//param data 行数据
+	//param rowidx 行下标
 	function onRemoveRow(data, rowidx, row) {
 		if(data.ispreset!=null&&data.ispreset=='1'){
 			YYUI.promAlert('系统预置参数不能删除!');

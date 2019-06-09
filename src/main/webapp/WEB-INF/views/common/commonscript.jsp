@@ -128,8 +128,8 @@
 	}
 
 	//行操作：查看行明细  
-	//@data 行数据
-	//@rowidx 行下标
+	//data 行数据
+	//rowidx 行下标
 	function onViewDetailRow(data, rowidx, row) {
 		YYFormUtils.clearForm('yy-form-detail');
 		showData(data);
@@ -148,8 +148,8 @@
 		doAfterEdit();
 	} */
 	//行操作：编辑   
-	//@data 行数据
-	//@rowidx 行下标
+	//data 行数据
+	//rowidx 行下标
 	function onEditRow(aData, iDataIndex, nRow) {
 		YYFormUtils.clearForm('yy-form-detail');
 		showData(aData);
@@ -158,8 +158,8 @@
 	}
 
 	//行操作：删除   
-	//@data 行数据
-	//@rowidx 行下标
+	//data 行数据
+	//rowidx 行下标
 	function onRemoveRow(data, rowidx, row) {
 		if (doBeforeRemoveRow(data)) {
 			removeRecord('${serviceurl}/delete', [ data.uuid ], function() {
@@ -285,12 +285,6 @@
 	//取消编辑，返回列表视图
 	function onCancel() {
 		//_validator.resetForm();
-		$('#yy-form-edit div.control-group').removeClass('error');
-		YYUI.setListMode();
-		doAfterCancel();
-		YYFormValidate.cancelValidate();
-		layer.closeAll();
-		/*
 		//你确实要退出保存页面吗？
 		layer.confirm(YYMsg.alertMsg('sys-save-out'), function() {
 			$('#yy-form-edit div.control-group').removeClass('error');
@@ -299,7 +293,6 @@
 			YYFormValidate.cancelValidate();
 			layer.closeAll();
 		});
-		*/
 	}
 	function checkRepeat(obj, isValid) {
 		var value = $(obj).val();

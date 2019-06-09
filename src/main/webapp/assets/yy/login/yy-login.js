@@ -123,7 +123,7 @@ var Login = function() {
         });
 
         jQuery('#forget-password').click(function() {
-        	alert("暂时不支持找回密码，请联系关管理员 重置密码。");
+        	alert("暂时不支持找回密码，请联系体育部教务员或体育部相关管理员 重置密码。");
             // jQuery('.login-form').hide();
             // jQuery('.forget-form').show();
         });

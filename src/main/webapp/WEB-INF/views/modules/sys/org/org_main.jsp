@@ -5,13 +5,7 @@
 <c:set var="serviceurl" value="${ctx}/sys/org" />
 <html>
 <head>
-<title>组织机构信息</title>
-<style type="text/css">
-/* 设置树的5个按钮的间距 */
-.btn-group-sm>.btn, .btn-sm {
-	padding: 5px 7px;
-}
-</style>
+<title>业务单元</title>
 </head>
 <body>
 	<div id="leftdiv" class="ui-layout-west">
@@ -39,9 +33,15 @@
 			<button id="yy-btn-edit" class="btn blue btn-sm">
 				<i class="fa fa-edit"></i> 修改
 			</button>
-			<button id="yy-btn-remove" class="btn blue btn-sm">
+			<button id="yy-btn-remove" class="btn red btn-sm btn-info">
 				<i class="fa fa-trash-o"></i> 删除
 			</button>
+			<!-- <button id="yy-btn-refresh" class="btn blue btn-sm">
+				<i class="fa fa-refresh"></i> 刷新
+			</button> -->
+			<button id="yy-btn-createStock" class="btn blue btn-sm">
+				<i class="fa"></i> 初始仓库
+			</button> 
 		</div>
 		<div class="row yy-toolbar hide" id="yy-toolbar-edit">
 			<button id="yy-btn-save" class="btn blue btn-sm">
@@ -52,20 +52,12 @@
 			</button>
 		</div>
 		<div>
-			<form id="yy-form-org" class="form-horizontal">
+			<form id="yy-form-edit" class="form-horizontal">
 				<input name="uuid" type="hidden" value=""> <input name="islast" type="hidden" value="">
 				<div class="row">
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4 required">机构ID</label>
-							<div class="col-md-8">
-								<input name="org_index" type="text" class="form-control">
-							</div>
-						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="form-group">
-							<label class="control-label col-md-4 required">机构代码</label>
+							<label class="control-label col-md-4 required-tip">机构代码</label>
 							<div class="col-md-8">
 								<input name="org_code" type="text" class="form-control">
 							</div>
@@ -73,24 +65,19 @@
 					</div>
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4 required">机构名称</label>
+							<label class="control-label col-md-4 required-tip">机构名称</label>
 							<div class="col-md-8">
 								<input name="org_name" type="text" class="form-control">
 							</div>
 						</div>
 					</div>
-				</div>
-				<div class="row">
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4 required">上级机构</label>
+							<label class="control-label col-md-4">上级机构</label>
 							<div class="col-md-8">
 								<div class="input-group">
-									<input id="selOrgId" name="parentid" type="hidden"> 
-									<fieldset disabled="disabled">
-									<input id="selOrgName" name="parentname" type="text" class="form-control" readonly="readonly"> 
-									</fieldset>
-									<span class="input-group-btn">
+									<input id="selOrgId" name="parentid" type="hidden"> <input id="selOrgName" name="parentname"
+										type="text" class="form-control" readonly="readonly"> <span class="input-group-btn">
 										<button id="yy-org-select-btn" class="btn btn-default btn-ref" type="button">
 											<span class="glyphicon glyphicon-search"></span>
 										</button>
@@ -99,27 +86,10 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-md-4">
-						<div class="form-group">
-							<label class="control-label col-md-4 required">用户组</label>
-							<div class="col-md-8">
-								<div class="input-group">
-									<input id="usergroupId" name="usergroup.uuid" type="hidden"> 
-									<fieldset disabled="disabled">
-										<input id="usergroupName" name="usergroupName" type="text" class="form-control" readonly="readonly"> 
-									</fieldset>
-									<span class="input-group-btn">
-										<button id="yy-usergroup-select-btn" class="btn btn-default btn-ref" type="button">
-											<span class="glyphicon glyphicon-search"></span>
-										</button>
-									</span>
-								</div>
-							</div>
-						</div>
-					</div>
 				</div>
 				<div class="row">
 					<div class="col-md-4">
+						<fieldset disabled="disabled">
 						<div class="form-group">
 							<label class="control-label col-md-4">是否启用</label>
 							<div class="col-md-8">
@@ -127,51 +97,148 @@
 								</select>
 							</div>
 						</div>
+						</fieldset>
 					</div>
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4">机构类型</label>
+							<label class="control-label col-md-4">是否云分仓</label>
 							<div class="col-md-8">
-								<select class="yy-input-enumdata form-control" name="orgtype" data-enum-group="OrgType">
+								<select class="yy-input-enumdata form-control" name="isCloudStock" data-enum-group="BooleanType" onchange="checkClound(this);">
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+							<label class="control-label col-md-4">是否备件中心</label>
+							<div class="col-md-8">
+								<select class="yy-input-enumdata form-control" name="isCenterStock" data-enum-group="BooleanType" onchange="checkCenter(this);">
 								</select>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="row">
+					<div class="col-md-4">
+						<div class="form-group">
+							<label class="control-label col-md-4">是否检测中心</label>
+							<div class="col-md-8">
+								<select class="yy-input-enumdata form-control" name="isCheckStock" data-enum-group="BooleanType">
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+							<label class="control-label col-md-4">是否高维工厂</label>
+							<div class="col-md-8">
+								<select class="yy-input-enumdata form-control" name="isRepair" data-enum-group="BooleanType">
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+							<label class="control-label col-md-4">是否网点机构</label>
+							<div class="col-md-8">
+								<select class="yy-input-enumdata form-control" name="isOutlets" data-enum-group="BooleanType">
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- <div class="row">
+					<div class="col-md-4">
+						<div class="form-group">
+							<label class="control-label col-md-4">创建人</label>
+							<div class="col-md-8">
+								<input name="creater" type="text" class="form-control">
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+							<label class="control-label col-md-4">创建时间</label>
+							<div class="col-md-8">
+								<input name="createdDate" class="Wdate form-control" type="text" onclick="WdatePicker()">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-4">
+						<div class="form-group">
+							<label class="control-label col-md-4">审核人</label>
+							<div class="col-md-8">
+								<input name="verifier" class="form-control"></input>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+							<label class="control-label col-md-4">审核时间</label>
+							<div class="col-md-8">
+								<input name="verifiedDate" class="Wdate form-control" type="text" onclick="WdatePicker()">
+							</div>
+						</div>
+					</div>
+				</div> -->
+				<div class="row">
 					<div class="col-md-8">
 						<div class="form-group">
-							<label class="control-label col-md-2">描述</label>
+							<label class="control-label col-md-2">功能描述</label>
 							<div class="col-md-10">
 								<textarea name="description" class="form-control"></textarea>
 							</div>
 						</div>
 					</div>
 				</div>
-			  <div class="row" style="margin-top: 20px;">
-				<div class="col-md-8">
-					<div class="form-group">
-						<label class="control-label col-md-2"></label>
-						<div class="col-md-8">
-							<div  id="divPreview" style="width: 200px;height: 200px;border:1px solid #ecdddd;">
-								<img alt=""  id="imgHeadPhoto" src="${ctx}/${entity.sketchUrl}" style="width: 200px;height: 200px;"  onclick="showFilePic();">
-								<!--  点击显示大图片 -->
-								<div id="outerdiv" style="position:fixed;top:0;left:0;background:rgba(0,0,0,0.7);z-index:2;width:100%;height:100%;display:none;">
-									<div id="innerdiv" style="position:absolute;">
-										<div align="right">
-											<img src="" style="width: 230px;height: 230px;">
-										</div>
-										<img id="bigimg" style="border:5px solid #fff;" src=""/>
-									</div>
+				
+				<!-- <div class="row">
+					<div class="col-md-1 hos"  style="cursor:pointer;width:100px;"><i class="fa fa-caret-right"></i>系统信息</div>
+					<div class="col-md-11" style="margin-left:-30px;margin-top:-12px;"><hr/></div>
+				</div>
+				<div class="parent">
+					 <div class="row">
+						<div class="col-md-4">
+							<div class="form-group">
+								<label class="control-label col-md-4">创建人</label>
+								<div class="col-md-8">
+									<input name="creater" type="text" class="form-control" disabled>
 								</div>
 							</div>
-							<span id="fileSpanId">
-								<input type="file" id="multifile" name="attachment"  class="btn" style=""/>
-							</span>
 						</div>
-					</div>
-				</div>
-			</div>	
+						<div class="col-md-4">
+							<div class="form-group">
+								<label class="control-label col-md-4">创建时间</label>
+								<div class="col-md-8">
+									<input name="createdtime" type="text" class="form-control date-picker" disabled>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<div class="form-group">
+								<label class="control-label col-md-4">修改人</label>
+								<div class="col-md-8">
+									<input name="modify" type="text" class="form-control" disabled>
+								</div>
+							</div>
+						</div>
+					</div> 
+				 	<div class="row">						
+						<div class="col-md-4">
+							<div class="form-group">
+								<label class="control-label col-md-4">修改时间</label>
+								<div class="col-md-8">
+									<input name="modifytime" type="text" class="form-control date-picker" disabled>
+								</div>
+							</div>
+						</div>			
+					</div> 
+				</div> -->
+				<!-- 系统信息_s -->
+				<%@include file="/WEB-INF/views/common/sys/sys_info.jsp"%>
+				<!-- 系统信息_e -->
 			</form>
 		</div>
 	</div>

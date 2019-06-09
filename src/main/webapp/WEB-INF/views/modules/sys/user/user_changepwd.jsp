@@ -83,8 +83,6 @@
 						YYUI.promAlert('密码修改成功!');
 						$('#yy-form-changepwd')[0].reset();
 						
-						window.parent.checkToSeleStation();
-						
 						//修改密码成功后关闭框  edit by liusheng
 						var index = parent.layer.getFrameIndex(window.name);
 						//先得到当前iframe层的索引

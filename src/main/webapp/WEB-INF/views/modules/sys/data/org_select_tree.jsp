@@ -197,7 +197,7 @@
 					       data:{userId:"${userId}",checkedIds:checkedIds},
 					       dataType: 'json',
 					       error: function(){
-					    	   YYUI.promAlert("操作失败");
+					    	   YYUI.promAlert("保存失败");
 					       },
 					       success: function(json){
 					    	   var _method='${callBackMethod}';

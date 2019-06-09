@@ -21,8 +21,8 @@
 					<label for="search_LIKE_sort_type" class="control-label">用户名称</label>
 					<input type="text" class="form-control input-sm" id="search_username" name="search_username">
 					
-					<!-- <label for="search_LIKE_sort_type" class="control-label">工号</label>
-					<input type="text" class="form-control input-sm" id="search_jobnumber" name="search_jobnumber"> -->
+					<label for="search_LIKE_sort_type" class="control-label">工号</label>
+					<input type="text" class="form-control input-sm" id="search_jobnumber" name="search_jobnumber">
 					
 					<label for="search_usertype" class="control-label">用户类型 </label>
 					<select class="yy-input-enumdata form-control" id="search_usertype" name="search_usertype" data-enum-group="UserType"></select>
@@ -45,7 +45,7 @@
 					<th>操作</th>
 					<th>登录账号</th>
 					<th>用户名</th>
-					<!-- <th>工号</th> -->
+					<th>工号</th>
 					<th>性别</th>
 					<th>最后登录时间</th>
 					<th>状态</th>

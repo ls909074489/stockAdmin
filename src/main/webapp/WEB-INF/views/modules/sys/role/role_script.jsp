@@ -579,7 +579,7 @@
 					}
 					//doAfterSaveSuccess(data);
 				} else {
-					YYUI.promAlert("操作失败：" + data.msg);
+					YYUI.promAlert("保存失败：" + data.msg);
 				}
 			}
 		}
@@ -765,8 +765,8 @@
 	
 	
 	//行操作：删除   
-	//@data 行数据
-	//@rowidx 行下标
+	//param data 行数据
+	//param rowidx 行下标
 	function onRemoveRowEdit(data, rowidx,row) {
 		//询问框
 		layer.confirm('确实要删除吗？', {

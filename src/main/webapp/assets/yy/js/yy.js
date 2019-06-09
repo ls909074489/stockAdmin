@@ -1,6 +1,6 @@
 $(document).ready(function() {
 	if (!window.applicationCache) {
-		YYUI.promMsg("本系统可能不支持您的浏览器，请用支持Html5的浏览器访问系统！");
+		YYUI.promMsg("本平台不支持您的浏览器，请留意屏幕下方的相关说明");
 	}
 	YYUI.setUIDefault();
 	// 设置超时提醒，跳转
