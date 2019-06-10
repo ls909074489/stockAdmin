@@ -9,9 +9,9 @@
 	<meta charset="utf-8">
 	<meta http-equiv="Content-Language" content="zh-CN">
 	<meta name="Keywords" content="YY2.0" />
-	<meta name="Description" content="江西耀润磁电科技有限公司" />
+	<meta name="Description" content="库存管理系统" />
 	<meta name="author" content="ls2008" />
-	<title>江西耀润磁电科技有限公司</title>
+	<title>库存管理系统</title>
 	
 	<link href="${ctx}/assets/metronic/v4.5/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
 	<link href="${ctx}/assets/metronic/v4.5/global/plugins/bootstrap/css/bootstrap.min.css?v=20171101" rel="stylesheet" type="text/css" />
@@ -66,7 +66,7 @@
 	<!-- BEGIN LOGIN -->
 	<div class="main" id="main">
 		<div class="leftcontent" style="width: 580px;">
-			<h1 id="title">江西耀润磁电科技有限公司</h1>
+			<h1 id="title">库存管理系统</h1>
 			<ul>
 				<li>多站点管理</li>
 				<li>版本控制</li>

@@ -143,22 +143,8 @@
 						if(freshLoad != null) {
 							layer.close(freshLoad);
 						}
-						
-						json.recordsFiltered=json.total;
-						json.recordsTotal=json.total;
-						json.total=json.total;
-						//json.totalPages=1;
-						json.pageNumber=json.page;
-						_pageNumber = json.pageNumber-1;
-						if(json.flag==0){
-							return json.obj == null ? [] : json.obj;
-						}else if (json.flag==-10) {
-							YYUI.promMsg('会话超时，请重新的登录!');
-							window.location = '${ctx}/logout';
-							return [];
-						}else{
-							return json.obj == null ? [] : json.obj;
-						}
+						_pageNumber = json.pageNumber;
+						return json.records == null ? [] : json.records;
 					}
 				},
 				"initComplete": function(settings, json) {

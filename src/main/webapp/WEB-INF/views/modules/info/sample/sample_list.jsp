@@ -285,7 +285,7 @@
 		$(document).ready(function() {
 			_queryData = $("#yy-form-query").serializeArray();
 			bindListActions();
-			serverPage('${apiurl}/sample/listSample');
+			serverPage();
 			
 			$("#yy-btn-set-price").bind('click', setPrice);
 			$("#yy-btn-accept-price").bind('click', acceptPrice);
@@ -534,21 +534,8 @@
 						if(freshLoad != null) {
 							layer.close(freshLoad);
 						}
-						
-						json.recordsFiltered=json.total;
-						json.recordsTotal=json.total;
-						json.total=json.total;
-						//json.totalPages=1;
-						json.pageNumber=json.page;
-						_pageNumber = json.pageNumber-1;
-						if(json.flag==0){
-							return json.obj == null ? [] : json.obj;
-						}else if (json.flag==-10) {
-							window.location = '${ctx}/logout';
-							return [];
-						}else{
-							return json.obj == null ? [] : json.obj;
-						}
+						_pageNumber = json.pageNumber;
+						return json.records == null ? [] : json.records;
 					}
 				},
 				"initComplete": function(settings, json) {
