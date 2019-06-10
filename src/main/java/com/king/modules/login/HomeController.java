@@ -52,11 +52,6 @@ public class HomeController {
 	public String view(Model model,HttpServletRequest request) {
 		UserEntity user = ShiroUser.getCurrentUserEntity();
 		if (user != null) {
-			String sysId = "";
-			if ("".equals(sysId)) {
-				sysId = "2c90e4d74917c191014917c3cf1d0000";
-			}
-
 			List<TreeNode> tree = null;
 
 			Subject subject = SecurityUtils.getSubject();
@@ -69,14 +64,13 @@ public class HomeController {
 				subject.getSession().setAttribute("userid", user.getUuid());
 			}
 
-			FuncEntity funcEntity = funcService.getOne(sysId);
 			model.addAttribute("functreeList", tree);
 			// model.addAttribute("countModule", getCount(tree));
 			model.addAttribute("user", user);
 			model.addAttribute("yy_logo_imge", ParameterUtil.getParamValue("yy_logo_imge", ""));
 			model.addAttribute("yy_logo_title", ParameterUtil.getParamValue("yy_logo_title", ""));
 			model.addAttribute("yy_footer_title", ParameterUtil.getParamValue("yy_footer_title", "2015 © 版权所有."));
-			model.addAttribute("systitle", funcEntity.getFunc_name());
+			model.addAttribute("systitle", ParameterUtil.getParamValue("yy_title", "后台管理系统"));
 
 			HttpSession httpSession = request.getSession(true);
 			OrgEntity station=(OrgEntity) httpSession.getAttribute(Constants.CURRENTSTATION);

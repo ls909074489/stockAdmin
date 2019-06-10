@@ -58,10 +58,9 @@ public class ShiroRealm extends AuthorizingRealm implements Serializable {
 		UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
 		UserEntity user = null;//userDao.findByLoginname(token.getUsername());
 		StringBuffer sql=new StringBuffer();
-		sql.append("select u.*,o.org_name orgname,d.name deptname from ");
+		sql.append("select u.*,o.org_name orgname from ");
 		sql.append("(select t_u.* from yy_user t_u where t_u.status='1' and t_u.loginname='").append(token.getUsername()).append("' ) u ");
 		sql.append("left join yy_org o on o.uuid=u.orgid ");
-		sql.append("left join yy_department d on d.uuid=u.deptid ");
 		sql.append("where u.status='1'");
 		try {
 			List<UserEntity> userList=dbDao.find(UserEntity.class, sql.toString());
