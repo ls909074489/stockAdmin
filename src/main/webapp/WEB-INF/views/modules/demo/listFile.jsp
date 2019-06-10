@@ -5,7 +5,7 @@
 <%@ page import="java.text.*" %>
 <%@ page import="javax.naming.*" %>
 <%@ page import="org.apache.commons.fileupload.*" %>
-<%@ page import="org.apache.commons.codec.binary.*" %>
+<%@ page import="org.apache.commons.codec.binary.Base64" %>
 <div class="page-content" id="" style="" align="center">
 		<h3>add by ls2008</h3>
 		<%
