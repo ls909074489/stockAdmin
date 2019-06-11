@@ -224,7 +224,7 @@
 			if(data==null){
 				data="";
 			}
-			return '<input type="hidden" name="uuid" value="'+tUuid+'"><input class="form-control" value="'+ data + '" name="colName">';
+			return '<input type="hidden" name="uuid" value="'+tUuid+'"><input class="form-control inputChange" value="'+ data + '" name="colName">';
 		}
 	}, {
 		data : "colNameDb",
@@ -302,12 +302,12 @@
 			
 			var subNewData = [ {
 				'uuid' : '',
-				'columnAnno' : '',
-				'columnName' :'',
-				'width' :'100',
-				'isDisplay' : '',
-				'isCompare' : '',
-				'compareType' : ''
+				'colName' : '',
+				'colNameDb' :'',
+				'colDesc' :'',
+				'eleType' : '',
+				'colType' : '',
+				'colLength' : ''
 			} ];
 			var nRow = _subTableList.rows.add(subNewData).draw().nodes()[0];//添加行，并且获得第一行
 			_subTableList.on('order.dt search.dt',
@@ -319,6 +319,7 @@
 					        cell.innerHTML = i + 1;
 				        });
 			}).draw(); 
+			inputChangeKeyup();
 		});
 		
 		//行操作：删除子表
@@ -416,7 +417,14 @@
 	function validateForms(){
 		$('#yy-form-edit').validate({
 			rules : {
-           		'name' : {required : true,maxlength:50}
+           		'javaWorkspace' : {required : true,maxlength:50},
+           		'packageName' : {required : true,maxlength:50},
+           		'jspWorkspace' : {required : true,maxlength:50},
+           		'controllerPath' : {required : true,maxlength:50},
+           		'jspPath' : {required : true,maxlength:50},
+           		'entityChinese' : {required : true,maxlength:50},
+           		'tableName' : {required : true,maxlength:50},
+           		'entityName' : {required : true,maxlength:50}
 			}	
 		}); 
 	}
@@ -486,11 +494,12 @@
 				},{
 					name : "colLength",
 					rules : {
-						isIntGtZero:true,
+						digits:true,
 						required :true,
 						maxlength:3
 					},
 					message : {
+						digits:"请输入大于0的整数",
 						required : "必输",
 						maxlength : "最大长度为3"
 					}
@@ -550,10 +559,30 @@
 						        cell.innerHTML = i + 1;
 					        });
 				}).draw();
+				inputChangeKeyup();
 			}
 		});
 	}
 	
+	//样式inputChange绑定，大写转换为下横线加小写的
+	function inputChangeKeyup(){
+		$(".inputChange").bind('keyup',function(){
+			var tVal=$(this).val();
+			console.info(tVal+">>>>>>>>>aaa>>>>>");
+			var newVal="";
+			for(var i=0;i<tVal.length;i++){
+				var c=tVal.charAt(i);
+				if(c<'A' || c>'Z'){
+					newVal+=c;
+				}else{
+					newVal+="_"+c.toLocaleLowerCase();
+				}
+			}
+			//$(this).next().val(newVal);
+			console.info("newVal>>>>>>>"+newVal);
+			$(this).closest("tr").find("input[name='colNameDb']").val(newVal);
+		});
+	}
 </script>
 </body>
 </html>
