@@ -1,7 +1,5 @@
 package com.king.modules.sys.mappingtable;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,8 +28,4 @@ public class MappingTableService extends BaseServiceImpl<MappingTableEntity, Str
 		return dao;
 	}
 	
-	
-	public List<MappingTableEntity> findByOrgId(String orgId){
-		return dao.findByOrgId(orgId);
-	}
 }

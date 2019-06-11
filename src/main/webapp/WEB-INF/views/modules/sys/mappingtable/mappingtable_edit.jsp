@@ -76,7 +76,7 @@
 				<div class="row">
 					<div class="col-md-8">
 						<div class="form-group">
-							<label class="control-label col-md-4">controller访问路径(@RequestMapping(value = "/xx/xxx"))</label>
+							<label class="control-label col-md-4">@RequestMapping(value = "/xx/xx")</label>
 							<div class="col-md-8">
 								<input name="controllerPath" type="text" class="form-control" value="/bd/test">
 							</div>
@@ -86,7 +86,7 @@
 				<div class="row">
 					<div class="col-md-8">
 						<div class="form-group">
-							<label class="control-label col-md-4">jsp上级包名(return "xx/xxx/xxxxxx";)</label>
+							<label class="control-label col-md-4">页面路径(return "xx/xx";)</label>
 							<div class="col-md-8">
 								<input id="jspPath" name="jspPath" type="text" class="form-control" value="csc/bd">
 							</div>
@@ -174,8 +174,12 @@
 										class="group-checkable" data-set="#yy-table-sublist .checkboxes" /></th> -->
 									<th>序号</th>	
 									<th>操作</th>	
-									<th>键</th>
-									<th>值</th>
+									<th>实体字段</th>
+									<th>数据库字段</th>
+									<th>备注</th>
+									<th>列表是否显示</th>
+									<th>页面显示方式</th>
+									<th>字段长度</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -208,7 +212,7 @@
 		width : "50",
 		render :YYDataTableUtils.renderRemoveActionCol
 	}, {
-		data : "mapkey",
+		data : "colName",
 		orderable : false,
 		className : "center",
 		width : "80",
@@ -220,10 +224,10 @@
 			if(data==null){
 				data="";
 			}
-			return '<input type="hidden" name="uuid" value="'+tUuid+'"><input class="form-control" value="'+ data + '" name="mapkey">';
+			return '<input type="hidden" name="uuid" value="'+tUuid+'"><input class="form-control" value="'+ data + '" name="colName">';
 		}
 	}, {
-		data : "mapval",
+		data : "colNameDb",
 		orderable : false,
 		className : "center",
 		width : "80",
@@ -231,9 +235,48 @@
 			if(data==null){
 				data="";
 			}
-			return '<input class="form-control" value="'+ data + '" name="mapval">';
+			return '<input class="form-control" value="'+ data + '" name="colNameDb">';
 		}
-	}];
+	}, {
+		data : "colDesc",
+		orderable : false,
+		className : "center",
+		width : "80",
+		render : function(data, type, full) {
+			if(data==null){
+				data="";
+			}
+			return '<input class="form-control" value="'+ data + '" name="colDesc">';
+		}
+	}, {
+		data : "eleType",
+		orderable : false,
+		className : "center",
+		width : "80",
+		render : function(data, type, full) {
+			return creSelectStr('eleTypeEnum','eleType',data,false);
+		}
+	}, {
+		data : "colType",
+		orderable : false,
+		className : "center",
+		width : "80",
+		render : function(data, type, full) {
+			return creSelectStr('colTypeEnum','colType',data,false);
+		}
+	}, {
+		data : "colLength",
+		orderable : false,
+		className : "center",
+		width : "80",
+		render : function(data, type, full) {
+			if(data==null){
+				data="";
+			}
+			return '<input class="form-control" value="'+ data + '" name="colLength">';
+		}
+	}
+	];
 	
 
 	$(document).ready(function() {
@@ -391,7 +434,7 @@
 	//表体校验
 	function getRowValidator() {
 		return [{
-					name : "mapkey",
+					name : "colName",
 					rules : {
 						required :true,
 						maxlength:50
@@ -401,7 +444,7 @@
 						maxlength : "最大长度为100"
 					}
 				},{
-					name : "mapval",
+					name : "colNameDb",
 					rules : {
 						required :true,
 						maxlength:50
@@ -409,6 +452,47 @@
 					message : {
 						required : "必输",
 						maxlength : "最大长度为100"
+					}
+				},{
+					name : "colDesc",
+					rules : {
+						required :true,
+						maxlength:50
+					},
+					message : {
+						required : "必输",
+						maxlength : "最大长度为100"
+					}
+				},{
+					name : "eleType",
+					rules : {
+						required :true,
+						maxlength:50
+					},
+					message : {
+						required : "必输",
+						maxlength : "最大长度为100"
+					}
+				},{
+					name : "colType",
+					rules : {
+						required :true,
+						maxlength:50
+					},
+					message : {
+						required : "必输",
+						maxlength : "最大长度为100"
+					}
+				},{
+					name : "colLength",
+					rules : {
+						isIntGtZero:true,
+						required :true,
+						maxlength:3
+					},
+					message : {
+						required : "必输",
+						maxlength : "最大长度为3"
 					}
 				}
 		];

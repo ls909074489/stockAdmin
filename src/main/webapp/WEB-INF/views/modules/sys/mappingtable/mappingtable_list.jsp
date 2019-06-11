@@ -100,7 +100,7 @@
 							render : YYDataTableUtils.renderActionCol,
 							width : "50"
 						},{
-							data : "name",
+							data : "templateName",
 							width : "50%",
 							className : "center",
 							orderable : true

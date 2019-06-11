@@ -28,14 +28,6 @@ public class MappingTableSubEntity extends BaseEntity {
 	@JoinColumn(name = "mainid")
 	private MappingTableEntity main;
 	
-//	@MetaData(value = "键")
-//	@Column(length = 100)
-//	private String mapkey;
-//
-//	@MetaData(value = "值")
-//	@Column(length = 100)
-//	private String mapval;
-	
 	@MetaData(value = "")
 	@Column(length = 100)
 	private String colName;

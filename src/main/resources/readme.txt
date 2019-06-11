@@ -16,3 +16,41 @@ layer.js
 弹出框背景 #000 改为  #00000030
 
 
+#######################################################################################################
+		render : function(data, type, full) {
+		       return YYDataUtils.getEnumName("sys_sex", data);
+		}
+		
+		
+#######################################################################################################		
+		render : function(data, type, full) {
+			return creSelectStr('eleTypeEnum','grade',data,false)+'<input type="hidden" name="uuid" value="'+full.uuid+'">';
+		}
+		
+			//创建下拉框(新)
+	function creSelectStr(fype, fieldname,value,disabled){
+		var selectStr = '';
+		if(disabled){
+			selectStr = selectStr + '<fieldset disabled>';
+		}
+		selectStr = selectStr +'<select class="yy-input-enumdata form-control" id="'+fieldname+'" reallyname="'+fieldname+
+					'" name="'+fieldname+'" data-enum-group="'+fype+'">';
+		var enumMap = YYDataUtils.getEnumMap();
+		var enumdatas = enumMap[fype];
+		if(enumdatas){
+			selectStr = selectStr + '<option value="">&nbsp;</option>';
+			for (i = 0; i < enumdatas.length; i++) {
+				if(enumdatas[i].enumdatakey == value){ 
+					selectStr = selectStr + "<option selected='selected' value='" + enumdatas[i].enumdatakey + "'>" + enumdatas[i].enumdataname + "</option>";
+				} else {
+					selectStr = selectStr + "<option value='" + enumdatas[i].enumdatakey + "'>" + enumdatas[i].enumdataname + "</option>";
+				}
+			}
+		}
+		selectStr = selectStr +'</select>';
+		if(disabled){
+			selectStr = selectStr + '</fieldset>';
+		}
+		return selectStr;
+	}
+#######################################################################################################s
