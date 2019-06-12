@@ -15,7 +15,9 @@ table.dataTable tbody tr
 layer.js
 弹出框背景 #000 改为  #00000030
 
+##############################配置附件的虚拟路径#########################################################################
 
+<Context reloadable="true" docBase="D:/lsinstall/apache-tomcat-8.0.33-jlbc/webapps/wtpwebapps/zsdxuploadfiles/qrcode/temp" path="/stockAdmin/jlbcuploadfiles/qrcode/temp"/>
 #######################################################################################################
 		render : function(data, type, full) {
 		       return YYDataUtils.getEnumName("sys_sex", data);

@@ -1,0 +1,114 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:set var="ctx" value="${pageContext.request.contextPath}" />
+<c:set var="serviceurl" value="${ctx}#serviceurl#" />
+<html>
+<head>
+<title>#title#</title>
+</head>
+<body>
+
+	#listContent#
+	
+	<script type="text/javascript">
+		var _isNumber=true,_columnNum;
+		var _tableList, _queryData;
+		
+		#tableCols#
+
+		$(document).ready(function() {
+			_tableList = $('#yy-table-list').DataTable({
+				"columns" : _tableCols,
+				"order" : [],
+				"processing" : true,
+				"searching" : false,
+				"serverSide" : true,
+				"showRowNumber" : true,
+				"createdRow" : renderRowAction,
+				"pagingType" : "bootstrap_full_number",
+				"paging" : true,
+				"fnDrawCallback" : fnDrawCallback,
+				"ajax" : {
+					"url" : '${serviceurl}/query',
+					"type" : 'POST',
+					"data" : function(d) {
+						d.orderby = getOrderbyParam(d);
+						if (_queryData == null)
+							return;
+						$.each(_queryData, function(index) {
+							if (this['value'] == null || this['value'] == "")
+								return;
+							d[this['name']] = this['value'];
+						});
+					},
+					"dataSrc" : function(json) {
+						_pageNumber = json.pageNumber;
+						return json.records == null ? [] : json.records;
+					}
+				}
+			});
+			
+			$("#yy-btn-search").bind('click', onQuery);
+			$("#yy-btn-clear").bind('click', resetSearchForm);
+		});
+	
+		//服务器分页，排序
+		function getOrderbyParam(d) {
+			var orderby = d.order[0];
+			if (orderby != null && null != _tableCols) {
+				var dir = orderby.dir;
+				var orderName = _tableCols[orderby.column].data;
+				return orderName + "@" + dir;
+			}
+			return "uuid@desc";
+		}
+		//表格绘画完回调方法
+		function fnDrawCallback() {
+			//序列号
+			if (_isNumber) {
+				var pageLength = $('select[name="yy-table-list_length"]').val() || 10;
+				_columnNum = _columnNum || 0;
+				_tableList.column(_columnNum).nodes().each(function(cell, i) {
+					cell.innerHTML = i + 1 + (_pageNumber) * pageLength;
+				});
+			}
+		}
+		
+		//快速查询
+		function onQuery() {
+			doBeforeQuery();
+			//获取查询数据，在表格刷新的时候自动提交到后台
+			_queryData = $("#yy-form-query").serializeArray();
+			onRefresh();
+		}
+		
+		renderRowAction = function(nRow, aData, iDataIndex) {
+			$(nRow).dblclick(function() {
+				onSelect(aData, iDataIndex, nRow);
+			});
+			$(nRow).on('click', '.btn-success', function(e) {
+				onSelect(aData, iDataIndex, nRow);
+			});
+		}
+		
+			
+		//清楚搜索数据
+		function resetSearchForm() {
+			$('#yy-form-query')[0].reset();
+		}
+		
+		//点击选择
+		function onSelect(aData, iDataIndex, nRow){
+			var _method='${callBackMethod}';
+			if(_method){
+	        	eval(_method+"(aData)"); 
+			}else{
+				window.parent.callBackSelect(aData);
+			}
+			var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+			parent.layer.close(index); //再执行关闭 
+		 }
+	</script>
+</body>
+</html>

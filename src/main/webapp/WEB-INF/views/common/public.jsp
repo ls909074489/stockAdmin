@@ -147,7 +147,7 @@ function creSelectStr(fype, fieldname,value,disabled){
 	if(disabled){
 		selectStr = selectStr + '<fieldset disabled>';
 	}
-	selectStr = selectStr +'<select class="yy-input-enumdata form-control" id="'+fieldname+'" reallyname="'+fieldname+'" data-enum-group="'+fype+'">';
+	selectStr = selectStr +'<select class="yy-input-enumdata form-control" id="'+fieldname+'" reallyname="'+fieldname+'" name="'+fieldname+'" data-enum-group="'+fype+'">';
 	var enumMap = YYDataUtils.getEnumMap();
 	var enumdatas = enumMap[fype];
 	if(enumdatas){

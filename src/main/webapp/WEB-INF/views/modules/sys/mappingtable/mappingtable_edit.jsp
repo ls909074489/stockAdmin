@@ -23,15 +23,29 @@
 		</div>
 		<div>
 			<form id="yy-form-edit" class="form-horizontal yy-form-edit">
-				<input name="uuid" id="uuid" type="hidden"/>
+				<input name="uuid" id="uuid" type="hidden" value="${entity.uuid}"/>
+				<div class="row">
+					<div class="col-md-8">
+						<div class="form-group">
+							<label class="control-label col-md-4">模板名称</label>
+							<div class="col-md-8" id="" style="float: left;">
+								<input name="templateName" id="templateName" type="text" class="form-control" value="${entity.templateName}">
+							</div>
+						</div>
+					</div>
+					<div class="col-md-1">
+					</div>
+				</div>
 				<div class="row">
 					<div class="col-md-8">
 						<div class="form-group">
 							<label class="control-label col-md-4">模板类型</label>
 							<div class="col-md-8">
-								<label><input type="radio" name="templateType" value="1" checked="checked"/>普通列表（前端分页）</label>
-								<label><input type="radio" name="templateType" value="3"/>普通列表（服务器分页）</label>
-								<label><input type="radio" name="templateType" value="2"/>树状结构</label>
+								<select name="templateType"  class="form-control">
+									<option value="1">普通列表（前端分页）</option>
+									<option value="3">普通列表（服务器分页）</option>
+									<option value="2">树状结构</option>
+								</select>
 							</div>
 						</div>
 					</div>
@@ -41,7 +55,7 @@
 						<div class="form-group">
 							<label class="control-label col-md-4">java文件路径</label>
 							<div class="col-md-8" id="" style="float: left;">
-								<input name="javaWorkspace" id="packageNamePath" type="text" class="form-control" value="">
+								<input name="javaWorkspace" id="packageNamePath" type="text" class="form-control" value="${entity.javaWorkspace}">
 							</div>
 						</div>
 					</div>
@@ -53,7 +67,7 @@
 						<div class="form-group">
 							<label class="control-label col-md-4">java上级包名</label>
 							<div class="col-md-8">
-								<input name="packageName" id="packageName" type="text" class="form-control" value="com.yy.modules.demo.temp">
+								<input name="packageName" id="packageName" type="text" class="form-control" value="${entity.packageName}">
 							</div>
 						</div>
 					</div>
@@ -66,7 +80,7 @@
 						<div class="form-group">
 							<label class="control-label col-md-4">页面文件路径</label>
 							<div class="col-md-8" id="" style="float: left;">
-								<input name="jspWorkspace" id="jspPathPath" type="text" class="form-control" value="">
+								<input name="jspWorkspace" id="jspWorkspace" type="text" class="form-control" value="${entity.jspWorkspace}">
 							</div>
 						</div>
 					</div>
@@ -78,7 +92,7 @@
 						<div class="form-group">
 							<label class="control-label col-md-4">@RequestMapping(value = "/xx/xx")</label>
 							<div class="col-md-8">
-								<input name="controllerPath" type="text" class="form-control" value="/bd/test">
+								<input name="controllerPath" type="text" class="form-control" value="${entity.controllerPath}">
 							</div>
 						</div>
 					</div>
@@ -88,7 +102,7 @@
 						<div class="form-group">
 							<label class="control-label col-md-4">页面路径(return "xx/xx";)</label>
 							<div class="col-md-8">
-								<input id="jspPath" name="jspPath" type="text" class="form-control" value="csc/bd">
+								<input id="jspPath" name="jspPath" type="text" class="form-control" value="${entity.jspPath}">
 							</div>
 						</div>
 					</div>
@@ -102,7 +116,7 @@
 						<div class="form-group">
 							<label class="control-label col-md-4">实体的用途名</label>
 							<div class="col-md-8">
-								<input name="entityChinese" type="text" class="form-control" value="物料类型" style="">
+								<input name="entityChinese" type="text" class="form-control" value="${entity.entityChinese}">
 							</div>
 						</div>
 					</div>
@@ -112,7 +126,7 @@
 						<div class="form-group">
 							<label class="control-label col-md-4">生成表的名字</label>
 							<div class="col-md-8">
-								<input name="tableName" type="text" class="form-control" value="yy_test" style="">
+								<input name="tableName" type="text" class="form-control" value="${entity.tableName}">
 							</div>
 						</div>
 					</div>
@@ -122,7 +136,7 @@
 						<div class="form-group">
 							<label class="control-label col-md-4">实体的名字</label>
 							<div class="col-md-8">
-								<input name="entityName" type="text" class="form-control" value="TestEntity" style="">
+								<input name="entityName" type="text" class="form-control" value="${entity.entityName}">
 							</div>
 						</div>
 					</div>
@@ -351,12 +365,9 @@
 	function setValue(){
 		if('${openstate}'=='add'){
 			//$("input[name='billdate']").val('${billdate}');
-			$("#stationUuid").val('${currentStation.uuid}');
-			$("#stationName").val('${currentStation.name}');
 		}else if('${openstate}'=='edit'){
-			$("input[name='uuid']").val('${entity.uuid}');
-			$("input[name='search_EQ_main.uuid']").val('${entity.uuid}');//子表查询时，主表id	
-			$("input[name='mainId']").val('${entity.uuid}');//子表查询时，主表id	
+			$("select[name='extendsEntity']").val('${entity.extendsEntity}');
+			$("select[name='templateType']").val('${entity.templateType}');
 			loadSubList('${entity.uuid}');
 		}
 	}
@@ -417,6 +428,7 @@
 	function validateForms(){
 		$('#yy-form-edit').validate({
 			rules : {
+				'templateName' : {required : true,maxlength:50},
            		'javaWorkspace' : {required : true,maxlength:50},
            		'packageName' : {required : true,maxlength:50},
            		'jspWorkspace' : {required : true,maxlength:50},
@@ -568,7 +580,6 @@
 	function inputChangeKeyup(){
 		$(".inputChange").bind('keyup',function(){
 			var tVal=$(this).val();
-			console.info(tVal+">>>>>>>>>aaa>>>>>");
 			var newVal="";
 			for(var i=0;i<tVal.length;i++){
 				var c=tVal.charAt(i);
@@ -579,7 +590,6 @@
 				}
 			}
 			//$(this).next().val(newVal);
-			console.info("newVal>>>>>>>"+newVal);
 			$(this).closest("tr").find("input[name='colNameDb']").val(newVal);
 		});
 	}

@@ -1,0 +1,108 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:set var="ctx" value="${pageContext.request.contextPath}" />
+<c:set var="serviceurl" value="${ctx}#serviceurl#" />
+<html>
+<head>
+<title>#title#</title>
+</head>
+<body>
+
+	<div id="leftdiv" class="ui-layout-west">
+		<div class="row-fluid">
+			<div class="row-fluid" style="padding-bottom: 5px;">
+				<div class="btn-group btn-group-solid">
+					<button id="yy-expandSon" type="button" class="btn btn-sm blue">
+						展开
+					</button>
+					<button id="yy-collapseSon" type="button" class="btn btn-sm green ">
+						折叠
+					</button>
+					<button id="yy-treeRefresh" type="button" class="btn btn-sm blue">
+						刷新
+					</button>
+				</div>
+			</div>
+			<span class="span12">
+				<input name="searchTreeNode" id="searchTreeNode" class="search-query form-control"
+				type="text" autocomplete="off" placeholder="查找">
+			</span>
+		</div>
+		<div id="ztree" class="ztree"></div>
+	</div>
+
+	<div id="maindiv" class="ui-layout-center">
+		
+	#listContent#
+
+		<jsp:include page="/WEB-INF/views/common/ztree_list_script.jsp" flush="true">   
+		 	 <jsp:param name="serviceurl" value="${serviceurl}"/>
+		     <jsp:param name="dataTreeUrl" value="${ctx}/sys/data/dataOrgTree"/>
+		     <jsp:param name="onDblClickMethod" value="selfTreeOnClick"/> 
+		     <jsp:param name="onClickMethod" value="selfTreeOnClick"/>
+		     <jsp:param name="onAsyncSuccessMethod" value="selfTreeAsyncSuc"/>
+		</jsp:include>
+	</div>
+	
+	<script type="text/javascript">
+		_isNumber = true;//服务器分页序号列
+		
+		#tableCols#
+		
+		$(document).ready(function() {
+			var yy_layout = $("body").layout({
+				applyDefaultStyles : true,
+				west : {
+					size : 250
+				}
+			});
+	
+			_queryData = $("#yy-form-query").serializeArray();
+	
+			serverPage(null);
+			
+		});
+	
+		// _zTree 点击触发的事件
+		function selfTreeOnClick(event, treeId, treeNode) {
+			if (!_isSelected) {
+				alert("编辑状态，不能操作节点。");
+				_zTree.selectNode(_selectedId);
+				return false;
+			}
+			_selectedId = treeNode;
+			_zTree.selectNode(treeNode);
+			showList(treeNode);
+		}
+		
+		//_zTree 加载成功事件 
+		function selfTreeAsyncSuc(event, treeId, treeNode,msg){
+		}
+		
+		//界面初始化
+		function showList(treeNode) {
+			$("#search_LIKE_org_nodepath").val(treeNode.nodeData.nodepath);
+			$("#currentOrgid").val(treeNode.id);
+			onQuery();
+		}
+	
+		//ui：表格前两列宽度，如果是yy-table-x的不控制
+		tabWidthBy2Column();
+		
+		function tabWidthBy2Column() {
+			var tab = $("#yy-table-list").attr("class") || "";
+			if(tab==""){return;};
+			tab = tab.indexOf("yy-table-x")!=-1?true:false;
+			if(!tab) {
+				$("#yy-table-list thead tr").find("th:eq(0)").css("width", "50px");
+				$("#yy-table-list thead tr").find("th:eq(1)").css("width", "80px");
+				$("#yy-table-list thead tr").find("th:eq(2)").css("width", "80px");
+				$("#yy-table-sublist thead tr").find("th:eq(0)").css("width", "50px");
+				$("#yy-table-sublist thead tr").find("th:eq(1)").css("width", "80px");
+				$("#yy-table-sublist thead tr").find("th:eq(2)").css("width", "80px");
+			}
+		}
+	</script>
+</body>
+</html>
