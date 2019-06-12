@@ -50,10 +50,10 @@
 				</div>
 				<div class="col-md-4">
 					<div class="form-group">
-						<label class="control-label col-md-4 required">设备类型</label>
+						<label class="control-label col-md-4 required">物料分类</label>
 						<div class="col-md-8">
 							<select class="yy-input-enumdata form-control" id="tid" 
-								name="tid" data-enum-group="DeviceType"></select>
+								name="tid" data-enum-group="MaterialClass"></select>
 						</div>
 					</div>
 				</div>
@@ -97,10 +97,10 @@
 			<div class="row">
 				<div class="col-md-4">
 					<div class="form-group">
-						<label class="control-label col-md-4 required">设备状态</label>
+						<label class="control-label col-md-4 required">工序</label>
 						<div class="col-md-8">
 							<select class="yy-input-enumdata form-control" id="deviceStatus" 
-								name="deviceStatus" data-enum-group="DeviceStatus"></select>
+								name="deviceStatus" data-enum-group="WorkingProcedure"></select>
 						</div>
 					</div>
 				</div>
@@ -435,7 +435,7 @@
 					dataType : "json",
 					success : function(data) {
 						console.info(data);
-						$("#barcodeImgId").attr("src","${ctx}/jlbcuploadfiles/qrcode/temp/"+data.msg);
+						$("#barcodeImgId").attr("src","${ctx}/"+data.msg);
 						layer.close(barcodeLoading);
 						if (data.success) {
 							YYUI.succMsg(YYMsg.alertMsg('sys-success-todo',['生成设备条码']));

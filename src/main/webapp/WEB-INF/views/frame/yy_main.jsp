@@ -550,7 +550,10 @@ nav.page-tabs {
 			loadAlertMsg();
 			// loadAdmin();
 			showUserMenu(); //加载快捷菜单
-			// connect();
+			
+			showNewMsg("fffffffffffffffffffffffffffff");
+			
+			connect();
 			//测试还有多少的缓存
 			//if(window.localStorage)
 			//{  var aaaaa = 1024 * 1024 * 5 - unescape(encodeURIComponent(JSON.stringify(localStorage))).length;

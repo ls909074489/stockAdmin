@@ -598,8 +598,8 @@ nav.page-tabs {
 						 			}
 					 			var $toast = toastr['info']("<div style='height:200px;background:red;'>您有"+data.obj+"条索样记录超过24小时未处理，请尽快处理</div>", '系统消息');
 							}else if (data.flag==-10) {
-								YYUI.promMsg('会话超时，请重新的登录!');
-								window.location = '${ctx}/logout';
+								//YYUI.promMsg('会话超时，请重新的登录!');
+								//window.location = '${ctx}/logout';
 							} else {
 								console.info(data);
 							}

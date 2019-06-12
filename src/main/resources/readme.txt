@@ -17,7 +17,10 @@ layer.js
 
 ##############################配置附件的虚拟路径#########################################################################
 
-<Context reloadable="true" docBase="D:/lsinstall/apache-tomcat-8.0.33-jlbc/webapps/wtpwebapps/zsdxuploadfiles/qrcode/temp" path="/stockAdmin/jlbcuploadfiles/qrcode/temp"/>
+<Context reloadable="true" docBase="D:/lsinstall/apache-tomcat-8.0.33-jlbc/webapps/wtpwebapps/zsdxuploadfiles/qrcode/temp" 
+path="/stockAdmin/jlbcuploadfiles/qrcode/temp"/>
+
+
 #######################################################################################################
 		render : function(data, type, full) {
 		       return YYDataUtils.getEnumName("sys_sex", data);

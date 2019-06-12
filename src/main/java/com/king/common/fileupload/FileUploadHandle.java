@@ -9,7 +9,9 @@ public abstract class FileUploadHandle {
 	// protected String attaPath;
 //	public String attaPath = "C:\\yyuploadfiles";
 //	
-	public static String attaFileName = "zsdxuploadfiles";
+	public static String attaFileName = "uploadfiles";
+	
+	public static String qrcodeFileName = "uploadfiles"+"\\qrcode";
 
 	public abstract boolean readFile(String path, String fileName, OutputStream outputStream);
 

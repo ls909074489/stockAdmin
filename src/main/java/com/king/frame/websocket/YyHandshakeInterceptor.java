@@ -18,18 +18,19 @@ public class YyHandshakeInterceptor extends HttpSessionHandshakeInterceptor {
 	@Override
 	public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
 			Map<String, Object> attribute) throws Exception {
-		// System.out.println("Before Handshake");
-		// System.out.println("enter the beforeHandshake");
+		System.out.println("Before Handshake");
+		System.out.println("enter the beforeHandshake");
 		if (request instanceof ServerHttpRequest) {
 			ServletServerHttpRequest servletRequest = (ServletServerHttpRequest) request;
 			HttpSession session = servletRequest.getServletRequest().getSession(false);
 			if (session != null) {
-				// String userName = (String) session.getAttribute(YyConstants.SESSION_USERNAME);
-				// System.out.println("userName+++++++++++++" + userName);
-				// attribute.put(YyConstants.WEBSOCKET_USERNAME, userName);
+				 String userName = (String) session.getAttribute(YyConstants.SESSION_USERNAME);
+				 System.out.println("userName+++++++++++++" + userName);
+				 attribute.put(YyConstants.WEBSOCKET_USERNAME, userName);
 				ShiroUser user = (ShiroUser) SecurityUtils.getSubject().getPrincipal();
 				if (user != null) {
-					// attribute.put(YyConstants.WEBSOCKET_USERNAME, user.getSchool().getUuid());
+					System.out.println(user.getId()+">>>>>>>>>>>>>>>>"+user.getCurrentUserEntity().getUuid());
+					 attribute.put(YyConstants.WEBSOCKET_USERNAME, user.getCurrentUserEntity().getUuid());
 				}
 			}
 		}
@@ -40,7 +41,7 @@ public class YyHandshakeInterceptor extends HttpSessionHandshakeInterceptor {
 	@Override
 	public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
 			Exception ex) {
-		// System.out.println("After Handshake");
+		System.out.println("After Handshake");
 		super.afterHandshake(request, response, wsHandler, ex);
 	}
 

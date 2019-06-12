@@ -135,7 +135,7 @@ public class DeviceInfoService extends BaseServiceImpl<DeviceInfoEntity,String> 
 		}
 		try {
 			if(!StringUtils.isEmpty(entity.getBarcode())){
-				String qrcodePath=FileUploadHandle.attaFileName+"\\qrcode\\"+DateUtil.getDate()+"\\";
+				String qrcodePath=FileUploadHandle.qrcodeFileName+"\\"+DateUtil.getDate()+"\\";
 				String qrcodeName=QRCodeUtil.encode(entity.getBarcode(), ParameterUtil.getParamValue("UploadFilePath", "E:\\project\\")+qrcodePath, true);
 				entity.setBarcodeUrl(qrcodePath+qrcodeName);
 			}else{
