@@ -13,10 +13,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.util.StringUtils;
-
 import com.king.modules.sys.mappingtable.MappingTableEntity;
+import com.king.modules.sys.mappingtable.MappingTableSubEntity;
 
 
 /**
@@ -45,104 +44,104 @@ public class BeanUtils {
 	public static void main(String[] args) throws Exception{
 		MappingTableEntity info=new MappingTableEntity();
 		info.setEntityName("AdddEntity");
-//		info.setExtendEntityName("BaseEntity");
-//		info.setPackagePath("com.yy.modules.ver.auditCols");
-//		info.setEntityChinese("测试111");
-//		info.setAuthor("ls2008");
-//		info.setControllerPath("/ver/test1");
-//		info.setJspPath("modules/ver/test1");//jsp路径
-//		info.setGenType(EntityInfo.GENTYPE_MAINSON_SERVERPAGE);
-//		
+		info.setExtendsEntity("BaseEntity");
+		info.setPackageName("com.yy.modules.ver.auditCols");
+		info.setEntityChinese("测试111");
+		info.setAuthor("ls2008");
+		info.setControllerPath("/ver/test1");
+		info.setJspPath("modules/ver/test1");//jsp路径
+		info.setTemplateType(EntityInfo.GENTYPE_MAINSON_SERVERPAGE);
+		
 		
 		
 		//生成实体==================================================================================
-		List<ColInfo> list=new ArrayList<ColInfo>();
-		ColInfo col=new ColInfo();
+		List<MappingTableSubEntity> list=new ArrayList<MappingTableSubEntity>();
+		MappingTableSubEntity col=new MappingTableSubEntity();
 		col.setColName("name");
 		col.setColType("String");
-		col.setColLenth(50);
-		col.setColAnno("名称");
+		col.setColLength(50);
+		col.setColDesc("名称");
 		col.setRequired(true);
-		col.setEleType(ColInfo.EleType.TEXT);
+		col.setEleType(MappingTableSubEntity.EleType.TEXT);
 		list.add(col);
-		col=new ColInfo();
+		col=new MappingTableSubEntity();
 		col.setColName("code");
 		col.setColType("String");
-		col.setColLenth(50);
-		col.setColAnno("编码");
+		col.setColLength(50);
+		col.setColDesc("编码");
 		col.setRequired(true);
-		col.setEleType(ColInfo.EleType.TEXT);
+		col.setEleType(MappingTableSubEntity.EleType.TEXT);
 		list.add(col);
-		col=new ColInfo();
+		col=new MappingTableSubEntity();
 		col.setColName("datecols");
 		col.setColType("String");
-		col.setColLenth(50);
-		col.setColAnno("日期");
-		col.setEleType(ColInfo.EleType.DATE);
+		col.setColLength(50);
+		col.setColDesc("日期");
+		col.setEleType(MappingTableSubEntity.EleType.DATE);
 		list.add(col);
-		col=new ColInfo();
+		col=new MappingTableSubEntity();
 		col.setColName("timecols");
 		col.setColType("String");
-		col.setColLenth(50);
-		col.setColAnno("日期时间");
-		col.setEleType(ColInfo.EleType.DATETIME);
+		col.setColLength(50);
+		col.setColDesc("日期时间");
+		col.setEleType(MappingTableSubEntity.EleType.DATETIME);
 		list.add(col);
-		col=new ColInfo();
+		col=new MappingTableSubEntity();
 		col.setColName("isDisplay");
 		col.setColType("String");
-		col.setColLenth(1);
-		col.setColAnno("是否显示");
-		col.setEleType(ColInfo.EleType.REF);
+		col.setColLength(1);
+		col.setColDesc("是否显示");
+		col.setEleType(MappingTableSubEntity.EleType.REF);
 		col.setColCount(2);
 		list.add(col);
-		col=new ColInfo();
+		col=new MappingTableSubEntity();
 		col.setColName("type");
 		col.setColType("String");
-		col.setColLenth(36);
-		col.setColAnno("类别");
-		col.setEleType(ColInfo.EleType.SELECT);
+		col.setColLength(36);
+		col.setColDesc("类别");
+		col.setEleType(MappingTableSubEntity.EleType.SELECT);
 		list.add(col);
-		col=new ColInfo();
+		col=new MappingTableSubEntity();
 		col.setColName("type111");
 		col.setColType("String");
-		col.setColLenth(36);
-		col.setColAnno("备注");
-		col.setEleType(ColInfo.EleType.TEXTAREA);
+		col.setColLength(36);
+		col.setColDesc("备注");
+		col.setEleType(MappingTableSubEntity.EleType.TEXTAREA);
 		col.setColCount(3);
 		list.add(col);
 		
 		//子表=======================
-		col=new ColInfo();
+		col=new MappingTableSubEntity();
 		col.setColName("subcode");
 		col.setColType("String");
-		col.setColLenth(36);
-		col.setColAnno("编码");
-		col.setEleType(ColInfo.EleType.TEXT);
+		col.setColLength(36);
+		col.setColDesc("编码");
+		col.setEleType(MappingTableSubEntity.EleType.TEXT);
 		col.setMain(false);
 		col.setColCount(1);
 		list.add(col);
-		col=new ColInfo();
+		col=new MappingTableSubEntity();
 		col.setColName("subname");
 		col.setColType("String");
-		col.setColLenth(36);
-		col.setColAnno("名称");
-		col.setEleType(ColInfo.EleType.TEXT);
+		col.setColLength(36);
+		col.setColDesc("名称");
+		col.setEleType(MappingTableSubEntity.EleType.TEXT);
 		col.setMain(false);
 		list.add(col);
-		col=new ColInfo();
+		col=new MappingTableSubEntity();
 		col.setColName("sex");
 		col.setColType("String");
-		col.setColLenth(36);
-		col.setColAnno("性别");
-		col.setEleType(ColInfo.EleType.SELECT);
+		col.setColLength(36);
+		col.setColDesc("性别");
+		col.setEleType(MappingTableSubEntity.EleType.SELECT);
 		col.setMain(false);
 		list.add(col);
-		col=new ColInfo();
+		col=new MappingTableSubEntity();
 		col.setColName("birthdate");
 		col.setColType("Date");
-		col.setColLenth(36);
-		col.setColAnno("日期");
-		col.setEleType(ColInfo.EleType.DATE);
+		col.setColLength(36);
+		col.setColDesc("日期");
+		col.setEleType(MappingTableSubEntity.EleType.DATE);
 		col.setMain(false);
 		col.setColCount(1);
 		list.add(col);
@@ -152,10 +151,10 @@ public class BeanUtils {
 		createCode(info, list);
 	}
 	
-	public static void createCode(MappingTableEntity info,List<ColInfo> list) throws Exception{
-		List<ColInfo> mainList=new ArrayList<ColInfo>();
-		List<ColInfo> subList=new ArrayList<ColInfo>();
-		for(ColInfo c:list){
+	public static void createCode(MappingTableEntity info,List<MappingTableSubEntity> list) throws Exception{
+		List<MappingTableSubEntity> mainList=new ArrayList<MappingTableSubEntity>();
+		List<MappingTableSubEntity> subList=new ArrayList<MappingTableSubEntity>();
+		for(MappingTableSubEntity c:list){
 			if(c.isMain()){
 				mainList.add(c);
 			}else{
@@ -215,7 +214,7 @@ public class BeanUtils {
 	}
 
 
-	public static void createEntity(MappingTableEntity info,List<ColInfo> list) throws IOException{
+	public static void createEntity(MappingTableEntity info,List<MappingTableSubEntity> list) throws IOException{
 		String entityName=getUppercaseChar(info.getEntityName());
 		String preName=entityName.toLowerCase().replace("entity", "");
 		if(!entityName.contains("Entity")){
@@ -229,7 +228,7 @@ public class BeanUtils {
 		
 		//判断需要import的类 start
 		boolean hasDate=false;
-		for(ColInfo col : list){
+		for(MappingTableSubEntity col : list){
 			if(col.getColType().equals("Date")){
 				hasDate=true;
 			}
@@ -307,14 +306,14 @@ public class BeanUtils {
 		}
 		
 		//生成变量
-		for(ColInfo col : list){
+		for(MappingTableSubEntity col : list){
 			if(col.getColType().equals("Date")){
 				sb.append("	@JsonFormat(pattern = \"yyyy-MM-dd HH:mm:ss\", timezone = \"GMT+08:00\")").append(RT_1);
 			}
-			sb.append("	@MetaData(value = \"").append(col.getColAnno()).append("\")").append(RT_1);
+			sb.append("	@MetaData(value = \"").append(col.getColDesc()).append("\")").append(RT_1);
 			if(col.getColType().equals("String")){
-				if(!StringUtils.isEmpty(col.getColLenth())){
-					sb.append("	@Column(length = ").append(col.getColLenth()).append(")").append(RT_1);
+				if(!StringUtils.isEmpty(col.getColLength())){
+					sb.append("	@Column(length = ").append(col.getColLength()).append(")").append(RT_1);
 				}else{
 					sb.append("	@Column(length = ").append(250).append(")").append(RT_1);
 				}
@@ -341,7 +340,7 @@ public class BeanUtils {
 			sb.append("		this.main = main;").append(RT_1);
 			sb.append("	}").append(RT_1);
 		}
-		for(ColInfo col : list){
+		for(MappingTableSubEntity col : list){
 			sb.append("	public ").append(col.getColType()).append(" get").append(getUppercaseChar(col.getColName())).append("() {").append(RT_1);
 			sb.append(TAB_2).append("return ").append(col.getColName()).append(";").append(RT_1).append("	}").append(RT_2);
 			sb.append("	public void set").append(getUppercaseChar(col.getColName())).append("(").append(col.getColType()).append(BLANK_1).append(col.getColName()).append(") {").append(RT_1);
@@ -815,7 +814,7 @@ public class BeanUtils {
 
     
     
-	public static void createJspList(MappingTableEntity info, List<ColInfo> list) throws IOException {
+	public static void createJspList(MappingTableEntity info, List<MappingTableSubEntity> list) throws IOException {
 		String jspPreName=info.getEntityName().toLowerCase().replace("entity", "");
 		
 		String fileName = savePath+ jspPreName + "_list.jsp";
@@ -867,7 +866,7 @@ public class BeanUtils {
 	}
     
 	
-	public static void createJspEdit(MappingTableEntity info, List<ColInfo> list) throws IOException {
+	public static void createJspEdit(MappingTableEntity info, List<MappingTableSubEntity> list) throws IOException {
 		String jspPreName=info.getEntityName().toLowerCase().replace("entity", "");
 		
 		String fileName = savePath+ jspPreName + "_edit.jsp";
@@ -898,8 +897,8 @@ public class BeanUtils {
 		sb.append("			<input name=\"uuid\" type=\"text\" class=\"hide\" value=\"${entity.uuid}\">"+RT_1);
 		
 		//创建form元素start
-		List<ColInfo> detailList=new ArrayList<ColInfo>();//明细页面显示的字段列
-		for(ColInfo col:list){
+		List<MappingTableSubEntity> detailList=new ArrayList<MappingTableSubEntity>();//明细页面显示的字段列
+		for(MappingTableSubEntity col:list){
 			if(col.isDetailVisiable()){
 				detailList.add(col);
 			}
@@ -926,7 +925,7 @@ public class BeanUtils {
 		sb.append("				//$(\"select[name='is_use']\").val('1');"+RT_1);	
 		sb.append("			} else if ('${openstate}' == 'edit') {"+RT_1);
 		for(int i=0;i<detailList.size();i++){
-			if(detailList.get(i).getEleType().equals(ColInfo.EleType.SELECT)){
+			if(detailList.get(i).getEleType().equals(MappingTableSubEntity.EleType.SELECT)){
 				sb.append("				$(\"select[name='"+detailList.get(i).getColName()+"']\").val('${entity."+detailList.get(i).getColName()+"}');"+RT_1);	
 			}
 		}
@@ -964,7 +963,7 @@ public class BeanUtils {
 		
 	}
 	
-	public static void createJspDetail(MappingTableEntity info, List<ColInfo> list) throws IOException {
+	public static void createJspDetail(MappingTableEntity info, List<MappingTableSubEntity> list) throws IOException {
 		String jspPreName=info.getEntityName().toLowerCase().replace("entity", "");
 		
 		String fileName = savePath+ jspPreName + "_detail.jsp";
@@ -992,8 +991,8 @@ public class BeanUtils {
 		sb.append("			<input name=\"uuid\" type=\"text\" class=\"hide\" value=\"${entity.uuid}\">"+RT_1);
 		
 		//创建form元素start
-		List<ColInfo> detailList=new ArrayList<ColInfo>();//明细页面显示的字段列
-		for(ColInfo col:list){
+		List<MappingTableSubEntity> detailList=new ArrayList<MappingTableSubEntity>();//明细页面显示的字段列
+		for(MappingTableSubEntity col:list){
 			if(col.isDetailVisiable()){
 				detailList.add(col);
 			}
@@ -1019,7 +1018,7 @@ public class BeanUtils {
 		sb.append("				//$(\"select[name='is_use']\").val('1');"+RT_1);	
 		sb.append("			} else if ('${openstate}' == 'detail') {"+RT_1);
 		for(int i=0;i<detailList.size();i++){
-			if(detailList.get(i).getEleType().equals(ColInfo.EleType.SELECT)){
+			if(detailList.get(i).getEleType().equals(MappingTableSubEntity.EleType.SELECT)){
 				sb.append("				$(\"select[name='"+detailList.get(i).getColName()+"']\").val('${entity."+detailList.get(i).getColName()+"}');"+RT_1);	
 			}
 		}
@@ -1042,7 +1041,7 @@ public class BeanUtils {
 	 * @param list
 	 * @throws IOException
 	 */
-	public static void createJspTreeMain(MappingTableEntity info, List<ColInfo> list) throws IOException {
+	public static void createJspTreeMain(MappingTableEntity info, List<MappingTableSubEntity> list) throws IOException {
 		String jspPreName=info.getEntityName().toLowerCase().replace("entity", "");
 		
 		String fileName = savePath+ jspPreName + "_main.jsp";
@@ -1050,8 +1049,8 @@ public class BeanUtils {
 		FileWriter fw = new FileWriter(file);
 		
 		//创建form元素start
-		List<ColInfo> detailList=new ArrayList<ColInfo>();//明细页面显示的字段列
-		for(ColInfo col:list){
+		List<MappingTableSubEntity> detailList=new ArrayList<MappingTableSubEntity>();//明细页面显示的字段列
+		for(MappingTableSubEntity col:list){
 			if(col.isDetailVisiable()){
 				detailList.add(col);
 			}
@@ -1061,9 +1060,9 @@ public class BeanUtils {
 		
 		StringBuilder showDataStr= new StringBuilder();
 		for(int i=0;i<detailList.size();i++){
-			if(detailList.get(i).getEleType().equals(ColInfo.EleType.SELECT)){
+			if(detailList.get(i).getEleType().equals(MappingTableSubEntity.EleType.SELECT)){
 				showDataStr.append("			$(\"select[name='"+detailList.get(i).getColName()+"']\").val(treeNode.nodeData."+detailList.get(i).getColName()+");"+RT_1);	
-			}else if(detailList.get(i).getEleType().equals(ColInfo.EleType.TEXTAREA)){
+			}else if(detailList.get(i).getEleType().equals(MappingTableSubEntity.EleType.TEXTAREA)){
 				showDataStr.append("			$(\"textarea[name='"+detailList.get(i).getColName()+"']\").val(treeNode.nodeData."+detailList.get(i).getColName()+");"+RT_1);	
 			}else{
 				showDataStr.append("			$(\"input[name='"+detailList.get(i).getColName()+"']\").val(treeNode.nodeData."+detailList.get(i).getColName()+");"+RT_1);	
@@ -1087,7 +1086,7 @@ public class BeanUtils {
 	 * @param list
 	 * @throws IOException
 	 */
-	public static void createJspTreeList(MappingTableEntity info, List<ColInfo> list) throws IOException {
+	public static void createJspTreeList(MappingTableEntity info, List<MappingTableSubEntity> list) throws IOException {
 		String jspPreName=info.getEntityName().toLowerCase().replace("entity", "");
 		
 		String fileName = savePath+ jspPreName + "_list.jsp";
@@ -1095,8 +1094,8 @@ public class BeanUtils {
 		FileWriter fw = new FileWriter(file);
 		
 		//创建form元素start
-		List<ColInfo> detailList=new ArrayList<ColInfo>();//明细页面显示的字段列
-		for(ColInfo col:list){
+		List<MappingTableSubEntity> detailList=new ArrayList<MappingTableSubEntity>();//明细页面显示的字段列
+		for(MappingTableSubEntity col:list){
 			if(col.isDetailVisiable()){
 				detailList.add(col);
 			}
@@ -1106,9 +1105,9 @@ public class BeanUtils {
 		
 		StringBuilder showDataStr= new StringBuilder();
 		for(int i=0;i<detailList.size();i++){
-			if(detailList.get(i).getEleType().equals(ColInfo.EleType.SELECT)){
+			if(detailList.get(i).getEleType().equals(MappingTableSubEntity.EleType.SELECT)){
 				showDataStr.append("			$(\"select[name='"+detailList.get(i).getColName()+"']\").val(treeNode.nodeData."+detailList.get(i).getColName()+");"+RT_1);	
-			}else if(detailList.get(i).getEleType().equals(ColInfo.EleType.TEXTAREA)){
+			}else if(detailList.get(i).getEleType().equals(MappingTableSubEntity.EleType.TEXTAREA)){
 				showDataStr.append("			$(\"textarea[name='"+detailList.get(i).getColName()+"']\").val(treeNode.nodeData."+detailList.get(i).getColName()+");"+RT_1);	
 			}else{
 				showDataStr.append("			$(\"input[name='"+detailList.get(i).getColName()+"']\").val(treeNode.nodeData."+detailList.get(i).getColName()+");"+RT_1);	
@@ -1137,7 +1136,7 @@ public class BeanUtils {
 	 * @param list
 	 * @throws IOException
 	 */
-	public static void createJspRefList(MappingTableEntity info, List<ColInfo> list) throws IOException {
+	public static void createJspRefList(MappingTableEntity info, List<MappingTableSubEntity> list) throws IOException {
 		String jspPreName=info.getEntityName().toLowerCase().replace("entity", "");
 		
 		String fileName = savePath+"ref_"+jspPreName + "_list.jsp";
@@ -1145,8 +1144,8 @@ public class BeanUtils {
 		FileWriter fw = new FileWriter(file);
 		
 		//创建form元素start
-		List<ColInfo> detailList=new ArrayList<ColInfo>();//明细页面显示的字段列
-		for(ColInfo col:list){
+		List<MappingTableSubEntity> detailList=new ArrayList<MappingTableSubEntity>();//明细页面显示的字段列
+		for(MappingTableSubEntity col:list){
 			if(col.isDetailVisiable()){
 				detailList.add(col);
 			}
@@ -1176,7 +1175,7 @@ public class BeanUtils {
 	 * @param list
 	 * @throws IOException
 	 */
-	public static void createJspRefTree(MappingTableEntity info, List<ColInfo> list) throws IOException {
+	public static void createJspRefTree(MappingTableEntity info, List<MappingTableSubEntity> list) throws IOException {
 		String jspPreName=info.getEntityName().toLowerCase().replace("entity", "");
 		
 		String fileName = savePath+"ref_"+jspPreName + "_tree.jsp";
@@ -1184,8 +1183,8 @@ public class BeanUtils {
 		FileWriter fw = new FileWriter(file);
 		
 		//创建form元素start
-		List<ColInfo> detailList=new ArrayList<ColInfo>();//明细页面显示的字段列
-		for(ColInfo col:list){
+		List<MappingTableSubEntity> detailList=new ArrayList<MappingTableSubEntity>();//明细页面显示的字段列
+		for(MappingTableSubEntity col:list){
 			if(col.isDetailVisiable()){
 				detailList.add(col);
 			}
@@ -1210,32 +1209,32 @@ public class BeanUtils {
 	 * @throws InvocationTargetException 
 	 * @throws IllegalAccessException 
 	 */
-	public static void createJspMainSonAdd(MappingTableEntity info, List<ColInfo> list) throws IOException, IllegalAccessException, InvocationTargetException {
+	public static void createJspMainSonAdd(MappingTableEntity info, List<MappingTableSubEntity> list) throws IOException, IllegalAccessException, InvocationTargetException {
 		String jspPreName=info.getEntityName().toLowerCase().replace("entity", "");
 		String fileName = savePath+ jspPreName + "_add.jsp";
 		
 		File file =  createFile(fileName);
 		FileWriter fw = new FileWriter(file);
 		
-		List<ColInfo> mainList=new ArrayList<ColInfo>();
-		List<ColInfo> subList=new ArrayList<ColInfo>();
+		List<MappingTableSubEntity> mainList=new ArrayList<MappingTableSubEntity>();
+		List<MappingTableSubEntity> subList=new ArrayList<MappingTableSubEntity>();
 		StringBuilder subThs=new StringBuilder();
 		StringBuilder subNewData=new StringBuilder();
-		for(ColInfo c:list){
+		for(MappingTableSubEntity c:list){
 			if(c.isMain()){
 				mainList.add(c);
 			}else{
 				subList.add(c);
 				if(c.isListVisiable()){
-					subThs.append("								<th>"+c.getColAnno()+"</th>").append(RT_1);
+					subThs.append("								<th>"+c.getColDesc()+"</th>").append(RT_1);
 					subNewData.append(",").append(RT_1);
 					subNewData.append("					'").append(c.getColName()).append("': ''");
 				}
 			}
 		}
 		//创建form元素start
-		List<ColInfo> detailList=new ArrayList<ColInfo>();//明细页面显示的字段列
-		for(ColInfo col:mainList){
+		List<MappingTableSubEntity> detailList=new ArrayList<MappingTableSubEntity>();//明细页面显示的字段列
+		for(MappingTableSubEntity col:mainList){
 			if(col.isDetailVisiable()){
 				detailList.add(col);
 			}
@@ -1278,32 +1277,32 @@ public class BeanUtils {
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
-	public static void createJspMainSonEdit(MappingTableEntity info, List<ColInfo> list) throws IOException, IllegalAccessException, InvocationTargetException {
+	public static void createJspMainSonEdit(MappingTableEntity info, List<MappingTableSubEntity> list) throws IOException, IllegalAccessException, InvocationTargetException {
 		String jspPreName=info.getEntityName().toLowerCase().replace("entity", "");
 		String fileName = savePath+ jspPreName + "_edit.jsp";
 		
 		File file =  createFile(fileName);
 		FileWriter fw = new FileWriter(file);
 		
-		List<ColInfo> mainList=new ArrayList<ColInfo>();
-		List<ColInfo> subList=new ArrayList<ColInfo>();
+		List<MappingTableSubEntity> mainList=new ArrayList<MappingTableSubEntity>();
+		List<MappingTableSubEntity> subList=new ArrayList<MappingTableSubEntity>();
 		StringBuilder subThs=new StringBuilder();
 		StringBuilder subNewData=new StringBuilder();
-		for(ColInfo c:list){
+		for(MappingTableSubEntity c:list){
 			if(c.isMain()){
 				mainList.add(c);
 			}else{
 				subList.add(c);
 				if(c.isListVisiable()){
-					subThs.append("								<th>"+c.getColAnno()+"</th>").append(RT_1);
+					subThs.append("								<th>"+c.getColDesc()+"</th>").append(RT_1);
 					subNewData.append(",").append(RT_1);
 					subNewData.append("					'").append(c.getColName()).append("': ''");
 				}
 			}
 		}
 		//创建form元素start
-		List<ColInfo> detailList=new ArrayList<ColInfo>();//明细页面显示的字段列
-		for(ColInfo col:mainList){
+		List<MappingTableSubEntity> detailList=new ArrayList<MappingTableSubEntity>();//明细页面显示的字段列
+		for(MappingTableSubEntity col:mainList){
 			if(col.isDetailVisiable()){
 				detailList.add(col);
 			}
@@ -1339,32 +1338,32 @@ public class BeanUtils {
 	}
 	
 	
-	public static void createJspMainSonWebEdit(MappingTableEntity info, List<ColInfo> list) throws IOException, IllegalAccessException, InvocationTargetException {
+	public static void createJspMainSonWebEdit(MappingTableEntity info, List<MappingTableSubEntity> list) throws IOException, IllegalAccessException, InvocationTargetException {
 		String jspPreName=info.getEntityName().toLowerCase().replace("entity", "");
 		String fileName = savePath+ jspPreName + "_edit.jsp";
 		
 		File file =  createFile(fileName);
 		FileWriter fw = new FileWriter(file);
 		
-		List<ColInfo> mainList=new ArrayList<ColInfo>();
-		List<ColInfo> subList=new ArrayList<ColInfo>();
+		List<MappingTableSubEntity> mainList=new ArrayList<MappingTableSubEntity>();
+		List<MappingTableSubEntity> subList=new ArrayList<MappingTableSubEntity>();
 		StringBuilder subThs=new StringBuilder();
 		StringBuilder subNewData=new StringBuilder();
-		for(ColInfo c:list){
+		for(MappingTableSubEntity c:list){
 			if(c.isMain()){
 				mainList.add(c);
 			}else{
 				subList.add(c);
 				if(c.isListVisiable()){
-					subThs.append("								<th>"+c.getColAnno()+"</th>").append(RT_1);
+					subThs.append("								<th>"+c.getColDesc()+"</th>").append(RT_1);
 					subNewData.append(",").append(RT_1);
 					subNewData.append("					'").append(c.getColName()).append("': ''");
 				}
 			}
 		}
 		//创建form元素start
-		List<ColInfo> detailList=new ArrayList<ColInfo>();//明细页面显示的字段列
-		for(ColInfo col:mainList){
+		List<MappingTableSubEntity> detailList=new ArrayList<MappingTableSubEntity>();//明细页面显示的字段列
+		for(MappingTableSubEntity col:mainList){
 			if(col.isDetailVisiable()){
 				detailList.add(col);
 			}
@@ -1407,32 +1406,32 @@ public class BeanUtils {
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
-	public static void createJspMainSonDetail(MappingTableEntity info, List<ColInfo> list) throws IOException, IllegalAccessException, InvocationTargetException {
+	public static void createJspMainSonDetail(MappingTableEntity info, List<MappingTableSubEntity> list) throws IOException, IllegalAccessException, InvocationTargetException {
 		String jspPreName=info.getEntityName().toLowerCase().replace("entity", "");
 		String fileName = savePath+ jspPreName + "_detail.jsp";
 		
 		File file =  createFile(fileName);
 		FileWriter fw = new FileWriter(file);
 		
-		List<ColInfo> mainList=new ArrayList<ColInfo>();
-		List<ColInfo> subList=new ArrayList<ColInfo>();
+		List<MappingTableSubEntity> mainList=new ArrayList<MappingTableSubEntity>();
+		List<MappingTableSubEntity> subList=new ArrayList<MappingTableSubEntity>();
 		StringBuilder subThs=new StringBuilder();
 		StringBuilder subNewData=new StringBuilder();
-		for(ColInfo c:list){
+		for(MappingTableSubEntity c:list){
 			if(c.isMain()){
 				mainList.add(c);
 			}else{
 				subList.add(c);
 				if(c.isListVisiable()){
-					subThs.append("								<th>"+c.getColAnno()+"</th>").append(RT_1);
+					subThs.append("								<th>"+c.getColDesc()+"</th>").append(RT_1);
 					subNewData.append(",").append(RT_1);
 					subNewData.append("					'").append(c.getColName()).append("': ''");
 				}
 			}
 		}
 		//创建form元素start
-		List<ColInfo> detailList=new ArrayList<ColInfo>();//明细页面显示的字段列
-		for(ColInfo col:mainList){
+		List<MappingTableSubEntity> detailList=new ArrayList<MappingTableSubEntity>();//明细页面显示的字段列
+		for(MappingTableSubEntity col:mainList){
 			if(col.isDetailVisiable()){
 				detailList.add(col);
 			}
@@ -1467,32 +1466,32 @@ public class BeanUtils {
 	}
 	
 	
-	public static void createJspMainSonWebDetail(MappingTableEntity info, List<ColInfo> list) throws IOException, IllegalAccessException, InvocationTargetException {
+	public static void createJspMainSonWebDetail(MappingTableEntity info, List<MappingTableSubEntity> list) throws IOException, IllegalAccessException, InvocationTargetException {
 		String jspPreName=info.getEntityName().toLowerCase().replace("entity", "");
 		String fileName = savePath+ jspPreName + "_detail.jsp";
 		
 		File file =  createFile(fileName);
 		FileWriter fw = new FileWriter(file);
 		
-		List<ColInfo> mainList=new ArrayList<ColInfo>();
-		List<ColInfo> subList=new ArrayList<ColInfo>();
+		List<MappingTableSubEntity> mainList=new ArrayList<MappingTableSubEntity>();
+		List<MappingTableSubEntity> subList=new ArrayList<MappingTableSubEntity>();
 		StringBuilder subThs=new StringBuilder();
 		StringBuilder subNewData=new StringBuilder();
-		for(ColInfo c:list){
+		for(MappingTableSubEntity c:list){
 			if(c.isMain()){
 				mainList.add(c);
 			}else{
 				subList.add(c);
 				if(c.isListVisiable()){
-					subThs.append("								<th>"+c.getColAnno()+"</th>").append(RT_1);
+					subThs.append("								<th>"+c.getColDesc()+"</th>").append(RT_1);
 					subNewData.append(",").append(RT_1);
 					subNewData.append("					'").append(c.getColName()).append("': ''");
 				}
 			}
 		}
 		//创建form元素start
-		List<ColInfo> detailList=new ArrayList<ColInfo>();//明细页面显示的字段列
-		for(ColInfo col:mainList){
+		List<MappingTableSubEntity> detailList=new ArrayList<MappingTableSubEntity>();//明细页面显示的字段列
+		for(MappingTableSubEntity col:mainList){
 			if(col.isDetailVisiable()){
 				detailList.add(col);
 			}
@@ -1527,7 +1526,7 @@ public class BeanUtils {
 	}
 	
 	
-	private static String createFormElement(List<ColInfo> detailList,boolean isEdit){
+	private static String createFormElement(List<MappingTableSubEntity> detailList,boolean isEdit){
 		StringBuilder sb=new StringBuilder();
 		StringBuilder sbCol=new StringBuilder();
 		int colIndex=0;//用于计算一个字段占多列的情况
@@ -1561,7 +1560,7 @@ public class BeanUtils {
 			if(isEdit&&detailList.get(i).isRequired()){
 				requiredCls=" required";
 			}
-			sbCol.append("							<label class=\"control-label col-md-"+colMdSub1+requiredCls+"\" "+colSubStyle1+">"+detailList.get(i).getColAnno()+"</label>"+RT_1);		
+			sbCol.append("							<label class=\"control-label col-md-"+colMdSub1+requiredCls+"\" "+colSubStyle1+">"+detailList.get(i).getColDesc()+"</label>"+RT_1);		
 			sbCol.append("							<div class=\"col-md-"+colMdSub2+"\" "+colSubStyle2+">"+RT_1);
 			sbCol.append("								").append(createHtmlEle(detailList.get(i))).append(RT_1);
 			sbCol.append("							</div>"+RT_1);
@@ -1591,7 +1590,7 @@ public class BeanUtils {
 	}
 	
 	
-	private static String createListContent(MappingTableEntity info,List<ColInfo> list){
+	private static String createListContent(MappingTableEntity info,List<MappingTableSubEntity> list){
 		StringBuilder sb=new StringBuilder();
 		sb.append("	<div id=\"yy-page\" class=\"container-fluid page-container\">").append(RT_1);
 		
@@ -1614,17 +1613,17 @@ public class BeanUtils {
 		sb.append("				<form id=\"yy-form-query\">").append(RT_1);
 		
 		boolean hasSearch=false;
-		for(ColInfo col:list){
+		for(MappingTableSubEntity col:list){
 			if(col.isSearch()){
 				hasSearch=true;
-				if(col.getEleType().equals(ColInfo.EleType.SELECT)){
-					sb.append("					<label for=\"search_EQ_"+col.getColAnno()+"\" class=\"control-label\">"+col.getColAnno()+"</label>").append(RT_1);
+				if(col.getEleType().equals(MappingTableSubEntity.EleType.SELECT)){
+					sb.append("					<label for=\"search_EQ_"+col.getColDesc()+"\" class=\"control-label\">"+col.getColDesc()+"</label>").append(RT_1);
 					sb.append("					<select class=\"yy-input-enumdata form-control\" id=\"search_EQ_"+col.getColName()+"\" ").append(RT_1);
-					sb.append("						name=\"search_EQ_"+col.getColAnno()+"\" data-enum-group=\""+col.getEnumGroup()+"\"></select>").append(RT_2);
+					sb.append("						name=\"search_EQ_"+col.getColDesc()+"\" data-enum-group=\""+col.getEnumGroup()+"\"></select>").append(RT_2);
 				}else{
-					sb.append("					<label for=\"search_LIKE_"+col.getColAnno()+"\" class=\"control-label\">"+col.getColAnno()+"</label>").append(RT_1);
-					sb.append("					<input type=\"text\" autocomplete=\"on\" name=\"search_LIKE_"+col.getColAnno()+"\"").append(RT_1);
-					sb.append("						id=\"search_LIKE_"+col.getColAnno()+"\" class=\"form-control input-sm\">").append(RT_2);
+					sb.append("					<label for=\"search_LIKE_"+col.getColDesc()+"\" class=\"control-label\">"+col.getColDesc()+"</label>").append(RT_1);
+					sb.append("					<input type=\"text\" autocomplete=\"on\" name=\"search_LIKE_"+col.getColDesc()+"\"").append(RT_1);
+					sb.append("						id=\"search_LIKE_"+col.getColDesc()+"\" class=\"form-control input-sm\">").append(RT_2);
 				}
 			}
 		}
@@ -1658,9 +1657,9 @@ public class BeanUtils {
 		}
 
 		sb.append("							<th>操作</th>").append(RT_1);
-		for(ColInfo col:list){
+		for(MappingTableSubEntity col:list){
 			if(col.isListVisiable()){
-				sb.append("							<th>"+col.getColAnno()+"</th>").append(RT_1);
+				sb.append("							<th>"+col.getColDesc()+"</th>").append(RT_1);
 			}
 		}
 		sb.append("						</tr>").append(RT_1);
@@ -1678,7 +1677,7 @@ public class BeanUtils {
 	 * @param list
 	 * @return
 	 */
-	private static String createTableCols(MappingTableEntity info,List<ColInfo> list,boolean isShowCheckBox,boolean isRenderEdit,String actionCol){
+	private static String createTableCols(MappingTableEntity info,List<MappingTableSubEntity> list,boolean isShowCheckBox,boolean isRenderEdit,String actionCol){
 		StringBuilder sb=new StringBuilder();
 		if(info.isMain()){
 			sb.append("		var _tableCols = [ {").append(RT_1);
@@ -1725,7 +1724,7 @@ public class BeanUtils {
 				sb.append("				className : \"center\",").append(RT_1);
 				if(isRenderEdit){
 					sb.append("				render : function(data, type, full) {").append(RT_1);
-					if(list.get(i).getEleType().equals(ColInfo.EleType.SELECT)){
+					if(list.get(i).getEleType().equals(MappingTableSubEntity.EleType.SELECT)){
 						if(!hasAppendUuid){
 							sb.append("					return '<input class=\"form-control\" type=\"hidden\" value=\"'+ full.uuid + '\" name=\"uuid\">'+").append(RT_1);
 							sb.append("							creRnum('sys_sex', '").append(list.get(i).getColName()).append("', data,false);").append(RT_1);
@@ -1742,7 +1741,7 @@ public class BeanUtils {
 					}
 					sb.append("				},").append(RT_1);
 				}else{
-					if(list.get(i).getEleType().equals(ColInfo.EleType.SELECT)){
+					if(list.get(i).getEleType().equals(MappingTableSubEntity.EleType.SELECT)){
 						sb.append("				render : function(data, type, full) {").append(RT_1);
 						sb.append("					return YYDataUtils.getEnumName(\"sys_sex\", data);").append(RT_1);
 						sb.append("				},").append(RT_1);
@@ -1760,7 +1759,7 @@ public class BeanUtils {
 	 * @param detailList
 	 * @return
 	 */
-	private static String createValidateFormFunc(List<ColInfo> detailList){
+	private static String createValidateFormFunc(List<MappingTableSubEntity> detailList){
 		StringBuilder sb=new StringBuilder();
 		sb.append("		//表单校验"+RT_1);	
 		sb.append("		function validateForms(){"+RT_1);	
@@ -1932,17 +1931,17 @@ public class BeanUtils {
 		sb.append(BLANK_1+"*/"+RT_1);
 	}
 	
-	private static String createHtmlEle(ColInfo col){
+	private static String createHtmlEle(MappingTableSubEntity col){
 		String htmlStr="";
-		if(col.getEleType().equals(ColInfo.EleType.DATE)){
+		if(col.getEleType().equals(MappingTableSubEntity.EleType.DATE)){
 			htmlStr="<input name=\""+col.getColName()+"\" id=\""+col.getColName()+"\" type=\"text\" value=\"${entity."+col.getColName()+"}\" class=\"Wdate form-control\" onclick=\"WdatePicker();\">";
-		}else if(col.getEleType().equals(ColInfo.EleType.DATETIME)){
+		}else if(col.getEleType().equals(MappingTableSubEntity.EleType.DATETIME)){
 			htmlStr="<input name=\""+col.getColName()+"\" id=\""+col.getColName()+"\" type=\"text\" value=\"${entity."+col.getColName()+"}\" class=\"Wdate form-control\" onfocus=\"WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss'});\">";
-		}else if(col.getEleType().equals(ColInfo.EleType.SELECT)){
+		}else if(col.getEleType().equals(MappingTableSubEntity.EleType.SELECT)){
 			htmlStr="<select name=\""+col.getColName()+"\" id=\""+col.getColName()+"\" data-enum-group=\""+col.getEnumGroup()+"\" class=\"yy-input-enumdata form-control\"></select>";
-		}else if(col.getEleType().equals(ColInfo.EleType.TEXTAREA)){
+		}else if(col.getEleType().equals(MappingTableSubEntity.EleType.TEXTAREA)){
 			htmlStr="<textarea name=\""+col.getColName()+"\" id=\""+col.getColName()+"\" class=\"form-control\">${entity."+col.getColName()+"}</textarea>";
-		}else if(col.getEleType().equals(ColInfo.EleType.REF)){
+		}else if(col.getEleType().equals(MappingTableSubEntity.EleType.REF)){
 			StringBuilder refStr=new StringBuilder();
 			refStr.append("<div class=\"input-group input-icon right\">").append(RT_1);
 			refStr.append("								<input id=\""+col.getColName()+"Uuid\" name=\""+col.getColName()+".uuid\" type=\"hidden\" value=\"${entity."+col.getColName()+"}\">").append(RT_1);
