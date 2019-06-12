@@ -16,6 +16,8 @@ import java.util.Map;
 
 import org.springframework.util.StringUtils;
 
+import com.king.modules.sys.mappingtable.MappingTableEntity;
+
 
 /**
  * @author hongten(hongtenzone@foxmail.com)
@@ -41,16 +43,16 @@ public class BeanUtils {
 	
 	
 	public static void main(String[] args) throws Exception{
-		EntityInfo info=new EntityInfo();
+		MappingTableEntity info=new MappingTableEntity();
 		info.setEntityName("AdddEntity");
-		info.setExtendEntityName("BaseEntity");
-		info.setPackagePath("com.yy.modules.ver.auditCols");
-		info.setTitle("测试111");
-		info.setAuthor("ls2008");
-		info.setReqMappingPath("/ver/test1");
-		info.setJspPath("modules/ver/test1");//jsp路径
-		info.setGenType(EntityInfo.GENTYPE_MAINSON_SERVERPAGE);
-		
+//		info.setExtendEntityName("BaseEntity");
+//		info.setPackagePath("com.yy.modules.ver.auditCols");
+//		info.setEntityChinese("测试111");
+//		info.setAuthor("ls2008");
+//		info.setControllerPath("/ver/test1");
+//		info.setJspPath("modules/ver/test1");//jsp路径
+//		info.setGenType(EntityInfo.GENTYPE_MAINSON_SERVERPAGE);
+//		
 		
 		
 		//生成实体==================================================================================
@@ -150,7 +152,7 @@ public class BeanUtils {
 		createCode(info, list);
 	}
 	
-	public static void createCode(EntityInfo info,List<ColInfo> list) throws Exception{
+	public static void createCode(MappingTableEntity info,List<ColInfo> list) throws Exception{
 		List<ColInfo> mainList=new ArrayList<ColInfo>();
 		List<ColInfo> subList=new ArrayList<ColInfo>();
 		for(ColInfo c:list){
@@ -161,7 +163,7 @@ public class BeanUtils {
 			}
 		}
 		
-		if(Integer.parseInt(info.getGenType())<10){
+		if(Integer.parseInt(info.getTemplateType())<10){
 			//创建主表实体
 			if(mainList!=null&&mainList.size()>0){
 				createEntity(info, mainList);
@@ -171,11 +173,11 @@ public class BeanUtils {
 			}
 			//创建字表实体
 			if(subList!=null&&subList.size()>0){
-				EntityInfo subInfo=new EntityInfo();
+				MappingTableEntity subInfo=new MappingTableEntity ();
 				org.apache.commons.beanutils.BeanUtils.copyProperties(subInfo, info);
-				subInfo.setTitle(info.getTitle()+"子表");
+				subInfo.setEntityChinese(info.getEntityChinese()+"子表");
 				subInfo.setEntityName((info.getEntityName().replace("Entity", "")+"SubEntity"));
-				subInfo.setReqMappingPath(info.getReqMappingPath()+"Sub");
+				subInfo.setControllerPath(info.getControllerPath()+"Sub");
 				subInfo.setMain(false);
 				createEntity(subInfo, subList);
 				createDao(subInfo);
@@ -185,26 +187,26 @@ public class BeanUtils {
 		}
 		
 		
-		if(info.getGenType().equals(EntityInfo.GENTYPE_SERVERPAGE)){
+		if(info.getTemplateType().equals(EntityInfo.GENTYPE_SERVERPAGE)){
 			createJspList(info,list);
 			createJspEdit(info,list);
 			createJspDetail(info,list);
-		}else if(info.getGenType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){
+		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){
 			createJspTreeMain(info, list);
-		}else if(info.getGenType().equals(EntityInfo.GENTYPE_TREELISTPAGE)){
+		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_TREELISTPAGE)){
 			createJspTreeList(info, list);
 			createJspEdit(info,list);
 			createJspDetail(info,list);
-		}else if(info.getGenType().equals(EntityInfo.GENTYPE_REFLISTSELECT)){
+		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_REFLISTSELECT)){
 			createJspRefList(info,list);
-		}else if(info.getGenType().equals(EntityInfo.GENTYPE_REFTREESELECT)){
+		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_REFTREESELECT)){
 			createJspRefTree(info,list);
-		}else if(info.getGenType().equals(EntityInfo.GENTYPE_MAINSON_SERVERPAGE)){//主子表（服务器分页）
+		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_MAINSON_SERVERPAGE)){//主子表（服务器分页）
 			createJspList(info,mainList);
 			createJspMainSonAdd(info,list);
 			createJspMainSonEdit(info,list);
 			createJspMainSonDetail(info,list);
-		}else if(info.getGenType().equals(EntityInfo.GENTYPE_MAINSON_WEBPAGE)){//主子表（前端分页）
+		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_MAINSON_WEBPAGE)){//主子表（前端分页）
 			createJspList(info,mainList);
 			createJspMainSonAdd(info,list);
 			createJspMainSonWebEdit(info,list);
@@ -213,7 +215,7 @@ public class BeanUtils {
 	}
 
 
-	public static void createEntity(EntityInfo info,List<ColInfo> list) throws IOException{
+	public static void createEntity(MappingTableEntity info,List<ColInfo> list) throws IOException{
 		String entityName=getUppercaseChar(info.getEntityName());
 		String preName=entityName.toLowerCase().replace("entity", "");
 		if(!entityName.contains("Entity")){
@@ -223,7 +225,7 @@ public class BeanUtils {
 		File file =  createFile(fileName);
 		FileWriter fw = new FileWriter(file);
 		StringBuilder sb=new StringBuilder();
-		sb.append("package "+info.getPackagePath()+";"+RT_2);
+		sb.append("package "+info.getPackageName()+";"+RT_2);
 		
 		//判断需要import的类 start
 		boolean hasDate=false;
@@ -237,9 +239,9 @@ public class BeanUtils {
 			sb.append("import com.fasterxml.jackson.annotation.JsonFormat;").append(RT_1);
 		}
 		sb.append("import javax.persistence.Column;").append(RT_1);
-		if(info.getGenType().equals(EntityInfo.GENTYPE_SERVERPAGE)){
+		if(info.getTemplateType().equals(EntityInfo.GENTYPE_SERVERPAGE)){
 			sb.append("import com.yy.frame.entity.BaseEntity;").append(RT_1);
-		}else if(info.getGenType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){
+		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){
 			sb.append("import com.yy.frame.entity.TreeEntity;").append(RT_1);
 			sb.append("import com.fasterxml.jackson.annotation.JsonIgnoreProperties;").append(RT_1);
 			sb.append("import javax.persistence.FetchType;").append(RT_1);
@@ -255,7 +257,7 @@ public class BeanUtils {
 			sb.append("import javax.persistence.JoinColumn;").append(RT_1);
 			sb.append("import javax.persistence.ManyToOne;").append(RT_1);
 			sb.append("import com.fasterxml.jackson.annotation.JsonIgnoreProperties;").append(RT_1);
-			sb.append("import ").append(info.getPackagePath()).append(".").append(entityName.replace("Sub", "")).append(";").append(RT_1);
+			sb.append("import ").append(info.getPackageName()).append(".").append(entityName.replace("Sub", "")).append(";").append(RT_1);
 		}
 		
 		sb.append("import com.yy.common.annotation.MetaData;").append(RT_1);
@@ -282,22 +284,22 @@ public class BeanUtils {
 		sb.append("@DynamicInsert").append(RT_1);
 		sb.append("@DynamicUpdate").append(RT_1);
 		sb.append("@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)").append(RT_1);
-		if(info.getGenType().equals(EntityInfo.GENTYPE_SERVERPAGE)){
-			sb.append("public class " + entityName + " extends "+info.getExtendEntityName()+" {"+RT_2);
-		}else if(info.getGenType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){
+		if(info.getTemplateType().equals(EntityInfo.GENTYPE_SERVERPAGE)){
+			sb.append("public class " + entityName + " extends "+info.getExtendsEntity()+" {"+RT_2);
+		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){
 			sb.append("public class " + entityName + " extends TreeEntity {"+RT_2);
 		}else{
-			sb.append("public class " + entityName + " extends "+info.getExtendEntityName()+" {"+RT_2);
+			sb.append("public class " + entityName + " extends "+info.getExtendsEntity()+" {"+RT_2);
 		}
 		
 		sb.append("	private static final long serialVersionUID = 1L;"+RT_2);
 		
-		if(info.getGenType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){//树状
+		if(info.getTemplateType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){//树状
 			sb.append("	@ManyToOne(cascade = { CascadeType.REFRESH }, fetch = FetchType.LAZY)").append(RT_1);
 			sb.append("	@JoinColumn(name = \"parentid\")").append(RT_1);
 			sb.append("	@JsonIgnoreProperties({\"hibernateLazyInitializer\", \"handler\"})").append(RT_1);
 			sb.append("	private ").append(entityName).append(" parent;").append(RT_2);
-		}else if(info.getGenType().equals(EntityInfo.GENTYPE_MAINSON_SERVERPAGE)&&!info.isMain()){//主子表
+		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_MAINSON_SERVERPAGE)&&!info.isMain()){//主子表
 			sb.append("	@ManyToOne(cascade = { CascadeType.REFRESH }, fetch = FetchType.LAZY)").append(RT_1);
 			sb.append("	@JoinColumn(name = \"mainid\")").append(RT_1);
 			sb.append("	@JsonIgnoreProperties({\"hibernateLazyInitializer\", \"handler\"})").append(RT_1);
@@ -324,14 +326,14 @@ public class BeanUtils {
 		
 		
 		//生成getter和setter方法
-		if(info.getGenType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){//树状
+		if(info.getTemplateType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){//树状
 			sb.append("	public ").append(entityName).append(" getParent() {").append(RT_1);
 			sb.append("		return parent;").append(RT_1);
 			sb.append("	}").append(RT_1);
 			sb.append("	public void setParent(").append(entityName).append(" parent) {").append(RT_1);
 			sb.append("		this.parent = parent;").append(RT_1);
 			sb.append("	}").append(RT_1);
-		}else if(info.getGenType().equals(EntityInfo.GENTYPE_MAINSON_SERVERPAGE)&&!info.isMain()){//主子表
+		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_MAINSON_SERVERPAGE)&&!info.isMain()){//主子表
 			sb.append("	public ").append(entityName.replace("Sub", "")).append(" getMain() {").append(RT_1);
 			sb.append("		return main;").append(RT_1);
 			sb.append("	}").append(RT_1);
@@ -346,7 +348,7 @@ public class BeanUtils {
 			sb.append(TAB_2).append("this.").append(col.getColName()).append(" = ").append(col.getColName()).append(";").append(RT_1).append("	}").append(RT_2);
 		}
 		
-		if(info.getGenType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){//树状
+		if(info.getTemplateType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){//树状
 			sb.append("	@Override").append(RT_1);
 			sb.append("	public String getParentId() {").append(RT_1);
 			sb.append("		if(parent!=null&&parent.getUuid()!=null){").append(RT_1);
@@ -370,7 +372,7 @@ public class BeanUtils {
 	 * @param c
 	 * @throws Exception
 	 */
-	public static void createDao(EntityInfo info) throws Exception {
+	public static void createDao(MappingTableEntity info) throws Exception {
 		String entityName=getUppercaseChar(info.getEntityName());
 		if(!entityName.contains("Entity")){
 			entityName+="Entity";
@@ -386,7 +388,7 @@ public class BeanUtils {
 		FileWriter fw = new FileWriter(file);
 		
 		StringBuilder sb=new StringBuilder();
-		sb.append("package "+info.getPackagePath()+";"+RT_2);
+		sb.append("package "+info.getPackageName()+";"+RT_2);
 		
 		sb.append("import com.yy.frame.dao.IBaseDAO;").append(RT_1);
 		sb.append("import org.springframework.stereotype.Repository;").append(RT_1);
@@ -408,7 +410,7 @@ public class BeanUtils {
      * @param c
      * @throws Exception
      */
-    public static void createService(EntityInfo info) throws Exception{
+    public static void createService(MappingTableEntity info) throws Exception{
     	String entityName=getUppercaseChar(info.getEntityName());
 		if(!entityName.contains("Entity")){
 			entityName+="Entity";
@@ -429,19 +431,19 @@ public class BeanUtils {
 		FileWriter fw = new FileWriter(file);
 		
 		StringBuilder sb=new StringBuilder();
-		sb.append("package "+info.getPackagePath()+";"+RT_2);
+		sb.append("package "+info.getPackageName()+";"+RT_2);
 		
 		sb.append("import com.yy.frame.dao.IBaseDAO;").append(RT_1);
 		
-		if(info.getGenType().equals(EntityInfo.GENTYPE_SERVERPAGE)){
+		if(info.getTemplateType().equals(EntityInfo.GENTYPE_SERVERPAGE)){
 			sb.append("import com.yy.frame.service.BaseServiceImpl;").append(RT_1);
-		}else if(info.getGenType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){
+		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){
 			sb.append("import com.yy.frame.service.TreeServiceImpl;").append(RT_1);
 		}else{
 			sb.append("import com.yy.frame.service.BaseServiceImpl;").append(RT_1);
 		}
 		
-		if(info.getGenType().equals(EntityInfo.GENTYPE_MAINSON_SERVERPAGE)&&!entityName.contains("Sub")){//主表才生成方法
+		if(info.getTemplateType().equals(EntityInfo.GENTYPE_MAINSON_SERVERPAGE)&&!entityName.contains("Sub")){//主表才生成方法
 			sb.append("import java.util.List;").append(RT_1);
 			sb.append("import com.yy.frame.controller.ActionResultModel;").append(RT_1);
 		}
@@ -452,9 +454,9 @@ public class BeanUtils {
 		appendFileAnno(info, sb);//类备注
 		sb.append("@Service").append(RT_1).append("@Transactional(readOnly=true)").append(RT_1);
 		
-		if(info.getGenType().equals(EntityInfo.GENTYPE_SERVERPAGE)){
+		if(info.getTemplateType().equals(EntityInfo.GENTYPE_SERVERPAGE)){
 			sb.append("public class " + serviceName + " extends BaseServiceImpl<"+entityName+",String> {"+RT_2);
-		}else if(info.getGenType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){
+		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){
 			sb.append("public class " + serviceName + " extends TreeServiceImpl<"+entityName+",String> {"+RT_2);
 		}else{
 			sb.append("public class " + serviceName + " extends BaseServiceImpl<"+entityName+",String> {"+RT_2);
@@ -462,7 +464,7 @@ public class BeanUtils {
 		
 		sb.append("	@Autowired").append(RT_1);
 		sb.append("	private ").append(daoName).append(" dao;").append(RT_1);
-		if(info.getGenType().equals(EntityInfo.GENTYPE_MAINSON_SERVERPAGE)&&!entityName.contains("Sub")){//主表才生成方法
+		if(info.getTemplateType().equals(EntityInfo.GENTYPE_MAINSON_SERVERPAGE)&&!entityName.contains("Sub")){//主表才生成方法
 			sb.append("	@Autowired").append(RT_1);
 			sb.append("	private ").append(serviceName.replace("Service", "SubService")).append(" subService;").append(RT_1);
 		}
@@ -473,7 +475,7 @@ public class BeanUtils {
 		sb.append("		return dao;").append(RT_1);
 		sb.append("	}").append(RT_2);
 		
-		if(info.getGenType().equals(EntityInfo.GENTYPE_MAINSON_SERVERPAGE)&&!entityName.contains("Sub")){//主表才生成方法
+		if(info.getTemplateType().equals(EntityInfo.GENTYPE_MAINSON_SERVERPAGE)&&!entityName.contains("Sub")){//主表才生成方法
 			sb.append("	/**").append(RT_1);
 			sb.append("	 * @Title: saveSelfAndSubList").append(RT_1); 
 			sb.append("	 * @author ").append(info.getAuthor()).append(RT_1);
@@ -514,7 +516,7 @@ public class BeanUtils {
     
     
 	
-	public static void createController(EntityInfo info) throws IOException {
+	public static void createController(MappingTableEntity info) throws IOException {
 		String entityName=getUppercaseChar(info.getEntityName());
 		String jspPreName=entityName.toLowerCase().replace("entity", "");
 		if(!entityName.contains("Entity")){
@@ -538,15 +540,15 @@ public class BeanUtils {
 		FileWriter fw = new FileWriter(file);
 		
 		StringBuilder sb=new StringBuilder();
-		sb.append("package "+info.getPackagePath()+";"+RT_2);
+		sb.append("package "+info.getPackageName()+";"+RT_2);
 		
 		Map<String,String> importMap=new HashMap<String,String>();
 		List<String> importList=new ArrayList<String>();
 		importList.add("import javax.servlet.ServletRequest;");
 
-		if(info.getGenType().equals(EntityInfo.GENTYPE_SERVERPAGE)){
+		if(info.getTemplateType().equals(EntityInfo.GENTYPE_SERVERPAGE)){
 			importList.add("import com.yy.frame.controller.BaseController;");
-		}else if(info.getGenType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){
+		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){
 			importList.add("import com.yy.frame.controller.TreeController;");
 			importList.add("import java.util.List;");
 			importList.add("import java.util.ArrayList;");
@@ -589,15 +591,15 @@ public class BeanUtils {
 		
 		appendFileAnno(info, sb);//类备注
 		if(info.isMain()){
-			sb.append("@Controller").append(RT_1).append("@RequestMapping(value = \"").append(info.getReqMappingPath()).append("\")").append(RT_1);
+			sb.append("@Controller").append(RT_1).append("@RequestMapping(value = \"").append(info.getControllerPath()).append("\")").append(RT_1);
 		}else{
-			sb.append("@Controller").append(RT_1).append("@RequestMapping(value = \"").append(info.getReqMappingPath()).append("\")").append(RT_1);
+			sb.append("@Controller").append(RT_1).append("@RequestMapping(value = \"").append(info.getControllerPath()).append("\")").append(RT_1);
 		}
 		
 		
-		if(info.getGenType().equals(EntityInfo.GENTYPE_SERVERPAGE)){
+		if(info.getTemplateType().equals(EntityInfo.GENTYPE_SERVERPAGE)){
 			sb.append("public class " + controllerName + " extends BaseController<"+entityName+"> {"+RT_2);
-		}else if(info.getGenType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){
+		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){
 			sb.append("public class " + controllerName + " extends TreeController<"+entityName+"> {"+RT_2);
 		}else{
 			sb.append("public class " + controllerName + " extends BaseController<"+entityName+"> {"+RT_2);
@@ -626,7 +628,7 @@ public class BeanUtils {
 		
 		
 		//生成对应controller方法
-		if(info.getGenType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){
+		if(info.getTemplateType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){
 			sb.append("	/**").append(RT_1);
 			sb.append("	 * ").append(RT_1);
 			sb.append("	 * @Title: listView").append(RT_1); 
@@ -657,13 +659,13 @@ public class BeanUtils {
 			sb.append("		}").append(RT_1);
 			sb.append("		return treeList;").append(RT_1);
 			sb.append("	}").append(RT_1);
-		}else if(info.getGenType().equals(EntityInfo.GENTYPE_REFLISTSELECT)){// 列表单选
+		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_REFLISTSELECT)){// 列表单选
 			sb.append("	@RequestMapping(\"/ref").append(getUppercaseChar(jspPreName)).append("Sel\")").append(RT_1);
 			sb.append("	public String ref").append(getUppercaseChar(jspPreName)).append("Sel(Model model, ServletRequest request) {").append(RT_1);
 			sb.append("		model.addAttribute(\"callBackMethod\",request.getParameter(\"callBackMethod\"));").append(RT_1);
 			sb.append("		return \"modules/ref/").append(jspPreName).append("_ref_select\";").append(RT_1);
 			sb.append("	}").append(RT_2);
-		}else if(info.getGenType().equals(EntityInfo.GENTYPE_MAINSON_SERVERPAGE)&&!info.isMain()){// 主子表
+		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_MAINSON_SERVERPAGE)&&!info.isMain()){// 主子表
 			//子表不需要生成方法
 		}else{
 			sb.append("	/**").append(RT_1);
@@ -683,7 +685,7 @@ public class BeanUtils {
 
 			sb.append("	@Override").append(RT_1);
 			sb.append("	public String addView(Model model, ServletRequest request) {").append(RT_1);
-			if(info.getGenType().equals(EntityInfo.GENTYPE_MAINSON_SERVERPAGE)&&!info.isMain()){// 主子表
+			if(info.getTemplateType().equals(EntityInfo.GENTYPE_MAINSON_SERVERPAGE)&&!info.isMain()){// 主子表
 				sb.append("		return \""+info.getJspPath()+"/"+jspPreName+"_add\";").append(RT_1);
 			}else{
 				sb.append("		return \""+info.getJspPath()+"/"+jspPreName+"_edit\";").append(RT_1);
@@ -701,7 +703,7 @@ public class BeanUtils {
 			sb.append("	}").append(RT_2);
 		}
 		
-		if(info.getGenType().equals(EntityInfo.GENTYPE_MAINSON_SERVERPAGE)&&!entityName.contains("Sub")){//主表才生成方法
+		if(info.getTemplateType().equals(EntityInfo.GENTYPE_MAINSON_SERVERPAGE)&&!entityName.contains("Sub")){//主表才生成方法
 			sb.append("	/**").append(RT_1);
 			sb.append("	 * 新增主子表").append(RT_1);
 			sb.append("	 * @Title: addwithsub").append(RT_1); 
@@ -813,7 +815,7 @@ public class BeanUtils {
 
     
     
-	public static void createJspList(EntityInfo info, List<ColInfo> list) throws IOException {
+	public static void createJspList(MappingTableEntity info, List<ColInfo> list) throws IOException {
 		String jspPreName=info.getEntityName().toLowerCase().replace("entity", "");
 		
 		String fileName = savePath+ jspPreName + "_list.jsp";
@@ -825,10 +827,10 @@ public class BeanUtils {
 		sb.append("<%@ taglib prefix=\"c\" uri=\"http://java.sun.com/jsp/jstl/core\"%>").append(RT_1);
 		sb.append("<%@ taglib prefix=\"shiro\" uri=\"http://shiro.apache.org/tags\"%>").append(RT_1);
 		sb.append("<c:set var=\"ctx\" value=\"${pageContext.request.contextPath}\"/>").append(RT_1);
-		sb.append("<c:set var=\"serviceurl\" value=\"${ctx}"+info.getReqMappingPath()+"\"/>").append(RT_1);
+		sb.append("<c:set var=\"serviceurl\" value=\"${ctx}"+info.getControllerPath()+"\"/>").append(RT_1);
 		sb.append("<html>").append(RT_1);
 		sb.append("<head>").append(RT_1);
-		sb.append("<title>"+info.getTitle()+"</title>").append(RT_1);
+		sb.append("<title>"+info.getEntityChinese()+"</title>").append(RT_1);
 		sb.append("</head>").append(RT_1);
 		sb.append("<body>").append(RT_1);
 		
@@ -865,7 +867,7 @@ public class BeanUtils {
 	}
     
 	
-	public static void createJspEdit(EntityInfo info, List<ColInfo> list) throws IOException {
+	public static void createJspEdit(MappingTableEntity info, List<ColInfo> list) throws IOException {
 		String jspPreName=info.getEntityName().toLowerCase().replace("entity", "");
 		
 		String fileName = savePath+ jspPreName + "_edit.jsp";
@@ -876,10 +878,10 @@ public class BeanUtils {
 		sb.append("<%@ page contentType=\"text/html;charset=UTF-8\"%>"+RT_1);
 		sb.append("<%@ taglib prefix=\"c\" uri=\"http://java.sun.com/jsp/jstl/core\"%>"+RT_1);		
 		sb.append("<c:set var=\"ctx\" value=\"${pageContext.request.contextPath}\" />"+RT_1);
-		sb.append("<c:set var=\"serviceurl\" value=\"${ctx}"+info.getReqMappingPath()+"\"/>"+RT_1);
+		sb.append("<c:set var=\"serviceurl\" value=\"${ctx}"+info.getControllerPath()+"\"/>"+RT_1);
 		sb.append("<html>"+RT_1);
 		sb.append("<head>"+RT_1);
-		sb.append("<title>"+info.getTitle()+"</title>"+RT_1);
+		sb.append("<title>"+info.getEntityChinese()+"</title>"+RT_1);
 		sb.append("</head>"+RT_1);
 		sb.append("<body>"+RT_1);
 		sb.append("	<div id=\"yy-page-edit\" class=\"container-fluid page-container page-content\" >"+RT_1);
@@ -962,7 +964,7 @@ public class BeanUtils {
 		
 	}
 	
-	public static void createJspDetail(EntityInfo info, List<ColInfo> list) throws IOException {
+	public static void createJspDetail(MappingTableEntity info, List<ColInfo> list) throws IOException {
 		String jspPreName=info.getEntityName().toLowerCase().replace("entity", "");
 		
 		String fileName = savePath+ jspPreName + "_detail.jsp";
@@ -973,10 +975,10 @@ public class BeanUtils {
 		sb.append("<%@ page contentType=\"text/html;charset=UTF-8\"%>"+RT_1);
 		sb.append("<%@ taglib prefix=\"c\" uri=\"http://java.sun.com/jsp/jstl/core\"%>"+RT_1);		
 		sb.append("<c:set var=\"ctx\" value=\"${pageContext.request.contextPath}\" />"+RT_1);
-		sb.append("<c:set var=\"serviceurl\" value=\"${ctx}"+info.getReqMappingPath()+"\"/>"+RT_1);
+		sb.append("<c:set var=\"serviceurl\" value=\"${ctx}"+info.getControllerPath()+"\"/>"+RT_1);
 		sb.append("<html>"+RT_1);
 		sb.append("<head>"+RT_1);
-		sb.append("<title>"+info.getTitle()+"</title>"+RT_1);
+		sb.append("<title>"+info.getEntityChinese()+"</title>"+RT_1);
 		sb.append("</head>"+RT_1);
 		sb.append("<body>"+RT_1);
 		sb.append("	<div id=\"yy-page-detail\" class=\"container-fluid page-container page-content\" >"+RT_1);
@@ -1040,7 +1042,7 @@ public class BeanUtils {
 	 * @param list
 	 * @throws IOException
 	 */
-	public static void createJspTreeMain(EntityInfo info, List<ColInfo> list) throws IOException {
+	public static void createJspTreeMain(MappingTableEntity info, List<ColInfo> list) throws IOException {
 		String jspPreName=info.getEntityName().toLowerCase().replace("entity", "");
 		
 		String fileName = savePath+ jspPreName + "_main.jsp";
@@ -1070,8 +1072,8 @@ public class BeanUtils {
 		
 		//创建form元素end
 		String fileStr=readFileByLines("treeMainJsp.txt",formEleStr,validateFormStr,showDataStr.toString());
-		fileStr=fileStr.replaceAll("#title#", info.getTitle());
-		fileStr=fileStr.replaceAll("#serviceurl#", info.getReqMappingPath());
+		fileStr=fileStr.replaceAll("#title#", info.getEntityChinese());
+		fileStr=fileStr.replaceAll("#serviceurl#", info.getControllerPath());
 		
 		fw.write(fileStr);
 		fw.flush();
@@ -1085,7 +1087,7 @@ public class BeanUtils {
 	 * @param list
 	 * @throws IOException
 	 */
-	public static void createJspTreeList(EntityInfo info, List<ColInfo> list) throws IOException {
+	public static void createJspTreeList(MappingTableEntity info, List<ColInfo> list) throws IOException {
 		String jspPreName=info.getEntityName().toLowerCase().replace("entity", "");
 		
 		String fileName = savePath+ jspPreName + "_list.jsp";
@@ -1114,8 +1116,8 @@ public class BeanUtils {
 		}
 		//创建form元素end
 		String fileStr=readFileByLines("treeListMainJsp.txt",formEleStr,validateFormStr,showDataStr.toString());
-		fileStr=fileStr.replaceAll("#title#", info.getTitle());
-		fileStr=fileStr.replaceAll("#serviceurl#", info.getReqMappingPath());
+		fileStr=fileStr.replaceAll("#title#", info.getEntityChinese());
+		fileStr=fileStr.replaceAll("#serviceurl#", info.getControllerPath());
 		fileStr=fileStr.replaceAll("#jspPreName#", jspPreName);
 		fileStr=fileStr.replaceAll("#tableCols#", createTableCols(info,list,true,false,action_View_Edit_Del));
 		//创建list表格start
@@ -1135,7 +1137,7 @@ public class BeanUtils {
 	 * @param list
 	 * @throws IOException
 	 */
-	public static void createJspRefList(EntityInfo info, List<ColInfo> list) throws IOException {
+	public static void createJspRefList(MappingTableEntity info, List<ColInfo> list) throws IOException {
 		String jspPreName=info.getEntityName().toLowerCase().replace("entity", "");
 		
 		String fileName = savePath+"ref_"+jspPreName + "_list.jsp";
@@ -1154,8 +1156,8 @@ public class BeanUtils {
 		
 		//创建form元素end
 		String fileStr=readFileByLines("refList.txt",formEleStr,validateFormStr,"");
-		fileStr=fileStr.replaceAll("#title#", info.getTitle());
-		fileStr=fileStr.replaceAll("#serviceurl#", info.getReqMappingPath());
+		fileStr=fileStr.replaceAll("#title#", info.getEntityChinese());
+		fileStr=fileStr.replaceAll("#serviceurl#", info.getControllerPath());
 		fileStr=fileStr.replaceAll("#jspPreName#", jspPreName);
 		fileStr=fileStr.replaceAll("#tableCols#", createTableCols(info,list,true,false,action_View_Edit_Del));
 		//创建list表格start
@@ -1174,7 +1176,7 @@ public class BeanUtils {
 	 * @param list
 	 * @throws IOException
 	 */
-	public static void createJspRefTree(EntityInfo info, List<ColInfo> list) throws IOException {
+	public static void createJspRefTree(MappingTableEntity info, List<ColInfo> list) throws IOException {
 		String jspPreName=info.getEntityName().toLowerCase().replace("entity", "");
 		
 		String fileName = savePath+"ref_"+jspPreName + "_tree.jsp";
@@ -1191,8 +1193,8 @@ public class BeanUtils {
 		
 		//创建form元素end
 		String fileStr=readFileByLines("refTree.txt","","","");
-		fileStr=fileStr.replaceAll("#title#", info.getTitle());
-		fileStr=fileStr.replaceAll("#serviceurl#", info.getReqMappingPath());
+		fileStr=fileStr.replaceAll("#title#", info.getEntityChinese());
+		fileStr=fileStr.replaceAll("#serviceurl#", info.getControllerPath());
 		fileStr=fileStr.replaceAll("#jspPreName#", jspPreName);
 		
 		fw.write(fileStr);
@@ -1208,7 +1210,7 @@ public class BeanUtils {
 	 * @throws InvocationTargetException 
 	 * @throws IllegalAccessException 
 	 */
-	public static void createJspMainSonAdd(EntityInfo info, List<ColInfo> list) throws IOException, IllegalAccessException, InvocationTargetException {
+	public static void createJspMainSonAdd(MappingTableEntity info, List<ColInfo> list) throws IOException, IllegalAccessException, InvocationTargetException {
 		String jspPreName=info.getEntityName().toLowerCase().replace("entity", "");
 		String fileName = savePath+ jspPreName + "_add.jsp";
 		
@@ -1243,17 +1245,17 @@ public class BeanUtils {
 		String formEleStr=createFormElement(mainList,true);
 		String validateFormStr=createValidateFormFunc(detailList);
 		
-		EntityInfo subInfo=new EntityInfo();
+		MappingTableEntity subInfo=new MappingTableEntity ();
 		org.apache.commons.beanutils.BeanUtils.copyProperties(subInfo, info);
-		subInfo.setTitle(info.getTitle()+"子表");
+		subInfo.setEntityChinese(info.getEntityChinese()+"子表");
 		subInfo.setEntityName((info.getEntityName().replace("Entity", "")+"SubEntity"));
-		subInfo.setReqMappingPath(info.getReqMappingPath()+"Sub");
+		subInfo.setControllerPath(info.getControllerPath()+"Sub");
 		subInfo.setMain(false);
 		
 		//创建form元素end
 		String fileStr=readFileByLines("mainSonAdd.txt",formEleStr,validateFormStr,"");
-		fileStr=fileStr.replaceAll("#title#", info.getTitle());
-		fileStr=fileStr.replaceAll("#serviceurl#", info.getReqMappingPath());
+		fileStr=fileStr.replaceAll("#title#", info.getEntityChinese());
+		fileStr=fileStr.replaceAll("#serviceurl#", info.getControllerPath());
 		fileStr=fileStr.replaceAll("#jspPreName#", jspPreName);
 		fileStr=fileStr.replaceAll("#tableCols#", createTableCols(subInfo,subList,false,true,action_Del));
 		fileStr=fileStr.replaceAll("#subTableTHeadThs#", subThs.toString());
@@ -1276,7 +1278,7 @@ public class BeanUtils {
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
-	public static void createJspMainSonEdit(EntityInfo info, List<ColInfo> list) throws IOException, IllegalAccessException, InvocationTargetException {
+	public static void createJspMainSonEdit(MappingTableEntity info, List<ColInfo> list) throws IOException, IllegalAccessException, InvocationTargetException {
 		String jspPreName=info.getEntityName().toLowerCase().replace("entity", "");
 		String fileName = savePath+ jspPreName + "_edit.jsp";
 		
@@ -1311,17 +1313,17 @@ public class BeanUtils {
 		String formEleStr=createFormElement(mainList,true);
 		String validateFormStr=createValidateFormFunc(detailList);
 		
-		EntityInfo subInfo=new EntityInfo();
+		MappingTableEntity subInfo=new MappingTableEntity ();
 		org.apache.commons.beanutils.BeanUtils.copyProperties(subInfo, info);
-		subInfo.setTitle(info.getTitle()+"子表");
+		subInfo.setEntityChinese(info.getEntityChinese()+"子表");
 		subInfo.setEntityName((info.getEntityName().replace("Entity", "")+"SubEntity"));
-		subInfo.setReqMappingPath(info.getReqMappingPath()+"Sub");
+		subInfo.setControllerPath(info.getControllerPath()+"Sub");
 		subInfo.setMain(false);
 		
 		//创建form元素end
 		String fileStr=readFileByLines("mainSonEdit.txt",formEleStr,validateFormStr,"");
-		fileStr=fileStr.replaceAll("#title#", info.getTitle());
-		fileStr=fileStr.replaceAll("#serviceurl#", info.getReqMappingPath());
+		fileStr=fileStr.replaceAll("#title#", info.getEntityChinese());
+		fileStr=fileStr.replaceAll("#serviceurl#", info.getControllerPath());
 		fileStr=fileStr.replaceAll("#jspPreName#", jspPreName);
 		fileStr=fileStr.replaceAll("#tableCols#", createTableCols(subInfo,subList,false,true,action_Del));
 		fileStr=fileStr.replaceAll("#subTableTHeadThs#", subThs.toString());
@@ -1337,7 +1339,7 @@ public class BeanUtils {
 	}
 	
 	
-	public static void createJspMainSonWebEdit(EntityInfo info, List<ColInfo> list) throws IOException, IllegalAccessException, InvocationTargetException {
+	public static void createJspMainSonWebEdit(MappingTableEntity info, List<ColInfo> list) throws IOException, IllegalAccessException, InvocationTargetException {
 		String jspPreName=info.getEntityName().toLowerCase().replace("entity", "");
 		String fileName = savePath+ jspPreName + "_edit.jsp";
 		
@@ -1372,17 +1374,17 @@ public class BeanUtils {
 		String formEleStr=createFormElement(mainList,true);
 		String validateFormStr=createValidateFormFunc(detailList);
 		
-		EntityInfo subInfo=new EntityInfo();
+		MappingTableEntity subInfo=new MappingTableEntity ();
 		org.apache.commons.beanutils.BeanUtils.copyProperties(subInfo, info);
-		subInfo.setTitle(info.getTitle()+"子表");
+		subInfo.setEntityChinese(info.getEntityChinese()+"子表");
 		subInfo.setEntityName((info.getEntityName().replace("Entity", "")+"SubEntity"));
-		subInfo.setReqMappingPath(info.getReqMappingPath()+"Sub");
+		subInfo.setControllerPath(info.getControllerPath()+"Sub");
 		subInfo.setMain(false);
 		
 		//创建form元素end
 		String fileStr=readFileByLines("mainSonWebEdit.txt",formEleStr,validateFormStr,"");
-		fileStr=fileStr.replaceAll("#title#", info.getTitle());
-		fileStr=fileStr.replaceAll("#serviceurl#", info.getReqMappingPath());
+		fileStr=fileStr.replaceAll("#title#", info.getEntityChinese());
+		fileStr=fileStr.replaceAll("#serviceurl#", info.getControllerPath());
 		fileStr=fileStr.replaceAll("#jspPreName#", jspPreName);
 		fileStr=fileStr.replaceAll("#tableCols#", createTableCols(subInfo,subList,false,true,action_Del));
 		fileStr=fileStr.replaceAll("#subTableTHeadThs#", subThs.toString());
@@ -1405,7 +1407,7 @@ public class BeanUtils {
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 */
-	public static void createJspMainSonDetail(EntityInfo info, List<ColInfo> list) throws IOException, IllegalAccessException, InvocationTargetException {
+	public static void createJspMainSonDetail(MappingTableEntity info, List<ColInfo> list) throws IOException, IllegalAccessException, InvocationTargetException {
 		String jspPreName=info.getEntityName().toLowerCase().replace("entity", "");
 		String fileName = savePath+ jspPreName + "_detail.jsp";
 		
@@ -1439,17 +1441,17 @@ public class BeanUtils {
 		String formEleStr=createFormElement(mainList,true);
 		String validateFormStr="";//createValidateFormFunc(detailList);
 		
-		EntityInfo subInfo=new EntityInfo();
+		MappingTableEntity subInfo=new MappingTableEntity ();
 		org.apache.commons.beanutils.BeanUtils.copyProperties(subInfo, info);
-		subInfo.setTitle(info.getTitle()+"子表");
+		subInfo.setEntityChinese(info.getEntityChinese()+"子表");
 		subInfo.setEntityName((info.getEntityName().replace("Entity", "")+"SubEntity"));
-		subInfo.setReqMappingPath(info.getReqMappingPath()+"Sub");
+		subInfo.setControllerPath(info.getControllerPath()+"Sub");
 		subInfo.setMain(false);
 		
 		//创建form元素end
 		String fileStr=readFileByLines("mainSonDetail.txt",formEleStr,validateFormStr,"");
-		fileStr=fileStr.replaceAll("#title#", info.getTitle());
-		fileStr=fileStr.replaceAll("#serviceurl#", info.getReqMappingPath());
+		fileStr=fileStr.replaceAll("#title#", info.getEntityChinese());
+		fileStr=fileStr.replaceAll("#serviceurl#", info.getControllerPath());
 		fileStr=fileStr.replaceAll("#jspPreName#", jspPreName);
 		fileStr=fileStr.replaceAll("#tableCols#", createTableCols(subInfo,subList,false,false,null));
 		fileStr=fileStr.replaceAll("#subTableTHeadThs#", subThs.toString());
@@ -1465,7 +1467,7 @@ public class BeanUtils {
 	}
 	
 	
-	public static void createJspMainSonWebDetail(EntityInfo info, List<ColInfo> list) throws IOException, IllegalAccessException, InvocationTargetException {
+	public static void createJspMainSonWebDetail(MappingTableEntity info, List<ColInfo> list) throws IOException, IllegalAccessException, InvocationTargetException {
 		String jspPreName=info.getEntityName().toLowerCase().replace("entity", "");
 		String fileName = savePath+ jspPreName + "_detail.jsp";
 		
@@ -1499,17 +1501,17 @@ public class BeanUtils {
 		String formEleStr=createFormElement(mainList,true);
 		String validateFormStr="";//createValidateFormFunc(detailList);
 		
-		EntityInfo subInfo=new EntityInfo();
+		MappingTableEntity subInfo=new MappingTableEntity();
 		org.apache.commons.beanutils.BeanUtils.copyProperties(subInfo, info);
-		subInfo.setTitle(info.getTitle()+"子表");
+		subInfo.setEntityChinese(info.getEntityChinese()+"子表");
 		subInfo.setEntityName((info.getEntityName().replace("Entity", "")+"SubEntity"));
-		subInfo.setReqMappingPath(info.getReqMappingPath()+"Sub");
+		subInfo.setControllerPath(info.getControllerPath()+"Sub");
 		subInfo.setMain(false);
 		
 		//创建form元素end
 		String fileStr=readFileByLines("mainSonWebDetail.txt",formEleStr,validateFormStr,"");
-		fileStr=fileStr.replaceAll("#title#", info.getTitle());
-		fileStr=fileStr.replaceAll("#serviceurl#", info.getReqMappingPath());
+		fileStr=fileStr.replaceAll("#title#", info.getEntityChinese());
+		fileStr=fileStr.replaceAll("#serviceurl#", info.getControllerPath());
 		fileStr=fileStr.replaceAll("#jspPreName#", jspPreName);
 		fileStr=fileStr.replaceAll("#tableCols#", createTableCols(subInfo,subList,false,false,null));
 		fileStr=fileStr.replaceAll("#subTableTHeadThs#", subThs.toString());
@@ -1589,11 +1591,11 @@ public class BeanUtils {
 	}
 	
 	
-	private static String createListContent(EntityInfo info,List<ColInfo> list){
+	private static String createListContent(MappingTableEntity info,List<ColInfo> list){
 		StringBuilder sb=new StringBuilder();
 		sb.append("	<div id=\"yy-page\" class=\"container-fluid page-container\">").append(RT_1);
 		
-		if(!info.getGenType().equals(EntityInfo.GENTYPE_REFLISTSELECT)){//列表参照选择
+		if(!info.getTemplateType().equals(EntityInfo.GENTYPE_REFLISTSELECT)){//列表参照选择
 			sb.append("		<div class=\"page-content\" id=\"yy-page-list\">").append(RT_1);
 			sb.append("			<div class=\"row yy-toolbar\">").append(RT_1);
 			sb.append("				<button id=\"yy-btn-add\" class=\"btn blue btn-sm\">").append(RT_1);
@@ -1649,7 +1651,7 @@ public class BeanUtils {
 		sb.append("						<tr>").append(RT_1);
 		sb.append("							<th style=\"width: 30px;\">序号</th>").append(RT_1);
 		
-		if(!info.getGenType().equals(EntityInfo.GENTYPE_REFLISTSELECT)){//列表参照选择
+		if(!info.getTemplateType().equals(EntityInfo.GENTYPE_REFLISTSELECT)){//列表参照选择
 			sb.append("							<th class=\"table-checkbox\">").append(RT_1);
 			sb.append("								<input type=\"checkbox\" class=\"group-checkable\" data-set=\"#yy-table-list .checkboxes\"/>").append(RT_1);
 			sb.append("							</th>").append(RT_1);
@@ -1676,7 +1678,7 @@ public class BeanUtils {
 	 * @param list
 	 * @return
 	 */
-	private static String createTableCols(EntityInfo info,List<ColInfo> list,boolean isShowCheckBox,boolean isRenderEdit,String actionCol){
+	private static String createTableCols(MappingTableEntity info,List<ColInfo> list,boolean isShowCheckBox,boolean isRenderEdit,String actionCol){
 		StringBuilder sb=new StringBuilder();
 		if(info.isMain()){
 			sb.append("		var _tableCols = [ {").append(RT_1);
@@ -1688,7 +1690,7 @@ public class BeanUtils {
 		sb.append("				className : \"center\",").append(RT_1);
 		sb.append("				width : \"50\"").append(RT_1);
 		
-		if(info.getGenType().equals(EntityInfo.GENTYPE_REFLISTSELECT)){//列表参照选择
+		if(info.getTemplateType().equals(EntityInfo.GENTYPE_REFLISTSELECT)){//列表参照选择
 			sb.append("			},{").append(RT_1);
 			sb.append("				data : \"uuid\",").append(RT_1);
 			sb.append("				className : \"center\",").append(RT_1);
@@ -1923,8 +1925,8 @@ public class BeanUtils {
 	 * @return void 返回类型 
 	 * @throws
 	 */
-	public static void appendFileAnno(EntityInfo enInfo,StringBuilder sb){
-		sb.append(RT_1).append("/**"+RT_1+BLANK_1+"*"+BLANK_1+enInfo.getTitle() +RT_1);//类注释
+	public static void appendFileAnno(MappingTableEntity enInfo,StringBuilder sb){
+		sb.append(RT_1).append("/**"+RT_1+BLANK_1+"*"+BLANK_1+enInfo.getEntityChinese() +RT_1);//类注释
 		sb.append(BLANK_1+"*"+BLANK_1+"@author "+enInfo.getAuthor() +RT_1);
 		sb.append(BLANK_1+"*"+BLANK_1+"@date " +getDate()+RT_1);
 		sb.append(BLANK_1+"*/"+RT_1);

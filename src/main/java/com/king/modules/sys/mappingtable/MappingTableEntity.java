@@ -66,6 +66,8 @@ public class MappingTableEntity extends BaseEntity {
 	@Column(name="extends_entity",length =250)
 	private String extendsEntity;
 
+	private boolean isMain=true;//是否主表
+	private String author;//作者
 		
 	public String getTemplateType() {
 		return templateType;
@@ -154,5 +156,22 @@ public class MappingTableEntity extends BaseEntity {
 	public void setTemplateName(String templateName) {
 		this.templateName = templateName;
 	}
+
+	public boolean isMain() {
+		return isMain;
+	}
+
+	public void setMain(boolean isMain) {
+		this.isMain = isMain;
+	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+	
 
 }
