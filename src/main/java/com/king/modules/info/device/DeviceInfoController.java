@@ -15,14 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.socket.TextMessage;
 
 import com.king.common.fileupload.FileUploadHandle;
 import com.king.common.utils.QRCodeUtil;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.BaseController;
 import com.king.frame.controller.QueryRequest;
-import com.king.frame.websocket.YyWebSocketHandler;
 import com.king.modules.sys.param.ParameterUtil;
 
 /**
@@ -37,8 +35,6 @@ public class DeviceInfoController extends BaseController<DeviceInfoEntity> {
 
 	@Autowired
 	private DeviceInfoService service;
-	@Autowired
-	private YyWebSocketHandler webSocketHandler;
 
 	
 	@RequestMapping(value = "/querySationDevice")
@@ -75,7 +71,6 @@ public class DeviceInfoController extends BaseController<DeviceInfoEntity> {
 	 */
 	@RequestMapping("/list")
 	public String listView(ServletRequest request,Model model) {
-		webSocketHandler.sendMessageToUser("5bd60c1d-ffb3-46de-84ae-9d996d007e9f", new TextMessage("发送消息》》》》》》》》》》》》》》》》》》》"));
 		return "modules/info/device/device_list";
 	}
 

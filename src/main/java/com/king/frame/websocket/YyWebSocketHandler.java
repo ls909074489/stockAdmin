@@ -2,6 +2,7 @@ package com.king.frame.websocket;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.stereotype.Component;
@@ -112,6 +113,10 @@ public class YyWebSocketHandler extends TextWebSocketHandler {
 			System.out.println("消息推动失败。。。。。。。。。。");
 		}
 
+	}
+	
+	public List<WebSocketSession> getAllSession(){
+		return users;
 	}
 
 }

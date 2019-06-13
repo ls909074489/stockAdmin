@@ -52,47 +52,12 @@
 						<label class="control-label col-md-4">设备类型</label>
 						<div class="col-md-8">
 							<select class="yy-input-enumdata form-control" id="tid" 
-								name="tid" data-enum-group="DeviceType"></select>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-4">
-					<div class="form-group">
-						<label class="control-label col-md-4">间隔</label>
-						<div class="col-md-8">
-							<div class="input-group">
-								<input name="interval.uuid" id="intervalUuid" type="hidden" value="${entity.interval.uuid}"/>
-								<input name="intervalName" id="intervalName" type="text" 
-									class="form-control" readonly="readonly" value="${entity.interval.name}">
-								<span class="input-group-btn">
-									<button id="interval-select-btn" class="btn btn-default btn-ref" type="button">
-										<span class="glyphicon glyphicon-search"></span>
-									</button>
-								</span>
-							</div>
+								name="tid" data-enum-group="MaterialClass"></select>
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-md-4">
-					<div class="form-group">
-						<label class="control-label col-md-4">生产厂商</label>
-						<div class="col-md-8">
-							<div class="input-group input-icon right">
-									<input id="supplierUuid" name="supplier.uuid" type="hidden" value="${entity.supplier.uuid}"> 
-									<i class="fa fa-remove" onclick="cleanDef('supplierUuid','supplierName');" title="清空"></i>
-									<input id="supplierName" name="supplierName" type="text" class="form-control" readonly="readonly" 
-										disabled="disabled" value="${entity.supplier.name}">
-									<span class="input-group-btn">
-										<button id="supplier-select-btn" class="btn btn-default btn-ref" type="button">
-											<span class="glyphicon glyphicon-search"></span>
-										</button>
-									</span>
-								</div>
-						</div>
-					</div>
-				</div>
 				<div class="col-md-4">
 					<div class="form-group">
 						<label class="control-label col-md-4">出厂时间</label>
@@ -127,14 +92,6 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-md-4">
-						<div class="form-group">
-							<label class="control-label col-md-4">通道参数</label>
-							<div class="col-md-8">
-								<input name="argument" type="text" class="form-control" value="${entity.argument}">
-							</div>
-						</div>
-					</div>
 			</div>
 			<div class="row">
 				<div class="col-md-4">
@@ -142,7 +99,15 @@
 						<label class="control-label col-md-4">设备状态</label>
 						<div class="col-md-8">
 							<select class="yy-input-enumdata form-control" id="deviceStatus" 
-								name="deviceStatus" data-enum-group="DeviceStatus"></select>
+								name="deviceStatus" data-enum-group="WorkingProcedure"></select>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="control-label col-md-4">通道参数</label>
+						<div class="col-md-8">
+							<input name="argument" type="text" class="form-control" value="${entity.argument}">
 						</div>
 					</div>
 				</div>
