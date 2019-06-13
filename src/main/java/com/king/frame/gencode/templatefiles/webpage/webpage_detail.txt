@@ -1,0 +1,15 @@
+<%@ page contentType="text/html;charset=UTF-8"%>
+<div class="page-content hide" id="yy-page-detail">
+	<div class="row yy-toolbar">
+		<button id="yy-btn-backtolist" class="btn blue btn-sm">
+			<i class="fa fa-mail-reply"></i> 返回
+		</button>
+	</div>
+	
+	<div class="row">
+		<form id="yy-form-detail"  class="form-horizontal yy-form-detail">
+			<input name="uuid" type="hidden"/>
+			#formElements#
+		</form>
+	</div>
+</div>

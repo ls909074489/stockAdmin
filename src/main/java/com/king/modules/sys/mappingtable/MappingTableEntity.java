@@ -22,6 +22,18 @@ public class MappingTableEntity extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 
+	public static String GENTYPE_WEBPAGE="1";//普通列表（前端分页）
+	public static String GENTYPE_SERVERPAGE="2";//普通列表（服务器分页）
+	public static String GENTYPE_TREEMAINPAGE="3";// 树状结构
+	public static String GENTYPE_TREELISTPAGE="4";// 左树右列表
+	public static String GENTYPE_MAINSON_SERVERPAGE="5";// 主子表（服务器分页）
+	public static String GENTYPE_MAINSON_WEBPAGE="6";// 主子表（前端分页）
+	
+	
+	public static String GENTYPE_REFLISTSELECT="11";// 列表单选
+	public static String GENTYPE_REFTREESELECT="12";// 树单选
+	
+	
 	@MetaData(value = "模板名称")
 	@Column(name="template_name",length =250)
 	private String templateName;

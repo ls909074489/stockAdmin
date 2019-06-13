@@ -13,6 +13,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.beanutils.converters.DateConverter;
 import org.springframework.util.StringUtils;
 import com.king.modules.sys.mappingtable.MappingTableEntity;
 import com.king.modules.sys.mappingtable.MappingTableSubEntity;
@@ -40,17 +43,24 @@ public class BeanUtils {
 	//文件 地址
 	private static final String savePath="D:\\codes\\";
 	
+	private static String getTab(int count){
+		StringBuilder str = new StringBuilder();
+		for(int i=0;i<count;i++){
+			str.append(TAB_1);
+		}
+		return str.toString();
+	}
 	
 	public static void main(String[] args) throws Exception{
 		MappingTableEntity info=new MappingTableEntity();
-		info.setEntityName("AdddEntity");
+		info.setEntityName("TestMaterialEntity");
 		info.setExtendsEntity("BaseEntity");
-		info.setPackageName("com.yy.modules.ver.auditCols");
+		info.setPackageName("com.king.frame.gencode.test1");
 		info.setEntityChinese("测试111");
 		info.setAuthor("ls2008");
 		info.setControllerPath("/ver/test1");
 		info.setJspPath("modules/ver/test1");//jsp路径
-		info.setTemplateType(EntityInfo.GENTYPE_MAINSON_SERVERPAGE);
+		info.setTemplateType(MappingTableEntity.GENTYPE_SERVERPAGE);
 		
 		
 		
@@ -102,7 +112,7 @@ public class BeanUtils {
 		col.setEleType(MappingTableSubEntity.EleType.SELECT);
 		list.add(col);
 		col=new MappingTableSubEntity();
-		col.setColName("type111");
+		col.setColName("memo");
 		col.setColType("String");
 		col.setColLength(36);
 		col.setColDesc("备注");
@@ -111,40 +121,40 @@ public class BeanUtils {
 		list.add(col);
 		
 		//子表=======================
-		col=new MappingTableSubEntity();
-		col.setColName("subcode");
-		col.setColType("String");
-		col.setColLength(36);
-		col.setColDesc("编码");
-		col.setEleType(MappingTableSubEntity.EleType.TEXT);
-		col.setMain(false);
-		col.setColCount(1);
-		list.add(col);
-		col=new MappingTableSubEntity();
-		col.setColName("subname");
-		col.setColType("String");
-		col.setColLength(36);
-		col.setColDesc("名称");
-		col.setEleType(MappingTableSubEntity.EleType.TEXT);
-		col.setMain(false);
-		list.add(col);
-		col=new MappingTableSubEntity();
-		col.setColName("sex");
-		col.setColType("String");
-		col.setColLength(36);
-		col.setColDesc("性别");
-		col.setEleType(MappingTableSubEntity.EleType.SELECT);
-		col.setMain(false);
-		list.add(col);
-		col=new MappingTableSubEntity();
-		col.setColName("birthdate");
-		col.setColType("Date");
-		col.setColLength(36);
-		col.setColDesc("日期");
-		col.setEleType(MappingTableSubEntity.EleType.DATE);
-		col.setMain(false);
-		col.setColCount(1);
-		list.add(col);
+//		col=new MappingTableSubEntity();
+//		col.setColName("subcode");
+//		col.setColType("String");
+//		col.setColLength(36);
+//		col.setColDesc("编码");
+//		col.setEleType(MappingTableSubEntity.EleType.TEXT);
+//		col.setMain(false);
+//		col.setColCount(1);
+//		list.add(col);
+//		col=new MappingTableSubEntity();
+//		col.setColName("subname");
+//		col.setColType("String");
+//		col.setColLength(36);
+//		col.setColDesc("名称");
+//		col.setEleType(MappingTableSubEntity.EleType.TEXT);
+//		col.setMain(false);
+//		list.add(col);
+//		col=new MappingTableSubEntity();
+//		col.setColName("sex");
+//		col.setColType("String");
+//		col.setColLength(36);
+//		col.setColDesc("性别");
+//		col.setEleType(MappingTableSubEntity.EleType.SELECT);
+//		col.setMain(false);
+//		list.add(col);
+//		col=new MappingTableSubEntity();
+//		col.setColName("birthdate");
+//		col.setColType("Date");
+//		col.setColLength(36);
+//		col.setColDesc("日期");
+//		col.setEleType(MappingTableSubEntity.EleType.DATE);
+//		col.setMain(false);
+//		col.setColCount(1);
+//		list.add(col);
 		
 		//生成实体==================================================================================
 		
@@ -173,6 +183,7 @@ public class BeanUtils {
 			//创建字表实体
 			if(subList!=null&&subList.size()>0){
 				MappingTableEntity subInfo=new MappingTableEntity ();
+				ConvertUtils.register(new DateConverter(null), java.util.Date.class);
 				org.apache.commons.beanutils.BeanUtils.copyProperties(subInfo, info);
 				subInfo.setEntityChinese(info.getEntityChinese()+"子表");
 				subInfo.setEntityName((info.getEntityName().replace("Entity", "")+"SubEntity"));
@@ -185,27 +196,31 @@ public class BeanUtils {
 			}
 		}
 		
-		
-		if(info.getTemplateType().equals(EntityInfo.GENTYPE_SERVERPAGE)){
+		//生成页面
+		if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_WEBPAGE)){//普通列表（前端分页）
+			createWebPageMain(info,list);
+			createWebPageEdit(info,list);
+			createWebPageDetail(info,list);
+		}else if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_SERVERPAGE)){//普通列表（服务器分页）
 			createJspList(info,list);
 			createJspEdit(info,list);
 			createJspDetail(info,list);
-		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){
+		}else if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_TREEMAINPAGE)){// 树状结构
 			createJspTreeMain(info, list);
-		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_TREELISTPAGE)){
+		}else if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_TREELISTPAGE)){// 左树右列表
 			createJspTreeList(info, list);
 			createJspEdit(info,list);
 			createJspDetail(info,list);
-		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_REFLISTSELECT)){
+		}else if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_REFLISTSELECT)){// 列表单选
 			createJspRefList(info,list);
-		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_REFTREESELECT)){
+		}else if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_REFTREESELECT)){// 树单选
 			createJspRefTree(info,list);
-		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_MAINSON_SERVERPAGE)){//主子表（服务器分页）
+		}else if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_MAINSON_SERVERPAGE)){//主子表（服务器分页）
 			createJspList(info,mainList);
 			createJspMainSonAdd(info,list);
 			createJspMainSonEdit(info,list);
 			createJspMainSonDetail(info,list);
-		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_MAINSON_WEBPAGE)){//主子表（前端分页）
+		}else if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_MAINSON_WEBPAGE)){//主子表（前端分页）
 			createJspList(info,mainList);
 			createJspMainSonAdd(info,list);
 			createJspMainSonWebEdit(info,list);
@@ -213,6 +228,8 @@ public class BeanUtils {
 		}
 	}
 
+
+	
 
 	public static void createEntity(MappingTableEntity info,List<MappingTableSubEntity> list) throws IOException{
 		String entityName=getUppercaseChar(info.getEntityName());
@@ -238,17 +255,17 @@ public class BeanUtils {
 			sb.append("import com.fasterxml.jackson.annotation.JsonFormat;").append(RT_1);
 		}
 		sb.append("import javax.persistence.Column;").append(RT_1);
-		if(info.getTemplateType().equals(EntityInfo.GENTYPE_SERVERPAGE)){
-			sb.append("import com.yy.frame.entity.BaseEntity;").append(RT_1);
-		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){
-			sb.append("import com.yy.frame.entity.TreeEntity;").append(RT_1);
+		if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_SERVERPAGE)){
+			sb.append("import com.king.frame.entity.BaseEntity;").append(RT_1);
+		}else if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_TREEMAINPAGE)){
+			sb.append("import com.king.frame.entity.TreeEntity;").append(RT_1);
 			sb.append("import com.fasterxml.jackson.annotation.JsonIgnoreProperties;").append(RT_1);
 			sb.append("import javax.persistence.FetchType;").append(RT_1);
 			sb.append("import javax.persistence.JoinColumn;").append(RT_1);
 			sb.append("import javax.persistence.ManyToOne;").append(RT_1);
 			sb.append("import javax.persistence.CascadeType;").append(RT_1);
 		}else{
-			sb.append("import com.yy.frame.entity.BaseEntity;").append(RT_1);
+			sb.append("import com.king.frame.entity.BaseEntity;").append(RT_1);
 		}
 		if(!info.isMain()){
 			sb.append("import javax.persistence.CascadeType;").append(RT_1);
@@ -259,7 +276,7 @@ public class BeanUtils {
 			sb.append("import ").append(info.getPackageName()).append(".").append(entityName.replace("Sub", "")).append(";").append(RT_1);
 		}
 		
-		sb.append("import com.yy.common.annotation.MetaData;").append(RT_1);
+		sb.append("import com.king.common.annotation.MetaData;").append(RT_1);
 		sb.append("import javax.persistence.Entity;").append(RT_1);
 		sb.append("import javax.persistence.Table;").append(RT_1);
 		sb.append("import org.hibernate.annotations.Cache;").append(RT_1);
@@ -283,9 +300,9 @@ public class BeanUtils {
 		sb.append("@DynamicInsert").append(RT_1);
 		sb.append("@DynamicUpdate").append(RT_1);
 		sb.append("@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)").append(RT_1);
-		if(info.getTemplateType().equals(EntityInfo.GENTYPE_SERVERPAGE)){
+		if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_SERVERPAGE)){
 			sb.append("public class " + entityName + " extends "+info.getExtendsEntity()+" {"+RT_2);
-		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){
+		}else if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_TREEMAINPAGE)){
 			sb.append("public class " + entityName + " extends TreeEntity {"+RT_2);
 		}else{
 			sb.append("public class " + entityName + " extends "+info.getExtendsEntity()+" {"+RT_2);
@@ -293,12 +310,12 @@ public class BeanUtils {
 		
 		sb.append("	private static final long serialVersionUID = 1L;"+RT_2);
 		
-		if(info.getTemplateType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){//树状
+		if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_TREEMAINPAGE)){//树状
 			sb.append("	@ManyToOne(cascade = { CascadeType.REFRESH }, fetch = FetchType.LAZY)").append(RT_1);
 			sb.append("	@JoinColumn(name = \"parentid\")").append(RT_1);
 			sb.append("	@JsonIgnoreProperties({\"hibernateLazyInitializer\", \"handler\"})").append(RT_1);
 			sb.append("	private ").append(entityName).append(" parent;").append(RT_2);
-		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_MAINSON_SERVERPAGE)&&!info.isMain()){//主子表
+		}else if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_MAINSON_SERVERPAGE)&&!info.isMain()){//主子表
 			sb.append("	@ManyToOne(cascade = { CascadeType.REFRESH }, fetch = FetchType.LAZY)").append(RT_1);
 			sb.append("	@JoinColumn(name = \"mainid\")").append(RT_1);
 			sb.append("	@JsonIgnoreProperties({\"hibernateLazyInitializer\", \"handler\"})").append(RT_1);
@@ -325,14 +342,14 @@ public class BeanUtils {
 		
 		
 		//生成getter和setter方法
-		if(info.getTemplateType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){//树状
+		if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_TREEMAINPAGE)){//树状
 			sb.append("	public ").append(entityName).append(" getParent() {").append(RT_1);
 			sb.append("		return parent;").append(RT_1);
 			sb.append("	}").append(RT_1);
 			sb.append("	public void setParent(").append(entityName).append(" parent) {").append(RT_1);
 			sb.append("		this.parent = parent;").append(RT_1);
 			sb.append("	}").append(RT_1);
-		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_MAINSON_SERVERPAGE)&&!info.isMain()){//主子表
+		}else if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_MAINSON_SERVERPAGE)&&!info.isMain()){//主子表
 			sb.append("	public ").append(entityName.replace("Sub", "")).append(" getMain() {").append(RT_1);
 			sb.append("		return main;").append(RT_1);
 			sb.append("	}").append(RT_1);
@@ -347,7 +364,7 @@ public class BeanUtils {
 			sb.append(TAB_2).append("this.").append(col.getColName()).append(" = ").append(col.getColName()).append(";").append(RT_1).append("	}").append(RT_2);
 		}
 		
-		if(info.getTemplateType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){//树状
+		if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_TREEMAINPAGE)){//树状
 			sb.append("	@Override").append(RT_1);
 			sb.append("	public String getParentId() {").append(RT_1);
 			sb.append("		if(parent!=null&&parent.getUuid()!=null){").append(RT_1);
@@ -389,7 +406,7 @@ public class BeanUtils {
 		StringBuilder sb=new StringBuilder();
 		sb.append("package "+info.getPackageName()+";"+RT_2);
 		
-		sb.append("import com.yy.frame.dao.IBaseDAO;").append(RT_1);
+		sb.append("import com.king.frame.dao.IBaseDAO;").append(RT_1);
 		sb.append("import org.springframework.stereotype.Repository;").append(RT_1);
 		
 		appendFileAnno(info, sb);//类备注
@@ -432,19 +449,19 @@ public class BeanUtils {
 		StringBuilder sb=new StringBuilder();
 		sb.append("package "+info.getPackageName()+";"+RT_2);
 		
-		sb.append("import com.yy.frame.dao.IBaseDAO;").append(RT_1);
+		sb.append("import com.king.frame.dao.IBaseDAO;").append(RT_1);
 		
-		if(info.getTemplateType().equals(EntityInfo.GENTYPE_SERVERPAGE)){
-			sb.append("import com.yy.frame.service.BaseServiceImpl;").append(RT_1);
-		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){
-			sb.append("import com.yy.frame.service.TreeServiceImpl;").append(RT_1);
+		if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_SERVERPAGE)){
+			sb.append("import com.king.frame.service.BaseServiceImpl;").append(RT_1);
+		}else if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_TREEMAINPAGE)){
+			sb.append("import com.king.frame.service.TreeServiceImpl;").append(RT_1);
 		}else{
-			sb.append("import com.yy.frame.service.BaseServiceImpl;").append(RT_1);
+			sb.append("import com.king.frame.service.BaseServiceImpl;").append(RT_1);
 		}
 		
-		if(info.getTemplateType().equals(EntityInfo.GENTYPE_MAINSON_SERVERPAGE)&&!entityName.contains("Sub")){//主表才生成方法
+		if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_MAINSON_SERVERPAGE)&&!entityName.contains("Sub")){//主表才生成方法
 			sb.append("import java.util.List;").append(RT_1);
-			sb.append("import com.yy.frame.controller.ActionResultModel;").append(RT_1);
+			sb.append("import com.king.frame.controller.ActionResultModel;").append(RT_1);
 		}
 		sb.append("import org.springframework.stereotype.Service;").append(RT_1);
 		sb.append("import org.springframework.transaction.annotation.Transactional;").append(RT_1);
@@ -453,9 +470,9 @@ public class BeanUtils {
 		appendFileAnno(info, sb);//类备注
 		sb.append("@Service").append(RT_1).append("@Transactional(readOnly=true)").append(RT_1);
 		
-		if(info.getTemplateType().equals(EntityInfo.GENTYPE_SERVERPAGE)){
+		if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_SERVERPAGE)){
 			sb.append("public class " + serviceName + " extends BaseServiceImpl<"+entityName+",String> {"+RT_2);
-		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){
+		}else if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_TREEMAINPAGE)){
 			sb.append("public class " + serviceName + " extends TreeServiceImpl<"+entityName+",String> {"+RT_2);
 		}else{
 			sb.append("public class " + serviceName + " extends BaseServiceImpl<"+entityName+",String> {"+RT_2);
@@ -463,7 +480,7 @@ public class BeanUtils {
 		
 		sb.append("	@Autowired").append(RT_1);
 		sb.append("	private ").append(daoName).append(" dao;").append(RT_1);
-		if(info.getTemplateType().equals(EntityInfo.GENTYPE_MAINSON_SERVERPAGE)&&!entityName.contains("Sub")){//主表才生成方法
+		if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_MAINSON_SERVERPAGE)&&!entityName.contains("Sub")){//主表才生成方法
 			sb.append("	@Autowired").append(RT_1);
 			sb.append("	private ").append(serviceName.replace("Service", "SubService")).append(" subService;").append(RT_1);
 		}
@@ -474,7 +491,7 @@ public class BeanUtils {
 		sb.append("		return dao;").append(RT_1);
 		sb.append("	}").append(RT_2);
 		
-		if(info.getTemplateType().equals(EntityInfo.GENTYPE_MAINSON_SERVERPAGE)&&!entityName.contains("Sub")){//主表才生成方法
+		if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_MAINSON_SERVERPAGE)&&!entityName.contains("Sub")){//主表才生成方法
 			sb.append("	/**").append(RT_1);
 			sb.append("	 * @Title: saveSelfAndSubList").append(RT_1); 
 			sb.append("	 * @author ").append(info.getAuthor()).append(RT_1);
@@ -545,41 +562,42 @@ public class BeanUtils {
 		List<String> importList=new ArrayList<String>();
 		importList.add("import javax.servlet.ServletRequest;");
 
-		if(info.getTemplateType().equals(EntityInfo.GENTYPE_SERVERPAGE)){
-			importList.add("import com.yy.frame.controller.BaseController;");
-		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){
-			importList.add("import com.yy.frame.controller.TreeController;");
+		if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_SERVERPAGE)){//普通列表（服务器分页）
+			importList.add("import com.king.frame.controller.BaseController;");
+		}else if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_TREEMAINPAGE)){// 树状结构
+			importList.add("import com.king.frame.controller.TreeController;");
 			importList.add("import java.util.List;");
 			importList.add("import java.util.ArrayList;");
-			importList.add("import com.yy.common.bean.TreeBaseBean;");
+			importList.add("import com.king.common.bean.TreeBaseBean;");
 			importList.add("import org.springframework.web.bind.annotation.ResponseBody;");
 		}else{
-			importList.add("import com.yy.frame.controller.BaseController;");
+			importList.add("import com.king.frame.controller.BaseController;");
 		}
 		importList.add("import org.springframework.stereotype.Controller;");
 		importList.add("import org.springframework.web.bind.annotation.RequestMapping;");
 		importList.add("import org.springframework.beans.factory.annotation.Autowired;");
 		if(!info.isMain()){//子表
-			importList.add("import com.yy.frame.controller.ActionResultModel;");
+			importList.add("import com.king.frame.controller.ActionResultModel;");
 			importList.add("import org.springframework.util.StringUtils;");
+			importList.add("import org.springframework.ui.Model;");
 		}else{
 			importList.add("import org.springframework.ui.Model;");
-			importList.add("import net.sf.json.JSONObject;");
+//			importList.add("import net.sf.json.JSONObject;");
 			importList.add("import org.springframework.stereotype.Controller;");
-			importList.add("import org.springframework.web.bind.annotation.ModelAttribute;");
+//			importList.add("import org.springframework.web.bind.annotation.ModelAttribute;");
 			importList.add("import org.springframework.web.bind.annotation.RequestMapping;");
-			importList.add("import org.springframework.web.bind.annotation.RequestParam;");
-			importList.add("import org.springframework.web.bind.annotation.ResponseBody;");
+//			importList.add("import org.springframework.web.bind.annotation.RequestParam;");
+//			importList.add("import org.springframework.web.bind.annotation.ResponseBody;");
 			importList.add("import org.springframework.beans.factory.annotation.Autowired;");
-			importList.add("import org.springframework.dao.DataIntegrityViolationException;");
-			importList.add("import java.io.UnsupportedEncodingException;");
-			importList.add("import java.net.URLDecoder;");
-			importList.add("import java.util.ArrayList;");
-			importList.add("import java.util.List;");
+//			importList.add("import org.springframework.dao.DataIntegrityViolationException;");
+//			importList.add("import java.io.UnsupportedEncodingException;");
+//			importList.add("import java.net.URLDecoder;");
+//			importList.add("import java.util.ArrayList;");
+//			importList.add("import java.util.List;");
 			importList.add("import javax.servlet.ServletRequest;");
-			importList.add("import javax.validation.Valid;");
-			importList.add("import com.yy.common.utils.Constants;");
-			importList.add("import com.yy.frame.controller.ActionResultModel;");
+//			importList.add("import javax.validation.Valid;");
+//			importList.add("import com.king.common.utils.Constants;");
+//			importList.add("import com.king.frame.controller.ActionResultModel;");
 		}
 		for(String s:importList){
 			importMap.put(s, s);
@@ -596,9 +614,9 @@ public class BeanUtils {
 		}
 		
 		
-		if(info.getTemplateType().equals(EntityInfo.GENTYPE_SERVERPAGE)){
+		if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_SERVERPAGE)){
 			sb.append("public class " + controllerName + " extends BaseController<"+entityName+"> {"+RT_2);
-		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){
+		}else if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_TREEMAINPAGE)){
 			sb.append("public class " + controllerName + " extends TreeController<"+entityName+"> {"+RT_2);
 		}else{
 			sb.append("public class " + controllerName + " extends BaseController<"+entityName+"> {"+RT_2);
@@ -627,7 +645,7 @@ public class BeanUtils {
 		
 		
 		//生成对应controller方法
-		if(info.getTemplateType().equals(EntityInfo.GENTYPE_TREEMAINPAGE)){
+		if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_TREEMAINPAGE)){
 			sb.append("	/**").append(RT_1);
 			sb.append("	 * ").append(RT_1);
 			sb.append("	 * @Title: listView").append(RT_1); 
@@ -658,13 +676,13 @@ public class BeanUtils {
 			sb.append("		}").append(RT_1);
 			sb.append("		return treeList;").append(RT_1);
 			sb.append("	}").append(RT_1);
-		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_REFLISTSELECT)){// 列表单选
+		}else if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_REFLISTSELECT)){// 列表单选
 			sb.append("	@RequestMapping(\"/ref").append(getUppercaseChar(jspPreName)).append("Sel\")").append(RT_1);
 			sb.append("	public String ref").append(getUppercaseChar(jspPreName)).append("Sel(Model model, ServletRequest request) {").append(RT_1);
 			sb.append("		model.addAttribute(\"callBackMethod\",request.getParameter(\"callBackMethod\"));").append(RT_1);
 			sb.append("		return \"modules/ref/").append(jspPreName).append("_ref_select\";").append(RT_1);
 			sb.append("	}").append(RT_2);
-		}else if(info.getTemplateType().equals(EntityInfo.GENTYPE_MAINSON_SERVERPAGE)&&!info.isMain()){// 主子表
+		}else if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_MAINSON_SERVERPAGE)&&!info.isMain()){// 主子表
 			//子表不需要生成方法
 		}else{
 			sb.append("	/**").append(RT_1);
@@ -684,7 +702,7 @@ public class BeanUtils {
 
 			sb.append("	@Override").append(RT_1);
 			sb.append("	public String addView(Model model, ServletRequest request) {").append(RT_1);
-			if(info.getTemplateType().equals(EntityInfo.GENTYPE_MAINSON_SERVERPAGE)&&!info.isMain()){// 主子表
+			if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_MAINSON_SERVERPAGE)&&!info.isMain()){// 主子表
 				sb.append("		return \""+info.getJspPath()+"/"+jspPreName+"_add\";").append(RT_1);
 			}else{
 				sb.append("		return \""+info.getJspPath()+"/"+jspPreName+"_edit\";").append(RT_1);
@@ -702,7 +720,7 @@ public class BeanUtils {
 			sb.append("	}").append(RT_2);
 		}
 		
-		if(info.getTemplateType().equals(EntityInfo.GENTYPE_MAINSON_SERVERPAGE)&&!entityName.contains("Sub")){//主表才生成方法
+		if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_MAINSON_SERVERPAGE)&&!entityName.contains("Sub")){//主表才生成方法
 			sb.append("	/**").append(RT_1);
 			sb.append("	 * 新增主子表").append(RT_1);
 			sb.append("	 * @Title: addwithsub").append(RT_1); 
@@ -812,6 +830,55 @@ public class BeanUtils {
 		showInfo(fileName);
 	}
 
+	private static void createWebPageMain(MappingTableEntity info, List<MappingTableSubEntity> list) throws IOException {
+		String jspPreName=info.getEntityName().toLowerCase().replace("entity", "");
+		
+		String fileName = savePath+ jspPreName + "_main.jsp";
+		File file =  createFile(fileName);
+		FileWriter fw = new FileWriter(file);
+		
+		//创建form元素start
+		List<MappingTableSubEntity> detailList=new ArrayList<MappingTableSubEntity>();//明细页面显示的字段列
+		StringBuilder theadStr=new StringBuilder();//表头
+		StringBuilder showDataStr= new StringBuilder();
+		int i=0;
+		for(MappingTableSubEntity detail:list){
+			if(detail.isMain()&&detail.isListVisiable()){
+				theadStr.append(getTab(7)).append("<th>"+detail.getColDesc()+"</th>");
+				if(i<(list.size()-1)){
+					theadStr.append(RT_1);
+				}
+			}
+			if(detail.isDetailVisiable()){
+				if(detail.getEleType().equals(MappingTableSubEntity.EleType.SELECT)){
+					showDataStr.append(getTab(4)).append("$(\"select[name='"+detail.getColName()+"']\").val(treeNode.nodeData."+detail.getColName()+");"+RT_1);	
+				}else if(detail.getEleType().equals(MappingTableSubEntity.EleType.TEXTAREA)){
+					showDataStr.append(getTab(4)).append("$(\"textarea[name='"+detail.getColName()+"']\").val(treeNode.nodeData."+detail.getColName()+");"+RT_1);	
+				}else{
+					showDataStr.append(getTab(4)).append("$(\"input[name='"+detail.getColName()+"']\").val(treeNode.nodeData."+detail.getColName()+");"+RT_1);	
+				}
+			}
+			i++;
+		}
+		String formEleStr=createFormElement(list,true);
+		String validateFormStr=createValidateFormFunc(detailList);
+		
+		//创建form元素end
+		String fileStr=readFileByLines("webpage/webpage_main.txt",formEleStr,validateFormStr,showDataStr.toString());
+		fileStr=fileStr.replaceAll("#title#", info.getEntityChinese());
+		fileStr=fileStr.replaceAll("#serviceurl#", info.getControllerPath());
+		fileStr=fileStr.replaceAll("#theadTh#", theadStr.toString());
+		fileStr=fileStr.replaceAll("#jspPreName#", jspPreName);
+		fileStr=fileStr.replaceAll("#tableCols#", createTableCols(info,list,true,false,action_View_Edit_Del));
+		//创建list表格start
+//		fileStr=fileStr.replaceAll("#listContent#", createListContent(info,list));
+		//创建list表格end
+		
+		fw.write(fileStr);
+		fw.flush();
+		fw.close();
+		showInfo(fileName);
+	}
     
     
 	public static void createJspList(MappingTableEntity info, List<MappingTableSubEntity> list) throws IOException {
@@ -865,6 +932,46 @@ public class BeanUtils {
 		
 	}
     
+	
+	private static void createWebPageEdit(MappingTableEntity info, List<MappingTableSubEntity> list) throws IOException {
+		String jspPreName=info.getEntityName().toLowerCase().replace("entity", "");
+		
+		String fileName = savePath+ jspPreName + "_edit.jsp";
+		File file =  createFile(fileName);
+		FileWriter fw = new FileWriter(file);
+		
+		//创建form元素start
+		List<MappingTableSubEntity> detailList=new ArrayList<MappingTableSubEntity>();//明细页面显示的字段列
+		String formEleStr=createFormElement(list,true);
+		String validateFormStr=createValidateFormFunc(detailList);
+		
+		//创建form元素end
+		String fileStr=readFileByLines("webpage/webpage_edit.txt",formEleStr,validateFormStr,"");
+		fw.write(fileStr);
+		fw.flush();
+		fw.close();
+		showInfo(fileName);
+	}
+	
+	private static void createWebPageDetail(MappingTableEntity info, List<MappingTableSubEntity> list) throws IOException {
+		String jspPreName=info.getEntityName().toLowerCase().replace("entity", "");
+		
+		String fileName = savePath+ jspPreName + "_detail.jsp";
+		File file =  createFile(fileName);
+		FileWriter fw = new FileWriter(file);
+		
+		//创建form元素start
+		List<MappingTableSubEntity> detailList=new ArrayList<MappingTableSubEntity>();//明细页面显示的字段列
+		String formEleStr=createFormElement(list,false);
+		String validateFormStr=createValidateFormFunc(detailList);
+		
+		//创建form元素end
+		String fileStr=readFileByLines("webpage/webpage_detail.txt",formEleStr,validateFormStr,"");
+		fw.write(fileStr);
+		fw.flush();
+		fw.close();
+		showInfo(fileName);
+	}
 	
 	public static void createJspEdit(MappingTableEntity info, List<MappingTableSubEntity> list) throws IOException {
 		String jspPreName=info.getEntityName().toLowerCase().replace("entity", "");
@@ -1594,7 +1701,7 @@ public class BeanUtils {
 		StringBuilder sb=new StringBuilder();
 		sb.append("	<div id=\"yy-page\" class=\"container-fluid page-container\">").append(RT_1);
 		
-		if(!info.getTemplateType().equals(EntityInfo.GENTYPE_REFLISTSELECT)){//列表参照选择
+		if(!info.getTemplateType().equals(MappingTableEntity.GENTYPE_REFLISTSELECT)){//列表参照选择
 			sb.append("		<div class=\"page-content\" id=\"yy-page-list\">").append(RT_1);
 			sb.append("			<div class=\"row yy-toolbar\">").append(RT_1);
 			sb.append("				<button id=\"yy-btn-add\" class=\"btn blue btn-sm\">").append(RT_1);
@@ -1650,7 +1757,7 @@ public class BeanUtils {
 		sb.append("						<tr>").append(RT_1);
 		sb.append("							<th style=\"width: 30px;\">序号</th>").append(RT_1);
 		
-		if(!info.getTemplateType().equals(EntityInfo.GENTYPE_REFLISTSELECT)){//列表参照选择
+		if(!info.getTemplateType().equals(MappingTableEntity.GENTYPE_REFLISTSELECT)){//列表参照选择
 			sb.append("							<th class=\"table-checkbox\">").append(RT_1);
 			sb.append("								<input type=\"checkbox\" class=\"group-checkable\" data-set=\"#yy-table-list .checkboxes\"/>").append(RT_1);
 			sb.append("							</th>").append(RT_1);
@@ -1680,17 +1787,16 @@ public class BeanUtils {
 	private static String createTableCols(MappingTableEntity info,List<MappingTableSubEntity> list,boolean isShowCheckBox,boolean isRenderEdit,String actionCol){
 		StringBuilder sb=new StringBuilder();
 		if(info.isMain()){
-			sb.append("		var _tableCols = [ {").append(RT_1);
+			sb.append("		var _tableCols = [{").append(RT_1);
 		}else{
-			sb.append("		var _subTableCols = [ {").append(RT_1);
+			sb.append("		var _subTableCols = [{").append(RT_1);
 		}
-		sb.append("				data : null,").append(RT_1);
-		sb.append("				orderable : false,").append(RT_1);
-		sb.append("				className : \"center\",").append(RT_1);
-		sb.append("				width : \"50\"").append(RT_1);
+//		sb.append("				data : null,").append(RT_1);
+//		sb.append("				orderable : false,").append(RT_1);
+//		sb.append("				className : \"center\",").append(RT_1);
+//		sb.append("				width : \"50\"").append(RT_1);
 		
-		if(info.getTemplateType().equals(EntityInfo.GENTYPE_REFLISTSELECT)){//列表参照选择
-			sb.append("			},{").append(RT_1);
+		if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_REFLISTSELECT)){//列表参照选择
 			sb.append("				data : \"uuid\",").append(RT_1);
 			sb.append("				className : \"center\",").append(RT_1);
 			sb.append("				orderable : false,").append(RT_1);
@@ -1698,7 +1804,6 @@ public class BeanUtils {
 			sb.append("				width : \"50\"").append(RT_1);
 		}else{
 			if(isShowCheckBox){
-				sb.append("			},{").append(RT_1);
 				sb.append("				data : \"uuid\",").append(RT_1);
 				sb.append("				orderable : false,").append(RT_1);								
 				sb.append("				className : \"center\",").append(RT_1);
@@ -1707,7 +1812,7 @@ public class BeanUtils {
 				sb.append("				render : YYDataTableUtils.renderCheckCol").append(RT_1);	
 			}
 			if(!StringUtils.isEmpty(actionCol)){
-				sb.append("				},{").append(RT_1);
+				sb.append("			},{").append(RT_1);
 				sb.append("				data : \"uuid\",").append(RT_1);
 				sb.append("				className : \"center\",").append(RT_1);
 				sb.append("				orderable : false,").append(RT_1);
