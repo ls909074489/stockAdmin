@@ -48,7 +48,14 @@ public class WsInfoController {
 		
 //		webSocketHandler.sendMessageToUser("5bd60c1d-ffb3-46de-84ae-9d996d007e9f", new TextMessage("发送消息》》》》》》》》》》》》》》》》》》》"));
 		
-		deviceInfoService.testLock();
+		for(int i=0;i<1000;i++){
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					deviceInfoService.testLock();
+				}
+			}).start();
+		}
 		
 		System.out.println("end>>>>>>>>>>>>>>>>>>>");
 		return "modules/sys/ws/ws_list";

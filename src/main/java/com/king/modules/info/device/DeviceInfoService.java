@@ -156,24 +156,19 @@ public class DeviceInfoService extends BaseServiceImpl<DeviceInfoEntity,String> 
 
 	
 	public boolean testLock(){
-//		String lockKey = "matertial:genCode";
-//		String requestId = "123456";//UUID.randomUUID().toString();
-//		int expireTime = 3000;
-//		if(redisTool.tryGetDistributedLock(lockKey, requestId, expireTime)){
-//			System.out.println("get lock>>>>>>>>");
-//			try {
-//				Thread.sleep(10000);
-//			} catch (InterruptedException e) {
-//				e.printStackTrace();
-//			}
-//			boolean isRelease = redisTool.releaseDistributedLock(lockKey, requestId);
-//			
-//			System.out.println("release lock>>>>>>>>>"+isRelease);
-//		}else{
-//			System.out.println("lock>>>>>>>>");
-//		}
-		count++;
-		System.out.println("count>>>>>>>>>>>>>>>"+count);
+		String lockKey = "matertial:genCode";
+		String requestId = "123456";//UUID.randomUUID().toString();
+		int expireTime = 3000;
+		if(redisTool.tryGetDistributedLock(lockKey, requestId, expireTime)){
+			System.out.println("get lock>>>>>>>>");
+			count++;
+			System.out.println("count>>>>>>>>>>>>>>>"+count);
+			boolean isRelease = redisTool.releaseDistributedLock(lockKey, requestId);
+			
+			System.out.println("release lock>>>>>>>>>"+isRelease);
+		}else{
+			System.out.println("lock>>>>>>>>");
+		}
 		return true;
 	}
 }

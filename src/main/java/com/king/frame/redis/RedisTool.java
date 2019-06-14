@@ -1,11 +1,14 @@
 package com.king.frame.redis;
 
 import java.util.Collections;
+
 import javax.annotation.PostConstruct;
-import org.apache.commons.lang3.math.NumberUtils;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
+
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -19,14 +22,19 @@ public class RedisTool {
 	private static final String SET_WITH_EXPIRE_TIME = "PX";
 	private static final Long RELEASE_SUCCESS = 1L;
 
+	@Value("${redis.host}")
+	private String redisHost = "";
+	@Value("${redis.pass}")
+	private String redisPassword="";
+	@Value("${redis.port}")
+	private int redisPort;
+	@Value("${redis.maxIdel}")
+	private int redisMaxIdel;
+	
+	private int timeout =30 * 1000;
 	
 	private JedisPool pool = null;
 	
-	String redisHost = "127.0.0.1";
-	String redisMaxIdel = "300";
-	String redisPassword="";
-	int redisPort = 6379;
-	int timeout =30 * 1000;
 	
 	@PostConstruct
 	public void init() {
@@ -39,7 +47,7 @@ public class RedisTool {
 			JedisPoolConfig config = new JedisPoolConfig();
 			// 控制一个pool可分配多少个jedis实例，通过pool.getResource()来获取；
 			// 控制一个pool最多有多少个状态为idle(空闲的)的jedis实例。
-			config.setMaxIdle(NumberUtils.toInt(redisMaxIdel, 500));
+			config.setMaxIdle(redisMaxIdel);
 			// 表示当borrow(引入)一个jedis实例时，最大的等待时间，如果超过等待时间，则直接抛出JedisConnectionException；
 			config.setMaxWaitMillis(1000 * 30);
 			// 在borrow一个jedis实例时，是否提前进行validate操作；如果为true，则得到的jedis实例均是可用的；

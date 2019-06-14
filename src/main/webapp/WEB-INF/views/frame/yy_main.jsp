@@ -551,7 +551,7 @@ nav.page-tabs {
 			// loadAdmin();
 			showUserMenu(); //加载快捷菜单
 			
-			showNewMsg("fffffffffffffffffffffffffffff");
+			showNewMsg("欢迎进入库存管理系统");
 			
 			connect();
 			//测试还有多少的缓存
