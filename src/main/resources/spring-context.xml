@@ -164,6 +164,8 @@
 		<property name="redisTemplate" ref="redisTemplate" />
 		<property name="name" value="default" />
 	</bean>
+	<bean id="redisTool" class="com.king.frame.redis.RedisTool">
+	</bean>
 	<!-- redis缓存 -->
 
 	<!-- 国际化的消息资源文件（本系统中主要用于显示/错误消息定制） -->

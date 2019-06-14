@@ -55,7 +55,7 @@ public class DeviceInfoEntity extends BaseEntity {
 	
 	@MetaData(value = "创建用户ID")
 	@ManyToOne(cascade=CascadeType.REFRESH,optional = true)
-	@JoinColumn(name = "userid",nullable=true)
+	@JoinColumn(name = "user_id",nullable=true)
 	private UserEntity user;
 	
 	@MetaData(value = "类型ID")

@@ -15,6 +15,7 @@ import org.springframework.web.socket.WebSocketSession;
 
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.websocket.YyWebSocketHandler;
+import com.king.modules.info.device.DeviceInfoService;
 
 /**
  * 设备信息
@@ -28,7 +29,8 @@ public class WsInfoController {
 
 	@Autowired
 	private YyWebSocketHandler webSocketHandler;
-
+	@Autowired
+	private DeviceInfoService deviceInfoService;
 	
 	/**
 	 * 
@@ -42,7 +44,13 @@ public class WsInfoController {
 	 */
 	@RequestMapping("/list")
 	public String listView(ServletRequest request,Model model) {
-		webSocketHandler.sendMessageToUser("5bd60c1d-ffb3-46de-84ae-9d996d007e9f", new TextMessage("发送消息》》》》》》》》》》》》》》》》》》》"));
+		System.out.println("list>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+		
+//		webSocketHandler.sendMessageToUser("5bd60c1d-ffb3-46de-84ae-9d996d007e9f", new TextMessage("发送消息》》》》》》》》》》》》》》》》》》》"));
+		
+		deviceInfoService.testLock();
+		
+		System.out.println("end>>>>>>>>>>>>>>>>>>>");
 		return "modules/sys/ws/ws_list";
 	}
 	

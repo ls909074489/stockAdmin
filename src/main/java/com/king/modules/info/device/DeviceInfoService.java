@@ -2,18 +2,21 @@ package com.king.modules.info.device;
 
 import java.util.Date;
 import java.util.List;
+
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+
 import com.king.common.fileupload.FileUploadHandle;
 import com.king.common.utils.DateUtil;
 import com.king.common.utils.QRCodeUtil;
 import com.king.frame.attachment.AttachmentEntity;
 import com.king.frame.attachment.AttachmentService;
 import com.king.frame.dao.IBaseDAO;
+import com.king.frame.redis.RedisTool;
 import com.king.frame.security.ShiroUser;
 import com.king.frame.service.BaseServiceImpl;
 import com.king.modules.sys.param.ParameterUtil;
@@ -32,8 +35,12 @@ public class DeviceInfoService extends BaseServiceImpl<DeviceInfoEntity,String> 
 	private DeviceInfoDao dao;
 	@Autowired
 	private AttachmentService attachmentService;
+	@Autowired
+	private RedisTool redisTool;
 	//@Autowired
 	//private DbUtilsDAO dbDao;
+	
+	private static int count=0;
 
 	protected IBaseDAO<DeviceInfoEntity, String> getDAO() {
 		return dao;
@@ -148,5 +155,25 @@ public class DeviceInfoService extends BaseServiceImpl<DeviceInfoEntity,String> 
 	}
 
 	
-	
+	public boolean testLock(){
+//		String lockKey = "matertial:genCode";
+//		String requestId = "123456";//UUID.randomUUID().toString();
+//		int expireTime = 3000;
+//		if(redisTool.tryGetDistributedLock(lockKey, requestId, expireTime)){
+//			System.out.println("get lock>>>>>>>>");
+//			try {
+//				Thread.sleep(10000);
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+//			boolean isRelease = redisTool.releaseDistributedLock(lockKey, requestId);
+//			
+//			System.out.println("release lock>>>>>>>>>"+isRelease);
+//		}else{
+//			System.out.println("lock>>>>>>>>");
+//		}
+		count++;
+		System.out.println("count>>>>>>>>>>>>>>>"+count);
+		return true;
+	}
 }
