@@ -61,6 +61,10 @@ public class ImexlateSubEntity extends BaseEntity {
 	@Column
 	private String qualifiedValue;
 
+	@MetaData(value = "列宽度")
+	@Column
+	private Integer columnWidth;
+	
 	public String getEnumdata() {
 		return enumdata;
 	}
@@ -131,6 +135,14 @@ public class ImexlateSubEntity extends BaseEntity {
 
 	public void setDatatype(String datatype) {
 		this.datatype = datatype;
+	}
+
+	public Integer getColumnWidth() {
+		return columnWidth;
+	}
+
+	public void setColumnWidth(Integer columnWidth) {
+		this.columnWidth = columnWidth;
 	}
 
 }

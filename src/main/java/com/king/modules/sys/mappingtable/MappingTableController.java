@@ -7,11 +7,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -22,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.BaseController;
+import com.king.frame.gencode.BeanUtils;
 
 import net.sf.json.JSONObject;
 
@@ -35,6 +41,8 @@ import net.sf.json.JSONObject;
 @RequestMapping(value = "/info/mappingTable")
 public class MappingTableController extends BaseController<MappingTableEntity> {
 
+	@Autowired
+	private MappingTableService service;
 	@Autowired
 	private MappingTableSubService subService;
 
@@ -137,5 +145,25 @@ public class MappingTableController extends BaseController<MappingTableEntity> {
 			returnList.add(obj);
 		}
 		return returnList;
+	}
+	
+	
+	/**
+	 * 生成代码
+	 * @param uuid
+	 * @return
+	 */
+	@RequestMapping(value = "/genCode")
+	@ResponseBody
+	public ActionResultModel<String> genCode(String uuid){
+		MappingTableEntity info = service.getOne(uuid);
+		info.setMain(true);
+		List<MappingTableSubEntity> list = (List<MappingTableSubEntity>) subService.findByMain(uuid);
+		try {
+			BeanUtils.createCode(info, list);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new ActionResultModel<>(true, "操作成功");
 	}
 }

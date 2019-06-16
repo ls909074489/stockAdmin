@@ -117,6 +117,11 @@
 			width : "80",
 			className : "center",
 			orderable : true
+		}, {
+			data : 'columnWidth',
+			width : "80",
+			className : "center",
+			orderable : true
 		}
 	];
 	
@@ -163,7 +168,8 @@
 				 isnotempty :'',
 				 enumdata:'',
 				 qualifiedValue:'',
-				 datatype:''
+				 datatype:'',
+				 columnWidth:''
 			} ];
 			var nRow = _subTableList.rows.add(newData).draw().nodes()[0];//获得第一个tr节点
 			addRow(_subTableList, nRow);
@@ -234,6 +240,7 @@
 		jqTds[6].innerHTML = '<input type="text" name="enumdata"  value="' + aData.enumdata + '">';
 		jqTds[7].innerHTML = '<input type="text" name="qualifiedValue"  value="' + aData.qualifiedValue + '">';
 		jqTds[8].innerHTML = '<input type="text" name="datatype"  value="' + aData.datatype + '">';
+		jqTds[9].innerHTML = '<input type="text" name="columnWidth"  value="' + aData.columnWidth + '">';
 		_addList.push(nRow);
 	}
 	//修改行  (oTable-->datatable，nRow-->tr对象，而不是datatable的row)
@@ -277,6 +284,12 @@
 
 		}else{
 			jqTds[8].innerHTML = '<input type="text"  name="datatype" >';
+		}
+		if(aData.columnWidth){
+			jqTds[9].innerHTML = '<input type="text" name="columnWidth" value="' + aData.columnWidth + '">';
+
+		}else{
+			jqTds[9].innerHTML = '<input type="text"  name="columnWidth" >';
 		}
  		_addList.push(nRow);
 		rowNum++;

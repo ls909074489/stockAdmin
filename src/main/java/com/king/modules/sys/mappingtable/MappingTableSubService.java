@@ -84,6 +84,12 @@ public class MappingTableSubService extends BaseServiceImpl<MappingTableSubEntit
 	  return arm;
 	}
 
+	
+	@Transactional(readOnly=true)
+	public List<MappingTableSubEntity> findByMain(String mainId) {
+		return dao.findByMain(mainId);
+	}
+
 
 
 	

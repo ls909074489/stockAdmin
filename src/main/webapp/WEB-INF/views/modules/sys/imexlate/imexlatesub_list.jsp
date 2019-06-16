@@ -26,6 +26,7 @@
 								<th>枚举编码</th>
 								<th>限定值</th>
 								<th>数据类型</th>
+								<th>列长度</th>
 							</tr>
 						</thead>
 						<tbody id="yy-body-sublist">

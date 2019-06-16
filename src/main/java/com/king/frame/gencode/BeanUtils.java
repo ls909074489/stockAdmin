@@ -1,11 +1,14 @@
 package com.king.frame.gencode;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,6 +20,7 @@ import java.util.Map;
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
 import org.springframework.util.StringUtils;
+
 import com.king.modules.sys.mappingtable.MappingTableEntity;
 import com.king.modules.sys.mappingtable.MappingTableSubEntity;
 
@@ -239,7 +243,10 @@ public class BeanUtils {
 		}
 		String fileName = savePath+ entityName+ ".java";
 		File file =  createFile(fileName);
-		FileWriter fw = new FileWriter(file);
+//		FileWriter fw = new FileWriter(file);
+		FileOutputStream  fos = new FileOutputStream(file);
+		BufferedWriter fw = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
+
 		StringBuilder sb=new StringBuilder();
 		sb.append("package "+info.getPackageName()+";"+RT_2);
 		
@@ -401,7 +408,9 @@ public class BeanUtils {
 		
 		String fileName = savePath+ daoName + ".java";
 		File file =  createFile(fileName);
-		FileWriter fw = new FileWriter(file);
+//		FileWriter fw = new FileWriter(file);
+		FileOutputStream  fos = new FileOutputStream(file);
+		BufferedWriter fw = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
 		
 		StringBuilder sb=new StringBuilder();
 		sb.append("package "+info.getPackageName()+";"+RT_2);
@@ -444,7 +453,9 @@ public class BeanUtils {
 		
 		String fileName = savePath+ serviceName + ".java";
 		File file =  createFile(fileName);
-		FileWriter fw = new FileWriter(file);
+//		FileWriter fw = new FileWriter(file);
+		FileOutputStream  fos = new FileOutputStream(file);
+		BufferedWriter fw = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
 		
 		StringBuilder sb=new StringBuilder();
 		sb.append("package "+info.getPackageName()+";"+RT_2);
@@ -553,7 +564,9 @@ public class BeanUtils {
 		
 		String fileName = savePath+ controllerName + ".java";
 		File file =  createFile(fileName);
-		FileWriter fw = new FileWriter(file);
+//		FileWriter fw = new FileWriter(file);
+		FileOutputStream  fos = new FileOutputStream(file);
+		BufferedWriter fw = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
 		
 		StringBuilder sb=new StringBuilder();
 		sb.append("package "+info.getPackageName()+";"+RT_2);
@@ -835,7 +848,9 @@ public class BeanUtils {
 		
 		String fileName = savePath+ jspPreName + "_main.jsp";
 		File file =  createFile(fileName);
-		FileWriter fw = new FileWriter(file);
+//		FileWriter fw = new FileWriter(file);
+		FileOutputStream  fos = new FileOutputStream(file);
+		BufferedWriter fw = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
 		
 		//创建form元素start
 		List<MappingTableSubEntity> detailList=new ArrayList<MappingTableSubEntity>();//明细页面显示的字段列
@@ -886,7 +901,9 @@ public class BeanUtils {
 		
 		String fileName = savePath+ jspPreName + "_list.jsp";
 		File file =  createFile(fileName);
-		FileWriter fw = new FileWriter(file);
+//		FileWriter fw = new FileWriter(file);
+		FileOutputStream  fos = new FileOutputStream(file);
+		BufferedWriter fw = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
 		
 		StringBuilder sb=new StringBuilder();
 		sb.append("<%@ page contentType=\"text/html;charset=UTF-8\"%>"+RT_1);
@@ -938,7 +955,9 @@ public class BeanUtils {
 		
 		String fileName = savePath+ jspPreName + "_edit.jsp";
 		File file =  createFile(fileName);
-		FileWriter fw = new FileWriter(file);
+//		FileWriter fw = new FileWriter(file);
+		FileOutputStream  fos = new FileOutputStream(file);
+		BufferedWriter fw = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
 		
 		//创建form元素start
 		List<MappingTableSubEntity> detailList=new ArrayList<MappingTableSubEntity>();//明细页面显示的字段列
@@ -958,7 +977,9 @@ public class BeanUtils {
 		
 		String fileName = savePath+ jspPreName + "_detail.jsp";
 		File file =  createFile(fileName);
-		FileWriter fw = new FileWriter(file);
+//		FileWriter fw = new FileWriter(file);
+		FileOutputStream  fos = new FileOutputStream(file);
+		BufferedWriter fw = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
 		
 		//创建form元素start
 		List<MappingTableSubEntity> detailList=new ArrayList<MappingTableSubEntity>();//明细页面显示的字段列
@@ -978,7 +999,9 @@ public class BeanUtils {
 		
 		String fileName = savePath+ jspPreName + "_edit.jsp";
 		File file =  createFile(fileName);
-		FileWriter fw = new FileWriter(file);
+//		FileWriter fw = new FileWriter(file);
+		FileOutputStream  fos = new FileOutputStream(file);
+		BufferedWriter fw = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
 		
 		StringBuilder sb=new StringBuilder();
 		sb.append("<%@ page contentType=\"text/html;charset=UTF-8\"%>"+RT_1);
@@ -1075,7 +1098,9 @@ public class BeanUtils {
 		
 		String fileName = savePath+ jspPreName + "_detail.jsp";
 		File file =  createFile(fileName);
-		FileWriter fw = new FileWriter(file);
+//		FileWriter fw = new FileWriter(file);
+		FileOutputStream  fos = new FileOutputStream(file);
+		BufferedWriter fw = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
 		
 		StringBuilder sb=new StringBuilder();
 		sb.append("<%@ page contentType=\"text/html;charset=UTF-8\"%>"+RT_1);
@@ -1153,7 +1178,9 @@ public class BeanUtils {
 		
 		String fileName = savePath+ jspPreName + "_main.jsp";
 		File file =  createFile(fileName);
-		FileWriter fw = new FileWriter(file);
+//		FileWriter fw = new FileWriter(file);
+		FileOutputStream  fos = new FileOutputStream(file);
+		BufferedWriter fw = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
 		
 		//创建form元素start
 		List<MappingTableSubEntity> detailList=new ArrayList<MappingTableSubEntity>();//明细页面显示的字段列
@@ -1198,7 +1225,9 @@ public class BeanUtils {
 		
 		String fileName = savePath+ jspPreName + "_list.jsp";
 		File file =  createFile(fileName);
-		FileWriter fw = new FileWriter(file);
+//		FileWriter fw = new FileWriter(file);
+		FileOutputStream  fos = new FileOutputStream(file);
+		BufferedWriter fw = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
 		
 		//创建form元素start
 		List<MappingTableSubEntity> detailList=new ArrayList<MappingTableSubEntity>();//明细页面显示的字段列
@@ -1248,7 +1277,9 @@ public class BeanUtils {
 		
 		String fileName = savePath+"ref_"+jspPreName + "_list.jsp";
 		File file =  createFile(fileName);
-		FileWriter fw = new FileWriter(file);
+//		FileWriter fw = new FileWriter(file);
+		FileOutputStream  fos = new FileOutputStream(file);
+		BufferedWriter fw = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
 		
 		//创建form元素start
 		List<MappingTableSubEntity> detailList=new ArrayList<MappingTableSubEntity>();//明细页面显示的字段列
@@ -1287,7 +1318,9 @@ public class BeanUtils {
 		
 		String fileName = savePath+"ref_"+jspPreName + "_tree.jsp";
 		File file =  createFile(fileName);
-		FileWriter fw = new FileWriter(file);
+//		FileWriter fw = new FileWriter(file);
+		FileOutputStream  fos = new FileOutputStream(file);
+		BufferedWriter fw = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
 		
 		//创建form元素start
 		List<MappingTableSubEntity> detailList=new ArrayList<MappingTableSubEntity>();//明细页面显示的字段列
@@ -1321,7 +1354,9 @@ public class BeanUtils {
 		String fileName = savePath+ jspPreName + "_add.jsp";
 		
 		File file =  createFile(fileName);
-		FileWriter fw = new FileWriter(file);
+//		FileWriter fw = new FileWriter(file);
+		FileOutputStream  fos = new FileOutputStream(file);
+		BufferedWriter fw = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
 		
 		List<MappingTableSubEntity> mainList=new ArrayList<MappingTableSubEntity>();
 		List<MappingTableSubEntity> subList=new ArrayList<MappingTableSubEntity>();
@@ -1389,7 +1424,9 @@ public class BeanUtils {
 		String fileName = savePath+ jspPreName + "_edit.jsp";
 		
 		File file =  createFile(fileName);
-		FileWriter fw = new FileWriter(file);
+//		FileWriter fw = new FileWriter(file);
+		FileOutputStream  fos = new FileOutputStream(file);
+		BufferedWriter fw = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
 		
 		List<MappingTableSubEntity> mainList=new ArrayList<MappingTableSubEntity>();
 		List<MappingTableSubEntity> subList=new ArrayList<MappingTableSubEntity>();
@@ -1450,7 +1487,9 @@ public class BeanUtils {
 		String fileName = savePath+ jspPreName + "_edit.jsp";
 		
 		File file =  createFile(fileName);
-		FileWriter fw = new FileWriter(file);
+//		FileWriter fw = new FileWriter(file);
+		FileOutputStream  fos = new FileOutputStream(file);
+		BufferedWriter fw = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
 		
 		List<MappingTableSubEntity> mainList=new ArrayList<MappingTableSubEntity>();
 		List<MappingTableSubEntity> subList=new ArrayList<MappingTableSubEntity>();
@@ -1518,7 +1557,9 @@ public class BeanUtils {
 		String fileName = savePath+ jspPreName + "_detail.jsp";
 		
 		File file =  createFile(fileName);
-		FileWriter fw = new FileWriter(file);
+//		FileWriter fw = new FileWriter(file);
+		FileOutputStream  fos = new FileOutputStream(file);
+		BufferedWriter fw = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
 		
 		List<MappingTableSubEntity> mainList=new ArrayList<MappingTableSubEntity>();
 		List<MappingTableSubEntity> subList=new ArrayList<MappingTableSubEntity>();
@@ -1578,7 +1619,9 @@ public class BeanUtils {
 		String fileName = savePath+ jspPreName + "_detail.jsp";
 		
 		File file =  createFile(fileName);
-		FileWriter fw = new FileWriter(file);
+//		FileWriter fw = new FileWriter(file);
+		FileOutputStream  fos = new FileOutputStream(file);
+		BufferedWriter fw = new BufferedWriter(new OutputStreamWriter(fos, "UTF-8"));
 		
 		List<MappingTableSubEntity> mainList=new ArrayList<MappingTableSubEntity>();
 		List<MappingTableSubEntity> subList=new ArrayList<MappingTableSubEntity>();
@@ -1791,10 +1834,11 @@ public class BeanUtils {
 		}else{
 			sb.append("		var _subTableCols = [{").append(RT_1);
 		}
-//		sb.append("				data : null,").append(RT_1);
-//		sb.append("				orderable : false,").append(RT_1);
-//		sb.append("				className : \"center\",").append(RT_1);
-//		sb.append("				width : \"50\"").append(RT_1);
+		sb.append("				data : null,").append(RT_1);
+		sb.append("				orderable : false,").append(RT_1);
+		sb.append("				className : \"center\",").append(RT_1);
+		sb.append("				width : \"50\"").append(RT_1);
+		sb.append("			},{");
 		
 		if(info.getTemplateType().equals(MappingTableEntity.GENTYPE_REFLISTSELECT)){//列表参照选择
 			sb.append("				data : \"uuid\",").append(RT_1);

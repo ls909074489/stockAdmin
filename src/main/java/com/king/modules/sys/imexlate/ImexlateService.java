@@ -152,17 +152,21 @@ public class ImexlateService extends BaseServiceImpl<ImexlateEntity, String> {
 			// List<ImexlateSubEntity> imexs = subService.findByTemCoding(imexlate.getCoding());
 			List<ImexlateSubEntity> imexs = findSubByParent(imexlate.getUuid(), subList);
 
-			poiEx.MergeCells(0, 0, 0, imexs.size() - 1, imexlate.getExportFileName());
-			poiEx.createCell(0, 0);
-			poiEx.writeToExcel(0, 0, imexlate.getExportFileName());
-			poiEx.setUpStyle(0, 0, true, 20, true, true, false, false, false);
+//			poiEx.MergeCells(0, 0, 0, imexs.size() - 1, imexlate.getExportFileName());
+//			poiEx.createCell(0, 0);
+//			poiEx.writeToExcel(0, 0, imexlate.getExportFileName());
+//			poiEx.setUpStyle(0, 0, true, 20, true, true, false, false, false);
 			for (ImexlateSubEntity imex : imexs) {
-				int[] rowCell = poiEx.convertToRowNumColumnNum(imex.getExportCellNum() + 2);
+				int[] rowCell = poiEx.convertToRowNumColumnNum(imex.getExportCellNum() + 1);
 				poiEx.createCell(rowCell[0], rowCell[1]);
 				poiEx.writeToExcel(rowCell[0], rowCell[1], imex.getChineseField());
 				poiEx.setUpStyle(rowCell[0], rowCell[1], false, 20, true, true, imex.getIsnotempty(), true,
 						imex.getIsMainField());
-				poiEx.setSizeColumn(rowCell[1], length(imex.getChineseField()));
+				if(imex.getColumnWidth()!=null&&imex.getColumnWidth()!=0){
+					poiEx.setSizeColumn(rowCell[1], imex.getColumnWidth());
+				}else{
+					poiEx.setSizeColumn(rowCell[1], length(imex.getChineseField()));
+				}
 				// 判断是否枚举字段 是 设置下拉框
 				if ((imex.getEnumdata() != null && !imex.getEnumdata().equals(""))
 						|| (imex.getQualifiedValue() != null && !imex.getQualifiedValue().equals(""))) {
@@ -201,7 +205,7 @@ public class ImexlateService extends BaseServiceImpl<ImexlateEntity, String> {
 				}
 			}
 
-			instructions(poiEx, imexs.size(), imexlate.getExportFileName());
+//			instructions(poiEx, imexs.size(), imexlate.getExportFileName());
 			poiEx.writeAndClose();
 
 		} catch (Exception e) {
@@ -247,39 +251,6 @@ public class ImexlateService extends BaseServiceImpl<ImexlateEntity, String> {
 
 		List<ImexlateSubEntity> imexs = subService.findByTemCoding(imexlate.getCoding());
 		return generateTemplateForMany(imexlate, path, imexs);// edit by ls2008
-		/*
-		 * Map<String, String[]> enumdataMap = new HashMap<String, String[]>(); POIExcelMakerUtil poiEx = null; try {
-		 * logger.info("path00 : " + path); File file = new File(getWinLinux(path + "/")); if(!file.exists()) {
-		 * file.mkdirs(); } poiEx = new POIExcelMakerUtil(getWinLinux(path + "/" + imexlate.getExportFileName() +
-		 * ".xlsx"), imexlate.getExportFileName()); List<ImexlateSubEntity> imexs = subService.findByTemCoding(coding);
-		 * poiEx.MergeCells(0, 0, 0, imexs.size() - 1, imexlate.getExportFileName()); poiEx.createCell(0, 0);
-		 * poiEx.writeToExcel(0, 0, imexlate.getExportFileName()); poiEx.setUpStyle(0, 0, true, 20, true, true, false,
-		 * false, false); for (ImexlateSubEntity imex : imexs) { int[] rowCell =
-		 * poiEx.convertToRowNumColumnNum(imex.getExportCellNum() + 2); poiEx.createCell(rowCell[0], rowCell[1]);
-		 * poiEx.writeToExcel(rowCell[0], rowCell[1], imex.getChineseField()); poiEx.setUpStyle(rowCell[0], rowCell[1],
-		 * false, 20, true, true, imex.getIsnotempty(), true, imex.getIsMainField()); poiEx.setSizeColumn(rowCell[1],
-		 * length(imex.getChineseField())); // 判断是否枚举字段 是 设置下拉框 if ((imex.getEnumdata() != null &&
-		 * !imex.getEnumdata().equals("")) || (imex.getQualifiedValue() != null &&
-		 * !imex.getQualifiedValue().equals(""))) { String[] enStr = null; for (String key : enumdataMap.keySet()) { if
-		 * (key.equals(imex.getEnumdata()) || key.equals(imex.getQualifiedValue())) { enStr = enumdataMap.get(key); } }
-		 * if (enStr == null) { if (imex.getQualifiedValue() != null && !imex.getQualifiedValue().equals("")) { if
-		 * (imex.getQualifiedValue().lastIndexOf(",") != -1) { enStr = imex.getQualifiedValue().split(","); } else {
-		 * enStr = new String[1]; enStr[0] = imex.getQualifiedValue(); } enumdataMap.put(imex.getQualifiedValue(),
-		 * enStr); } else if (imex.getEnumdata() != null && !imex.getEnumdata().equals("")) { List<EnumDataSubEntity>
-		 * listEn = enumDataSubService.findByGroupcode(imex.getEnumdata()); if (listEn.size() > 0) { enStr = new
-		 * String[listEn.size()]; for (int n = 0; n < listEn.size(); n++) { enStr[n] = listEn.get(n).getEnumdataname();
-		 * } enumdataMap.put(imex.getEnumdata(), enStr); } else { throw new ServiceException("枚举" + imex.getEnumdata() +
-		 * "设置不正确"); } }
-		 * 
-		 * } // 设置下拉框 poiEx.setHSSFValidation(imexlate.getExportFileName(), enStr, 2, 100000, rowCell[1], rowCell[1]); }
-		 * }
-		 * 
-		 * instructions(poiEx, imexs.size(), imexlate.getExportFileName()); poiEx.writeAndClose();
-		 * 
-		 * } catch (Exception e) { e.printStackTrace(); return "error"; } File newFile = new File(getWinLinux(path + "/"
-		 * + imexlate.getExportFileName() + ".xlsx")); logger.info("FilePath : " + newFile.getPath()); if
-		 * (!newFile.exists()) { return "error"; } else { return "success"; }
-		 */
 	}
 
 	/**

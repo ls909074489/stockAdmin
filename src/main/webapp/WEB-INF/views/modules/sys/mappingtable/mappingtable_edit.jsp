@@ -18,6 +18,9 @@
 			<button id="yy-btn-cancel" class="btn blue btn-sm">
 				<i class="fa fa-rotate-left"></i> 取消
 			</button>
+			<button id="yy-btn-gen" class="btn blue btn-sm">
+				<i class="fa fa-building"></i> 生成代码
+			</button>
 		</div>
 		<div class="hide">
 		</div>
@@ -43,8 +46,13 @@
 							<div class="col-md-8">
 								<select name="templateType"  class="form-control">
 									<option value="1">普通列表（前端分页）</option>
-									<option value="3">普通列表（服务器分页）</option>
-									<option value="2">树状结构</option>
+									<option value="2">普通列表（服务器分页）</option>
+									<option value="3">树状结构</option>
+									<option value="4">左树右列表</option>
+									<option value="5">主子表（服务器分页）</option>
+									<option value="6">主子表（前端分页）</option>
+									<option value="11">列表单选</option>
+									<option value="12">树单选</option>
 								</select>
 							</div>
 						</div>
@@ -295,6 +303,7 @@
 
 	$(document).ready(function() {
 		bindEditActions();//綁定平台按鈕
+		$("#yy-btn-gen").bind('click', onGenCode);
 		
 		_subTableList = $('#yy-table-sublist').DataTable({
 			"columns" : _subTableCols,
@@ -591,6 +600,23 @@
 			}
 			//$(this).next().val(newVal);
 			$(this).closest("tr").find("input[name='colNameDb']").val(newVal);
+		});
+	}
+	
+	//生成代码
+	function onGenCode(){
+		$.ajax({
+			type : "POST",
+			data :{"uuid":$("#uuid").val()},
+			url : "${serviceurl}/genCode",
+			//async : true,
+			dataType : "json",
+			success : function(data) {
+				YYUI.sucMsg(data.msg);
+			},
+			error : function(data) {
+				YYUI.failMsg("操作失败，请联系管理员");
+			}
 		});
 	}
 </script>
