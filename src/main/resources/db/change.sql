@@ -1,5 +1,9 @@
 
 
+alter table yy_device drop index barcode;  
+
+
+alter table yy_device add UNIQUE index idx_uni_barcode(barcode)
 
 
 INSERT INTO `stock_admin`.`yy_enumdata` (`uuid`, `status`, `description`, `groupcode`, `groupname`, `modulecode`, `sys`, `creator`, `modifier`, `create_time`, `modify_time`, `creatorname`, `modifiername`, `createtime`, `modifytime`, `ts`) VALUES ('8952ca98-2b23-4c85-a318-6002251bbe6b', '1', '', 'WorkingProcedure', '工序', 'sys', '\0', '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, NULL, '超级系统管理员', NULL, '2019-06-12 20:59:20', NULL, '2019-06-12 20:59:20');
