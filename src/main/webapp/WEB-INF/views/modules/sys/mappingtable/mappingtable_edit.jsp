@@ -200,7 +200,9 @@
 									<th>数据库字段</th>
 									<th>备注</th>
 									<th>列表是否显示</th>
+									<th>是否主表</th>
 									<th>页面显示方式</th>
+									<th>字段类型</th>
 									<th>字段长度</th>
 								</tr>
 							</thead>
@@ -271,6 +273,22 @@
 			return '<input class="form-control" value="'+ data + '" name="colDesc">';
 		}
 	}, {
+		data : "isListVisiable",
+		orderable : false,
+		className : "center",
+		width : "80",
+		render : function(data, type, full) {
+			return creSelectStr('BooleanType','isListVisiable',data,false);
+		}
+	}, {
+		data : "isMain",
+		orderable : false,
+		className : "center",
+		width : "80",
+		render : function(data, type, full) {
+			return creSelectStr('BooleanType','isMain',data,false);
+		}
+	}, {
 		data : "eleType",
 		orderable : false,
 		className : "center",
@@ -328,6 +346,8 @@
 				'colName' : '',
 				'colNameDb' :'',
 				'colDesc' :'',
+				'isListVisiable' :1,
+				'isMain' :1,
 				'eleType' : '',
 				'colType' : '',
 				'colLength' : ''

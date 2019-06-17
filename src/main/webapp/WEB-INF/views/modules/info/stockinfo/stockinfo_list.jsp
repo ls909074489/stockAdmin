@@ -2,10 +2,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
-<c:set var="serviceurl" value="${ctx}/info/supplier"/>
+<c:set var="serviceurl" value="${ctx}/info/stockinfo"/>
 <html>
 <head>
-<title>供应商信息</title>
+<title>仓库</title>
 </head>
 <body>
 	<div id="yy-page" class="container-fluid page-container">
@@ -48,11 +48,9 @@
 								<input type="checkbox" class="group-checkable" data-set="#yy-table-list .checkboxes"/>
 							</th>
 							<th>操作</th>
-							<th>名称</th>
-							<th>地址</th>
-							<th>联系人</th>
-							<th>电话</th>
-							<th>邮箱</th>
+							<th>仓库编码</th>
+							<th>仓库名称</th>
+							<th>备注</th>
 						</tr>
 					</thead>
 					<tbody></tbody>
@@ -66,50 +64,39 @@
 
 	<script type="text/javascript">
 		_isNumber = true;
-		var _tableCols = [ {
-							data : null,
-							orderable : false,
-							className : "center",
-							width : "50"
-						},{
-							data : "uuid",
-							orderable : false,
-							className : "center",
-							/* visible : false, */
-							width : "40",
-							render : YYDataTableUtils.renderCheckCol
-						},{
-							data : "uuid",
-							className : "center",
-							orderable : false,
-							render : YYDataTableUtils.renderActionCol,
-							width : "80"
-						},{
-							data : "name",
-							width : "20%",
-							className : "center",
-							orderable : true
-						},{
-							data : "address",
-							width : "10%",
-							className : "center",
-							orderable : true
-						},{
-							data : "contacts",
-							width : "10%",
-							className : "center",
-							orderable : true
-						},{
-							data : "phone",
-							width : "10%",
-							className : "center",
-							orderable : true
-						},{
-							data : "email",
-							width : "10%",
-							className : "center",
-							orderable : true
-						}];
+		var _tableCols = [{
+				data : null,
+				orderable : false,
+				className : "center",
+				width : "50"
+			},{				data : "uuid",
+				orderable : false,
+				className : "center",
+				/* visible : false, */
+				width : "40",
+				render : YYDataTableUtils.renderCheckCol
+			},{
+				data : "uuid",
+				className : "center",
+				orderable : false,
+				render : YYDataTableUtils.renderActionCol,
+				width : "50"
+			},{
+				data : "code",
+				width : "100",
+				className : "center",
+				orderable : true
+			},{
+				data : "name",
+				width : "100",
+				className : "center",
+				orderable : true
+			},{
+				data : "memo",
+				width : "100",
+				className : "center",
+				orderable : true
+			}];
 
 
 		//var _setOrder = [[5,'desc']];

@@ -64,62 +64,56 @@
 	}
 	
 	/* 子表操作 */
-	var _subTableCols = [
-	{
-		data : "uuid",
-		orderable : false,
-		className : "center",
-		/* visible : false, */
-		width : "40",
-		render : YYDataTableUtils.renderActionSubCol
-	}, {
-		data : 'exportCellNum',
-		width : "40",
-		className : "center",
-		orderable : true
-	}
-			, {
+	var _subTableCols = [{
+			data : "uuid",
+			orderable : false,
+			className : "center",
+			/* visible : false, */
+			width : "40",
+			render : YYDataTableUtils.renderActionSubCol
+		}, {
+			data : 'exportCellNum',
+			width : "5%",
+			className : "center",
+			orderable : true
+		}, {
 			data : 'fieldName',
-			width : "100",
+			width : "10%",
 			className : "center",
 			orderable : true
-		}
-		, {
+		}, {
 			data : 'chineseField',
-			width : "100",
+			width : "10%",
 			className : "center",
 			orderable : true
-		}
-		, {
+		}, {
 			data : 'isMainField',
-			width : "80",
+			width : "10%",
 			className : "center",
 			orderable : true
-		}
-		, {
+		}, {
 			data : 'isnotempty',
-			width : "80",
+			width : "10%",
 			className : "center",
 			orderable : true
-		}
-		, {
+		}, {
 			data : 'enumdata',
-			width : "80",
+			width : "10%",
 			className : "center",
 			orderable : true
 		}, {
 			data : 'qualifiedValue',
-			width : "80",
+			width : "10%",
 			className : "center",
 			orderable : true
 		}, {
 			data : 'datatype',
-			width : "80",
+			width : "10%",
 			className : "center",
 			orderable : true
 		}, {
 			data : 'columnWidth',
-			width : "80",
+			width : "10%",
 			className : "center",
 			orderable : true
 		}
@@ -292,7 +286,7 @@
 			jqTds[9].innerHTML = '<input type="text"  name="columnWidth" >';
 		}
  		_addList.push(nRow);
-		rowNum++;
+		//rowNum++;
 	}
 	function onRefresh() {
 		//非服务器分页

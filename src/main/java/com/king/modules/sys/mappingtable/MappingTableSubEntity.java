@@ -63,9 +63,13 @@ public class MappingTableSubEntity extends BaseEntity {
 	
 	
 	private boolean isSearch=false;//是否列表查询
+	@Column(length = 100)
 	private boolean isListVisiable=true;//列表是否显示
+	@Column(length = 100)
 	private boolean isDetailVisiable=true;//明细是否显示
+	@Column(length = 100)
 	private boolean isMain=true;//是否主表
+	
 	private boolean isRequired=false;//是否必填
 	private String enumGroup="BooleanType";//枚举类型
 	

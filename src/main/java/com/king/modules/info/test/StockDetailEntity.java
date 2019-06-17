@@ -1,10 +1,11 @@
 package com.king.modules.info.test;
 
 import com.king.modules.info.material.MaterialEntity;
+import com.king.modules.info.stockinfo.StockInfoEntity;
 
 public class StockDetailEntity {
 
-	private StockEntity stock;
+	private StockInfoEntity stock;
 	
 	private MaterialEntity material;
 	

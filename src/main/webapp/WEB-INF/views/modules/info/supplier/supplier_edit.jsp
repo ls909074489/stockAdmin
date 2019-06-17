@@ -22,17 +22,17 @@
 			<div class="row">
 				<div class="col-md-4">
 					<div class="form-group">
-						<label class="control-label col-md-4 required">名称</label>
+						<label class="control-label col-md-4 required">供应商编码</label>
 						<div class="col-md-8">
-							<input name="name" type="text" class="form-control" value="${entity.name}">
+							<input name="code" type="text" class="form-control" value="${entity.code}">
 						</div>
 					</div>
 				</div>
 				<div class="col-md-4">
 					<div class="form-group">
-						<label class="control-label col-md-4 required">联系人</label>
+						<label class="control-label col-md-4 required">供应商名称</label>
 						<div class="col-md-8">
-							<input name="contracts" type="text" class="form-control" value="${entity.contracts}">
+							<input name="name" type="text" class="form-control" value="${entity.name}">
 						</div>
 					</div>
 				</div>
@@ -40,7 +40,15 @@
 			<div class="row">
 				<div class="col-md-4">
 					<div class="form-group">
-						<label class="control-label col-md-4 required">电话</label>
+						<label class="control-label col-md-4 required">联系人</label>
+						<div class="col-md-8">
+							<input name="contacts" type="text" class="form-control" value="${entity.contacts}">
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-group">
+						<label class="control-label col-md-4 required">联系电话</label>
 						<div class="col-md-8">
 							<input name="phone" type="text" class="form-control" value="${entity.phone}">
 						</div>
@@ -61,16 +69,6 @@
 						<label class="control-label col-md-2 required">地址</label>
 						<div class="col-md-10">
 							<input name="address" type="text" class="form-control" value="${entity.address}">
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-8">
-					<div class="form-group">
-						<label class="control-label col-md-2 required">网址</label>
-						<div class="col-md-10">
-							<input name="website" type="text" class="form-control" value="${entity.website}">
 						</div>
 					</div>
 				</div>
@@ -112,9 +110,10 @@
 			validata = $('#yy-form-edit').validate({
 				onsubmit : true,
 				rules : {
+					'code' : {required : true,maxlength : 50},
 					'name' : {required : true,maxlength : 100},
 					'address' : {required : true,maxlength : 100},
-					'contracts' : {required : true,maxlength : 20},
+					'contacts' : {required : true,maxlength : 20},
 					'phone' : {required : true,maxlength : 20},
 					'email' : {required : true,maxlength : 30},
 					'website' : {required : true,maxlength : 100},

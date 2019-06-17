@@ -1387,6 +1387,7 @@ public class BeanUtils {
 		String validateFormStr=createValidateFormFunc(detailList);
 		
 		MappingTableEntity subInfo=new MappingTableEntity ();
+		ConvertUtils.register(new DateConverter(null), java.util.Date.class);
 		org.apache.commons.beanutils.BeanUtils.copyProperties(subInfo, info);
 		subInfo.setEntityChinese(info.getEntityChinese()+"子表");
 		subInfo.setEntityName((info.getEntityName().replace("Entity", "")+"SubEntity"));
