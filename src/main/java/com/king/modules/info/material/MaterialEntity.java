@@ -47,6 +47,8 @@ public class MaterialEntity extends BaseEntity {
 	@Column(length = 250)
 	private String classDesc;
 
+	private String unit;//单位
+	
 	public String getMemo() {
 		return memo;
 	}
