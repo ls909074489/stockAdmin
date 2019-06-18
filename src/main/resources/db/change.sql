@@ -31,4 +31,8 @@ INSERT INTO `stock_admin`.`yy_role_func` (`uuid`, `status`, `func_id`, `role_id`
 
 
 
+INSERT INTO `stock_admin`.`yy_enumdata` (`uuid`, `status`, `description`, `groupcode`, `groupname`, `modulecode`, `sys`, `creator`, `modifier`, `create_time`, `modify_time`, `creatorname`, `modifiername`, `createtime`, `modifytime`, `ts`) VALUES ('590ab276-11b1-4c9b-953d-6b17774c48f8', '1', '', 'MaterialUnit', '物料单位', 'sys', '\0', '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, NULL, '超级系统管理员', NULL, '2019-06-18 08:38:25', NULL, '2019-06-18 08:38:25');
+INSERT INTO `stock_admin`.`yy_enumdata_sub` (`uuid`, `status`, `description`, `enumdatakey`, `enumdataname`, `icon`, `isdefault`, `showorder`, `enumdataid`, `creator`, `modifier`, `create_time`, `modify_time`, `creatorname`, `modifiername`, `createtime`, `modifytime`, `ts`) VALUES ('0093cca2-a6e9-4db9-892b-25610cdace47', '1', NULL, 'M', 'M', NULL, '\0', NULL, '590ab276-11b1-4c9b-953d-6b17774c48f8', '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, NULL, '超级系统管理员', NULL, '2019-06-18 08:38:25', NULL, '2019-06-18 08:38:25');
+INSERT INTO `stock_admin`.`yy_enumdata_sub` (`uuid`, `status`, `description`, `enumdatakey`, `enumdataname`, `icon`, `isdefault`, `showorder`, `enumdataid`, `creator`, `modifier`, `create_time`, `modify_time`, `creatorname`, `modifiername`, `createtime`, `modifytime`, `ts`) VALUES ('5128de0e-3bdd-4a23-b520-2a3dcf6c9422', '1', NULL, 'L', 'L', NULL, '\0', NULL, '590ab276-11b1-4c9b-953d-6b17774c48f8', '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, NULL, '超级系统管理员', NULL, '2019-06-18 08:38:25', NULL, '2019-06-18 08:38:25');
+
 

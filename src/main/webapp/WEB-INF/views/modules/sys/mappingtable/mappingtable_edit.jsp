@@ -632,7 +632,7 @@
 			//async : true,
 			dataType : "json",
 			success : function(data) {
-				YYUI.sucMsg(data.msg);
+				YYUI.succMsg(data.msg);
 			},
 			error : function(data) {
 				YYUI.failMsg("操作失败，请联系管理员");

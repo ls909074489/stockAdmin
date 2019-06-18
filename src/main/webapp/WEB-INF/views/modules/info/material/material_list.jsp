@@ -37,11 +37,15 @@
 			</div>
 			<div class="row yy-searchbar form-inline">
 				<form id="yy-form-query">
-					<label for="search_EQ_billstatus" class="control-label">xxx</label>
-					<select class="yy-input-enumdata form-control" id="search_EQ_billstatus" 
-						name="search_EQ_billstatus" data-enum-group="BillApplyStatus"></select>
+					<label for="search_EQ_billstatus" class="control-label">是否风险物料</label>
+					<select class="yy-input-enumdata form-control" id="search_EQ_hasRisk" 
+						name="search_EQ_hasRisk" data-enum-group="BooleanType"></select>
 
-					<label for="search_LIKE_name" class="control-label">xxxxx</label>
+					<label for="search_LIKE_name" class="control-label">物料名称</label>
+					<input type="text" autocomplete="on" name="search_LIKE_code"
+						id="search_LIKE_code" class="form-control input-sm">
+						
+					<label for="search_LIKE_name" class="control-label">物料名称</label>
 					<input type="text" autocomplete="on" name="search_LIKE_name"
 						id="search_LIKE_name" class="form-control input-sm">
 
@@ -62,11 +66,11 @@
 								<input type="checkbox" class="group-checkable" data-set="#yy-table-list .checkboxes"/>
 							</th>
 							<th>操作</th>
-							<th>物料描述</th>
 							<th>物料编码</th>
 							<th>名称</th>
 							<th>是否风险物料</th>
 							<th>分类描述</th>
+							<th>物料描述</th>
 						</tr>
 					</thead>
 					<tbody></tbody>
@@ -99,11 +103,6 @@
 				render : YYDataTableUtils.renderActionCol,
 				width : "50"
 			},{
-				data : "memo",
-				width : "100",
-				className : "center",
-				orderable : true
-			},{
 				data : "code",
 				width : "100",
 				className : "center",
@@ -123,6 +122,11 @@
 				orderable : true
 			},{
 				data : "classDesc",
+				width : "100",
+				className : "center",
+				orderable : true
+			},{
+				data : "memo",
 				width : "100",
 				className : "center",
 				orderable : true

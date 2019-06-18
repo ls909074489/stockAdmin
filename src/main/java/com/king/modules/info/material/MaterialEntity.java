@@ -47,6 +47,8 @@ public class MaterialEntity extends BaseEntity {
 	@Column(length = 250)
 	private String classDesc;
 
+	@MetaData(value = "单位")
+	@Column(length = 10)
 	private String unit;//单位
 	
 	public String getMemo() {
@@ -88,5 +90,14 @@ public class MaterialEntity extends BaseEntity {
 	public void setClassDesc(String classDesc) {
 		this.classDesc = classDesc;
 	}
+
+	public String getUnit() {
+		return unit;
+	}
+
+	public void setUnit(String unit) {
+		this.unit = unit;
+	}
+	
 
 }

@@ -52,6 +52,14 @@
 					</div>
 					<div class="col-md-4">
 						<div class="form-group">
+							<label class="control-label col-md-4" >物料单位</label>
+							<div class="col-md-8" >
+								<select name="unit" id="unit" data-enum-group="MaterialUnit" class="yy-input-enumdata form-control"></select>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="form-group">
 							<label class="control-label col-md-4" >分类描述</label>
 							<div class="col-md-8" >
 								<input name="classDesc" id="classDesc" type="text" value="${entity.classDesc}" class="form-control">
@@ -81,6 +89,7 @@
 				//$("select[name='is_use']").val('1');
 			} else if ('${openstate}' == 'detail') {
 				$("select[name='hasRisk']").val('${entity.hasRisk}');
+				$("select[name='unit']").val('${entity.unit}');
 			}
 		}
 

@@ -9,9 +9,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -24,6 +33,7 @@ import com.king.common.utils.ExcelDataUtil;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.dao.IBaseDAO;
 import com.king.frame.service.BaseServiceImpl;
+import com.king.modules.sys.enumdata.EnumDataUtils;
 import com.king.modules.sys.imexlate.ImexlateSubEntity;
 import com.king.modules.sys.imexlate.ImexlateSubService;
 
@@ -157,5 +167,69 @@ public class MaterialService extends BaseServiceImpl<MaterialEntity,String> {
 		}
 		return arm;
 	}
+
+	public void changeToStatisCells(List<MaterialEntity> resultList, Workbook wb) {
+		List<ImexlateSubEntity> implateSubList=imexlateSubService.findByTemCoding("materialExport");
+		Row row = null;
+		Cell cell =null;
+		Sheet sh =null;
+		sh = wb.createSheet("物料");
+		CellStyle  style=wb.createCellStyle();// 样式对象    
+		//生成一个字体
+        Font font=wb.createFont();
+        font.setColor(HSSFColor.BLACK.index);//字体颜色
+        font.setFontHeightInPoints((short)12);
+        font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);         //字体增粗
+        //把字体应用到当前的样式
+        style.setFont(font);
+        style.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);// 垂直      
+        style.setAlignment(HSSFCellStyle.ALIGN_CENTER);// 水平      
+		
+        sh.setColumnWidth(0, 15 * 256);//设置宽度
+        sh.setColumnWidth(3, 25 * 256);//设置宽度
+        sh.setColumnWidth(4, 25 * 256);//设置宽度
+		
+        //设置表头
+		row=sh.createRow(0);
+		int i=0;
+		for(ImexlateSubEntity sub:implateSubList){
+			cell = row.createCell(i);
+			cell.setCellStyle(style);
+			cell.setCellValue(sub.getChineseField());
+			i++;
+		}
+		int rownum=0;
+		Map<String,String> map = null;
+		for(MaterialEntity obj:resultList){
+			rownum++;
+			row = sh.createRow(rownum);
+			map = changeMaterialToMap(map, obj);
+			i=0;
+			for(ImexlateSubEntity sub:implateSubList){
+				cell = row.createCell(i);//
+				cell.setCellValue(map.get(sub.getFieldName()));
+				i++;
+			}
+		}
+	}
+	
+	
+	/**
+	 * 转换成map
+	 * @param map
+	 * @param obj
+	 * @return
+	 */
+	private Map<String,String> changeMaterialToMap(Map<String,String> map,MaterialEntity obj){
+		map = new HashMap<>();
+		map.put("code", obj.getCode());
+		map.put("name", obj.getName());
+		map.put("hasRisk", EnumDataUtils.getEnumValue(obj.getHasRisk()+"", "BooleanType"));
+		map.put("unit", EnumDataUtils.getEnumValue(obj.getUnit(), "MaterialUnit"));
+		map.put("classDesc", obj.getClassDesc());
+		map.put("memo", obj.getMemo());
+		return map;
+	}
+	
 
 }

@@ -26,6 +26,15 @@ public class OrderInfoEntity extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 
+	@MetaData(value = "订单编码")
+	@Column(length = 50)
+	private String code;
+	
+	@MetaData(value = "订单名称")
+	
+	@Column(length = 100)
+	private String name;
+	
 	@MetaData(value = "订单类型")
 	@Column(length = 10)
 	private String orderType;
@@ -40,29 +49,9 @@ public class OrderInfoEntity extends BaseEntity {
 	@Column()
 	private Date planArriveTime;
 
-	@MetaData(value = "订单编码")
-	@Column(length = 50)
-	private String code;
-
-	@MetaData(value = "实际数量")
-	@Column()
-	private Long actualAmount;
-
-	@MetaData(value = "订单名称")
-	@Column(length = 100)
-	private String name;
-
 	@MetaData(value = "备注")
 	@Column(length = 250)
 	private String memo;
-
-	@MetaData(value = "备注")
-	@Column()
-	private Long memo;
-
-	@MetaData(value = "计划数量")
-	@Column()
-	private Long planAmount;
 
 	public String getOrderType() {
 		return orderType;
@@ -96,13 +85,6 @@ public class OrderInfoEntity extends BaseEntity {
 		this.code = code;
 	}
 
-	public Long getActualAmount() {
-		return actualAmount;
-	}
-
-	public void setActualAmount(Long actualAmount) {
-		this.actualAmount = actualAmount;
-	}
 
 	public String getName() {
 		return name;
@@ -118,22 +100,6 @@ public class OrderInfoEntity extends BaseEntity {
 
 	public void setMemo(String memo) {
 		this.memo = memo;
-	}
-
-	public Long getMemo() {
-		return memo;
-	}
-
-	public void setMemo(Long memo) {
-		this.memo = memo;
-	}
-
-	public Long getPlanAmount() {
-		return planAmount;
-	}
-
-	public void setPlanAmount(Long planAmount) {
-		this.planAmount = planAmount;
 	}
 
 }
