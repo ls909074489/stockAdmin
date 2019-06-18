@@ -111,10 +111,10 @@ public class MaterialController extends BaseController<MaterialEntity> {
 			
 			if (explorerType == null || explorerType.contains("IE")) {// IE
 				response.setHeader("Content-Disposition",
-				"attachment; filename=\"" + RequestUtil.encode(("教师信息"),"utf-8")+".xlsx" + "\"");
+				"attachment; filename=\"" + RequestUtil.encode(("物料信息"),"utf-8")+".xlsx" + "\"");
 			} else {// fireFox/Chrome
 				response.setHeader("Content-Disposition",
-						"attachment; filename=" + new String(("教师信息").getBytes("utf-8"), "ISO8859-1")+".xlsx");
+						"attachment; filename=" + new String(("物料信息").getBytes("utf-8"), "ISO8859-1")+".xlsx");
 			}
 	        response.setContentType("application/msexcel");// 定义输出类型 
 			wb = new SXSSFWorkbook(100);

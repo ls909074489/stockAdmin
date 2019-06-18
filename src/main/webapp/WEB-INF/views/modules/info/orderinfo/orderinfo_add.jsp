@@ -24,43 +24,9 @@
 				<div class="row">
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4" >订单类型</label>
-							<div class="col-md-8" >
-								<select name="orderType" id="orderType" data-enum-group="BooleanType" class="yy-input-enumdata form-control"></select>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="form-group">
-							<label class="control-label col-md-4" >实际到货时间</label>
-							<div class="col-md-8" >
-								<input name="actualArriveTime" id="actualArriveTime" type="text" value="${entity.actualArriveTime}" class="Wdate form-control" onclick="WdatePicker();">
-							</div>
-						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="form-group">
-							<label class="control-label col-md-4" >预计到货时间</label>
-							<div class="col-md-8" >
-								<input name="planArriveTime" id="planArriveTime" type="text" value="${entity.planArriveTime}" class="Wdate form-control" onclick="WdatePicker();">
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-4">
-						<div class="form-group">
 							<label class="control-label col-md-4" >订单编码</label>
 							<div class="col-md-8" >
 								<input name="code" id="code" type="text" value="${entity.code}" class="form-control">
-							</div>
-						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="form-group">
-							<label class="control-label col-md-4" >实际数量</label>
-							<div class="col-md-8" >
-								<input name="actualAmount" id="actualAmount" type="text" value="${entity.actualAmount}" class="form-control">
 							</div>
 						</div>
 					</div>
@@ -76,25 +42,27 @@
 				<div class="row">
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4" >备注</label>
+							<label class="control-label col-md-4" >订单类型</label>
 							<div class="col-md-8" >
-								<textarea name="memo" id="memo" class="form-control">${entity.memo}</textarea>
+								<select name="orderType" id="orderType" data-enum-group="OrderType" class="yy-input-enumdata form-control"></select>
 							</div>
 						</div>
 					</div>
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4" >备注</label>
+							<label class="control-label col-md-4" >预计到货时间</label>
 							<div class="col-md-8" >
+								<input name="planArriveTime" id="planArriveTime" type="text" value="${entity.planArriveTime}" class="Wdate form-control" onclick="WdatePicker();">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-8">
+						<div class="form-group">
+							<label class="control-label col-md-2" >备注</label>
+							<div class="col-md-10" >
 								<input name="memo" id="memo" type="text" value="${entity.memo}" class="form-control">
-							</div>
-						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="form-group">
-							<label class="control-label col-md-4" >计划数量</label>
-							<div class="col-md-8" >
-								<input name="planAmount" id="planAmount" type="text" value="${entity.planAmount}" class="form-control">
 							</div>
 						</div>
 					</div>
@@ -104,7 +72,7 @@
 		</div>
 		<div class="tabbable-line">
 			<ul class="nav nav-tabs ">
-				<li class="active"><a href="#tab_15_1" data-toggle="tab">列表
+				<li class="active"><a href="#tab_15_1" data-toggle="tab">订单明细
 				</a></li>
 			</ul>
 			<div class="tab-content">
@@ -119,7 +87,8 @@
 							<tr>
 								<th>序号</th>	
 								<th>操作</th>	
-
+								<th>计划数量</th>	
+								<th>备注</th>	
 							</tr>
 						</thead>
 						<tbody>
@@ -144,13 +113,37 @@
 				orderable : false,
 				className : "center",
 				width : "50"
-			},{			},{
+			},{
 				data : "uuid",
 				className : "center",
 				orderable : false,
 				render : YYDataTableUtils.renderRemoveActionCol,
 				width : "50"
+			}, {
+				data : 'planAmount',
+				width : "80",
+				className : "center",
+				orderable : true,
+				render : function(data, type, full) {
+					if(data==null){
+						data="";
+					}
+					return '<input class="form-control" value="'+ data + '" name="planAmount">';
+				}
+			}, {
+				data : 'memo',
+				width : "160",
+				className : "center",
+				orderable : true,
+				render : function(data, type, full) {
+					if(data==null){
+						data="";
+					}
+					return '<input class="form-control" value="'+ data + '" name="memo">';
+				}
 			}];
+		
+		
 
 		 
 		$(document).ready(function() {
@@ -166,7 +159,9 @@
 			//添加按钮事件
 			$('#addNewSub').click(function(e) {
 				var subNewData = [ {
-					'uuid' : ''
+					'uuid' : '',
+					'planAmount':'',
+					'memo':''
 				} ];
 				var nRow = _subTableList.rows.add(subNewData).draw().nodes()[0];//添加行，并且获得第一行
 				_subTableList.on('order.dt search.dt',
@@ -199,15 +194,12 @@
 			validata = $('#yy-form-edit').validate({
 				onsubmit : true,
 				rules : {
-					'orderType' : {maxlength : 100},
-					'actualArriveTime' : {maxlength : 100},
-					'planArriveTime' : {maxlength : 100},
-					'code' : {maxlength : 100},
-					'actualAmount' : {maxlength : 100},
-					'name' : {maxlength : 100},
-					'memo' : {maxlength : 100},
-					'memo' : {maxlength : 100},
-					'planAmount' : {maxlength : 100}
+					'orderType' : {required : true,maxlength : 100},
+					'code' : {required : true,maxlength : 100},
+					'name' : {required : true,maxlength : 100},
+					'planAmount' : {required : true,maxlength : 100},
+					'planArriveTime' : {required : true,maxlength : 100},
+					'memo' : {maxlength : 100}
 				}
 			});
 		}
@@ -263,18 +255,18 @@
 		//表体校验
 		function getRowValidator() {
 			return [ {
-						name : "subcode",
+						name : "planAmount",
 						rules : {
 							required : true,
 							//number :true,
 							digits :true,
-							maxlength:3
+							maxlength:8
 						},
 						message : {
 							required : "必输",
 							//number :"请输入合法的数字",
 							digits :"只能输入整数",
-							maxlength : "最大长度为3"
+							maxlength : "最大长度为8"
 						}
 					}
 			];

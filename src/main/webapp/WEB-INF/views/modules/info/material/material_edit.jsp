@@ -21,15 +21,7 @@
 				<div class="row">
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4" >物料描述</label>
-							<div class="col-md-8" >
-								<input name="memo" id="memo" type="text" value="${entity.memo}" class="form-control">
-							</div>
-						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="form-group">
-							<label class="control-label col-md-4" >物料编码</label>
+							<label class="control-label col-md-4">物料编码</label>
 							<div class="col-md-8" >
 								<input name="code" id="code" type="text" value="${entity.code}" class="form-control">
 							</div>
@@ -37,7 +29,7 @@
 					</div>
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4" >名称</label>
+							<label class="control-label col-md-4">物料名称</label>
 							<div class="col-md-8" >
 								<input name="name" id="name" type="text" value="${entity.name}" class="form-control">
 							</div>
@@ -47,7 +39,7 @@
 				<div class="row">
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4" >是否风险物料</label>
+							<label class="control-label col-md-4">是否风险物料</label>
 							<div class="col-md-8" >
 								<select name="hasRisk" id="hasRisk" data-enum-group="BooleanType" class="yy-input-enumdata form-control"></select>
 							</div>
@@ -55,17 +47,29 @@
 					</div>
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4" >物料单位</label>
+							<label class="control-label col-md-4">物料单位</label>
 							<div class="col-md-8" >
 								<select name="unit" id="unit" data-enum-group="MaterialUnit" class="yy-input-enumdata form-control"></select>
 							</div>
 						</div>
 					</div>
-					<div class="col-md-4">
+				</div>
+				<div class="row">
+					<div class="col-md-8">
 						<div class="form-group">
-							<label class="control-label col-md-4" >分类描述</label>
-							<div class="col-md-8" >
+							<label class="control-label col-md-2">分类描述</label>
+							<div class="col-md-10" >
 								<input name="classDesc" id="classDesc" type="text" value="${entity.classDesc}" class="form-control">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-8">
+						<div class="form-group">
+							<label class="control-label col-md-2">物料描述</label>
+							<div class="col-md-10" >
+								<input name="memo" id="memo" type="text" value="${entity.memo}" class="form-control">
 							</div>
 						</div>
 					</div>

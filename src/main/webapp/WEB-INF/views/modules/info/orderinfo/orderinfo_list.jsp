@@ -23,11 +23,11 @@
 			</div>
 			<div class="row yy-searchbar form-inline">
 				<form id="yy-form-query">
-					<label for="search_EQ_billstatus" class="control-label">xxx</label>
+					<label for="search_EQ_billstatus" class="control-label">订单类型</label>
 					<select class="yy-input-enumdata form-control" id="search_EQ_billstatus" 
 						name="search_EQ_billstatus" data-enum-group="BillApplyStatus"></select>
 
-					<label for="search_LIKE_name" class="control-label">xxxxx</label>
+					<label for="search_LIKE_name" class="control-label">订单名称</label>
 					<input type="text" autocomplete="on" name="search_LIKE_name"
 						id="search_LIKE_name" class="form-control input-sm">
 
@@ -49,14 +49,10 @@
 							</th>
 							<th>操作</th>
 							<th>订单类型</th>
-							<th>实际到货时间</th>
-							<th>预计到货时间</th>
 							<th>订单编码</th>
-							<th>实际数量</th>
 							<th>订单名称</th>
+							<th>预计到货时间</th>
 							<th>备注</th>
-							<th>备注</th>
-							<th>计划数量</th>
 						</tr>
 					</thead>
 					<tbody></tbody>
@@ -96,22 +92,7 @@
 				},
 				orderable : true
 			},{
-				data : "actualArriveTime",
-				width : "100",
-				className : "center",
-				orderable : true
-			},{
-				data : "planArriveTime",
-				width : "100",
-				className : "center",
-				orderable : true
-			},{
 				data : "code",
-				width : "100",
-				className : "center",
-				orderable : true
-			},{
-				data : "actualAmount",
 				width : "100",
 				className : "center",
 				orderable : true
@@ -121,17 +102,12 @@
 				className : "center",
 				orderable : true
 			},{
-				data : "memo",
+				data : "planArriveTime",
 				width : "100",
 				className : "center",
 				orderable : true
 			},{
 				data : "memo",
-				width : "100",
-				className : "center",
-				orderable : true
-			},{
-				data : "planAmount",
 				width : "100",
 				className : "center",
 				orderable : true

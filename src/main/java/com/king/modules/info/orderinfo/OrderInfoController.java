@@ -1,11 +1,25 @@
 package com.king.modules.info.orderinfo;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.ServletRequest;
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import com.king.frame.controller.BaseController;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.king.frame.controller.ActionResultModel;
+import com.king.frame.controller.BaseController;
+
+import net.sf.json.JSONObject;
 
 /**
  * 订单
@@ -18,6 +32,8 @@ public class OrderInfoController extends BaseController<OrderInfoEntity> {
 
 	@Autowired
 	private OrderInfoService service;
+	@Autowired
+	private OrderSubService subService;
 
 	/**
 	 * 
@@ -36,7 +52,7 @@ public class OrderInfoController extends BaseController<OrderInfoEntity> {
 
 	@Override
 	public String addView(Model model, ServletRequest request) {
-		return "modules/info/orderinfo/orderinfo_edit";
+		return "modules/info/orderinfo/orderinfo_add";
 	}
 
 	@Override
@@ -49,4 +65,69 @@ public class OrderInfoController extends BaseController<OrderInfoEntity> {
 		return "modules/info/orderinfo/orderinfo_detail";
 	}
 
+	
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value = "/addwithsub")
+	@ResponseBody
+	public ActionResultModel addwithsub(ServletRequest request, Model model, @Valid OrderInfoEntity entity,
+			@RequestParam(value = "subList[]", required = false) String[] subArrs,
+			@RequestParam(value = "deletePKs[]", required = false) String[] deletePKs) {
+		ActionResultModel<OrderInfoEntity> arm = new ActionResultModel<OrderInfoEntity>();
+		arm.setSuccess(true);
+		List<OrderSubEntity> subList = this.convertToEntities(subArrs);
+		try {
+			arm = subService.saveSelfAndSubList(entity, subList, deletePKs);
+		}catch (Exception e) {
+			arm.setSuccess(false);
+			arm.setMsg("保存失败");
+			e.printStackTrace();
+		}
+		return arm;
+	}
+
+	@SuppressWarnings("rawtypes")
+	@RequestMapping(value = "/updatewithsub")
+	@ResponseBody
+	public ActionResultModel update(ServletRequest request, Model model, @Valid @ModelAttribute("preloadEntity") OrderInfoEntity entity,
+			@RequestParam(value = "subList[]", required = false) String[] subArrs,
+			@RequestParam(value = "deletePKs[]", required = false) String[] deletePKs) {
+		ActionResultModel<OrderInfoEntity> arm = new ActionResultModel<OrderInfoEntity>();
+		arm.setSuccess(true);
+		List<OrderSubEntity> subList = this.convertToEntities(subArrs);
+		try {
+			arm = subService.saveSelfAndSubList(entity, subList, deletePKs);
+		} catch (Exception e) {
+			arm.setSuccess(false);
+			arm.setMsg("保存失败");
+			e.printStackTrace();
+		}
+		return arm;
+	}
+
+	private List<OrderSubEntity> convertToEntities(String[] paramArr) {
+		List<OrderSubEntity> returnList = new ArrayList<OrderSubEntity>();
+		if (paramArr == null || paramArr.length == 0)
+			return returnList;
+		for (String data : paramArr) {
+			JSONObject jsonObject = new JSONObject();
+			String[] properties = data.split("&");
+			for (String property : properties) {
+				String[] nameAndValue = property.split("=");
+				if (nameAndValue.length == 2) {
+					try {
+						nameAndValue[0] = URLDecoder.decode(nameAndValue[0], "UTF-8");
+						nameAndValue[1] = URLDecoder.decode(nameAndValue[1], "UTF-8");
+					} catch (UnsupportedEncodingException e) {
+						e.printStackTrace();
+					}
+					jsonObject.put(nameAndValue[0], nameAndValue[1]);
+				}
+			}
+			OrderSubEntity obj = (OrderSubEntity) JSONObject.toBean(jsonObject,
+					OrderSubEntity.class);
+			returnList.add(obj);
+		}
+		return returnList;
+	}
+	
 }

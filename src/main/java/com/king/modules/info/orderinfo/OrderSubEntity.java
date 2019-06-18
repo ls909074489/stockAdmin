@@ -35,17 +35,17 @@ public class OrderSubEntity extends BaseEntity {
 	@JoinColumn(name = "material_id",nullable=true)
 	private MaterialEntity material;
 	
-	@MetaData(value = "备注")
-	@Column(length = 250)
-	private String memo;
-
+	@MetaData(value = "计划数量")
+	@Column()
+	private Long planAmount;
+	
 	@MetaData(value = "实际数量")
 	@Column()
 	private Long actualAmount;
 	
-	@MetaData(value = "计划数量")
-	@Column()
-	private Long planAmount;
+	@MetaData(value = "备注")
+	@Column(length = 250)
+	private String memo;
 
 	public OrderInfoEntity getMain() {
 		return main;

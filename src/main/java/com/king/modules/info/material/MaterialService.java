@@ -173,7 +173,7 @@ public class MaterialService extends BaseServiceImpl<MaterialEntity,String> {
 		Row row = null;
 		Cell cell =null;
 		Sheet sh =null;
-		sh = wb.createSheet("物料");
+		sh = wb.createSheet("物料信息");
 		CellStyle  style=wb.createCellStyle();// 样式对象    
 		//生成一个字体
         Font font=wb.createFont();
