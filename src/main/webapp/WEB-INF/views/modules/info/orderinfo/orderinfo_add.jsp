@@ -143,8 +143,6 @@
 				}
 			}];
 		
-		
-
 		 
 		$(document).ready(function() {
 			bindEditActions();//綁定平台按鈕
@@ -156,39 +154,51 @@
 				"paging" : false//,"order" : [[5,"asc"]]
 			});
 			
-			//添加按钮事件
-			$('#addNewSub').click(function(e) {
-				var subNewData = [ {
-					'uuid' : '',
-					'planAmount':'',
-					'memo':''
-				} ];
-				var nRow = _subTableList.rows.add(subNewData).draw().nodes()[0];//添加行，并且获得第一行
-				_subTableList.on('order.dt search.dt',
-				        function() {
-					_subTableList.column(0, {
-						        search: 'applied',
-						        order: 'applied'
-					        }).nodes().each(function(cell, i) {
-						        cell.innerHTML = i + 1;
-					        });
-				}).draw();
-			});
 			
-			//行操作：删除子表
-			$('#yy-table-sublist').on('click', '.delete', function(e) {
-				e.preventDefault();
-				var delThis=$(this);
-				layer.confirm('确实要删除吗？', function(index) {
-					layer.close(index);
-					//此处的this表示layer.confirm,所以delThis变量
-					var nRow = delThis.closest('tr')[0];//$(this).closest('tr')[0];
-					var row = _subTableList.row(nRow);
-					row.remove().draw();
-				});
-			});
+			$("#addNewSub").bind('click', onAddSubRow);//添加按钮事件
+			
+			$('#yy-table-sublist').on('click', '.delete', onDelSubRow);//行操作：删除子表
 		});
 		 
+		//添加行
+		function onAddSubRow(){
+			var subNewData = [ {
+				'uuid' : '',
+				'planAmount':'',
+				'memo':''
+			} ];
+			var nRow = _subTableList.rows.add(subNewData).draw().nodes()[0];//添加行，并且获得第一行
+			_subTableList.on('order.dt search.dt',function() {
+				_subTableList.column(0, {
+					        search: 'applied',
+					        order: 'applied'
+				        }).nodes().each(function(cell, i) {
+					        cell.innerHTML = i + 1;
+				        });
+			}).draw();
+		}
+		
+		//删除行
+		function onDelSubRow(e){
+			//行操作：删除子表
+			e.preventDefault();
+			var delThis=$(this);
+			layer.confirm('确实要删除吗？', function(index) {
+				layer.close(index);
+				
+				//此处的this表示layer.confirm,所以delThis变量
+				var nRow = delThis.closest('tr')[0];
+				var row = _subTableList.row(nRow);
+				var data = row.data();
+				if (typeof (data) == null || data.uuid == '') {
+					row.remove().draw();//新增的直接删除
+				} else {
+					_deletePKs.push(data.uuid);//记录需要删除的id，在保存时统一删除
+					row.remove().draw();
+				}
+			});
+		}
+		
 		//表单校验
 		function validateForms(){
 			validata = $('#yy-form-edit').validate({

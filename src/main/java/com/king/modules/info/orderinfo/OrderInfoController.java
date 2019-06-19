@@ -93,7 +93,8 @@ public class OrderInfoController extends BaseController<OrderInfoEntity> {
 			@RequestParam(value = "deletePKs[]", required = false) String[] deletePKs) {
 		ActionResultModel<OrderInfoEntity> arm = new ActionResultModel<OrderInfoEntity>();
 		arm.setSuccess(true);
-		List<OrderSubEntity> subList = this.convertToEntities(subArrs);
+//		List<OrderSubEntity> subList = this.convertToEntities(subArrs);
+		List<OrderSubEntity> subList = super.convertToEntities(OrderSubEntity.class, subArrs);
 		try {
 			arm = subService.saveSelfAndSubList(entity, subList, deletePKs);
 		} catch (Exception e) {
@@ -104,6 +105,7 @@ public class OrderInfoController extends BaseController<OrderInfoEntity> {
 		return arm;
 	}
 
+	
 	private List<OrderSubEntity> convertToEntities(String[] paramArr) {
 		List<OrderSubEntity> returnList = new ArrayList<OrderSubEntity>();
 		if (paramArr == null || paramArr.length == 0)

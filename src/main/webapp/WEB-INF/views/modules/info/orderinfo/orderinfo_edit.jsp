@@ -68,7 +68,6 @@
 						</div>
 					</div>
 				</div>
-
 			</form>
 		</div>
 		<div class="tabbable-line">
@@ -133,12 +132,34 @@
 				orderable : false,
 				className : "center",
 				width : "50"
-			},{			},{
+			},{
 				data : "uuid",
 				className : "center",
 				orderable : false,
 				render : YYDataTableUtils.renderRemoveActionCol,
 				width : "50"
+			}, {
+				data : 'planAmount',
+				width : "80",
+				className : "center",
+				orderable : true,
+				render : function(data, type, full) {
+					if(data==null){
+						data="";
+					}
+					return '<input class="form-control" value="'+ data + '" name="planAmount">';
+				}
+			}, {
+				data : 'memo',
+				width : "160",
+				className : "center",
+				orderable : true,
+				render : function(data, type, full) {
+					if(data==null){
+						data="";
+					}
+					return '<input class="form-control" value="'+ data + '" name="memo">';
+				}
 			}];
 
 		 

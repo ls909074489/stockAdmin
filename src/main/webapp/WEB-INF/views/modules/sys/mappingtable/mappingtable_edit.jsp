@@ -223,99 +223,100 @@
 	var _addList = new Array(); //新增的行/修改的行
 	var _deletePKs = new Array();//需要删除的PK数组
 	var _columnNum;
+	
 	/* 子表操作 */
 	var _subTableCols = [{
-		data : null,
-		orderable : false,
-		className : "center",
-		width : "30"
-	}, {
-		data : "uuid",
-		orderable : false,
-		className : "center",
-		width : "50",
-		render :YYDataTableUtils.renderRemoveActionCol
-	}, {
-		data : "colName",
-		orderable : false,
-		className : "center",
-		width : "80",
-		render : function(data, type, full) {
-			var tUuid=full.uuid;
-			if (typeof(tUuid) == "undefined"){
-				tUuid="";
+			data : null,
+			orderable : false,
+			className : "center",
+			width : "30"
+		}, {
+			data : "uuid",
+			orderable : false,
+			className : "center",
+			width : "50",
+			render :YYDataTableUtils.renderRemoveActionCol
+		}, {
+			data : "colName",
+			orderable : false,
+			className : "center",
+			width : "80",
+			render : function(data, type, full) {
+				var tUuid=full.uuid;
+				if (typeof(tUuid) == "undefined"){
+					tUuid="";
+				}
+				if(data==null){
+					data="";
+				}
+				return '<input type="hidden" name="uuid" value="'+tUuid+'"><input class="form-control inputChange" value="'+ data + '" name="colName">';
 			}
-			if(data==null){
-				data="";
+		}, {
+			data : "colNameDb",
+			orderable : false,
+			className : "center",
+			width : "80",
+			render : function(data, type, full) {
+				if(data==null){
+					data="";
+				}
+				return '<input class="form-control" value="'+ data + '" name="colNameDb">';
 			}
-			return '<input type="hidden" name="uuid" value="'+tUuid+'"><input class="form-control inputChange" value="'+ data + '" name="colName">';
-		}
-	}, {
-		data : "colNameDb",
-		orderable : false,
-		className : "center",
-		width : "80",
-		render : function(data, type, full) {
-			if(data==null){
-				data="";
+		}, {
+			data : "colDesc",
+			orderable : false,
+			className : "center",
+			width : "80",
+			render : function(data, type, full) {
+				if(data==null){
+					data="";
+				}
+				return '<input class="form-control" value="'+ data + '" name="colDesc">';
 			}
-			return '<input class="form-control" value="'+ data + '" name="colNameDb">';
-		}
-	}, {
-		data : "colDesc",
-		orderable : false,
-		className : "center",
-		width : "80",
-		render : function(data, type, full) {
-			if(data==null){
-				data="";
+		}, {
+			data : "isListVisiable",
+			orderable : false,
+			className : "center",
+			width : "80",
+			render : function(data, type, full) {
+				return creSelectStr('BooleanType','isListVisiable',data,false);
 			}
-			return '<input class="form-control" value="'+ data + '" name="colDesc">';
-		}
-	}, {
-		data : "isListVisiable",
-		orderable : false,
-		className : "center",
-		width : "80",
-		render : function(data, type, full) {
-			return creSelectStr('BooleanType','isListVisiable',data,false);
-		}
-	}, {
-		data : "isMain",
-		orderable : false,
-		className : "center",
-		width : "80",
-		render : function(data, type, full) {
-			return creSelectStr('BooleanType','isMain',data,false);
-		}
-	}, {
-		data : "eleType",
-		orderable : false,
-		className : "center",
-		width : "80",
-		render : function(data, type, full) {
-			return creSelectStr('eleTypeEnum','eleType',data,false);
-		}
-	}, {
-		data : "colType",
-		orderable : false,
-		className : "center",
-		width : "80",
-		render : function(data, type, full) {
-			return creSelectStr('colTypeEnum','colType',data,false);
-		}
-	}, {
-		data : "colLength",
-		orderable : false,
-		className : "center",
-		width : "80",
-		render : function(data, type, full) {
-			if(data==null){
-				data="";
+		}, {
+			data : "isMain",
+			orderable : false,
+			className : "center",
+			width : "80",
+			render : function(data, type, full) {
+				return creSelectStr('BooleanType','isMain',data,false);
 			}
-			return '<input class="form-control" value="'+ data + '" name="colLength">';
+		}, {
+			data : "eleType",
+			orderable : false,
+			className : "center",
+			width : "80",
+			render : function(data, type, full) {
+				return creSelectStr('eleTypeEnum','eleType',data,false);
+			}
+		}, {
+			data : "colType",
+			orderable : false,
+			className : "center",
+			width : "80",
+			render : function(data, type, full) {
+				return creSelectStr('colTypeEnum','colType',data,false);
+			}
+		}, {
+			data : "colLength",
+			orderable : false,
+			className : "center",
+			width : "80",
+			render : function(data, type, full) {
+				if(data==null){
+					data="";
+				}
+				return '<input class="form-control" value="'+ data + '" name="colLength">';
+			}
 		}
-	}
 	];
 	
 

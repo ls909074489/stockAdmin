@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.ParameterizedType;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -47,6 +48,8 @@ import com.king.modules.sys.enumdata.EnumDataSubEntity;
 import com.king.modules.sys.enumdata.EnumDataUtils;
 import com.king.modules.sys.org.OrgEntity;
 import com.king.modules.sys.user.UserEntity;
+
+import net.sf.json.JSONObject;
 
 public class BaseController<T> {
 	private Class<T> persistentClass;
@@ -627,4 +630,30 @@ public class BaseController<T> {
 		}
         response.setContentType("application/msexcel");// 定义输出类型 
 	}
+	
+	
+	public <T> List<T> convertToEntities(Class<T> t,String[] paramArr) {
+		List<T> returnList = new ArrayList<T>();
+		if (paramArr == null || paramArr.length == 0)
+			return returnList;
+		for (String data : paramArr) {
+			JSONObject jsonObject = new JSONObject();
+			String[] properties = data.split("&");
+			for (String property : properties) {
+				String[] nameAndValue = property.split("=");
+				if (nameAndValue.length == 2) {
+					try {
+						nameAndValue[0] = URLDecoder.decode(nameAndValue[0], "UTF-8");
+						nameAndValue[1] = URLDecoder.decode(nameAndValue[1], "UTF-8");
+					} catch (UnsupportedEncodingException e) {
+						e.printStackTrace();
+					}
+					jsonObject.put(nameAndValue[0], nameAndValue[1]);
+				}
+			}
+			T obj = (T) JSONObject.toBean(jsonObject,t.getClass());
+			returnList.add(obj);
+		}
+		return returnList;
+	} 
 }

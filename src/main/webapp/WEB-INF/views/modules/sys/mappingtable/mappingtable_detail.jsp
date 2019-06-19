@@ -20,25 +20,137 @@
 		</div>
 		<div>
 			<form id="yy-form-detail" class="form-horizontal yy-form-detail">
-					<input name="uuid" id="uuid" type="hidden"/>
-					<div class="row">
-							<div class="col-md-8">
-								<div class="form-group">
-									<label class="control-label col-md-2">名称</label>
-									<div class="col-md-10"><input class="form-control"  id="name" name="name"  type="text"></div>
-								</div>
-							</div>	
-							<div class="col-md-4">
-							<div class="form-group">
-								<label class="control-label col-md-4">厂站</label>
-								<div class="col-md-8">
-										<input id="stationUuid" name="station.uuid" type="hidden" value="${entity.station.uuid}"> 
-										<input id="stationName" name="stationName" type="text" class="form-control" readonly="readonly" 
-												value="${entity.station.name}">
-								</div>
+				<input name="uuid" id="uuid" type="hidden" value="${entity.uuid}"/>
+				<div class="row">
+					<div class="col-md-8">
+						<div class="form-group">
+							<label class="control-label col-md-4">模板名称</label>
+							<div class="col-md-8" id="" style="float: left;">
+								<input name="templateName" id="templateName" type="text" class="form-control" value="${entity.templateName}">
 							</div>
-				</div>
+						</div>
 					</div>
+					<div class="col-md-1">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-8">
+						<div class="form-group">
+							<label class="control-label col-md-4">模板类型</label>
+							<div class="col-md-8">
+								<select name="templateType"  class="form-control">
+									<option value="1">普通列表（前端分页）</option>
+									<option value="2">普通列表（服务器分页）</option>
+									<option value="3">树状结构</option>
+									<option value="4">左树右列表</option>
+									<option value="5">主子表（服务器分页）</option>
+									<option value="6">主子表（前端分页）</option>
+									<option value="11">列表单选</option>
+									<option value="12">树单选</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-8">
+						<div class="form-group">
+							<label class="control-label col-md-4">java文件路径</label>
+							<div class="col-md-8" id="" style="float: left;">
+								<input name="javaWorkspace" id="packageNamePath" type="text" class="form-control" value="${entity.javaWorkspace}">
+							</div>
+						</div>
+					</div>
+					<div class="col-md-1">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-8">
+						<div class="form-group">
+							<label class="control-label col-md-4">java上级包名</label>
+							<div class="col-md-8">
+								<input name="packageName" id="packageName" type="text" class="form-control" value="${entity.packageName}">
+							</div>
+						</div>
+					</div>
+					<div class="col-md-1">
+						<input type="button" value="选择路径" id="javaPathBtn"/>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-8">
+						<div class="form-group">
+							<label class="control-label col-md-4">页面文件路径</label>
+							<div class="col-md-8" id="" style="float: left;">
+								<input name="jspWorkspace" id="jspWorkspace" type="text" class="form-control" value="${entity.jspWorkspace}">
+							</div>
+						</div>
+					</div>
+					<div class="col-md-1">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-8">
+						<div class="form-group">
+							<label class="control-label col-md-4">@RequestMapping(value = "/xx/xx")</label>
+							<div class="col-md-8">
+								<input name="controllerPath" type="text" class="form-control" value="${entity.controllerPath}">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-8">
+						<div class="form-group">
+							<label class="control-label col-md-4">页面路径(return "xx/xx";)</label>
+							<div class="col-md-8">
+								<input id="jspPath" name="jspPath" type="text" class="form-control" value="${entity.jspPath}">
+							</div>
+						</div>
+					</div>
+					<div class="col-md-1">
+						<input type="button" value="选择路径" id="jspPathBtn"/>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-md-8">
+						<div class="form-group">
+							<label class="control-label col-md-4">实体的用途名</label>
+							<div class="col-md-8">
+								<input name="entityChinese" type="text" class="form-control" value="${entity.entityChinese}">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-8">
+						<div class="form-group">
+							<label class="control-label col-md-4">生成表的名字</label>
+							<div class="col-md-8">
+								<input name="tableName" type="text" class="form-control" value="${entity.tableName}">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-8">
+						<div class="form-group">
+							<label class="control-label col-md-4">实体的名字</label>
+							<div class="col-md-8">
+								<input name="entityName" type="text" class="form-control" value="${entity.entityName}">
+							</div>
+						</div>
+					</div>
+					<div class="col-md-2" style="padding-left: 0px;">
+						extends
+						<select name="extendsEntity">
+							<option value="BaseEntity">BaseEntity</option>
+							<option value="SuperEntity">SuperEntity</option>
+							<option value="TreeEntity">TreeEntity</option>
+						</select>
+					</div>
+				</div>
 			</form>
 		</div>
 		<div class="tabbable-line">
@@ -54,8 +166,15 @@
 								<!-- <th class="table-checkbox"><input type="checkbox"
 									class="group-checkable" data-set="#yy-table-sublist .checkboxes" /></th> -->
 								<th>序号</th>	
-								<th>键</th>
-								<th>值</th>
+								<th>操作</th>	
+								<th>实体字段</th>
+								<th>数据库字段</th>
+								<th>备注</th>
+								<th>列表是否显示</th>
+								<th>是否主表</th>
+								<th>页面显示方式</th>
+								<th>字段类型</th>
+								<th>字段长度</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -75,23 +194,95 @@
 	var _addList = new Array(); //新增的行/修改的行
 	var _deletePKs = new Array();//需要删除的PK数组
 	var _columnNum;
+
 	/* 子表操作 */
 	var _subTableCols = [{
-		data : null,
-		orderable : false,
-		className : "center",
-		width : "30"
-	}, {
-		data : "mapkey",
-		orderable : false,
-		className : "center",
-		width : "80"
-	}, {
-		data : "mapval",
-		orderable : false,
-		className : "center",
-		width : "80"
-	}];
+			data : null,
+			orderable : false,
+			className : "center",
+			width : "30"
+		}, {
+			data : "colName",
+			orderable : false,
+			className : "center",
+			width : "80",
+			render : function(data, type, full) {
+				var tUuid=full.uuid;
+				if (typeof(tUuid) == "undefined"){
+					tUuid="";
+				}
+				if(data==null){
+					data="";
+				}
+				return '<input type="hidden" name="uuid" value="'+tUuid+'"><input class="form-control inputChange" value="'+ data + '" name="colName">';
+			}
+		}, {
+			data : "colNameDb",
+			orderable : false,
+			className : "center",
+			width : "80",
+			render : function(data, type, full) {
+				if(data==null){
+					data="";
+				}
+				return '<input class="form-control" value="'+ data + '" name="colNameDb">';
+			}
+		}, {
+			data : "colDesc",
+			orderable : false,
+			className : "center",
+			width : "80",
+			render : function(data, type, full) {
+				if(data==null){
+					data="";
+				}
+				return '<input class="form-control" value="'+ data + '" name="colDesc">';
+			}
+		}, {
+			data : "isListVisiable",
+			orderable : false,
+			className : "center",
+			width : "80",
+			render : function(data, type, full) {
+				return creSelectStr('BooleanType','isListVisiable',data,false);
+			}
+		}, {
+			data : "isMain",
+			orderable : false,
+			className : "center",
+			width : "80",
+			render : function(data, type, full) {
+				return creSelectStr('BooleanType','isMain',data,false);
+			}
+		}, {
+			data : "eleType",
+			orderable : false,
+			className : "center",
+			width : "80",
+			render : function(data, type, full) {
+				return creSelectStr('eleTypeEnum','eleType',data,false);
+			}
+		}, {
+			data : "colType",
+			orderable : false,
+			className : "center",
+			width : "80",
+			render : function(data, type, full) {
+				return creSelectStr('colTypeEnum','colType',data,false);
+			}
+		}, {
+			data : "colLength",
+			orderable : false,
+			className : "center",
+			width : "80",
+			render : function(data, type, full) {
+				if(data==null){
+					data="";
+				}
+				return '<input class="form-control" value="'+ data + '" name="colLength">';
+			}
+		}
+	];
 	
 
 	$(document).ready(function() {

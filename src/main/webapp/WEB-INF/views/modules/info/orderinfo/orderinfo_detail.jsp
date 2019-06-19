@@ -21,43 +21,9 @@
 				<div class="row">
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4" >订单类型</label>
-							<div class="col-md-8" >
-								<select name="orderType" id="orderType" data-enum-group="BooleanType" class="yy-input-enumdata form-control"></select>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="form-group">
-							<label class="control-label col-md-4" >实际到货时间</label>
-							<div class="col-md-8" >
-								<input name="actualArriveTime" id="actualArriveTime" type="text" value="${entity.actualArriveTime}" class="Wdate form-control" onclick="WdatePicker();">
-							</div>
-						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="form-group">
-							<label class="control-label col-md-4" >预计到货时间</label>
-							<div class="col-md-8" >
-								<input name="planArriveTime" id="planArriveTime" type="text" value="${entity.planArriveTime}" class="Wdate form-control" onclick="WdatePicker();">
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-4">
-						<div class="form-group">
 							<label class="control-label col-md-4" >订单编码</label>
 							<div class="col-md-8" >
 								<input name="code" id="code" type="text" value="${entity.code}" class="form-control">
-							</div>
-						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="form-group">
-							<label class="control-label col-md-4" >实际数量</label>
-							<div class="col-md-8" >
-								<input name="actualAmount" id="actualAmount" type="text" value="${entity.actualAmount}" class="form-control">
 							</div>
 						</div>
 					</div>
@@ -73,30 +39,31 @@
 				<div class="row">
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4" >备注</label>
+							<label class="control-label col-md-4" >订单类型</label>
 							<div class="col-md-8" >
-								<textarea name="memo" id="memo" class="form-control">${entity.memo}</textarea>
+								<select name="orderType" id="orderType" data-enum-group="BooleanType" class="yy-input-enumdata form-control"></select>
 							</div>
 						</div>
 					</div>
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4" >备注</label>
+							<label class="control-label col-md-4" >预计到货时间</label>
 							<div class="col-md-8" >
-								<input name="memo" id="memo" type="text" value="${entity.memo}" class="form-control">
-							</div>
-						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="form-group">
-							<label class="control-label col-md-4" >计划数量</label>
-							<div class="col-md-8" >
-								<input name="planAmount" id="planAmount" type="text" value="${entity.planAmount}" class="form-control">
+								<input name="planArriveTime" id="planArriveTime" type="text" value="${entity.planArriveTime}" class="Wdate form-control" onclick="WdatePicker();">
 							</div>
 						</div>
 					</div>
 				</div>
-
+				<div class="row">
+					<div class="col-md-8">
+						<div class="form-group">
+							<label class="control-label col-md-2" >备注</label>
+							<div class="col-md-10" >
+								<input name="memo" id="memo" type="text" value="${entity.memo}" class="form-control">
+							</div>
+						</div>
+					</div>
+				</div>
 			</form>
 		</div>
 		<div class="tabbable-line">
@@ -132,7 +99,8 @@
 						<thead>
 							<tr>
 								<th>序号</th>	
-
+								<th>计划数量</th>	
+								<th>备注</th>	
 							</tr>
 						</thead>
 						<tbody>
@@ -152,13 +120,24 @@
 		var _deletePKs = new Array();//需要删除的PK数组
 		var _columnNum;
 		
+		
 		/* 子表操作 */
 		var _subTableCols = [{
 				data : null,
 				orderable : false,
 				className : "center",
 				width : "50"
-			},{			}];
+			}, {
+				data : 'planAmount',
+				width : "80",
+				className : "center",
+				orderable : true
+			}, {
+				data : 'memo',
+				width : "160",
+				className : "center",
+				orderable : true
+			}];
 
 		 
 		$(document).ready(function() {
