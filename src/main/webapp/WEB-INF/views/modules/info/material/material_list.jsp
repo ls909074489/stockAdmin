@@ -41,7 +41,7 @@
 					<select class="yy-input-enumdata form-control" id="search_EQ_hasRisk" 
 						name="search_EQ_hasRisk" data-enum-group="BooleanType"></select>
 
-					<label for="search_LIKE_name" class="control-label">物料名称</label>
+					<label for="search_LIKE_name" class="control-label">物料编码</label>
 					<input type="text" autocomplete="on" name="search_LIKE_code"
 						id="search_LIKE_code" class="form-control input-sm">
 						

@@ -2,10 +2,10 @@
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="ctx" value="${pageContext.request.contextPath}" />
-<c:set var="serviceurl" value="${ctx}/info/orderinfo"/>
+<c:set var="serviceurl" value="${ctx}/info/projectinfo"/>
 <html>
 <head>
-<title>订单</title>
+<title>项目</title>
 </head>
 <body>
 <div id="yy-page-edit" class="container-fluid page-container page-content">
@@ -24,7 +24,7 @@
 				<div class="row">
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4" >订单编码</label>
+							<label class="control-label col-md-4" >项目号</label>
 							<div class="col-md-8" >
 								<input name="code" id="code" type="text" value="${entity.code}" class="form-control">
 							</div>
@@ -32,27 +32,9 @@
 					</div>
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4" >订单名称</label>
+							<label class="control-label col-md-4" >项目名称</label>
 							<div class="col-md-8" >
 								<input name="name" id="name" type="text" value="${entity.name}" class="form-control">
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-4">
-						<div class="form-group">
-							<label class="control-label col-md-4" >订单类型</label>
-							<div class="col-md-8" >
-								<select name="orderType" id="orderType" data-enum-group="OrderType" class="yy-input-enumdata form-control"></select>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="form-group">
-							<label class="control-label col-md-4" >预计到货时间</label>
-							<div class="col-md-8" >
-								<input name="planArriveTime" id="planArriveTime" type="text" value="${entity.planArriveTime}" class="Wdate form-control" onclick="WdatePicker();">
 							</div>
 						</div>
 					</div>
@@ -67,12 +49,11 @@
 						</div>
 					</div>
 				</div>
-
 			</form>
 		</div>
 		<div class="tabbable-line">
 			<ul class="nav nav-tabs ">
-				<li class="active"><a href="#tab_15_1" data-toggle="tab">订单明细
+				<li class="active"><a href="#tab_15_1" data-toggle="tab">列表
 				</a></li>
 			</ul>
 			<div class="tab-content">
@@ -109,41 +90,39 @@
 		
 		/* 子表操作 */
 		var _subTableCols = [{
-				data : null,
-				orderable : false,
-				className : "center",
-				width : "50"
-			},{
-				data : "uuid",
-				className : "center",
-				orderable : false,
-				render : YYDataTableUtils.renderRemoveActionCol,
-				width : "50"
-			}, {
-				data : 'planAmount',
-				width : "80",
-				className : "center",
-				orderable : true,
-				render : function(data, type, full) {
-					if(data==null){
-						data="";
-					}
-					return '<input class="form-control" value="'+ data + '" name="planAmount">';
+			data : null,
+			orderable : false,
+			className : "center",
+			width : "50"
+		},{
+			data : "uuid",
+			className : "center",
+			orderable : false,
+			render : YYDataTableUtils.renderRemoveActionCol,
+			width : "50"
+		}, {
+			data : 'planAmount',
+			width : "80",
+			className : "center",
+			orderable : true,
+			render : function(data, type, full) {
+				if(data==null){
+					data="";
 				}
-			}, {
-				data : 'memo',
-				width : "160",
-				className : "center",
-				orderable : true,
-				render : function(data, type, full) {
-					if(data==null){
-						data="";
-					}
-					return '<input class="form-control" value="'+ data + '" name="memo">';
+				return '<input class="form-control" value="'+ data + '" name="planAmount">';
+			}
+		}, {
+			data : 'memo',
+			width : "160",
+			className : "center",
+			orderable : true,
+			render : function(data, type, full) {
+				if(data==null){
+					data="";
 				}
-			}];
-		
-		
+				return '<input class="form-control" value="'+ data + '" name="memo">';
+			}
+		}];
 
 		 
 		$(document).ready(function() {
@@ -194,7 +173,6 @@
 			validata = $('#yy-form-edit').validate({
 				onsubmit : true,
 				rules : {
-					'orderType' : {required : true,maxlength : 100},
 					'code' : {required : true,maxlength : 100},
 					'name' : {required : true,maxlength : 100},
 					'memo' : {maxlength : 100}
@@ -250,6 +228,7 @@
 			} 
 		}
 		
+		//表体校验
 		//表体校验
 		function getRowValidator() {
 			return [ {

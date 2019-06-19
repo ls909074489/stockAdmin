@@ -53,13 +53,13 @@ public class StockDetailController extends BaseController<StockDetailEntity> {
 
 	@Override
 	public ActionResultModel<StockDetailEntity> add(ServletRequest request, Model model, StockDetailEntity entity) {
-		return null;//重写防止前端操作
+		return super.doAdd(request, model, entity);//重写防止前端操作
 	}
 
 	@Override
 	protected ActionResultModel<StockDetailEntity> doAdd(ServletRequest request, Model model,
 			StockDetailEntity entity) {
-		return null;//重写防止前端操作
+		return super.doAdd(request, model, entity);//重写防止前端操作
 	}
 
 	@Override
