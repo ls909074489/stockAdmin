@@ -113,4 +113,11 @@ public class RefController {
 		model.addAttribute("callBackMethod",request.getParameter("callBackMethod"));
 		return "modules/ref/usergroup_ref_select";
 	}
+	
+	
+	@RequestMapping("/refMaterial")
+	public String refMaterial(Model model, String callBackMethod,ServletRequest request) {
+		model.addAttribute("callBackMethod",callBackMethod);
+		return "modules/ref/material_ref_select";
+	}
 }

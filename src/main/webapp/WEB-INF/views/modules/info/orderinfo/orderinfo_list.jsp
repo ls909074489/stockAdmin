@@ -25,7 +25,7 @@
 				<form id="yy-form-query">
 					<label for="search_EQ_billstatus" class="control-label">订单类型</label>
 					<select class="yy-input-enumdata form-control" id="search_EQ_billstatus" 
-						name="search_EQ_billstatus" data-enum-group="BillApplyStatus"></select>
+						name="search_EQ_billstatus" data-enum-group="OrderType"></select>
 
 					<label for="search_LIKE_name" class="control-label">订单名称</label>
 					<input type="text" autocomplete="on" name="search_LIKE_name"
@@ -88,7 +88,7 @@
 				width : "100",
 				className : "center",
 				render : function(data, type, full) {
-					return YYDataUtils.getEnumName("sys_sex", data);
+					return YYDataUtils.getEnumName("OrderType", data);
 				},
 				orderable : true
 			},{

@@ -274,20 +274,20 @@
 				return '<input class="form-control" value="'+ data + '" name="colDesc">';
 			}
 		}, {
-			data : "isListVisiable",
+			data : "listVisiable",
 			orderable : false,
 			className : "center",
 			width : "80",
 			render : function(data, type, full) {
-				return creSelectStr('BooleanType','isListVisiable',data,false);
+				return creSelectStr('BooleanType','listVisiable',data,false);
 			}
 		}, {
-			data : "isMain",
+			data : "mainTable",
 			orderable : false,
 			className : "center",
 			width : "80",
 			render : function(data, type, full) {
-				return creSelectStr('BooleanType','isMain',data,false);
+				return creSelectStr('BooleanType','mainTable',data,false);
 			}
 		}, {
 			data : "eleType",
@@ -347,7 +347,7 @@
 				'colName' : '',
 				'colNameDb' :'',
 				'colDesc' :'',
-				'isListVisiable' :1,
+				'listVisiable' :1,
 				'isMain' :1,
 				'eleType' : '',
 				'colType' : '',

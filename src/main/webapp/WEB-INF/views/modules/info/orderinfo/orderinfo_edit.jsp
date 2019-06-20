@@ -45,7 +45,7 @@
 						<div class="form-group">
 							<label class="control-label col-md-4" >订单类型</label>
 							<div class="col-md-8" >
-								<select name="orderType" id="orderType" data-enum-group="BooleanType" class="yy-input-enumdata form-control"></select>
+								<select name="orderType" id="orderType" data-enum-group="OrderType" class="yy-input-enumdata form-control"></select>
 							</div>
 						</div>
 					</div>
@@ -105,6 +105,7 @@
 							<tr>
 								<th>序号</th>	
 								<th>操作</th>	
+								<th>物料</th>	
 								<th>计划数量</th>	
 								<th>备注</th>	
 							</tr>
@@ -139,15 +140,28 @@
 				render : YYDataTableUtils.renderRemoveActionCol,
 				width : "50"
 			}, {
+				data : 'material',
+				width : "80",
+				className : "center",
+				orderable : true,
+				render : function(data, type, full) {
+					var tUuid=full.uuid;
+					if (typeof(tUuid) == "undefined"){
+						tUuid="";
+					}
+					return '<input type="hidden" name="uuid" value="'+tUuid+'"><input class="form-control" value="'+ data + '" name="planAmount">';
+				}
+			}, {
 				data : 'planAmount',
 				width : "80",
 				className : "center",
 				orderable : true,
 				render : function(data, type, full) {
-					if(data==null){
-						data="";
+					var tUuid=full.uuid;
+					if (typeof(tUuid) == "undefined"){
+						tUuid="";
 					}
-					return '<input class="form-control" value="'+ data + '" name="planAmount">';
+					return '<input type="hidden" name="uuid" value="'+tUuid+'"><input class="form-control" value="'+ data + '" name="planAmount">';
 				}
 			}, {
 				data : 'memo',
@@ -238,7 +252,7 @@
 					'planArriveTime' : {maxlength : 100},
 					'code' : {maxlength : 100},
 					'name' : {maxlength : 100},
-					'memo' : {maxlength : 100},
+					'memo' : {maxlength : 100}
 				}
 			});
 		}
@@ -305,18 +319,26 @@
 		//表体校验
 		function getRowValidator() {
 			return [ {
-						name : "subcode",
+						name : "planAmount",
 						rules : {
 							required : true,
 							//number :true,
 							digits :true,
-							maxlength:3
+							maxlength:8
 						},
 						message : {
 							required : "必输",
 							//number :"请输入合法的数字",
 							digits :"只能输入整数",
-							maxlength : "最大长度为3"
+							maxlength : "最大长度为8"
+						}
+					},{
+						name : "memo",
+						rules : {
+							maxlength:200
+						},
+						message : {
+							maxlength : "最大长度为200"
 						}
 					}
 			];

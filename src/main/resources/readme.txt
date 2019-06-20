@@ -26,7 +26,9 @@ path="/stockAdmin/jlbcuploadfiles/qrcode/temp"/>
 		       return YYDataUtils.getEnumName("sys_sex", data);
 		}
 		
-		
+		render : function(data, type, full) {
+			return creSelectStr('BooleanType','isListVisiable',data,false);
+		}
 #######################################################################################################		
 		render : function(data, type, full) {
 			return creSelectStr('eleTypeEnum','grade',data,false)+'<input type="hidden" name="uuid" value="'+full.uuid+'">';

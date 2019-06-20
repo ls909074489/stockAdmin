@@ -651,7 +651,7 @@ public class BaseController<T> {
 					jsonObject.put(nameAndValue[0], nameAndValue[1]);
 				}
 			}
-			T obj = (T) JSONObject.toBean(jsonObject,t.getClass());
+			T obj = (T) JSONObject.toBean(jsonObject,t);
 			returnList.add(obj);
 		}
 		return returnList;

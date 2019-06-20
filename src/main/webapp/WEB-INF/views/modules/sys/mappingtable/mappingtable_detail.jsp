@@ -10,7 +10,6 @@
 </head>
 <body>
 	<div id="yy-page-detail" class="container-fluid page-container page-content">
-	
 		<div class="row yy-toolbar">
 			<button id="yy-btn-backtolist" class="btn blue btn-sm">
 				<i class="fa fa-rotate-left"></i> 返回
@@ -166,7 +165,6 @@
 								<!-- <th class="table-checkbox"><input type="checkbox"
 									class="group-checkable" data-set="#yy-table-sublist .checkboxes" /></th> -->
 								<th>序号</th>	
-								<th>操作</th>	
 								<th>实体字段</th>
 								<th>数据库字段</th>
 								<th>备注</th>
@@ -205,82 +203,48 @@
 			data : "colName",
 			orderable : false,
 			className : "center",
-			width : "80",
-			render : function(data, type, full) {
-				var tUuid=full.uuid;
-				if (typeof(tUuid) == "undefined"){
-					tUuid="";
-				}
-				if(data==null){
-					data="";
-				}
-				return '<input type="hidden" name="uuid" value="'+tUuid+'"><input class="form-control inputChange" value="'+ data + '" name="colName">';
-			}
+			width : "80"
 		}, {
 			data : "colNameDb",
 			orderable : false,
 			className : "center",
-			width : "80",
-			render : function(data, type, full) {
-				if(data==null){
-					data="";
-				}
-				return '<input class="form-control" value="'+ data + '" name="colNameDb">';
-			}
+			width : "80"
 		}, {
 			data : "colDesc",
 			orderable : false,
 			className : "center",
-			width : "80",
-			render : function(data, type, full) {
-				if(data==null){
-					data="";
-				}
-				return '<input class="form-control" value="'+ data + '" name="colDesc">';
-			}
+			width : "80"
 		}, {
-			data : "isListVisiable",
+			data : "listVisiable",
 			orderable : false,
 			className : "center",
 			width : "80",
 			render : function(data, type, full) {
-				return creSelectStr('BooleanType','isListVisiable',data,false);
+				return YYDataUtils.getEnumName("BooleanType", data);
 			}
 		}, {
-			data : "isMain",
+			data : "mainTable",
 			orderable : false,
 			className : "center",
 			width : "80",
 			render : function(data, type, full) {
-				return creSelectStr('BooleanType','isMain',data,false);
+				return YYDataUtils.getEnumName("BooleanType", data);
 			}
 		}, {
 			data : "eleType",
 			orderable : false,
 			className : "center",
-			width : "80",
-			render : function(data, type, full) {
-				return creSelectStr('eleTypeEnum','eleType',data,false);
-			}
+			width : "80"
 		}, {
 			data : "colType",
 			orderable : false,
 			className : "center",
-			width : "80",
-			render : function(data, type, full) {
-				return creSelectStr('colTypeEnum','colType',data,false);
-			}
+			width : "80"
 		}, {
 			data : "colLength",
 			orderable : false,
 			className : "center",
-			width : "80",
-			render : function(data, type, full) {
-				if(data==null){
-					data="";
-				}
-				return '<input class="form-control" value="'+ data + '" name="colLength">';
-			}
+			width : "80"
 		}
 	];
 	
@@ -305,10 +269,8 @@
 	
 	//设置默认值
 	function setValue(){
-		$("input[name='uuid']").val('${entity.uuid}');
-		$("input[name='search_EQ_main.uuid']").val('${entity.uuid}');//子表查询时，主表id	
-		$("input[name='mainId']").val('${entity.uuid}');//子表查询时，主表id	
-		$("input[name='name']").val('${entity.name}');
+		$("select[name='extendsEntity']").val('${entity.extendsEntity}');
+		$("select[name='templateType']").val('${entity.templateType}');
 		loadSubList('${entity.uuid}');
 	}
 	

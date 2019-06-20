@@ -68,7 +68,7 @@ public class MappingTableSubEntity extends BaseEntity {
 	@Column(length = 100)
 	private boolean isDetailVisiable=true;//明细是否显示
 	@Column(length = 100)
-	private boolean isMain=true;//是否主表
+	private boolean mainTable=true;//是否主表
 	
 	private boolean isRequired=false;//是否必填
 	private String enumGroup="BooleanType";//枚举类型
@@ -158,12 +158,12 @@ public class MappingTableSubEntity extends BaseEntity {
 		this.isDetailVisiable = isDetailVisiable;
 	}
 
-	public boolean isMain() {
-		return isMain;
+	public boolean isMainTable() {
+		return mainTable;
 	}
 
-	public void setMain(boolean isMain) {
-		this.isMain = isMain;
+	public void setMainTable(boolean mainTable) {
+		this.mainTable = mainTable;
 	}
 
 	public Integer getColWidth() {

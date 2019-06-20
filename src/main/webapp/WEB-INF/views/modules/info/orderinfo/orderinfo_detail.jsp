@@ -41,7 +41,7 @@
 						<div class="form-group">
 							<label class="control-label col-md-4" >订单类型</label>
 							<div class="col-md-8" >
-								<select name="orderType" id="orderType" data-enum-group="BooleanType" class="yy-input-enumdata form-control"></select>
+								<select name="orderType" id="orderType" data-enum-group="OrderType" class="yy-input-enumdata form-control"></select>
 							</div>
 						</div>
 					</div>
@@ -141,19 +141,20 @@
 
 		 
 		$(document).ready(function() {
+			bindDetailActions();//綁定平台按鈕
+			
 			_subTableList = $('#yy-table-sublist').DataTable({
 				"columns" : _subTableCols,
 				"paging" : false/* ,
 				"order" : [[5,"asc"]] */
 			});
 			
-			bindDetailActions();//綁定平台按鈕
-			
 			setValue();
 			
 			$("#yy-btn-searchSub").bind('click', onRefreshSub);//快速查询
 			$("#yy-searchbar-resetSub").bind('click', onResetSub);//清空
 			
+			YYFormUtils.lockForm("yy-form-detail");
 		});
 		
 
@@ -162,6 +163,7 @@
 			if('${openstate}'=='add'){
 				//$("input[name='billdate']").val('${billdate}');
 			}else if('${openstate}'=='detail'){
+				$("#orderType").val('${entity.orderType}');
 				loadSubList();
 			}
 		}

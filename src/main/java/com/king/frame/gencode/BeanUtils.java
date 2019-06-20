@@ -5,7 +5,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -169,7 +168,7 @@ public class BeanUtils {
 		List<MappingTableSubEntity> mainList=new ArrayList<MappingTableSubEntity>();
 		List<MappingTableSubEntity> subList=new ArrayList<MappingTableSubEntity>();
 		for(MappingTableSubEntity c:list){
-			if(c.isMain()){
+			if(c.isMainTable()){
 				mainList.add(c);
 			}else{
 				subList.add(c);
@@ -858,7 +857,7 @@ public class BeanUtils {
 		StringBuilder showDataStr= new StringBuilder();
 		int i=0;
 		for(MappingTableSubEntity detail:list){
-			if(detail.isMain()&&detail.isListVisiable()){
+			if(detail.isMainTable()&&detail.isListVisiable()){
 				theadStr.append(getTab(7)).append("<th>"+detail.getColDesc()+"</th>");
 				if(i<(list.size()-1)){
 					theadStr.append(RT_1);
@@ -1363,7 +1362,7 @@ public class BeanUtils {
 		StringBuilder subThs=new StringBuilder();
 		StringBuilder subNewData=new StringBuilder();
 		for(MappingTableSubEntity c:list){
-			if(c.isMain()){
+			if(c.isMainTable()){
 				mainList.add(c);
 			}else{
 				subList.add(c);
@@ -1434,7 +1433,7 @@ public class BeanUtils {
 		StringBuilder subThs=new StringBuilder();
 		StringBuilder subNewData=new StringBuilder();
 		for(MappingTableSubEntity c:list){
-			if(c.isMain()){
+			if(c.isMainTable()){
 				mainList.add(c);
 			}else{
 				subList.add(c);
@@ -1497,7 +1496,7 @@ public class BeanUtils {
 		StringBuilder subThs=new StringBuilder();
 		StringBuilder subNewData=new StringBuilder();
 		for(MappingTableSubEntity c:list){
-			if(c.isMain()){
+			if(c.isMainTable()){
 				mainList.add(c);
 			}else{
 				subList.add(c);
@@ -1567,7 +1566,7 @@ public class BeanUtils {
 		StringBuilder subThs=new StringBuilder();
 		StringBuilder subNewData=new StringBuilder();
 		for(MappingTableSubEntity c:list){
-			if(c.isMain()){
+			if(c.isMainTable()){
 				mainList.add(c);
 			}else{
 				subList.add(c);
@@ -1629,7 +1628,7 @@ public class BeanUtils {
 		StringBuilder subThs=new StringBuilder();
 		StringBuilder subNewData=new StringBuilder();
 		for(MappingTableSubEntity c:list){
-			if(c.isMain()){
+			if(c.isMainTable()){
 				mainList.add(c);
 			}else{
 				subList.add(c);
