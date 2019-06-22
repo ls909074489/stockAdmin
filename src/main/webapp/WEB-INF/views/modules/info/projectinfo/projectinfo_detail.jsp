@@ -81,6 +81,7 @@
 						<thead>
 							<tr>
 								<th>序号</th>	
+								<th>物料</th>	
 								<th>计划数量</th>	
 								<th>备注</th>	
 							</tr>
@@ -108,6 +109,11 @@
 			orderable : false,
 			className : "center",
 			width : "50"
+		}, {
+			data : 'material.code',
+			width : "80",
+			className : "center",
+			orderable : true
 		}, {
 			data : 'planAmount',
 			width : "80",

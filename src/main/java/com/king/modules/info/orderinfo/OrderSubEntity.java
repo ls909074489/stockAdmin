@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -46,6 +47,9 @@ public class OrderSubEntity extends BaseEntity {
 	@MetaData(value = "备注")
 	@Column(length = 250)
 	private String memo;
+	
+	@Transient
+	private String materialId;
 
 	public OrderInfoEntity getMain() {
 		return main;
@@ -85,6 +89,14 @@ public class OrderSubEntity extends BaseEntity {
 
 	public void setMaterial(MaterialEntity material) {
 		this.material = material;
+	}
+
+	public String getMaterialId() {
+		return materialId;
+	}
+
+	public void setMaterialId(String materialId) {
+		this.materialId = materialId;
 	}
 
 }

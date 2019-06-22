@@ -31,7 +31,7 @@
 					</div>
 				</div>
 				
-				<div class="col-sm-4 form-inline" style="">
+				<div class="col-sm-3 form-inline" style="">
 					<button id="yy-btn-search" type="button" class="btn btn-sm btn-info">
 					<i class="fa fa-search"></i>查询</button>
 					<button id="yy-btn-clear" type="button" class="btn red btn-sm btn-info">

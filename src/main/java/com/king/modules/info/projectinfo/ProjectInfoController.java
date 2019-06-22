@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.BaseController;
+import com.king.modules.info.material.MaterialEntity;
 
 import net.sf.json.JSONObject;
 
@@ -125,6 +126,9 @@ public class ProjectInfoController extends BaseController<ProjectInfoEntity> {
 			}
 			ProjectSubEntity obj = (ProjectSubEntity) JSONObject.toBean(jsonObject,
 					ProjectSubEntity.class);
+			MaterialEntity material = new MaterialEntity();
+			material.setUuid(obj.getMaterialId());
+			obj.setMaterial(material);
 			returnList.add(obj);
 		}
 		return returnList;

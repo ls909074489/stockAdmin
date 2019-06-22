@@ -68,6 +68,7 @@
 							<tr>
 								<th>序号</th>	
 								<th>操作</th>	
+								<th>物料</th>	
 								<th>计划数量</th>	
 								<th>备注</th>	
 							</tr>
@@ -100,6 +101,23 @@
 			orderable : false,
 			render : YYDataTableUtils.renderRemoveActionCol,
 			width : "50"
+		}, {
+			data : 'material',
+			width : "80",
+			className : "center",
+			orderable : true,
+			render : function(data, type, full) {
+				var str ='<div class="input-group materialRefDiv"> '+
+				 '<input class="form-control"  value="'+ data.code + '" reallyname="code" name="code" readonly="readonly"> '+
+				 '<input class="form-control"  value="'+ data.uuid + '" type="hidden" reallyname="materialId" name="materialId"> '+
+				 '<span class="input-group-btn"> '+
+				 '<button id="" class="btn btn-default btn-ref materialcode" type="button" data-select2-open="single-append-text"> '+
+				 '<span class="glyphicon glyphicon-search"></span> '+
+				 '</button> '+
+				 '</span> '+
+				 '</div> ';
+				return str;
+			}
 		}, {
 			data : 'planAmount',
 			width : "80",
@@ -137,21 +155,14 @@
 			
 			//添加按钮事件
 			$('#addNewSub').click(function(e) {
-				var subNewData = [ {
-					'uuid' : '',
-					'planAmount':'',
-					'memo':''
-				} ];
-				var nRow = _subTableList.rows.add(subNewData).draw().nodes()[0];//添加行，并且获得第一行
-				_subTableList.on('order.dt search.dt',
-				        function() {
-					_subTableList.column(0, {
-						        search: 'applied',
-						        order: 'applied'
-					        }).nodes().each(function(cell, i) {
-						        cell.innerHTML = i + 1;
-					        });
-				}).draw();
+				layer.open({
+					title:"物料",
+				    type: 2,
+				    area: ['1000px', '95%'],
+				    shadeClose : false,
+					shade : 0.8,
+				    content: "${ctx}/sys/ref/refMaterial?callBackMethod=window.parent.callBackAddMaterial"
+				});
 			});
 			
 			//行操作：删除子表
@@ -166,8 +177,46 @@
 					row.remove().draw();
 				});
 			});
+			
+			$('#yy-table-sublist').on('click','.materialcode',updateMaterialRef);//
 		});
+		var t_refMaterialEle;
+		function updateMaterialRef(){
+			t_refMaterialEle = $(this);
+			layer.open({
+				title:"物料",
+			    type: 2,
+			    area: ['1000px', '95%'],
+			    shadeClose : false,
+				shade : 0.8,
+			    content: "${ctx}/sys/ref/refMaterial?callBackMethod=window.parent.callBackSelectMaterial"
+			});
+		}
+		
+		function callBackSelectMaterial(selNode){
+			$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='code']").val(selNode.code);
+			$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='materialId']").val(selNode.uuid);
+		}
 		 
+		function callBackAddMaterial(selNode){
+			var subNewData = [ {
+				'uuid' : '',
+				'material' : {"uuid":selNode.uuid,"code":selNode.code,"name":selNode.name},
+				'planAmount':'',
+				'memo':''
+			} ];
+			var nRow = _subTableList.rows.add(subNewData).draw().nodes()[0];//添加行，并且获得第一行
+			_subTableList.on('order.dt search.dt',
+			        function() {
+				_subTableList.column(0, {
+					        search: 'applied',
+					        order: 'applied'
+				        }).nodes().each(function(cell, i) {
+					        cell.innerHTML = i + 1;
+				        });
+			}).draw();
+		}
+		
 		//表单校验
 		function validateForms(){
 			validata = $('#yy-form-edit').validate({

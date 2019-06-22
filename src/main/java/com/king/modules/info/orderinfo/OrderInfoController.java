@@ -11,6 +11,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.BaseController;
+import com.king.modules.info.material.MaterialEntity;
 
 import net.sf.json.JSONObject;
 
@@ -93,8 +95,7 @@ public class OrderInfoController extends BaseController<OrderInfoEntity> {
 			@RequestParam(value = "deletePKs[]", required = false) String[] deletePKs) {
 		ActionResultModel<OrderInfoEntity> arm = new ActionResultModel<OrderInfoEntity>();
 		arm.setSuccess(true);
-//		List<OrderSubEntity> subList = this.convertToEntities(subArrs);
-		List<OrderSubEntity> subList = super.convertToEntities(OrderSubEntity.class, subArrs);
+		List<OrderSubEntity> subList = this.convertToEntities(subArrs);
 		try {
 			arm = subService.saveSelfAndSubList(entity, subList, deletePKs);
 		} catch (Exception e) {
@@ -110,6 +111,7 @@ public class OrderInfoController extends BaseController<OrderInfoEntity> {
 		List<OrderSubEntity> returnList = new ArrayList<OrderSubEntity>();
 		if (paramArr == null || paramArr.length == 0)
 			return returnList;
+		
 		for (String data : paramArr) {
 			JSONObject jsonObject = new JSONObject();
 			String[] properties = data.split("&");
@@ -127,6 +129,19 @@ public class OrderInfoController extends BaseController<OrderInfoEntity> {
 			}
 			OrderSubEntity obj = (OrderSubEntity) JSONObject.toBean(jsonObject,
 					OrderSubEntity.class);
+			MaterialEntity material = new MaterialEntity();
+			material.setUuid(obj.getMaterialId());
+			obj.setMaterial(material);
+//			if(StringUtils.isEmpty(obj.getUuid())){
+//				for(int i=0;i<500;i++){
+//					OrderSubEntity bbb = (OrderSubEntity) JSONObject.toBean(jsonObject,
+//							OrderSubEntity.class);
+//					MaterialEntity material2 = new MaterialEntity();
+//					material2.setUuid(obj.getMaterialId());
+//					bbb.setMaterial(material2);
+//					returnList.add(bbb);
+//				}	
+//			}
 			returnList.add(obj);
 		}
 		return returnList;
