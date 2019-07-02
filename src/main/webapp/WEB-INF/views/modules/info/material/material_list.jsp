@@ -69,8 +69,8 @@
 							<th>物料编码</th>
 							<th>名称</th>
 							<th>是否风险物料</th>
+							<th>物料单位</th>
 							<th>分类描述</th>
-							<th>物料描述</th>
 						</tr>
 					</thead>
 					<tbody></tbody>
@@ -105,12 +105,12 @@
 			},{
 				data : "code",
 				width : "100",
-				className : "center",
+				className : "left",
 				orderable : true
 			},{
 				data : "name",
 				width : "100",
-				className : "center",
+				className : "left",
 				orderable : true
 			},{
 				data : "hasRisk",
@@ -121,14 +121,17 @@
 				},
 				orderable : true
 			},{
-				data : "classDesc",
+				data : "unit",
 				width : "100",
 				className : "center",
+				render : function(data, type, full) {
+					return YYDataUtils.getEnumName("MaterialUnit", data);
+				},
 				orderable : true
 			},{
-				data : "memo",
+				data : "classDesc",
 				width : "100",
-				className : "center",
+				className : "left",
 				orderable : true
 			}];
 

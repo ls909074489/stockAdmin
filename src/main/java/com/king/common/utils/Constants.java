@@ -1,5 +1,8 @@
 package com.king.common.utils;
 
+import com.king.modules.sys.tabconstr.TableConstraintsEntity;
+import com.king.modules.sys.tabconstr.TableConstraintsService;
+
 /**
  * 常量
  * 
@@ -60,6 +63,21 @@ public class Constants {
 	public static class MSG {
 		public static String SUC = "操作成功!";
 		public static String FAIL = "操作失败!";
+	}
+
+	public static String getConstraintMsg(String exceptionStr) {
+		String msg="";
+		try {
+			TableConstraintsEntity consObj=TableConstraintsService.constraintsMap.get(TableConstraintsService.getFkname(exceptionStr));
+			if(consObj!=null){
+				msg=(consObj.getColumnNameDes()==null?"":consObj.getColumnNameDes())+"不能重复";
+			}else{
+				msg=exceptionStr;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return msg;
 	}
 
 

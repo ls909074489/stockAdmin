@@ -21,7 +21,7 @@
 				<div class="row">
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4" >仓库编码</label>
+							<label class="control-label col-md-4 required" >仓库编码</label>
 							<div class="col-md-8" >
 								<input name="code" id="code" type="text" value="${entity.code}" class="form-control">
 							</div>
@@ -29,7 +29,7 @@
 					</div>
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4" >仓库名称</label>
+							<label class="control-label col-md-4 required" >仓库名称</label>
 							<div class="col-md-8" >
 								<input name="name" id="name" type="text" value="${entity.name}" class="form-control">
 							</div>

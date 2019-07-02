@@ -1,4 +1,4 @@
-package com.simba.framework.util.code;
+package com.king.common.utils;
 
 import java.awt.image.BufferedImage;
 import java.io.File;

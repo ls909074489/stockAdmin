@@ -21,7 +21,7 @@
 				<div class="row">
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4">物料编码</label>
+							<label class="control-label col-md-4 required">物料编码</label>
 							<div class="col-md-8" >
 								<input name="code" id="code" type="text" value="${entity.code}" class="form-control">
 							</div>
@@ -29,7 +29,7 @@
 					</div>
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4">物料名称</label>
+							<label class="control-label col-md-4 required">物料名称</label>
 							<div class="col-md-8" >
 								<input name="name" id="name" type="text" value="${entity.name}" class="form-control">
 							</div>
@@ -39,7 +39,7 @@
 				<div class="row">
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4">是否风险物料</label>
+							<label class="control-label col-md-4 required">是否风险物料</label>
 							<div class="col-md-8" >
 								<select name="hasRisk" id="hasRisk" data-enum-group="BooleanType" class="yy-input-enumdata form-control"></select>
 							</div>
@@ -47,7 +47,7 @@
 					</div>
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4">物料单位</label>
+							<label class="control-label col-md-4 required">物料单位</label>
 							<div class="col-md-8" >
 								<select name="unit" id="unit" data-enum-group="MaterialUnit" class="yy-input-enumdata form-control"></select>
 							</div>
@@ -104,11 +104,12 @@
 			validator = $('#yy-form-edit').validate({
 				onsubmit : true,
 				rules : {
-					'memo' : {maxlength : 100},
-					'code' : {maxlength : 100},
-					'name' : {maxlength : 100},
-					'hasRisk' : {maxlength : 100},
-					'classDesc' : {maxlength : 100}
+					'code' : {required : true,maxlength : 100},
+					'name' : {required : true,maxlength : 100},
+					'hasRisk' : {required : true,maxlength : 100},
+					'unit' : {required : true,maxlength : 100},
+					'classDesc' : {maxlength : 100},
+					'memo' : {maxlength : 100}
 				}
 			});
 		}

@@ -185,9 +185,9 @@ public class MaterialService extends BaseServiceImpl<MaterialEntity,String> {
         style.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);// 垂直      
         style.setAlignment(HSSFCellStyle.ALIGN_CENTER);// 水平      
 		
-        sh.setColumnWidth(0, 15 * 256);//设置宽度
-        sh.setColumnWidth(3, 25 * 256);//设置宽度
-        sh.setColumnWidth(4, 25 * 256);//设置宽度
+//        sh.setColumnWidth(0, 15 * 256);//设置宽度
+//        sh.setColumnWidth(3, 25 * 256);//设置宽度
+//        sh.setColumnWidth(4, 25 * 256);//设置宽度
 		
         //设置表头
 		row=sh.createRow(0);
@@ -196,6 +196,9 @@ public class MaterialService extends BaseServiceImpl<MaterialEntity,String> {
 			cell = row.createCell(i);
 			cell.setCellStyle(style);
 			cell.setCellValue(sub.getChineseField());
+			if(sub.getColumnWidth()!=null&&sub.getColumnWidth()!=0){
+				sh.setColumnWidth(ExcelDataUtil.getExcelCol(sub.getExportCellNum()), sub.getColumnWidth() * 256);//设置宽度
+			}
 			i++;
 		}
 		int rownum=0;

@@ -217,7 +217,7 @@ public class BaseController<T> {
 		} catch (DataIntegrityViolationException e) {
 			e.printStackTrace();
 			arm.setSuccess(false);
-			arm.setMsg(e.getMessage());
+			arm.setMsg(Constants.getConstraintMsg(e.getMessage()));
 		} catch (Exception e) {
 			arm.setSuccess(false);
 			arm.setMsg(e.getMessage());
@@ -312,7 +312,7 @@ public class BaseController<T> {
 		} catch (DataIntegrityViolationException e) {
 			e.printStackTrace();
 			arm.setSuccess(false);
-			arm.setMsg(e.getMessage());
+			arm.setMsg(Constants.getConstraintMsg(e.getMessage()));
 		} catch (Exception e) {
 			arm.setSuccess(false);
 			arm.setMsg(e.getMessage());

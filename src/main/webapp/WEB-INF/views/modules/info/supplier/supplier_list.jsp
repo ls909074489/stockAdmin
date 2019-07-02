@@ -49,10 +49,10 @@
 							</th>
 							<th>操作</th>
 							<th>名称</th>
-							<th>地址</th>
 							<th>联系人</th>
 							<th>电话</th>
 							<th>邮箱</th>
+							<th>地址</th>
 						</tr>
 					</thead>
 					<tbody></tbody>
@@ -76,23 +76,18 @@
 							orderable : false,
 							className : "center",
 							/* visible : false, */
-							width : "40",
+							width : "20",
 							render : YYDataTableUtils.renderCheckCol
 						},{
 							data : "uuid",
 							className : "center",
 							orderable : false,
 							render : YYDataTableUtils.renderActionCol,
-							width : "80"
+							width : "40"
 						},{
 							data : "name",
-							width : "20%",
-							className : "center",
-							orderable : true
-						},{
-							data : "address",
-							width : "10%",
-							className : "center",
+							width : "30%",
+							className : "left",
 							orderable : true
 						},{
 							data : "contacts",
@@ -109,6 +104,11 @@
 							width : "10%",
 							className : "center",
 							orderable : true
+						},{
+							data : "address",
+							width : "20%",
+							className : "left",
+							orderable : true
 						}];
 
 
@@ -116,7 +116,7 @@
 		$(document).ready(function() {
 			_queryData = $("#yy-form-query").serializeArray();
 			bindListActions();
-			serverPage(null);
+			serverPage('${serviceurl}/query?orderby=createtime@desc');
 		});
 	</script>
 </body>
