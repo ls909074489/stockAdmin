@@ -73,14 +73,14 @@
 				orderable : false,
 				className : "center",
 				/* visible : false, */
-				width : "40",
+				width : "20",
 				render : YYDataTableUtils.renderCheckCol
 			},{
 				data : "uuid",
 				className : "center",
 				orderable : false,
 				render : YYDataTableUtils.renderActionCol,
-				width : "50"
+				width : "40"
 			},{
 				data : "code",
 				width : "100",
@@ -88,7 +88,7 @@
 				orderable : true
 			},{
 				data : "name",
-				width : "100",
+				width : "200",
 				className : "center",
 				orderable : true
 			},{

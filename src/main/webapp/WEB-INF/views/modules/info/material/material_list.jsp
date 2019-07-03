@@ -20,9 +20,11 @@
 				<button id="yy-btn-refresh" class="btn blue btn-sm">
 					<i class="fa fa-refresh"></i> 刷新
 				</button>
-				<button class="btn green btn-sm btn-info" id="yy-btn-import">
+				<span id="importSpan">
+				<button class="btn green btn-sm btn-info" id="yy-btn-import" onclick="importfileClick();">
 					<i class="fa fa-chevron-down"></i> 导入
 				</button>
+				</span>
 				<button class="btn green btn-sm btn-info" id="yy-btn-templatedownload">
 					<i class="fa fa-chevron-down"></i> 导入模板下载
 				</button>
@@ -146,7 +148,6 @@
 		});
 		
 		function onImportExport(){
-			$("#yy-btn-import").bind('click', importfileClick);//附件
 			$("#importfile #multifile").bind('change', onImportData);
 			 
 			//模板下载
@@ -205,8 +206,13 @@
 							location.reload();
 						} else{
 							layer.close(importLoad);
-							YYUI.failMsg("导入错误：" + data.msg);
-							location.reload();
+							YYUI.promAlert("导入错误：" + data.msg);
+							//location.reload();
+							//var importBtn = $("#importSpan").html();
+							//console.info(importBtn);
+							//$("#importSpan").html(importBtn);
+							$("#importfile").html('<input type="file" id="multifile" multiple size="120" />');
+							$("#importfile #multifile").bind('change', onImportData);
 						}
 					},
 					"error" : function(XMLHttpRequest, textStatus, errorThrown) {
