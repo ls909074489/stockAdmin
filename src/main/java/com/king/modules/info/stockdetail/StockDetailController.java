@@ -1,13 +1,16 @@
 package com.king.modules.info.stockdetail;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.beans.factory.annotation.Autowired;
 import javax.servlet.ServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.BaseController;
-import org.springframework.ui.Model;
+import com.king.frame.controller.QueryRequest;
 
 /**
  * 库存明细
@@ -20,7 +23,20 @@ public class StockDetailController extends BaseController<StockDetailEntity> {
 
 	@Autowired
 	private StockDetailService service;
-
+	
+	
+	@RequestMapping("/search")
+	public String search(Model model) {
+		return "modules/info/stockdetail/stockdetail_search";
+	}
+	
+	@RequestMapping(value = "/dataSearch")
+	@ResponseBody
+	public ActionResultModel<StockDetailEntity> dataSearch(ServletRequest request, Model model) {
+		QueryRequest<StockDetailEntity> qr = getQueryRequest(request, addSearchParam(request));
+		return execQuery(qr, baseService);
+	}
+	
 	/**
 	 * 
 	 * @Title: listView
@@ -53,37 +69,35 @@ public class StockDetailController extends BaseController<StockDetailEntity> {
 
 	@Override
 	public ActionResultModel<StockDetailEntity> add(ServletRequest request, Model model, StockDetailEntity entity) {
-		return super.doAdd(request, model, entity);//重写防止前端操作
+		return new ActionResultModel<StockDetailEntity>(false, "不允许操作");
 	}
 
 	@Override
 	protected ActionResultModel<StockDetailEntity> doAdd(ServletRequest request, Model model,
 			StockDetailEntity entity) {
-		return super.doAdd(request, model, entity);//重写防止前端操作
+		return new ActionResultModel<StockDetailEntity>(false, "不允许操作");
 	}
 
 	@Override
 	public ActionResultModel<StockDetailEntity> update(ServletRequest request, Model model, StockDetailEntity entity) {
-		return null;//重写防止前端操作
+		return new ActionResultModel<StockDetailEntity>(false, "不允许操作");
 	}
 
 	@Override
 	protected ActionResultModel<StockDetailEntity> doUpdate(ServletRequest request, Model model,
 			StockDetailEntity entity) {
-		return null;//重写防止前端操作
+		return new ActionResultModel<StockDetailEntity>(false, "不允许操作");
 	}
 
 	@Override
 	protected ActionResultModel<StockDetailEntity> doDelete(ServletRequest request, Model model, String[] pks) {
-		return null;//重写防止前端操作
+		return new ActionResultModel<StockDetailEntity>(false, "不允许操作");
 	}
 
 	@Override
 	public ActionResultModel<StockDetailEntity> delete(ServletRequest request, Model model, String[] pks) {
-		return null;//重写防止前端操作
+		return new ActionResultModel<StockDetailEntity>(false, "不允许操作");
 	}
-	
-	
 	
 
 }

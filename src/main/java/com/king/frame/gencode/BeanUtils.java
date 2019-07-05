@@ -16,10 +16,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Column;
+
 import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
 import org.springframework.util.StringUtils;
 
+import com.king.common.annotation.MetaData;
 import com.king.modules.sys.mappingtable.MappingTableEntity;
 import com.king.modules.sys.mappingtable.MappingTableSubEntity;
 
@@ -56,71 +59,70 @@ public class BeanUtils {
 	
 	public static void main(String[] args) throws Exception{
 		MappingTableEntity info=new MappingTableEntity();
-		info.setEntityName("TestMaterialEntity");
+		info.setEntityName("StockStreamEntity");
 		info.setExtendsEntity("BaseEntity");
-		info.setPackageName("com.king.frame.gencode.test1");
+		info.setPackageName("com.king.modules.info.stockstream");
 		info.setEntityChinese("测试111");
 		info.setAuthor("ls2008");
-		info.setControllerPath("/ver/test1");
-		info.setJspPath("modules/ver/test1");//jsp路径
+		info.setControllerPath("/info/stockstream");
+		info.setJspPath("modules/info/stockstream");//jsp路径
 		info.setTemplateType(MappingTableEntity.GENTYPE_SERVERPAGE);
 		
-		
+//		ffff
 		
 		//生成实体==================================================================================
 		List<MappingTableSubEntity> list=new ArrayList<MappingTableSubEntity>();
 		MappingTableSubEntity col=new MappingTableSubEntity();
-		col.setColName("name");
+		col.setColName("sourceId");
 		col.setColType("String");
 		col.setColLength(50);
-		col.setColDesc("名称");
+		col.setColDesc("源id");
 		col.setRequired(true);
 		col.setEleType(MappingTableSubEntity.EleType.TEXT);
 		list.add(col);
 		col=new MappingTableSubEntity();
-		col.setColName("code");
+		col.setColName("sourceBillCode");
 		col.setColType("String");
 		col.setColLength(50);
-		col.setColDesc("编码");
+		col.setColDesc("源单号");
 		col.setRequired(true);
 		col.setEleType(MappingTableSubEntity.EleType.TEXT);
 		list.add(col);
+		
 		col=new MappingTableSubEntity();
-		col.setColName("datecols");
-		col.setColType("String");
+		col.setColName("totalAmount");
+		col.setColType("Long");
 		col.setColLength(50);
-		col.setColDesc("日期");
-		col.setEleType(MappingTableSubEntity.EleType.DATE);
+		col.setColDesc("总数量");
+		col.setRequired(true);
+		col.setEleType(MappingTableSubEntity.EleType.TEXT);
 		list.add(col);
+		
 		col=new MappingTableSubEntity();
-		col.setColName("timecols");
-		col.setColType("String");
+		col.setColName("occupyAmount");
+		col.setColType("Long");
 		col.setColLength(50);
-		col.setColDesc("日期时间");
-		col.setEleType(MappingTableSubEntity.EleType.DATETIME);
+		col.setColDesc("预占数量");
+		col.setRequired(true);
+		col.setEleType(MappingTableSubEntity.EleType.TEXT);
 		list.add(col);
+		
 		col=new MappingTableSubEntity();
-		col.setColName("isDisplay");
+		col.setColName("surplusAmount");
+		col.setColType("Long");
+		col.setColLength(50);
+		col.setColDesc("剩余数量");
+		col.setRequired(true);
+		col.setEleType(MappingTableSubEntity.EleType.TEXT);
+		list.add(col);
+		
+		col=new MappingTableSubEntity();
+		col.setColName("operType");
 		col.setColType("String");
 		col.setColLength(1);
-		col.setColDesc("是否显示");
-		col.setEleType(MappingTableSubEntity.EleType.REF);
-		col.setColCount(2);
-		list.add(col);
-		col=new MappingTableSubEntity();
-		col.setColName("type");
-		col.setColType("String");
-		col.setColLength(36);
-		col.setColDesc("类别");
-		col.setEleType(MappingTableSubEntity.EleType.SELECT);
-		list.add(col);
-		col=new MappingTableSubEntity();
-		col.setColName("memo");
-		col.setColType("String");
-		col.setColLength(36);
-		col.setColDesc("备注");
-		col.setEleType(MappingTableSubEntity.EleType.TEXTAREA);
-		col.setColCount(3);
+		col.setColDesc("操作类型0：增加库存  1：减少库存");
+		col.setRequired(true);
+		col.setEleType(MappingTableSubEntity.EleType.TEXT);
 		list.add(col);
 		
 		//子表=======================

@@ -1,4 +1,4 @@
-package com.king.modules.info.projectinfo;
+package com.king.modules.info.stockinfo;
 
 import javax.persistence.Column;
 import com.king.frame.entity.BaseEntity;
@@ -11,32 +11,26 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 /**
- * 项目
+ * 仓库
  * @author null
- * @date 2019-06-19 21:25:24
+ * @date 2019-06-17 21:24:38
  */
 @Entity
-@Table(name = "yy_project_info")
+@Table(name = "yy_stock_info")
 @DynamicInsert
 @DynamicUpdate
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class ProjectInfoEntity extends BaseEntity {
+public class StockBaseEntity extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(length = 50)
-	private String billType;
-	
+	@MetaData(value = "仓库编码")
 	@Column(length = 50)
 	private String code;
 	
-	@MetaData(value = "项目名称")
+	@MetaData(value = "仓库名称")
 	@Column(length = 100)
 	private String name;
-
-	@MetaData(value = "备注")
-	@Column(length = 250)
-	private String memo;
 
 	public String getCode() {
 		return code;
@@ -52,22 +46,6 @@ public class ProjectInfoEntity extends BaseEntity {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getMemo() {
-		return memo;
-	}
-
-	public void setMemo(String memo) {
-		this.memo = memo;
-	}
-
-	public String getBillType() {
-		return billType;
-	}
-
-	public void setBillType(String billType) {
-		this.billType = billType;
 	}
 
 

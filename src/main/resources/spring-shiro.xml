@@ -60,10 +60,15 @@
 				/login/showUserName = anon
 				/login/checkUserName = anon
 				/login/showNewPwd = anon
+				/info/stockdetail/search = anon
+				/info/stockdetail/dataSearch = anon
+				/info/stockstream/toRecord = anon
+				/info/stockstream/dataRecord = anon
 				/** = user,perms
 			</value>
 		</property>
 	</bean>
+	
 
 	<!-- 用户授权信息Cache, 采用EhCache -->
 	<bean id="shiroEhcacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">

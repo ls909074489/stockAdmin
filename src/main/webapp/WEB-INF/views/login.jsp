@@ -146,7 +146,7 @@
 		// 检查浏览器
 		checkBrowser();
 		
-		$("#login-form").submit();
+		//$("#login-form").submit();
 	});
 	
 	//点击忘记密码，弹出对话框
