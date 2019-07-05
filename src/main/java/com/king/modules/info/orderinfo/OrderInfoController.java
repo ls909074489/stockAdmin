@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.BaseController;
+import com.king.frame.controller.SuperController;
 import com.king.modules.info.material.MaterialEntity;
 
 import net.sf.json.JSONObject;
@@ -30,7 +31,7 @@ import net.sf.json.JSONObject;
  */
 @Controller
 @RequestMapping(value = "/info/orderinfo")
-public class OrderInfoController extends BaseController<OrderInfoEntity> {
+public class OrderInfoController extends SuperController<OrderInfoEntity> {
 
 	@Autowired
 	private OrderInfoService service;

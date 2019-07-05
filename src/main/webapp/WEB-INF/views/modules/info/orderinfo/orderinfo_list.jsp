@@ -20,7 +20,19 @@
 				<button id="yy-btn-refresh" class="btn blue btn-sm">
 					<i class="fa fa-refresh"></i> 刷新
 				</button>
-			</div>
+				<button id="yy-btn-submit" class="btn yellow btn-sm btn-info">
+					<i class="fa fa-send"></i> 提交
+				</button>
+				<button id="yy-btn-unsubmit" class="btn yellow btn-sm btn-info">
+					<i class="fa fa-undo"></i> 撤销提交
+				</button>
+				<button id="yy-btn-approve-x" class="btn yellow btn-sm btn-info">
+					<i class="fa fa-check"></i> 审核
+				</button>
+				<!-- <button id="yy-btn-unapprove" class="btn yellow btn-sm btn-info">
+					<i class="fa fa-reply"></i> 取消审核
+				</button> -->
+				</div>
 			<div class="row yy-searchbar form-inline">
 				<form id="yy-form-query">
 					<label for="search_EQ_billstatus" class="control-label">订单类型</label>
@@ -48,6 +60,7 @@
 								<input type="checkbox" class="group-checkable" data-set="#yy-table-list .checkboxes"/>
 							</th>
 							<th>操作</th>
+							<th>单据状态</th>
 							<th>订单类型</th>
 							<th>订单编码</th>
 							<th>订单名称</th>
@@ -63,6 +76,7 @@
 
 	<!-- 公用脚本 -->
 	<%@include file="/WEB-INF/views/common/listscript.jsp"%>
+	<%@include file="/WEB-INF/views/common/commonscript_approve.jsp"%>
 
 	<script type="text/javascript">
 		_isNumber = true;
@@ -70,12 +84,12 @@
 				data : null,
 				orderable : false,
 				className : "center",
-				width : "50"
+				width : "20"
 			},{				data : "uuid",
 				orderable : false,
 				className : "center",
 				/* visible : false, */
-				width : "40",
+				width : "20",
 				render : YYDataTableUtils.renderCheckCol
 			},{
 				data : "uuid",
@@ -83,6 +97,14 @@
 				orderable : false,
 				render : YYDataTableUtils.renderActionCol,
 				width : "50"
+			},{
+				data : "billstatus",
+				width : "100",
+				className : "center",
+				render : function(data, type, full) {
+					return YYDataUtils.getEnumName("BillStatus", data);
+				},
+				orderable : true
 			},{
 				data : "orderType",
 				width : "100",

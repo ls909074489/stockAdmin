@@ -1,16 +1,19 @@
 package com.king.modules.info.orderinfo;
 
 import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.Column;
-import com.king.frame.entity.BaseEntity;
-import com.king.common.annotation.MetaData;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.king.common.annotation.MetaData;
+import com.king.frame.entity.SuperEntity;
 
 /**
  * 订单
@@ -22,7 +25,7 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicInsert
 @DynamicUpdate
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class OrderInfoEntity extends BaseEntity {
+public class OrderInfoEntity extends SuperEntity {
 
 	private static final long serialVersionUID = 1L;
 

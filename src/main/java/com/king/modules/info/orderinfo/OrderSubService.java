@@ -64,6 +64,7 @@ public class OrderSubService extends BaseServiceImpl<OrderSubEntity, String> {
   	  				sub.setCreatorname(user.getUsername());
   	  				sub.setCreatetime(new Date());
   				}
+  				sub.setActualAmount(sub.getPlanAmount());
   				sub.setMain(savedEntity);
   				sub.setModifier(user.getUuid());
   				sub.setModifiername(user.getUsername());

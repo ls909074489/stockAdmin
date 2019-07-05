@@ -6,6 +6,7 @@ import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.king.frame.dao.IBaseDAO;
 import com.king.frame.service.BaseServiceImpl;
 import com.king.modules.info.material.MaterialBaseEntity;
@@ -58,8 +59,6 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 	public void incrStockDetail(OrderInfoEntity orderInfo,List<OrderSubEntity> subList){
 		StockInfoEntity stock = getStockByOrderType(orderInfo.getOrderType());
 		StockStreamEntity stream = new StockStreamEntity();
-		stream.setSourceId(orderInfo.getUuid());
-		stream.setSourceBillCode(orderInfo.getCode());
 		
 		Long totalBefore = 0l;
 		Long occupyBefore = 0l;
@@ -69,6 +68,9 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 		for(OrderSubEntity sub:subList){
 			StockDetailEntity detail  = findByStockAndMaterial(stock.getUuid(),sub.getMaterial().getUuid());
 			
+			stream = new StockStreamEntity();
+			stream.setSourceId(orderInfo.getUuid());
+			stream.setSourceBillCode(orderInfo.getCode());
 			stream.setStock(stockBase);
 			MaterialBaseEntity material = new MaterialBaseEntity();
 			material.setUuid(sub.getMaterial().getUuid());
@@ -165,7 +167,8 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 
 	@Override
 	public StockDetailEntity save(StockDetailEntity entity) throws ServiceException {
-		throw new ServiceException("不允许操作");
+//		throw new ServiceException("不允许操作");
+		return super.save(entity);
 	}
 	@Override
 	public Iterable<StockDetailEntity> save(Iterable<StockDetailEntity> entities) throws ServiceException {

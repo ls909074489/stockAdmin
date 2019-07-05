@@ -532,7 +532,7 @@
 	 */
 	function approveRecordx(url, pks, fnCallback) {
 		if (checkApprove(pks)) {
-			
+			console.info("pks>>>>>>>>>>>>"+pks);
 			postApprove("审核意见", url, pks, true, fnCallback);
 		}
 	};

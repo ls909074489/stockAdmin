@@ -23,7 +23,7 @@ import com.king.modules.info.stockinfo.StockBaseEntity;
  * @date 2019-07-05 14:02:18
  */
 @Entity
-@Table(name = "yy_stockstream")
+@Table(name = "yy_stock_stream")
 @DynamicInsert
 @DynamicUpdate
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)

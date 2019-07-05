@@ -48,7 +48,7 @@
 					<thead>
 						<tr>
 							<th style="width: 30px;">序号</th>
-							<!-- <th>操作</th> -->
+							<th>操作</th>
 							<th>仓库名称</th>
 							<th>物料编码</th>
 							<th>物料名称</th>
@@ -73,13 +73,17 @@
 				orderable : false,
 				className : "center",
 				width : "50"
-			},/* {
+			},{
 				data : "uuid",
 				className : "center",
 				orderable : false,
-				render : YYDataTableUtils.renderActionCol,
+				render: function (data,type,row,meta ) {
+					return "<div class='yy-btn-actiongroup'>" 
+					+ "<button id='yy-btn-view-row' class='btn btn-xs btn-success' data-rel='tooltip' title='查看'><i class='fa fa-search-plus'></i>查看记录</button>"
+					+ "</div>";
+		        },
 				width : "50"
-			}, */{
+			},{
 				data : "stock.name",
 				width : "100",
 				className : "center",
@@ -118,6 +122,19 @@
 			bindListActions();
 			serverPage(null);
 		});
+		
+		
+		//行查看 param data 行数据 param rowidx 行下标
+		function onViewDetailRow(data, rowidx, row) {
+			layer.open({
+				title:"库存记录",
+			    type: 2,
+			    area: ['90%', '95%'],
+			    shadeClose : false,
+				shade : 0.8,
+			    content: "${ctx}/info/stockstream/toRecord?stockId="+data.stock.uuid+"&materialId="+data.material.uuid
+			});
+		}
 	</script>
 </body>
 </html>	

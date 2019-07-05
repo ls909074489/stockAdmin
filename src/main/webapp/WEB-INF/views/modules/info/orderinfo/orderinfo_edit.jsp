@@ -432,7 +432,6 @@
 				type : 'post',
 				async : false,
 				success : function(data) {
-					layer.close(loadSubWaitLoad);
 					_subTableList.clear();
 					_subTableList.rows.add(data.records);
 					_subTableList.on('order.dt search.dt',
@@ -444,6 +443,7 @@
 							        cell.innerHTML = i + 1;
 						        });
 					}).draw();
+					layer.close(loadSubWaitLoad);
 				}
 			});
 		}
