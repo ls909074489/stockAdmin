@@ -45,7 +45,7 @@
 		orderable : true,
 	}, {
 		data : 'referencedColumnName',
-		width : "15%",
+		width : "10%",
 		className : "center",
 		orderable : true,
 	}];

@@ -139,7 +139,8 @@
 			
 			$("#yy-btn-searchSub").bind('click', onRefreshSub);//快速查询
 			$("#yy-searchbar-resetSub").bind('click', onResetSub);//清空
-			
+		
+			YYFormUtils.lockForm("yy-form-detail");
 		});
 		
 

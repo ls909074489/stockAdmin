@@ -118,7 +118,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 
 	@Transactional
 	public void descStockDetail(ProjectInfoEntity projectInfo,List<ProjectSubEntity> subList){
-		StockInfoEntity stock = getStockByOrderType(projectInfo.getBillType());
+		StockInfoEntity stock = getStockByOrderType(projectInfo.getBilltype());
 		StockStreamEntity stream = new StockStreamEntity();
 		stream.setSourceId(projectInfo.getUuid());
 		stream.setSourceBillCode(projectInfo.getCode());

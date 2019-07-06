@@ -24,7 +24,7 @@
 				<div class="row">
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4" >订单编码</label>
+							<label class="control-label col-md-4 required" >订单编码</label>
 							<div class="col-md-8" >
 								<input name="code" id="code" type="text" value="${entity.code}" class="form-control">
 							</div>
@@ -32,7 +32,7 @@
 					</div>
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4" >订单名称</label>
+							<label class="control-label col-md-4 required" >订单名称</label>
 							<div class="col-md-8" >
 								<input name="name" id="name" type="text" value="${entity.name}" class="form-control">
 							</div>
@@ -42,7 +42,7 @@
 				<div class="row">
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4" >订单类型</label>
+							<label class="control-label col-md-4 required" >订单类型</label>
 							<div class="col-md-8" >
 								<select name="orderType" id="orderType" data-enum-group="OrderType" class="yy-input-enumdata form-control"></select>
 							</div>
@@ -290,6 +290,10 @@
 	        var rows = _subTable.fnGetNodes();
 	        for(var i = 0; i < rows.length; i++){
 	            subList.push(getRowData(rows[i]));
+	        } 
+	        if(subList.length==0){
+	        	YYUI.promAlert("请添加明细");
+	        	return false;
 	        }
 			
 			var saveWaitLoad=layer.load(2);

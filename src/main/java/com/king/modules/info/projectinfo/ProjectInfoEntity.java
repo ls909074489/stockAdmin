@@ -1,14 +1,16 @@
 package com.king.modules.info.projectinfo;
 
 import javax.persistence.Column;
-import com.king.frame.entity.BaseEntity;
-import com.king.common.annotation.MetaData;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+
+import com.king.common.annotation.MetaData;
+import com.king.frame.entity.SuperEntity;
 
 /**
  * 项目
@@ -20,13 +22,10 @@ import org.hibernate.annotations.DynamicUpdate;
 @DynamicInsert
 @DynamicUpdate
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class ProjectInfoEntity extends BaseEntity {
+public class ProjectInfoEntity extends SuperEntity {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(length = 50)
-	private String billType;
-	
 	@Column(length = 50)
 	private String code;
 	
@@ -60,14 +59,6 @@ public class ProjectInfoEntity extends BaseEntity {
 
 	public void setMemo(String memo) {
 		this.memo = memo;
-	}
-
-	public String getBillType() {
-		return billType;
-	}
-
-	public void setBillType(String billType) {
-		this.billType = billType;
 	}
 
 

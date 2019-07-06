@@ -20,6 +20,15 @@
 				<button id="yy-btn-refresh" class="btn blue btn-sm">
 					<i class="fa fa-refresh"></i> 刷新
 				</button>
+				<button id="yy-btn-submit" class="btn yellow btn-sm btn-info">
+					<i class="fa fa-send"></i> 提交
+				</button>
+				<button id="yy-btn-unsubmit" class="btn yellow btn-sm btn-info">
+					<i class="fa fa-undo"></i> 撤销提交
+				</button>
+				<button id="yy-btn-approve-x" class="btn yellow btn-sm btn-info">
+					<i class="fa fa-check"></i> 审核
+				</button>
 			</div>
 			<div class="row yy-searchbar form-inline">
 				<form id="yy-form-query">
@@ -48,6 +57,7 @@
 								<input type="checkbox" class="group-checkable" data-set="#yy-table-list .checkboxes"/>
 							</th>
 							<th>操作</th>
+							<th>单据状态</th>
 							<th>项目号</th>
 							<th>项目名称</th>
 							<th>备注</th>
@@ -81,6 +91,14 @@
 				orderable : false,
 				render : YYDataTableUtils.renderActionCol,
 				width : "40"
+			},{
+				data : "billstatus",
+				width : "100",
+				className : "center",
+				render : function(data, type, full) {
+					return YYDataUtils.getEnumName("BillStatus", data);
+				},
+				orderable : true
 			},{
 				data : "code",
 				width : "100",

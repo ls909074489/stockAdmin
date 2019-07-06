@@ -1044,4 +1044,17 @@
 	function doBeforeClose(pks) {
 		return true;
 	}
+	//查看审批记录
+	function onApproveLook(billtype,billid){
+		var link = '${ctx}/sys/message/msgList?msgtype=2&billtype='+billtype+"&billid="+billid;
+		layer.open({
+			type : 2,
+			title : '<spring:message code="sys.comm.auditopinion"/>',<!-- '审批意见' -->
+			shadeClose : true,
+			shade : 0.8,
+			area : [ '90%', '80%' ],
+			content : link
+		//iframe的url
+		});
+	}
 </script>

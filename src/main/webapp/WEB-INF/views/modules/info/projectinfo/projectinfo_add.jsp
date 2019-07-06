@@ -24,7 +24,7 @@
 				<div class="row">
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4" >项目号</label>
+							<label class="control-label col-md-4 required" >项目号</label>
 							<div class="col-md-8" >
 								<input name="code" id="code" type="text" value="${entity.code}" class="form-control">
 							</div>
@@ -32,7 +32,7 @@
 					</div>
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4" >项目名称</label>
+							<label class="control-label col-md-4 required" >项目名称</label>
 							<div class="col-md-8" >
 								<input name="name" id="name" type="text" value="${entity.name}" class="form-control">
 							</div>
@@ -244,7 +244,10 @@
 	        for(var i = 0; i < rows.length; i++){
 	            subList.push(getRowData(rows[i]));
 	        }
-			
+	        if(subList.length==0){
+	        	YYUI.promAlert("请添加明细");
+	        	return false;
+	        }
 			var saveWaitLoad=layer.load(2);
 			var opt = {
 				url : "${serviceurl}/addwithsub",

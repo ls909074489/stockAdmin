@@ -171,7 +171,7 @@ public class MessageService extends BaseServiceImpl<MessageEntity, String> {
 	}
 
 	public List<MessageEntity> getMessageByBillid(String msgtype, String billtype, String billid) {
-		List<MessageEntity> messageList = dao.getMessageByBillid(msgtype, billtype, billid);
+		List<MessageEntity> messageList = dao.getMessageByBillid(billid);
 		return messageList;
 	}
 

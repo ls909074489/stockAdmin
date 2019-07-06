@@ -17,7 +17,6 @@
 						<tr>
 							<th>操作时间</th>
 							<th>操作人</th>
-							<th>标题</th>
 							<th>内容</th>
 						</tr>
 					</thead>
@@ -43,12 +42,6 @@
 					width : "50",
 					className : "center",
 					orderable : false
-				},
-				{
-					data : 'title',
-					width : "60",
-					className : "center",
-					orderable : true
 				}, {
 					data : 'content',
 					width : "160",

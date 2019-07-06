@@ -102,7 +102,7 @@
 				width : "100",
 				className : "center",
 				render : function(data, type, full) {
-					return YYDataUtils.getEnumName("BillStatus", data);
+					   return '<a onclick="onApproveLook(\'orderInfo\',\''+full.uuid+'\');">'+YYDataUtils.getEnumName("BillStatus", data)+'</a>';
 				},
 				orderable : true
 			},{

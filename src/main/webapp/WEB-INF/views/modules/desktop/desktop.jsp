@@ -1,125 +1,17 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<c:set var="ctx" value="${pageContext.request.contextPath}" />
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
+<c:set var="ctx" value="${pageContext.request.contextPath}"/>
+<c:set var="serviceurl" value="${ctx}/info/stockdetail"/>
 <html>
 <head>
-<title>个人桌面显示</title>
-<script src="${ctx}/assets/sockjs/sockjs-0.3.min.js" type="text/javascript"></script>
-<script type="text/javascript">
-	function seeMoreNotice() {
-		parent.lsAddTab("${ctx}/sys/notice/showMoreNotice", "通知公告",
-				"yyshowMoreNotice");
-	}
-	
-	function seeMoreMsg() {
-		parent.lsAddTab("${ctx}/sys/message/showMoreMsg", "我的消息",
-				"yyshowMoreMsg");
-	}
-	
-</script>
+<title>库存明细</title>
 </head>
 <body>
-	<div class="container-fluid page-container">
-		<div class="page-content">
-			<div class="row">
-				<h6></h6>
-			</div>
-			<!-- BEGIN DASHBOARD STATS 1-->
-			<div class="row">
-				<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-					<div class="dashboard-stat blue">
-						<div class="visual">
-							<i class="fa fa-comments"></i>
-						</div>
-						<div class="details">
-							<div class="number">
-								<span id="noticeSpan" data-counter="counterup" data-value="0">0</span>
-							</div>
-							<div class="desc">最近一周通知</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-					<div class="dashboard-stat green">
-						<div class="visual">
-							<i class="fa fa-shopping-cart"></i>
-						</div>
-						<div class="details">
-							<div class="number">
-								<span id="messageSpan" data-counter="counterup" data-value="0">0</span>
-							</div>
-							<div class="desc">未读消息</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-					<div class="dashboard-stat purple">
-						<div class="visual">
-							<i class="fa fa-globe"></i>
-						</div>
-						<div class="details">
-							<div class="number">
-								<span id="needMsgSpan" data-counter="counterup" data-value="0">0</span>
-							</div>
-							<div class="desc">待办消息</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-					<div class="dashboard-stat red">
-						<div class="visual">
-							<i class="fa fa-bar-chart-o"></i>
-						</div>
-						<div class="details">
-							<div class="number">
-								<span data-counter="counterup" data-value="1">--</span>
-							</div>
-							<div class="desc">预警条数（未启用）</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="clearfix"></div>
-			<!-- END DASHBOARD STATS 1-->
-			<div class="row">
-				<div class="col-md-6">
-					<div class="portlet box blue tasks-widget">
-						<div class="portlet-title">
-							<div class="caption">
-								<i class="fa fa-bell-o"></i>通知公告
-							</div>
-							<div class="tools">
-								<a href="" class="reload" onclick="getNotice()"> </a>
-							</div>
-							<div class="actions">
-								<div class="btn-group"></div>
-							</div>
-						</div>
-						<div class="portlet-body">
-							<div class="task-content">
-								<div class="scroller" style="height: 300px;" data-always-visible="1" data-rail-visible1="0">
-
-									<!-- START TASK LIST -->
-									<ul class="task-list" id="noticeList">
-
-									</ul>
-									<!-- END START TASK LIST -->
-								</div>
-							</div>
-							<div class="task-footer">
-								<div class="btn-arrow-link pull-right">
-									<div class="page-tabs-content">
-										<a href="javascript:;" onclick="seeMoreNotice();" class="J_menuTab" id="notice_seemore">查看更多...</a>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-6">
-					<!-- BEGIN SAMPLE TABLE PORTLET-->
+	<div id="yy-page" class="container-fluid page-container">
+		<div class="row">
+			<div class="col-md-4" style="padding-left: 0px;">
+				<!-- BEGIN SAMPLE TABLE PORTLET-->
 					<div class="portlet box blue tasks-widget">
 						<div class="portlet-title">
 							<div class="caption">
@@ -131,280 +23,476 @@
 						</div>
 						<div class="portlet-body">
 							<div class="task-content">
-								<div class="scroller" style="height: 300px;" data-always-visible="1" data-rail-visible1="1">
+								<div class="scroller showDivHeightCls" style="height: 600px;" data-always-visible="1" data-rail-visible1="1">
 									<!-- START TASK LIST -->
 									<ul class="task-list" id="messageList">
-
-									</ul>
-								</div>
-							</div>
-							<div class="task-footer">
-								<div class="btn-arrow-link pull-right">
-									<a href="javascript:;" onclick="seeMoreMsg();" class="J_menuTab" id="msg_seemore">查看更多...</a>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
+										<li style="height: 35px;">
+											<div class="task-title">
+												<span class="label label-sm label-success">业务消息</span>&nbsp;
+												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
+												<a href="javascript:;" style="color:green;">版本审核日志</a>
+												</span>
+												<span style="float: right;">2018-06-28 11:21:26</span>
+											</div>
+										</li>
 								</div>
 							</div>
 						</div>
 					</div>
 					<!-- END SAMPLE TABLE PORTLET-->
+			</div>
+			<div class="col-md-8" style="padding-left: 0px;">
+				<div class="portlet box blue tasks-widget">
+					<div class="portlet-title">
+						<div class="caption">
+							<i class="fa fa-bell-o"></i>库存查询
+						</div>
+						<div class="tools">
+							<a href="" class="reload" onclick="searchStock()"> </a>
+						</div>
+						<div class="actions">
+							<div class="btn-group"></div>
+						</div>
+					</div>
+					<div class="portlet-body">
+						<div class="task-content">
+							<div class="scroller showDivHeightCls" style="height: 600px;" data-always-visible="1" data-rail-visible1="0">
+								<div class="page-content" id="yy-page-list">
+									<div class="row yy-searchbar form-inline">
+										<form id="yy-form-query">
+											<label for="search_LIKE_name" class="control-label">仓库名称</label>
+											<input type="text" autocomplete="on" name="search_LIKE_stock.name"
+												id="search_LIKE_stock.name" class="form-control input-sm">
+												
+											<label for="search_LIKE_name" class="control-label">物料编码</label>
+											<input type="text" autocomplete="on" name="search_LIKE_material.code"
+												id="search_LIKE_material.code" class="form-control input-sm">
+												
+											<label for="search_LIKE_name" class="control-label">物料名称</label>
+											<input type="text" autocomplete="on" name="search_LIKE_material.name"
+												id="search_LIKE_material.name" class="form-control input-sm">
+						
+											<button id="yy-btn-search" type="button" class="btn btn-sm btn-info">
+												<i class="fa fa-search"></i>查询
+											</button>
+											<button id="rap-searchbar-reset" type="reset" class="red">
+												<i class="fa fa-undo"></i> 清空
+											</button>
+										</form>
+									</div>
+									<div class="row">
+										<table id="yy-table-list" class="yy-table">
+											<thead>
+												<tr>
+													<th style="width: 30px;">序号</th>
+													<th>操作</th>
+													<th>仓库名称</th>
+													<th>物料编码</th>
+													<th>物料名称</th>
+													<th>总数量</th>
+													<th>预占数量</th>
+													<th>剩余数量</th>
+												</tr>
+											</thead>
+											<tbody></tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
-
-
-
 		</div>
 	</div>
 
-	<script>
-		function showNoticeFrame(uuid) {
-			layer.open({
-				type : 2,
-				title : '公告内容',
-				shadeClose : false,
-				shade : 0.8,
-				area : [ '90%', '90%' ],
-				content : '${ctx}/sys/notice/viewNotice?uuid=' + uuid //iframe的url
-			});
-		}
+	<!-- 公用脚本 -->
+	<%@include file="/WEB-INF/views/common/listscript.jsp"%>
 
-		//获取通知 
-		function getNotice() {
-			$("#noticeList").empty();
-			var url = '${ctx}/sys/notice/getNoticeViewList';
-			$.ajax({
-						"dataType" : "json",
-						"type" : "POST",
-						"url" : url,
-						"async" : false,
-						"data" : {
-							"limitAmt" : 100
-						},
-						"success" : function(data) {
-							if (data.success) {
-								var noticeList = data.records;
-								var html = "";
-								var ctg = "";
-								var noticeTitle = "";
-								var lastWeekTime = getLastWeek();
-								var noticeTotal = 0;
-								for (var i = 0; i < noticeList.length; i++) {
-									//显示数量
-									if (CompareDate(noticeList[i].issue_date,
-											lastWeekTime)) {
-										++noticeTotal;
-									}
-									//控制只能显示7个
-									if (i > 7) {
-										continue;
-									}
-									if (noticeList[i].notice_category == '1') {
-										ctg = '<span class="label label-sm label-success">常规通知</span>';
-									} else if (noticeList[i].notice_category == '2') {
-										ctg = '<span class="label label-sm label-warning">重要公告</span>';
-									} else if (noticeList[i].notice_category == '3') {
-										ctg = '<span class="label label-sm label-danger">紧急通知</span>';
-									}
-									html += '<li style="height: 35px;">'
-											+ '<div class="task-title" >'
-											+ ctg
-											+ '&nbsp;<span class="task-title-sp" style="font-size: 14px;" onclick="showNoticeFrame(\''
-											+ noticeList[i].uuid
-											+ '\')"><a href="javascript:;">'
-									noticeTitle = noticeList[i].notice_title;
-									if (noticeTitle != ''
-											&& noticeTitle.length > 20) {
-										html += noticeTitle.substring(0, 20)
-												+ "...";
-									} else {
-										html += noticeTitle;
-									}
+	<script type="text/javascript">
+		_isNumber = true;
+		var _tableCols = [{
+				data : null,
+				orderable : false,
+				className : "center",
+				width : "50"
+			},{
+				data : "uuid",
+				className : "center",
+				orderable : false,
+				render: function (data,type,row,meta ) {
+					return "<div class='yy-btn-actiongroup'>" 
+					+ "<button id='yy-btn-view-row' class='btn btn-xs btn-success' data-rel='tooltip' title='查看'><i class='fa fa-search-plus'></i>查看记录</button>"
+					+ "</div>";
+		        },
+				width : "50"
+			},{
+				data : "stock.name",
+				width : "100",
+				className : "center",
+				orderable : true
+			},{
+				data : "material.code",
+				width : "100",
+				className : "center",
+				orderable : true
+			},{
+				data : "material.name",
+				width : "100",
+				className : "center",
+				orderable : true
+			},{
+				data : "totalAmount",
+				width : "100",
+				className : "center",
+				orderable : true
+			},{
+				data : "occupyAmount",
+				width : "100",
+				className : "center",
+				orderable : true
+			},{
+				data : "surplusAmount",
+				width : "100",
+				className : "center",
+				orderable : true
+			}];
 
-									html += '</a></span><span style="float: right;">'
-											+ noticeList[i].issue_date
-											+ '</span>' + '</div></li>';
-								}
-								$("#noticeList").append(html);
-								$("#noticeSpan").text(noticeTotal);
-							} else {
-								YYUI.promAlert("获取失败，原因：" + data.msg);
-							}
-						},
-						"error" : function(XMLHttpRequest, textStatus,
-								errorThrown) {
-							YYUI.promAlert("HTTP错误。");
-						}
-					});
-		}
 
-		//获取待办消息
-		function getMessage() {
-			//var indexMsg = layer.load(2, {
-			//	shade: [0.1,'#fff'] //0.1透明度的白色背景
-			//});
-			//alert(123);
-			$("#messageList").empty();
-			var url = '${ctx}/sys/message/getMessages';
-			$.ajax({
-				"dataType" : "json",
-				"type" : "POST",
-				"url" : url,
-				"async" : false,
-				"data" : {
-					"msgtype" : '1'
-				},
-				"success" : function(data) {
-					if (data.success) {
-						var messageList = data.records;
-						var html = "";
-						var ctg = "";
-						var messageTotal = 0;//未读消息
-						var needMsg = 0; //待办消息
-
-						for (var i = 0; i < messageList.length; i++) {
-							//显示数量
-							if (messageList[i].isnew == '0') {
-								++messageTotal;
-							}
-
-							//显示数量
-							if (messageList[i].isdeal == '0') {
-								++needMsg;
-							}
-
-							//控制只能显示7个
-							if (i > 7) {
-								continue;
-							}
-							if (messageList[i].msgtype == '1') {
-								ctg = '<span class="label label-sm label-warning">审批消息</span>';
-							} else if (messageList[i].msgtype == '2') {
-								ctg = '<span class="label label-sm label-success">业务消息</span>';
-							}
-
-							var newMsg = '';
-							if (messageList[i].isnew == '0') {
-								newMsg = 'style="color:green;"';
-							}
-							
-							html += '<li style="height: 35px;">'
-									+ '<div class="task-title" >'
-									+ ctg
-									+ '&nbsp;<span class="task-title-sp" style="font-size:14px;" onclick="showMessage(\''
-									+ messageList[i].link + '\',\''+ messageList[i].uuid+ '\',\''+messageList[i].openType
-									+ '\',\''+messageList[i].tabName+ '\',\''+messageList[i].tabDataIndex
-									+ '\')"><a href="javascript:;" '+ newMsg +'>'
-							var title = messageList[i].title;
-							if (title != '' && title.length > 20) {
-								html += title.substring(0, 20) + "...";
-							} else {
-								html += title;
-							}
-
-							html += '</a></span>';
-
-							
-							if (messageList[i].dealresult == '3' || messageList[i].dealresult == '5' ) {
-								html += '<span class="label label-sm label-success">通过</span> &nbsp;';
-							} else if (messageList[i].dealresult == '4' ) {
-								html += '<span class="label label-sm label-danger">退回</span> &nbsp;';
-							}
-
-							html += '<span style="float: right;">'
-									+ messageList[i].sendtime
-									+ '</span>' + '</div></li>';
-						}
-						$("#messageList").append(html);
-						$("#messageSpan").text(messageTotal);
-						$("#needMsgSpan").text(needMsg);
-					} else {
-						YYUI.promAlert("获取失败，原因：" + data.msg);
-					}
-				},
-				"error" : function(XMLHttpRequest, textStatus, errorThrown) {
-					YYUI.promAlert("HTTP错误。");
-				}
-			});
-			//layer.close(indexMsg);
-		}
-
-		//展示消息链接
-		function showMessage(link, id,openType,tabName,dataIndex) {
-			if(link.length > 0){
-				link = '${ctx}' + link;
-				//判断是否以tab方式打开的
-				if(openType!=null&&openType!=''&&openType=='1'){
-					//先关闭tab（如果不关闭，只刷新页面，无法从首页中根据点击的获取相应的id值）
-					parent.closeTabByDataId(dataIndex);
-					//添加新的tab
-					parent.lsAddTab(link, tabName,dataIndex);
-				}else{
-					layer.open({
-						type : 2,
-						title : '待办消息处理',
-						shadeClose : false,
-						shade : 0.8,
-						area : [ '100%', '100%' ],
-						content : link
-					//iframe的url
-					});
-				}
-			} else {
-				YYUI.promAlert("系统找不到关联的业务，可能是相关的单据已被删除。");
-			}
-			
-			var url = '${ctx}/sys/message/setNoticeIsnew';
-			$.ajax({
-				"dataType" : "json",
-				"type" : "POST",
-				"url" : url,
-				"data" : {
-					"uuid" : id
-				},
-				"success" : function(data) {
-					getMessage();
-					if (data.success) {
-						
-					} else {
-						YYUI.promAlert("更新失败，原因：" + data.msg);
-					}
-				},
-				"error" : function(XMLHttpRequest, textStatus, errorThrown) {
-					YYUI.promAlert("HTTP错误。");
-				}
-			});
-
-		}
-		
-		//获取上周时间
-		function getLastWeek() {
-			var now = new Date();
-			var date = new Date(now.getTime() - 7 * 24 * 3600 * 1000);
-			var year = date.getFullYear();
-			var month = date.getMonth() + 1;
-			var day = date.getDate();
-			var hour = date.getHours();
-			var minute = date.getMinutes();
-			var second = date.getSeconds();
-			return (year + '-' + month + '-' + day + ' ' + hour + ':' + minute
-					+ ':' + second);
-		}
-
-		//比较时间大小
-		function CompareDate(d1, d2) {
-			return ((new Date(d1.replace(/-/g, "\/"))) > (new Date(d2.replace(
-					/-/g, "\/"))));
-		}
-
-		//刷新 - 主要刷新页面的信息
-		function onRefresh(istrue) {
-			if(istrue){
-				getMessage();
-			}
-		}
-		
+		//var _setOrder = [[5,'desc']];
 		$(document).ready(function() {
-			getNotice();
-			getMessage();
+			_queryData = $("#yy-form-query").serializeArray();
+			bindListActions();
+			serverPage('${serviceurl}/dataSearch?orderby=createtime@desc');
+			
+			$(".showDivHeightCls").height((window.screen.availHeight-350));
 		});
+		
+		
+		//行查看 param data 行数据 param rowidx 行下标
+		function onViewDetailRow(data, rowidx, row) {
+			layer.open({
+				title:"库存记录",
+			    type: 2,
+			    area: ['90%', '95%'],
+			    shadeClose : false,
+				shade : 0.8,
+			    content: "${ctx}/info/stockstream/toRecord?stockId="+data.stock.uuid+"&materialId="+data.material.uuid
+			});
+		}
+		
+		//刷新库存页面
+		function searchStock(){
+			$("#rap-searchbar-reset").click();
+			onQuery();
+		}
 	</script>
 </body>
-</html>
+</html>	
+

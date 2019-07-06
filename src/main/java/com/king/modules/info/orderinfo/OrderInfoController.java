@@ -9,6 +9,7 @@ import javax.servlet.ServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.king.common.utils.Constants;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.BaseController;
 import com.king.frame.controller.SuperController;
@@ -80,6 +82,10 @@ public class OrderInfoController extends SuperController<OrderInfoEntity> {
 		List<OrderSubEntity> subList = this.convertToEntities(subArrs);
 		try {
 			arm = subService.saveSelfAndSubList(entity, subList, deletePKs);
+		}catch (DataIntegrityViolationException e) {
+			e.printStackTrace();
+			arm.setSuccess(false);
+			arm.setMsg(Constants.getConstraintMsg(e.getMessage()));
 		}catch (Exception e) {
 			arm.setSuccess(false);
 			arm.setMsg("保存失败");
@@ -99,6 +105,10 @@ public class OrderInfoController extends SuperController<OrderInfoEntity> {
 		List<OrderSubEntity> subList = this.convertToEntities(subArrs);
 		try {
 			arm = subService.saveSelfAndSubList(entity, subList, deletePKs);
+		}catch (DataIntegrityViolationException e) {
+			e.printStackTrace();
+			arm.setSuccess(false);
+			arm.setMsg(Constants.getConstraintMsg(e.getMessage()));
 		} catch (Exception e) {
 			arm.setSuccess(false);
 			arm.setMsg("保存失败");
