@@ -134,20 +134,10 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-md-4">
+				<!-- <div class="col-md-4">
 					<div class="form-group">
 						<label class="control-label col-md-4">所属单位</label>
 						<div class="col-md-8">
-							<!-- <div class="input-group">
-								<input id="selOrgId" name="orgid" type="hidden"> 
-								<input id="selOrgName" name="orgname" type="text" class="form-control">
-								<span class="input-group-btn">
-									<button id="yy-org-select-btn" class="btn btn-default btn-ref" type="button">
-										<span class="glyphicon glyphicon-search"></span>
-									</button>
-								</span>
-							</div> -->
-							
 							<div class="input-group">
 								<input id="selOrgId" name="orgid" type="hidden"> 
 								<input id="selOrgName" name="orgname" type="text" class="form-control" readonly="readonly"> 
@@ -159,59 +149,7 @@
 							</div>
 						</div>
 					</div>
-				</div>
-			</div>
-			<div class="row">
-					<div class="col-md-4">
-						<div class="form-group">
-							<label class="control-label col-md-4">年级</label>
-							<div class="col-md-8"><select name="grade" class="yy-input-enumdata form-control" data-enum-group="StudentGrade"></select></div>
-						</div>
-					</div>	
-					<div class="col-md-4">
-						<div class="form-group">
-							<label class="control-label col-md-4">学院</label>
-							<div class="col-md-8">
-								<input class="form-control " id="college" name="college"  type="text">
-							</div>
-						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="form-group">
-							<label class="control-label col-md-4">班级</label>
-							<div class="col-md-8"><input class="form-control " name="classes"  type="text"></div>
-						</div>
-					</div>	
-			</div>
-			<div class="row">
-				<div class="col-md-4">
-					<div class="form-group">
-						<label class="control-label col-md-4">关联人员</label>
-						<!-- <div class="col-md-8">
-							<div class="input-group">
-								<input id="user_refid" name="user_refid" type="hidden"> 
-								<input id="user_refname" name="user_refname" type="text" class="form-control" readonly="readonly"> 
-								<span class="input-group-btn">
-									<button id="yy-userref-select-btn" class="btn btn-default btn-ref" type="button">
-										<span class="glyphicon glyphicon-search"></span>
-									</button>
-								</span>
-							</div>
-						</div> -->
-						<div class="col-md-8">
-							<div class="input-group input-icon right">
-								<input id="user_refid" name="user_refid" type="hidden"> 
-								<i class="fa fa-remove" onclick="cleanDef('user_refid','user_refname');" title="清除"></i>
-								<input id="user_refname" name="user_refname" type="text" class="form-control" readonly="readonly"> 
-								<span class="input-group-btn">
-									<button id="yy-userref-select-btn" class="btn btn-default btn-ref" type="button">
-										<span class="glyphicon glyphicon-search"></span>
-									</button>
-								</span>
-							</div>
-						</div>	
-					</div>
-				</div>
+				</div> -->
 			</div>
 			<div class="row">
 				<div class="col-md-8">

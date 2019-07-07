@@ -170,10 +170,10 @@ nav.page-tabs {
 			<div class="top-menu">
 				<ul class="nav navbar-nav pull-right">
 					<!-- 反馈意见start -->
-					<li class="dropdown dropdown-extended dropdown-notification" id="yjfk"><a title="意见反馈" class="dropdown-toggle"
+					<!-- <li class="dropdown dropdown-extended dropdown-notification" id="yjfk"><a title="意见反馈" class="dropdown-toggle"
 						data-toggle="dropdown" onclick="Feedback();" data-hover="dropdown" data-close-others="true"> <i
 							class="icon-speech font-green"></i>
-					</a></li>
+					</a></li> -->
 					<!-- 反馈意见end -->
 
 					<!-- 使用说明start -->
@@ -193,12 +193,6 @@ nav.page-tabs {
 					</a>
 						<ul class="dropdown-menu dropdown-menu-default">
 							<li><a onclick="onUserProfile();"> <i class="icon-user"></i> 个人设置
-							</a></li>
-							<li><a onclick="onCalendar();"> <i class="icon-calendar"></i> 我的日历
-							</a></li>
-							<li class="divider"></li>
-							<li><a onclick="lsAddTab('${ctx}/version','版本更新日志','f431561e-228e-41ed3-31da-96f3611232132')"> <i
-									class="fa fa-file-text-o"></i> 版本更新日志
 							</a></li>
 							<li><a onclick="onRevisePassword();"> <i class="icon-lock"></i> 修改密码
 							</a></li>
@@ -551,7 +545,7 @@ nav.page-tabs {
 			// loadAdmin();
 			showUserMenu(); //加载快捷菜单
 			
-			showNewMsg("欢迎进入库存管理系统");
+			showNewMsg("您有新的订单，请及时处理。");
 			
 			connect();
 			//测试还有多少的缓存

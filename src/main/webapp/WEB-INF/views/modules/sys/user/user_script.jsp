@@ -540,7 +540,7 @@
 				loginname : {required : true,maxlength:20},
 				username : {required : true,maxlength:30},
 				sex : {required : true},
-				orgname : {required : true},
+				//orgname : {required : true},
 				usertype : {required : true},
 				jobnumber: {required : true,maxlength:10},
 				description : {maxlength:200}

@@ -235,7 +235,7 @@ public abstract class SuperServiceImpl<T extends SuperEntity, PK extends Seriali
 			}
 			entity = this.save(entity);
 			//保存审批记录
-			saveMessage(entity.getBilltype(), entity.getUuid(), "退出");
+			saveMessage(entity.getBilltype(), entity.getUuid(), "退回 退回意见："+approveRemark);
 			afterRevoke(entity);
 			return entity;
 		} catch (Exception e) {
@@ -303,7 +303,7 @@ public abstract class SuperServiceImpl<T extends SuperEntity, PK extends Seriali
 				entity = this.save(entity);
 			}
 			//保存审批记录
-			saveMessage(entity.getBilltype(), entity.getUuid(), "审核");
+			saveMessage(entity.getBilltype(), entity.getUuid(), "审核  审核意见："+approveRemark);
 			afterApprove(entity);
 			return entity;
 		} catch (Exception e) {

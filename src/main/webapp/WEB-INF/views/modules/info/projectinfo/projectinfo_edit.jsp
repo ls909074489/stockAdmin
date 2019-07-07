@@ -63,7 +63,7 @@
 						<button id="addNewSub" class="btn blue btn-sm" type="button">
 							<i class="fa fa-plus"></i> 添加
 						</button>
-						<div role="form" class="form-inline" style="display: none;">
+						<div role="form" class="form-inline" style="">
 							<form id="yy-form-subquery">	
 								<input type="hidden" name="search_EQ_main.uuid" id="mainId" value="${entity.uuid}">	
 								&nbsp;&nbsp;	
