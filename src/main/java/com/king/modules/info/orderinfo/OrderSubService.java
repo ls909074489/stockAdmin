@@ -7,10 +7,13 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+
+import com.king.common.enums.BillStatus;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.dao.IBaseDAO;
 import com.king.frame.security.ShiroUser;
 import com.king.frame.service.BaseServiceImpl;
+import com.king.modules.info.material.MaterialEntity;
 import com.king.modules.sys.user.UserEntity;
 
 /**
@@ -53,6 +56,9 @@ public class OrderSubService extends BaseServiceImpl<OrderSubEntity, String> {
   		}
   		OrderInfoEntity savedEntity = null;
   		// 保存自身数据
+  		if(StringUtils.isEmpty(entity.getUuid())){
+			entity.setBillstatus(BillStatus.FREE.toStatusValue());
+		}
   		savedEntity = mainService.save(entity);
   		
   		UserEntity user = ShiroUser.getCurrentUserEntity();
@@ -64,6 +70,15 @@ public class OrderSubService extends BaseServiceImpl<OrderSubEntity, String> {
   	  				sub.setCreatorname(user.getUsername());
   	  				sub.setCreatetime(new Date());
   				}
+  				MaterialEntity material = new MaterialEntity();
+  				material.setUuid(sub.getMaterialId());
+  				
+  				if(sub.getWarningTime()!=null){
+  					sub.setWarningType("1");
+  				}else{
+  					sub.setWarningType("0");
+  				}
+  				sub.setMaterial(material);
   				sub.setActualAmount(sub.getPlanAmount());
   				sub.setMain(savedEntity);
   				sub.setModifier(user.getUuid());

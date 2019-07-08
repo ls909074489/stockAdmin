@@ -88,7 +88,8 @@
 								<th>序号</th>	
 								<th>操作</th>	
 								<th>物料</th>	
-								<th>计划数量</th>	
+								<th>计划数量</th>
+								<th>预警时间</th>	
 								<th>备注</th>	
 							</tr>
 						</thead>
@@ -147,6 +148,17 @@
 						data="";
 					}
 					return '<input class="form-control" value="'+ data + '" name="planAmount">';
+				}
+			}, {
+				data : 'warningTime',
+				width : "80",
+				className : "center",
+				orderable : true,
+				render : function(data, type, full) {
+					if(data==null){
+						data="";
+					}
+					return '<input class="form-control Wdate" value="'+ data + '" name="warningTime"  onClick="WdatePicker()">';
 				}
 			}, {
 				data : 'memo',

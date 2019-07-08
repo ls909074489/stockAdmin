@@ -81,7 +81,7 @@
 						<button id="addNewSub" class="btn blue btn-sm" type="button">
 							<i class="fa fa-plus"></i> 添加
 						</button>
-						<div role="form" class="form-inline" style="display: none;">
+						<div role="form" class="form-inline" style="">
 							<form id="yy-form-subquery">	
 								<input type="hidden" name="search_EQ_main.uuid" id="mainId" value="${entity.uuid}">	
 								&nbsp;&nbsp;	
@@ -107,6 +107,7 @@
 								<th>操作</th>	
 								<th>物料</th>	
 								<th>计划数量</th>	
+								<th>预警时间</th>	
 								<th>备注</th>	
 							</tr>
 						</thead>
@@ -145,6 +146,7 @@
 				className : "center",
 				orderable : true,
 				render : function(data, type, full) {
+					console.info(data);
 					var str ='<div class="input-group materialRefDiv"> '+
 					 '<input class="form-control"  value="'+ data.code + '" reallyname="code" name="code" readonly="readonly"> '+
 					 '<input class="form-control"  value="'+ data.uuid + '" type="hidden" reallyname="materialId" name="materialId"> '+
@@ -167,6 +169,17 @@
 						tUuid="";
 					}
 					return '<input type="hidden" name="uuid" value="'+tUuid+'"><input class="form-control" value="'+ data + '" name="planAmount">';
+				}
+			}, {
+				data : 'warningTime',
+				width : "80",
+				className : "center",
+				orderable : true,
+				render : function(data, type, full) {
+					if(data==null){
+						data="";
+					}
+					return '<input class="form-control Wdate" value="'+ data + '" name="warningTime"  onClick="WdatePicker()">';
 				}
 			}, {
 				data : 'memo',
@@ -417,6 +430,7 @@
 		
 		//刷新子表
 		function onRefreshSub() {
+			console.info("onRefreshSub>>>>>>>>>>>>>>>>>>>>");
 			_subTableList.draw(); //服务器分页
 		}
 		//重置子表查询条件

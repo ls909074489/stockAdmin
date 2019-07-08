@@ -1,5 +1,7 @@
 package com.king.modules.info.orderinfo;
 
+import java.util.Date;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,6 +15,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.king.common.annotation.MetaData;
 import com.king.frame.entity.BaseEntity;
 import com.king.modules.info.material.MaterialEntity;
@@ -39,6 +42,12 @@ public class OrderSubEntity extends BaseEntity {
 	@MetaData(value = "计划数量")
 	@Column()
 	private Long planAmount;
+	
+	@MetaData(value = "计划数量")
+	@Column()
+	private Date WarningTime;
+	
+	private String warningType="0";//0不需预警 1：要预警
 	
 	@MetaData(value = "实际数量")
 	@Column()
@@ -98,5 +107,23 @@ public class OrderSubEntity extends BaseEntity {
 	public void setMaterialId(String materialId) {
 		this.materialId = materialId;
 	}
+
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+08:00")
+	public Date getWarningTime() {
+		return WarningTime;
+	}
+
+	public void setWarningTime(Date warningTime) {
+		WarningTime = warningTime;
+	}
+
+	public String getWarningType() {
+		return warningType;
+	}
+
+	public void setWarningType(String warningType) {
+		this.warningType = warningType;
+	}
+	
 
 }

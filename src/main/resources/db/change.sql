@@ -36,3 +36,47 @@ INSERT INTO `stock_admin`.`yy_enumdata_sub` (`uuid`, `status`, `description`, `e
 INSERT INTO `stock_admin`.`yy_enumdata_sub` (`uuid`, `status`, `description`, `enumdatakey`, `enumdataname`, `icon`, `isdefault`, `showorder`, `enumdataid`, `creator`, `modifier`, `create_time`, `modify_time`, `creatorname`, `modifiername`, `createtime`, `modifytime`, `ts`) VALUES ('5128de0e-3bdd-4a23-b520-2a3dcf6c9422', '1', NULL, 'L', 'L', NULL, '\0', NULL, '590ab276-11b1-4c9b-953d-6b17774c48f8', '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, NULL, '超级系统管理员', NULL, '2019-06-18 08:38:25', NULL, '2019-06-18 08:38:25');
 
 
+
+
+
+
+CREATE TABLE `yy_job_log` (
+  `uuid` varchar(36) NOT NULL,
+  `create_time` datetime DEFAULT NULL,
+  `createtime` datetime DEFAULT NULL,
+  `creator` varchar(36) DEFAULT NULL,
+  `creatorname` varchar(200) DEFAULT NULL,
+  `modifier` varchar(36) DEFAULT NULL,
+  `modifiername` varchar(200) DEFAULT NULL,
+  `modify_time` datetime DEFAULT NULL,
+  `modifytime` datetime DEFAULT NULL,
+  `status` int(11) NOT NULL,
+  `ts` datetime DEFAULT NULL,
+  `begintime` datetime DEFAULT NULL,
+  `costtime` varchar(255) DEFAULT NULL,
+  `endtime` datetime DEFAULT NULL,
+  `jobid` varchar(255) DEFAULT NULL,
+  `jobname` varchar(255) DEFAULT NULL,
+  `jobstatus` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+INSERT INTO `stock_admin`.`yy_enumdata` (`uuid`, `status`, `description`, `groupcode`, `groupname`, `modulecode`, `sys`, `creator`, `modifier`, `create_time`, `modify_time`, `creatorname`, `modifiername`, `createtime`, `modifytime`, `ts`) VALUES ('17f94fec-b923-486f-88e6-9813e082ccab', '1', '', 'cronExpression', '定时器表达式', 'sys', '\0', '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, NULL, '超级系统管理员', NULL, '2019-07-08 14:30:21', NULL, '2019-07-08 14:30:21');
+INSERT INTO `stock_admin`.`yy_enumdata` (`uuid`, `status`, `description`, `groupcode`, `groupname`, `modulecode`, `sys`, `creator`, `modifier`, `create_time`, `modify_time`, `creatorname`, `modifiername`, `createtime`, `modifytime`, `ts`) VALUES ('d9a752a8-a29a-4948-998e-57f90b504325', '1', '', 'jobGroup', '定时任务分组', 'sys', '\0', '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, NULL, '超级系统管理员', NULL, '2019-07-08 14:25:36', NULL, '2019-07-08 14:25:36');
+INSERT INTO `stock_admin`.`yy_enumdata_sub` (`uuid`, `status`, `description`, `enumdatakey`, `enumdataname`, `icon`, `isdefault`, `showorder`, `enumdataid`, `creator`, `modifier`, `create_time`, `modify_time`, `creatorname`, `modifiername`, `createtime`, `modifytime`, `ts`) VALUES ('2bff6fdc-548e-4946-a2a1-4902e439994e', '1', NULL, 'day', '每天', NULL, '\0', '5', '17f94fec-b923-486f-88e6-9813e082ccab', '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, NULL, '超级系统管理员', NULL, '2019-07-08 14:30:21', NULL, '2019-07-08 14:30:21');
+INSERT INTO `stock_admin`.`yy_enumdata_sub` (`uuid`, `status`, `description`, `enumdatakey`, `enumdataname`, `icon`, `isdefault`, `showorder`, `enumdataid`, `creator`, `modifier`, `create_time`, `modify_time`, `creatorname`, `modifiername`, `createtime`, `modifytime`, `ts`) VALUES ('57c35288-af99-4442-aa2a-e3662d37f0f0', '1', NULL, 'year', '每年', NULL, '\0', '2', '17f94fec-b923-486f-88e6-9813e082ccab', '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, NULL, '超级系统管理员', NULL, '2019-07-08 14:30:21', NULL, '2019-07-08 14:30:21');
+INSERT INTO `stock_admin`.`yy_enumdata_sub` (`uuid`, `status`, `description`, `enumdatakey`, `enumdataname`, `icon`, `isdefault`, `showorder`, `enumdataid`, `creator`, `modifier`, `create_time`, `modify_time`, `creatorname`, `modifiername`, `createtime`, `modifytime`, `ts`) VALUES ('6bb27898-12b4-40a4-b9b1-5d4d0cc749ec', '1', NULL, 'month', '每月', NULL, '\0', '3', '17f94fec-b923-486f-88e6-9813e082ccab', '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, NULL, '超级系统管理员', NULL, '2019-07-08 14:30:21', NULL, '2019-07-08 14:30:21');
+INSERT INTO `stock_admin`.`yy_enumdata_sub` (`uuid`, `status`, `description`, `enumdatakey`, `enumdataname`, `icon`, `isdefault`, `showorder`, `enumdataid`, `creator`, `modifier`, `create_time`, `modify_time`, `creatorname`, `modifiername`, `createtime`, `modifytime`, `ts`) VALUES ('71e7fac7-5c79-4b34-8152-4fad4050fb54', '1', NULL, 'hour', '每小时', NULL, '\0', '6', '17f94fec-b923-486f-88e6-9813e082ccab', '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, NULL, '超级系统管理员', NULL, '2019-07-08 14:30:21', NULL, '2019-07-08 14:30:21');
+INSERT INTO `stock_admin`.`yy_enumdata_sub` (`uuid`, `status`, `description`, `enumdatakey`, `enumdataname`, `icon`, `isdefault`, `showorder`, `enumdataid`, `creator`, `modifier`, `create_time`, `modify_time`, `creatorname`, `modifiername`, `createtime`, `modifytime`, `ts`) VALUES ('a3378619-42f5-4214-bb4f-efd72b8b0fce', '1', NULL, 'once', '1次', NULL, '\0', '8', '17f94fec-b923-486f-88e6-9813e082ccab', '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, NULL, '超级系统管理员', NULL, '2019-07-08 14:30:21', NULL, '2019-07-08 14:30:21');
+INSERT INTO `stock_admin`.`yy_enumdata_sub` (`uuid`, `status`, `description`, `enumdatakey`, `enumdataname`, `icon`, `isdefault`, `showorder`, `enumdataid`, `creator`, `modifier`, `create_time`, `modify_time`, `creatorname`, `modifiername`, `createtime`, `modifytime`, `ts`) VALUES ('a5fcefc4-fb0c-4a13-94ac-94e130d99c15', '1', NULL, 'week', '每周', NULL, '\0', '4', '17f94fec-b923-486f-88e6-9813e082ccab', '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, NULL, '超级系统管理员', NULL, '2019-07-08 14:30:21', NULL, '2019-07-08 14:30:21');
+INSERT INTO `stock_admin`.`yy_enumdata_sub` (`uuid`, `status`, `description`, `enumdatakey`, `enumdataname`, `icon`, `isdefault`, `showorder`, `enumdataid`, `creator`, `modifier`, `create_time`, `modify_time`, `creatorname`, `modifiername`, `createtime`, `modifytime`, `ts`) VALUES ('d7a547a2-70e2-4bbe-9204-b717cea7daa7', '1', NULL, 'custom', '自定义', NULL, '\0', '1', '17f94fec-b923-486f-88e6-9813e082ccab', '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, NULL, '超级系统管理员', NULL, '2019-07-08 14:30:21', NULL, '2019-07-08 14:30:21');
+INSERT INTO `stock_admin`.`yy_enumdata_sub` (`uuid`, `status`, `description`, `enumdatakey`, `enumdataname`, `icon`, `isdefault`, `showorder`, `enumdataid`, `creator`, `modifier`, `create_time`, `modify_time`, `creatorname`, `modifiername`, `createtime`, `modifytime`, `ts`) VALUES ('df8c61ec-3353-4f18-973b-9987959d7067', '1', NULL, 'minute', '每分钟', NULL, '\0', '7', '17f94fec-b923-486f-88e6-9813e082ccab', '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, NULL, '超级系统管理员', NULL, '2019-07-08 14:30:21', NULL, '2019-07-08 14:30:21');
+INSERT INTO `stock_admin`.`yy_enumdata_sub` (`uuid`, `status`, `description`, `enumdatakey`, `enumdataname`, `icon`, `isdefault`, `showorder`, `enumdataid`, `creator`, `modifier`, `create_time`, `modify_time`, `creatorname`, `modifiername`, `createtime`, `modifytime`, `ts`) VALUES ('2f0bf54c-4c7b-47fe-8cfe-ea30f0606b80', '1', NULL, '01', '系统', NULL, '\0', NULL, 'd9a752a8-a29a-4948-998e-57f90b504325', '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, NULL, '超级系统管理员', NULL, '2019-07-08 14:25:36', NULL, '2019-07-08 14:25:36');
+INSERT INTO `stock_admin`.`yy_enumdata_sub` (`uuid`, `status`, `description`, `enumdatakey`, `enumdataname`, `icon`, `isdefault`, `showorder`, `enumdataid`, `creator`, `modifier`, `create_time`, `modify_time`, `creatorname`, `modifiername`, `createtime`, `modifytime`, `ts`) VALUES ('b7d69cd5-e66a-4b98-af44-6da38042d12f', '1', NULL, '02', '业务', NULL, '\0', NULL, 'd9a752a8-a29a-4948-998e-57f90b504325', '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, NULL, '超级系统管理员', NULL, '2019-07-08 14:25:36', NULL, '2019-07-08 14:25:36');
+
+
+
+
+
+
+
