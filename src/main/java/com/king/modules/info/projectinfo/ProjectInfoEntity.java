@@ -36,6 +36,7 @@ public class ProjectInfoEntity extends SuperEntity {
 	@MetaData(value = "备注")
 	@Column(length = 250)
 	private String memo;
+	
 
 	public String getCode() {
 		return code;
@@ -60,6 +61,5 @@ public class ProjectInfoEntity extends SuperEntity {
 	public void setMemo(String memo) {
 		this.memo = memo;
 	}
-
 
 }

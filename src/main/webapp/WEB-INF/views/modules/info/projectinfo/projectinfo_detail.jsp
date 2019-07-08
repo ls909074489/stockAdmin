@@ -56,24 +56,22 @@
 			<div class="tab-content">
 				<div class="tab-pane active">
 					<div class="row yy-toolbar">
-						<div role="form" class="form-inline" style="display: none;">
+						<div role="form" class="form-inline" style="">
 							<form id="yy-form-subquery">	
-							<fieldset disabled="disabled">
 								<input type="hidden" name="search_EQ_main.uuid" id="mainId" value="${entity.uuid}">	
 								&nbsp;&nbsp;	
-								<label for="search_LIKE_name" class="control-label">名称 </label>
-								<input type="text" autocomplete="on" name="search_LIKE_name" id="search_LIKE_name" class="form-control input-sm">
+								<label for="search_LIKE_material.code" class="control-label">物料编码</label>
+								<input type="text" autocomplete="on" name="search_LIKE_material.code" id="search_LIKE_material.code" class="form-control input-sm">
 								
-								<label for="search_EQ_sex" class="control-label">性别 </label>
-								<select class="yy-input-enumdata form-control" id="search_EQ_sex" name="search_EQ_sex" data-enum-group="sys_sex"></select>
+								<label for="search_LIKE_material.name" class="control-label">物料名称</label>
+								<input type="text" autocomplete="on" name="search_LIKE_material.name" id="search_LIKE_material.name" class="form-control input-sm">
 								
 								<button id="yy-btn-searchSub" type="button" class="btn btn-sm btn-info">
 									<i class="fa fa-search"></i>查询
 								</button>
 								<button id="rap-searchbar-resetSub" type="reset" class="red">
 									<i class="fa fa-undo"></i> 清空
-								</button>
-							</fieldset>	
+								</button>	
 							</form>
 						</div>
 					</div>
@@ -81,6 +79,7 @@
 						<thead>
 							<tr>
 								<th>序号</th>	
+								<th>箱号</th>	
 								<th>物料</th>	
 								<th>计划数量</th>	
 								<th>备注</th>	
@@ -108,7 +107,15 @@
 			data : null,
 			orderable : false,
 			className : "center",
-			width : "50"
+			width : "20"
+		}, {
+			data : 'boxNum',
+			width : "20",
+			className : "center",
+			orderable : true,
+			render : function(data, type, full) {
+				return YYDataUtils.getEnumName("BoxNum", data);
+			}
 		}, {
 			data : 'material.code',
 			width : "80",
@@ -155,7 +162,8 @@
 		
 		//刷新子表
 		function onRefreshSub() {
-			_subTableList.draw(); //服务器分页
+			//_subTableList.draw(); //服务器分页
+			loadSubList();
 		}
 		//重置子表查询条件
 		function onResetSub() {
@@ -163,12 +171,12 @@
 			return false;
 		}
 		
-		//加载从表数据 mainTableId主表Id
-		function loadSubList(mainTableId) {
+		//加载从表数据 
+		function loadSubList() {
 			var loadSubWaitLoad=layer.load(2);
 			$.ajax({
 				url : '${servicesuburl}/query',
-				data : {"search_EQ_main.uuid" : "${entity.uuid}"},
+				data : $("#yy-form-subquery").serializeArray(),//{"search_EQ_main.uuid" : "${entity.uuid}"},
 				dataType : 'json',
 				type : 'post',
 				async : false,

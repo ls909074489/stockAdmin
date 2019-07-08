@@ -68,6 +68,7 @@
 							<tr>
 								<th>序号</th>	
 								<th>操作</th>	
+								<th>箱号</th>	
 								<th>物料</th>	
 								<th>计划数量</th>	
 								<th>备注</th>	
@@ -94,13 +95,24 @@
 			data : null,
 			orderable : false,
 			className : "center",
-			width : "50"
+			width : "20"
 		},{
 			data : "uuid",
 			className : "center",
 			orderable : false,
 			render : YYDataTableUtils.renderRemoveActionCol,
-			width : "50"
+			width : "20"
+		}, {
+			data : 'boxNum',
+			width : "20",
+			className : "center",
+			orderable : true,
+			render : function(data, type, full) {
+				if(data==null){
+					data="";
+				}
+				return creSelectStr('BoxNum','boxNum',data,false);
+			}
 		}, {
 			data : 'material',
 			width : "80",
@@ -296,6 +308,16 @@
 							//number :"请输入合法的数字",
 							digits :"只能输入整数",
 							maxlength : "最大长度为8"
+						}
+					},{
+						name : "boxNum",
+						rules : {
+							required : true,
+							maxlength:3
+						},
+						message : {
+							required : "请选择",
+							maxlength : "最大长度为3"
 						}
 					}
 			];

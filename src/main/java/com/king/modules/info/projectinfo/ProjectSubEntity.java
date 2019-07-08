@@ -54,6 +54,9 @@ public class ProjectSubEntity extends BaseEntity {
 	@Column()
 	private Long memo;
 	
+	@Column()
+	private Integer boxNum;
+	
 	@Transient
 	private String materialId;
 
@@ -104,6 +107,14 @@ public class ProjectSubEntity extends BaseEntity {
 
 	public void setMaterialId(String materialId) {
 		this.materialId = materialId;
+	}
+
+	public Integer getBoxNum() {
+		return boxNum;
+	}
+
+	public void setBoxNum(Integer boxNum) {
+		this.boxNum = boxNum;
 	}
 	
 	

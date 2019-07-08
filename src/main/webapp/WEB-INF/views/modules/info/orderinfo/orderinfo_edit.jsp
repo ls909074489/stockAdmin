@@ -195,11 +195,11 @@
 
 		 
 		$(document).ready(function() {
-			//_subTableList = $('#yy-table-sublist').DataTable({
-				//"columns" : _subTableCols,
-				//"paging" : false/* ,
+			_subTableList = $('#yy-table-sublist').DataTable({
+				"columns" : _subTableCols,
+				"paging" : false/* ,
 				//"order" : [[5,"asc"]] */
-			//});
+			});
 			
 			bindEditActions();//綁定平台按鈕
 			
@@ -278,25 +278,6 @@
 				shade : 0.8,
 			    content: "${ctx}/sys/ref/refMaterial?callBackMethod=window.parent.callBackAddMaterial"
 			});
-			
-			/* $('#addNewSub').click(function(e) {
-				var subNewData = [ {
-					'uuid' : '',
-					'material' : {"uuid":"","code":"","name":""},
-					'planAmount':'',
-					'memo':''
-				} ];
-				var nRow = _subTableList.rows.add(subNewData).draw().nodes()[0];//添加行，并且获得第一行
-				_subTableList.on('order.dt search.dt',
-				        function() {
-					_subTableList.column(0, {
-						        search: 'applied',
-						        order: 'applied'
-					        }).nodes().each(function(cell, i) {
-						        cell.innerHTML = i + 1;
-					        });
-				}).draw();
-			}); */
 		}
 		
 		function callBackAddMaterial(selNode){
@@ -315,6 +296,7 @@
 					'planAmount':'',
 					'memo':''
 				} ];
+				
 				var nRow = _subTableList.rows.add(subNewData).draw().nodes()[0];//添加行，并且获得第一行
 				_subTableList.on('order.dt search.dt',
 				        function() {
@@ -449,7 +431,8 @@
 		
 		//刷新子表
 		function onRefreshSub() {
-			_subTableList.draw(); //服务器分页
+			//_subTableList.draw(); //服务器分页
+			loadSubList();
 		}
 		//重置子表查询条件
 		function onResetSub() {
@@ -457,12 +440,12 @@
 			return false;
 		}
 		
-		//加载从表数据 mainTableId主表Id
+		//加载从表数据
 		function loadSubList() {
-			/* var loadSubWaitLoad=layer.load(2);
+			var loadSubWaitLoad=layer.load(2);
 			$.ajax({
 				url : '${servicesuburl}/query',
-				data : {"search_EQ_main.uuid" : "${entity.uuid}"},
+				data : $("#yy-form-subquery").serializeArray(),//{"search_EQ_main.uuid" : "${entity.uuid}"},
 				dataType : 'json',
 				type : 'post',
 				async : false,
@@ -480,9 +463,9 @@
 					}).draw();
 					layer.close(loadSubWaitLoad);
 				}
-			}); */
+			});
 
-			_subTableList = $('#yy-table-sublist').DataTable({
+			/* _subTableList = $('#yy-table-sublist').DataTable({
 				"columns" : _subTableCols,
 				"createdRow" : YYDataTableUtils.setActions,
 				"order" : [],//_setOrder  edit by liusheng
@@ -513,7 +496,7 @@
 						return json.records == null ? [] : json.records;
 					}
 				}
-			});
+			}); */
 		}
 		
 		

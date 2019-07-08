@@ -153,11 +153,11 @@
 		$(document).ready(function() {
 			bindDetailActions();//綁定平台按鈕
 			
-			//_subTableList = $('#yy-table-sublist').DataTable({
-				//"columns" : _subTableCols,
-				//"paging" : false,
+			_subTableList = $('#yy-table-sublist').DataTable({
+				"columns" : _subTableCols,
+				"paging" : false//,
 				//"order" : [[5,"asc"]]
-			//});
+			});
 			
 			setValue();
 			
@@ -180,7 +180,8 @@
 		
 		//刷新子表
 		function onRefreshSub() {
-			_subTableList.draw(); //服务器分页
+			//_subTableList.draw(); //服务器分页
+			loadSubList();
 		}
 		//重置子表查询条件
 		function onResetSub() {
@@ -188,12 +189,12 @@
 			return false;
 		}
 		
-		//加载从表数据 mainTableId主表Id
-		function loadSubList(mainTableId) {
-			/* var loadSubWaitLoad=layer.load(2);
+		//加载从表数据
+		function loadSubList() {
+			var loadSubWaitLoad=layer.load(2);
 			$.ajax({
 				url : '${servicesuburl}/query',
-				data : {"search_EQ_main.uuid" : "${entity.uuid}"},
+				data : $("#yy-form-subquery").serializeArray(),//{"search_EQ_main.uuid" : "${entity.uuid}"},
 				dataType : 'json',
 				type : 'post',
 				async : false,
@@ -211,8 +212,9 @@
 						        });
 					}).draw();
 				}
-			}); */
-			_subTableList = $('#yy-table-sublist').DataTable({
+			});
+			
+			/* _subTableList = $('#yy-table-sublist').DataTable({
 				"columns" : _subTableCols,
 				"createdRow" : YYDataTableUtils.setActions,
 				"order" : [],//_setOrder  edit by liusheng
@@ -243,7 +245,7 @@
 						return json.records == null ? [] : json.records;
 					}
 				}
-			});
+			}); */
 		}
 		
 		function fnDrawSubCallback(){

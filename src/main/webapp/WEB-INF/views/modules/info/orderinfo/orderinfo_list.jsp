@@ -140,7 +140,7 @@
 		$(document).ready(function() {
 			_queryData = $("#yy-form-query").serializeArray();
 			bindListActions();
-			serverPage(null);
+			serverPage('${serviceurl}/query?orderby=createtime@desc');
 		});
 	</script>
 </body>

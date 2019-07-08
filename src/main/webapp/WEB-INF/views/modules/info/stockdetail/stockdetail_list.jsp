@@ -126,8 +126,9 @@
 		
 		//行查看 param data 行数据 param rowidx 行下标
 		function onViewDetailRow(data, rowidx, row) {
+			console.info(data.stock.uuid+"========="+data.material.uuid);
 			layer.open({
-				title:"库存记录",
+				title:"库存记录(【"+data.stock.name+"】物料"+data.material.code+")",
 			    type: 2,
 			    area: ['90%', '95%'],
 			    shadeClose : false,

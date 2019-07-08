@@ -205,11 +205,6 @@
 			});
 		}
 		
-		function callBackSelectMaterial(selNode){
-			$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='code']").val(selNode.code);
-			$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='materialId']").val(selNode.uuid);
-		}
-		
 		//添加行
 		function onAddSubRow(){
 			layer.open({
