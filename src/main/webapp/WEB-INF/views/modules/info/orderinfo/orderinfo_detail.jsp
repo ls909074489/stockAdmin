@@ -74,24 +74,22 @@
 			<div class="tab-content">
 				<div class="tab-pane active">
 					<div class="row yy-toolbar">
-						<div role="form" class="form-inline" style="display: none;">
+						<div role="form" class="form-inline" style="">
 							<form id="yy-form-subquery">	
-							<fieldset disabled="disabled">
 								<input type="hidden" name="search_EQ_main.uuid" id="mainId" value="${entity.uuid}">	
 								&nbsp;&nbsp;	
-								<label for="search_LIKE_name" class="control-label">名称 </label>
-								<input type="text" autocomplete="on" name="search_LIKE_name" id="search_LIKE_name" class="form-control input-sm">
+								<label for="search_LIKE_material.code" class="control-label">物料编码</label>
+								<input type="text" autocomplete="on" name="search_LIKE_material.code" id="search_LIKE_material.code" class="form-control input-sm">
 								
-								<label for="search_EQ_sex" class="control-label">性别 </label>
-								<select class="yy-input-enumdata form-control" id="search_EQ_sex" name="search_EQ_sex" data-enum-group="sys_sex"></select>
+								<label for="search_LIKE_material.name" class="control-label">物料名称</label>
+								<input type="text" autocomplete="on" name="search_LIKE_material.name" id="search_LIKE_material.name" class="form-control input-sm">
 								
 								<button id="yy-btn-searchSub" type="button" class="btn btn-sm btn-info">
 									<i class="fa fa-search"></i>查询
 								</button>
 								<button id="rap-searchbar-resetSub" type="reset" class="red">
 									<i class="fa fa-undo"></i> 清空
-								</button>
-							</fieldset>	
+								</button>	
 							</form>
 						</div>
 					</div>
@@ -155,11 +153,11 @@
 		$(document).ready(function() {
 			bindDetailActions();//綁定平台按鈕
 			
-			_subTableList = $('#yy-table-sublist').DataTable({
-				"columns" : _subTableCols,
-				"paging" : false/* ,
-				"order" : [[5,"asc"]] */
-			});
+			//_subTableList = $('#yy-table-sublist').DataTable({
+				//"columns" : _subTableCols,
+				//"paging" : false,
+				//"order" : [[5,"asc"]]
+			//});
 			
 			setValue();
 			
@@ -192,7 +190,7 @@
 		
 		//加载从表数据 mainTableId主表Id
 		function loadSubList(mainTableId) {
-			var loadSubWaitLoad=layer.load(2);
+			/* var loadSubWaitLoad=layer.load(2);
 			$.ajax({
 				url : '${servicesuburl}/query',
 				data : {"search_EQ_main.uuid" : "${entity.uuid}"},
@@ -212,6 +210,38 @@
 							        cell.innerHTML = i + 1;
 						        });
 					}).draw();
+				}
+			}); */
+			_subTableList = $('#yy-table-sublist').DataTable({
+				"columns" : _subTableCols,
+				"createdRow" : YYDataTableUtils.setActions,
+				"order" : [],//_setOrder  edit by liusheng
+				"processing" : true,
+				"retrieve": true,
+				"searching" : false,
+				"serverSide" : true,
+				"showRowNumber" : true,
+				"pagingType" : "bootstrap_full_number",
+				"paging" : false,
+				"fnDrawCallback" : fnDrawSubCallback,
+				"ajax" : {
+					"url" : '${servicesuburl}/query',
+					"type" : 'POST',
+					"data" : function(d) {
+						d.orderby = getOrderbyParam(d);
+						var _subqueryData = $("#yy-form-subquery").serializeArray();
+						if (_subqueryData == null)
+							return;
+						$.each(_subqueryData, function(index) {
+							if (this['value'] == null || this['value'] == "")
+								return;
+							d[this['name']] = this['value'];
+						});
+					},
+					"dataSrc" : function(json) {
+						_pageNumber = json.pageNumber;
+						return json.records == null ? [] : json.records;
+					}
 				}
 			});
 		}
