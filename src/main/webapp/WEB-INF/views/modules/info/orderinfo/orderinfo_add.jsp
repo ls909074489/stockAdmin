@@ -128,7 +128,7 @@
 				orderable : true,
 				render : function(data, type, full) {
 					var str ='<div class="input-group materialRefDiv"> '+
-					 '<input class="form-control"  value="'+ data.code + '" reallyname="code" name="code" readonly="readonly"> '+
+					 '<input class="form-control materialCodeInputCls"  value="'+ data.code + '" reallyname="code" name="code" readonly="readonly"> '+
 					 '<input class="form-control"  value="'+ data.uuid + '" type="hidden" reallyname="materialId" name="materialId"> '+
 					 '<span class="input-group-btn"> '+
 					 '<button id="" class="btn btn-default btn-ref materialcode" type="button" data-select2-open="single-append-text"> '+
@@ -236,23 +236,50 @@
 			}).draw(); */
 		}
 		
+		
+		function callBackSelectMaterial(selNode){
+			var canAdd=true;
+			$(".materialCodeInputCls").each(function(){
+				if(selNode.code==$(this).val()){
+					YYUI.promMsg("物料 "+selNode.code+" 不能重复添加");
+					canAdd = false;
+					return false;
+				}
+			});
+			if(canAdd){
+				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='code']").val(selNode.code);
+				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='materialId']").val(selNode.uuid);
+			}
+		}
+		
+		
 		function callBackAddMaterial(selNode){
-			var subNewData = [ {
-				'uuid' : '',
-				'material' : {"uuid":selNode.uuid,"code":selNode.code,"name":selNode.name},
-				'planAmount':'',
-				'memo':''
-			} ];
-			var nRow = _subTableList.rows.add(subNewData).draw().nodes()[0];//添加行，并且获得第一行
-			_subTableList.on('order.dt search.dt',
-			        function() {
-				_subTableList.column(0, {
-					        search: 'applied',
-					        order: 'applied'
-				        }).nodes().each(function(cell, i) {
-					        cell.innerHTML = i + 1;
-				        });
-			}).draw();
+			var canAdd=true;
+			$(".materialCodeInputCls").each(function(){
+				if(selNode.code==$(this).val()){
+					YYUI.promMsg("物料 "+selNode.code+" 不能重复添加");
+					canAdd = false;
+					return false;
+				}
+			});
+			if(canAdd){
+				var subNewData = [ {
+					'uuid' : '',
+					'material' : {"uuid":selNode.uuid,"code":selNode.code,"name":selNode.name},
+					'planAmount':'',
+					'memo':''
+				} ];
+				var nRow = _subTableList.rows.add(subNewData).draw().nodes()[0];//添加行，并且获得第一行
+				_subTableList.on('order.dt search.dt',
+				        function() {
+					_subTableList.column(0, {
+						        search: 'applied',
+						        order: 'applied'
+					        }).nodes().each(function(cell, i) {
+						        cell.innerHTML = i + 1;
+					        });
+				}).draw();
+			}
 		}
 		//删除行
 		function onDelSubRow(e){
