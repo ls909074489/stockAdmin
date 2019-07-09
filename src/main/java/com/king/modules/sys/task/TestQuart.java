@@ -3,9 +3,9 @@ import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.king.common.utils.DateUtil;
 import com.king.modules.sys.job.YYJob;
 import com.king.modules.sys.job.schedule.JobSchedule;
 
@@ -18,7 +18,7 @@ public class TestQuart implements YYJob {
 	@Override
 	public void execute(JobSchedule schedule) throws JobExecutionException {
 		try {
-			System.out.println(System.currentTimeMillis()+">>>>>>>>>>>>>>>>>>>>>");
+			System.out.println("testQuart>>>>>>>>>>>"+DateUtil.getDateTime());
 		} catch (Exception e) {
 			logger.info("testQuart 定时器失败：" + e);
 		}
