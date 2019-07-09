@@ -71,6 +71,7 @@
 
 	<!-- 公用脚本 -->
 	<%@include file="/WEB-INF/views/common/listscript.jsp"%>
+	<%@include file="/WEB-INF/views/common/commonscript_approve.jsp"%>
 
 	<script type="text/javascript">
 		_isNumber = true;
@@ -90,10 +91,10 @@
 				className : "center",
 				orderable : false,
 				render : YYDataTableUtils.renderActionCol,
-				width : "40"
+				width : "60"
 			},{
 				data : "billstatus",
-				width : "100",
+				width : "60",
 				className : "center",
 				render : function(data, type, full) {
 					return YYDataUtils.getEnumName("BillStatus", data);

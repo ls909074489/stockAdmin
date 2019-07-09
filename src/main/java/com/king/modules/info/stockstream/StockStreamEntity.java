@@ -1,5 +1,7 @@
 package com.king.modules.info.stockstream;
 
+import java.util.Date;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +14,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.king.common.annotation.MetaData;
 import com.king.frame.entity.BaseEntity;
 import com.king.modules.info.material.MaterialBaseEntity;
@@ -34,6 +37,10 @@ public class StockStreamEntity extends BaseEntity {
 	public static String IN_STOCK="0";//增加库存
 	public static String OUT_STOCK="1";//减少库存
 
+	//0不需预警 1：要预警 2:以用完不需预警
+	public static String WARNINGTYPE_NO_NEED="0";
+	public static String WARNINGTYPE_BE_NEED="1";
+	public static String WARNINGTYPE_HAS_USE="2";
 	
 	@MetaData(value = "仓库")
 	@ManyToOne(cascade=CascadeType.REFRESH,optional = true)
@@ -87,7 +94,16 @@ public class StockStreamEntity extends BaseEntity {
 	@MetaData(value = "操作类型0：增加库存  1：减少库存")
 	@Column(length = 1)
 	private String operType;
-
+	
+	@MetaData(value = "计划数量")
+	@Column()
+	private Date WarningTime;
+	
+	private String warningType="0";//0不需预警 1：要预警 2:以用完不需预警
+	
+	@MetaData(value = "剩余数量")
+	@Column()
+	private Long surplusAmount;
 
 	public StockBaseEntity getStock() {
 		return stock;
@@ -206,6 +222,36 @@ public class StockStreamEntity extends BaseEntity {
 
 	public void setOperType(String operType) {
 		this.operType = operType;
+	}
+
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+08:00")
+	public Date getWarningTime() {
+		return WarningTime;
+	}
+
+
+	public void setWarningTime(Date warningTime) {
+		WarningTime = warningTime;
+	}
+
+
+	public String getWarningType() {
+		return warningType;
+	}
+
+
+	public void setWarningType(String warningType) {
+		this.warningType = warningType;
+	}
+
+
+	public Long getSurplusAmount() {
+		return surplusAmount;
+	}
+
+
+	public void setSurplusAmount(Long surplusAmount) {
+		this.surplusAmount = surplusAmount;
 	}
 
 }

@@ -12,7 +12,10 @@
 		<div class="page-content" id="yy-page-list">
 			<div class="row yy-searchbar form-inline">
 				<form id="yy-form-query">
-
+					<label for="search_EQ_operType" class="control-label">单据类型</label>
+					<select class="yy-input-enumdata form-control" id="search_EQ_operType" name="search_EQ_operType"
+					 data-enum-group="StockStreamOperType"></select>	
+					
 					<label for="search_LIKE_sourceBillCode" class="control-label">源单号</label>
 					<input type="text" autocomplete="on" name="search_LIKE_sourceBillCode"
 						id="search_LIKE_sourceBillCode" class="form-control input-sm">
@@ -44,10 +47,14 @@
 							<th>源单号</th>
 							<th>操作人</th>
 							<th>操作时间</th>
+							<th>单据类型</th>
 							<th>调整数量</th>
 							<th>总数量</th>
 							<th>预占数量</th>
 							<th>剩余数量</th>
+							<th>预警时间</th>
+							<th>预警剩余数量</th>
+							<th>预警状态</th>
 						</tr>
 					</thead>
 					<tbody></tbody>
@@ -82,13 +89,21 @@
 				className : "center",
 				orderable : true
 			},{
-				data : "actualAmount",
+				data : "operType",
 				width : "100",
+				className : "center",
+				render : function(data, type, full) {
+				       return YYDataUtils.getEnumName("StockSteamOperType", data);
+				},
+				orderable : true
+			},{
+				data : "actualAmount",
+				width : "60",
 				className : "center",
 				orderable : true
 			},{
 				data : "totalBefore",
-				width : "100",
+				width : "60",
 				className : "center",
 				render: function (data,type,row,meta) {
 					return data+"->"+row.totalAfter;
@@ -96,7 +111,7 @@
 				orderable : true
 			},{
 				data : "occupyBefore",
-				width : "100",
+				width : "60",
 				className : "center",
 				render: function (data,type,row,meta) {
 					return data+"->"+row.occupyAfter;
@@ -104,11 +119,26 @@
 				orderable : true
 			},{
 				data : "surplusBefore",
-				width : "100",
+				width : "60",
 				className : "center",
 				render: function (data,type,row,meta) {
 					return data+"->"+row.surplusAfter;
 		        },
+				orderable : true
+			},{
+				data : "warningTime",
+				width : "60",
+				className : "center",
+				orderable : true
+			},{
+				data : "surplusAmount",
+				width : "60",
+				className : "center",
+				orderable : true
+			},{
+				data : "warningType",
+				width : "60",
+				className : "center",
 				orderable : true
 			}];
 		

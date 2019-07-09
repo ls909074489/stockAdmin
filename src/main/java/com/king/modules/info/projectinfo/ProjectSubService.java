@@ -68,6 +68,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
   				sub.setModifier(user.getUuid());
   				sub.setModifiername(user.getUsername());
   				sub.setModifytime(new Date());
+  				sub.setActualAmount(sub.getPlanAmount());
   			}
   			save(subList);
   		}

@@ -60,6 +60,10 @@
 							<form id="yy-form-subquery">	
 								<input type="hidden" name="search_EQ_main.uuid" id="mainId" value="${entity.uuid}">	
 								&nbsp;&nbsp;	
+								<label for="search_EQ_boxNum" class="control-label">箱号</label>
+								<select class="yy-input-enumdata form-control" id="search_EQ_boxNum" name="search_EQ_boxNum"
+								 data-enum-group="BoxNum"></select>	
+								 
 								<label for="search_LIKE_material.code" class="control-label">物料编码</label>
 								<input type="text" autocomplete="on" name="search_LIKE_material.code" id="search_LIKE_material.code" class="form-control input-sm">
 								

@@ -14,6 +14,7 @@ import com.king.frame.dao.IBaseDAO;
 import com.king.frame.security.ShiroUser;
 import com.king.frame.service.BaseServiceImpl;
 import com.king.modules.info.material.MaterialEntity;
+import com.king.modules.info.stockstream.StockStreamEntity;
 import com.king.modules.sys.user.UserEntity;
 
 /**
@@ -74,9 +75,9 @@ public class OrderSubService extends BaseServiceImpl<OrderSubEntity, String> {
   				material.setUuid(sub.getMaterialId());
   				
   				if(sub.getWarningTime()!=null){
-  					sub.setWarningType("1");
+  					sub.setWarningType(StockStreamEntity.WARNINGTYPE_BE_NEED);
   				}else{
-  					sub.setWarningType("0");
+  					sub.setWarningType(StockStreamEntity.WARNINGTYPE_NO_NEED);
   				}
   				sub.setMaterial(material);
   				sub.setActualAmount(sub.getPlanAmount());

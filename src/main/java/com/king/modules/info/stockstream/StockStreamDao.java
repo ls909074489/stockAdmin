@@ -1,6 +1,10 @@
 package com.king.modules.info.stockstream;
 
 import com.king.frame.dao.IBaseDAO;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -10,5 +14,8 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface StockStreamDao extends IBaseDAO<StockStreamEntity,String> {
+
+	@Query("from StockStreamEntity where stock.uuid=? and material.uuid=? and surplusAmount>0 order by createtime")
+	List<StockStreamEntity> findsurplusByStockAndMaterial(String stockId, String materialId);
 
 }
