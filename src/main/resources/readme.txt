@@ -21,6 +21,12 @@ layer.js
 path="/stockAdmin/jlbcuploadfiles/qrcode/temp"/>
 
 
+
+
+
+#######################################################################################################
+ visible : false,
+
 #######################################################################################################
 		render : function(data, type, full) {
 		       return YYDataUtils.getEnumName("sys_sex", data);

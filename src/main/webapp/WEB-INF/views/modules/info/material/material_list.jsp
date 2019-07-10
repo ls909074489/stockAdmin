@@ -47,6 +47,10 @@
 					<input type="text" autocomplete="on" name="search_LIKE_code"
 						id="search_LIKE_code" class="form-control input-sm">
 						
+					<label for="search_LIKE_hwcode" class="control-label">华为物料编码</label>
+					<input type="text" autocomplete="on" name="search_LIKE_hwcode"
+						id="search_LIKE_hwcode" class="form-control input-sm">
+						
 					<label for="search_LIKE_name" class="control-label">物料名称</label>
 					<input type="text" autocomplete="on" name="search_LIKE_name"
 						id="search_LIKE_name" class="form-control input-sm">
@@ -69,6 +73,7 @@
 							</th>
 							<th>操作</th>
 							<th>物料编码</th>
+							<th>华为物料编码</th>
 							<th>名称</th>
 							<th>是否风险物料</th>
 							<th>物料单位</th>
@@ -110,13 +115,18 @@
 				className : "left",
 				orderable : true
 			},{
+				data : "hwcode",
+				width : "100",
+				className : "left",
+				orderable : true
+			},{
 				data : "name",
 				width : "100",
 				className : "left",
 				orderable : true
 			},{
 				data : "hasRisk",
-				width : "100",
+				width : "60",
 				className : "center",
 				render : function(data, type, full) {
 					return YYDataUtils.getEnumName("BooleanType", data);
@@ -124,7 +134,7 @@
 				orderable : true
 			},{
 				data : "unit",
-				width : "100",
+				width : "60",
 				className : "center",
 				render : function(data, type, full) {
 					return YYDataUtils.getEnumName("MaterialUnit", data);
@@ -132,7 +142,7 @@
 				orderable : true
 			},{
 				data : "classDesc",
-				width : "100",
+				width : "60",
 				className : "left",
 				orderable : true
 			}];

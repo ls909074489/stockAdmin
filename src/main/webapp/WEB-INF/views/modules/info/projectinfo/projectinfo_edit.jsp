@@ -142,7 +142,7 @@
 			orderable : true,
 			render : function(data, type, full) {
 				var str ='<div class="input-group materialRefDiv"> '+
-				 '<input class="form-control"  value="'+ data.code + '" reallyname="code" name="code" readonly="readonly"> '+
+				 '<input class="form-control materialCodeInputCls"  value="'+ data.code + '" reallyname="code" name="code" readonly="readonly"> '+
 				 '<input class="form-control"  value="'+ data.uuid + '" type="hidden" reallyname="materialId" name="materialId"> '+
 				 '<span class="input-group-btn"> '+
 				 '<button id="" class="btn btn-default btn-ref materialcode" type="button" data-select2-open="single-append-text"> '+
@@ -244,6 +244,7 @@
 		function callBackSelectMaterial(selNode){
 			$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='code']").val(selNode.code);
 			$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='materialId']").val(selNode.uuid);
+			ff
 		}
 		
 		//添加子表

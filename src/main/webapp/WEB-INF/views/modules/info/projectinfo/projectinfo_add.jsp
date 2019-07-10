@@ -70,6 +70,7 @@
 								<th>操作</th>	
 								<th>箱号</th>	
 								<th>物料</th>	
+								<th>限制数量</th>	
 								<th>计划数量</th>	
 								<th>备注</th>	
 							</tr>
@@ -87,6 +88,9 @@
 	
 	
 	<script type="text/javascript">
+		var enumMap = YYDataUtils.getEnumMap();
+		var enumdatas = enumMap['BoxNum'];
+		
 		var _subTableList;//子表
 		var _columnNum;
 		
@@ -111,7 +115,21 @@
 				if(data==null){
 					data="";
 				}
-				return creSelectStr('BoxNum','boxNum',data,false);
+				//return creSelectStr('BoxNum','boxNum',data,false);
+				var selectStr = '';
+				selectStr = selectStr +'<select class="yy-input-enumdata form-control" id="boxNum" reallyname="boxNum" name="boxNum" data-enum-group="BoxNum" onchange="changeBox(this);">';
+				if(enumdatas){
+					selectStr = selectStr + '<option value="">&nbsp;</option>';
+					for (i = 0; i < enumdatas.length; i++) {
+						if(enumdatas[i].enumdatakey == data){ 
+							selectStr = selectStr + "<option selected='selected' value='" + enumdatas[i].enumdatakey + "'>" + enumdatas[i].enumdataname + "</option>";
+						} else {
+							selectStr = selectStr + "<option value='" + enumdatas[i].enumdatakey + "'>" + enumdatas[i].enumdataname + "</option>";
+						}
+					}
+				}
+				selectStr = selectStr +'</select>';
+				return selectStr;
 			}
 		}, {
 			data : 'material',
@@ -120,7 +138,7 @@
 			orderable : true,
 			render : function(data, type, full) {
 				var str ='<div class="input-group materialRefDiv"> '+
-				 '<input class="form-control"  value="'+ data.code + '" reallyname="code" name="code" readonly="readonly"> '+
+				 '<input class="form-control materialCodeInputCls"  value="'+ data.code + '" reallyname="code" name="code" readonly="readonly"> '+
 				 '<input class="form-control"  value="'+ data.uuid + '" type="hidden" reallyname="materialId" name="materialId"> '+
 				 '<span class="input-group-btn"> '+
 				 '<button id="" class="btn btn-default btn-ref materialcode" type="button" data-select2-open="single-append-text"> '+
@@ -130,6 +148,12 @@
 				 '</div> ';
 				return str;
 			}
+		}, {
+			data : 'material.limitCount',
+			width : "80",
+			className : "center",
+			visible : false,
+			orderable : true
 		}, {
 			data : 'planAmount',
 			width : "80",
@@ -205,28 +229,81 @@
 			});
 		}
 		
+		//换箱
+		function changeBox(t){
+			console.info("select>>>>>>>>>>>>>>>"+$(t).val());
+			var row =$(t).closest("tr");
+			var materialData = _subTableList.row(row).data().material;
+			var tr_limitCount = materialData.limitCount;
+			if(tr_limitCount==1){
+				var trCode = materialData.code;
+				console.info("code ========="+trCode);
+				var sameCodeCount = 0;
+				$(".materialCodeInputCls").each(function(){
+					if(trCode==$(this).val()){
+						sameCodeCount++;
+					}
+					if(sameCodeCount>1){
+						YYUI.promMsg("物料 "+trCode+" 限制数量为1,请确认物料或选择其他箱号");
+						$(t).val("");
+						return false;
+					}
+				});
+			}
+		}
+		
+		function checkCanAdd(selNode){
+			var canAdd=true;
+			var sameCodeCount = 0;
+			$(".materialCodeInputCls").each(function(){
+				var trBoxNum = $(this).closest("tr").find("select[name='boxNum']").val();
+				console.info("trBoxNum>>>>>"+trBoxNum);
+				
+				if(selNode.code==$(this).val()){
+					console.info(selNode);
+					if(selNode.limitCount==1){
+						sameCodeCount++;
+						if(sameCodeCount>1){
+							YYUI.promMsg("物料 "+selNode.code+" 限制数量为1,请确认物料或选择其他箱号");
+							canAdd = false;
+							return false;
+						}
+					}
+				}
+			});
+			return canAdd;
+		}
+		
+		//回调修改物料
 		function callBackSelectMaterial(selNode){
-			$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='code']").val(selNode.code);
-			$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='materialId']").val(selNode.uuid);
+			var canAdd=checkCanAdd(selNode);
+			if(canAdd){
+				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='code']").val(selNode.code);
+				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='materialId']").val(selNode.uuid);
+			}
 		}
 		 
+		//回调添加物料
 		function callBackAddMaterial(selNode){
-			var subNewData = [ {
-				'uuid' : '',
-				'material' : {"uuid":selNode.uuid,"code":selNode.code,"name":selNode.name},
-				'planAmount':'',
-				'memo':''
-			} ];
-			var nRow = _subTableList.rows.add(subNewData).draw().nodes()[0];//添加行，并且获得第一行
-			_subTableList.on('order.dt search.dt',
-			        function() {
-				_subTableList.column(0, {
-					        search: 'applied',
-					        order: 'applied'
-				        }).nodes().each(function(cell, i) {
-					        cell.innerHTML = i + 1;
-				        });
-			}).draw();
+			var canAdd=checkCanAdd(selNode);//判断是否能添加
+			if(canAdd){
+				var subNewData = [ {
+					'uuid' : '',
+					'material' : {"uuid":selNode.uuid,"code":selNode.code,"name":selNode.name,"limitCount":selNode.limitCount},
+					'planAmount':'',
+					'memo':''
+				} ];
+				var nRow = _subTableList.rows.add(subNewData).draw().nodes()[0];//添加行，并且获得第一行
+				_subTableList.on('order.dt search.dt',
+				        function() {
+					_subTableList.column(0, {
+						        search: 'applied',
+						        order: 'applied'
+					        }).nodes().each(function(cell, i) {
+						        cell.innerHTML = i + 1;
+					        });
+				}).draw();
+			}
 		}
 		
 		//表单校验

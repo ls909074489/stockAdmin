@@ -29,6 +29,10 @@ public class MaterialEntity extends BaseEntity {
 	@MetaData(value = "物料编码")
 	@Column(length = 50)
 	private String code;
+	
+	@MetaData(value = "华为物料编码")
+	@Column(length = 50)
+	private String hwcode;
 
 	@MetaData(value = "名称")
 	@Column(length = 250)
@@ -50,6 +54,10 @@ public class MaterialEntity extends BaseEntity {
 	@MetaData(value = "单位")
 	@Column(length = 10)
 	private String unit;//单位
+	
+	@MetaData(value = "限制每箱数量")
+	@Column(length = 10)
+	private int limitCount=-1;//-1表示不限制
 	
 	public String getMemo() {
 		return memo;
@@ -97,6 +105,22 @@ public class MaterialEntity extends BaseEntity {
 
 	public void setUnit(String unit) {
 		this.unit = unit;
+	}
+
+	public int getLimitCount() {
+		return limitCount;
+	}
+
+	public void setLimitCount(int limitCount) {
+		this.limitCount = limitCount;
+	}
+
+	public String getHwcode() {
+		return hwcode;
+	}
+
+	public void setHwcode(String hwcode) {
+		this.hwcode = hwcode;
 	}
 	
 

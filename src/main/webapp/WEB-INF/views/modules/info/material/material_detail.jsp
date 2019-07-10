@@ -26,6 +26,14 @@
 					</div>
 					<div class="col-md-4">
 						<div class="form-group">
+							<label class="control-label col-md-4">华为物料编码</label>
+							<div class="col-md-8" >
+								<input name="hwcode" id="hwcode" type="text" value="${entity.hwcode}" class="form-control">
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="form-group">
 							<label class="control-label col-md-4" >物料名称</label>
 							<div class="col-md-8" >
 								<input name="name" id="name" type="text" value="${entity.name}" class="form-control">
@@ -47,6 +55,14 @@
 							<label class="control-label col-md-4" >物料单位</label>
 							<div class="col-md-8" >
 								<select name="unit" id="unit" data-enum-group="MaterialUnit" class="yy-input-enumdata form-control"></select>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+							<label class="control-label col-md-4" >限制数量</label>
+							<div class="col-md-8" >
+								<select name="limitCount" id="limitCount" data-enum-group="MaterialLimitCount" class="yy-input-enumdata form-control"></select>
 							</div>
 						</div>
 					</div>
@@ -94,6 +110,7 @@
 			} else if ('${openstate}' == 'detail') {
 				$("select[name='hasRisk']").val('${entity.hasRisk}');
 				$("select[name='unit']").val('${entity.unit}');
+				$("select[name='limitCount']").val('${entity.limitCount}');
 			}
 		}
 
