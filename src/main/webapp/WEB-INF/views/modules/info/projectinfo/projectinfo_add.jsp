@@ -70,7 +70,6 @@
 								<th>操作</th>	
 								<th>箱号</th>	
 								<th>物料</th>	
-								<th>限制数量</th>	
 								<th>计划数量</th>	
 								<th>备注</th>	
 							</tr>
@@ -140,6 +139,7 @@
 				var str ='<div class="input-group materialRefDiv"> '+
 				 '<input class="form-control materialCodeInputCls"  value="'+ data.code + '" reallyname="code" name="code" readonly="readonly"> '+
 				 '<input class="form-control"  value="'+ data.uuid + '" type="hidden" reallyname="materialId" name="materialId"> '+
+				 '<input class="form-control"  value="'+ data.limitCount + '" type="hidden" reallyname="limitCount" name="limitCount"> '+
 				 '<span class="input-group-btn"> '+
 				 '<button id="" class="btn btn-default btn-ref materialcode" type="button" data-select2-open="single-append-text"> '+
 				 '<span class="glyphicon glyphicon-search"></span> '+
@@ -148,12 +148,6 @@
 				 '</div> ';
 				return str;
 			}
-		}, {
-			data : 'material.limitCount',
-			width : "80",
-			className : "center",
-			visible : false,
-			orderable : true
 		}, {
 			data : 'planAmount',
 			width : "80",
@@ -216,6 +210,7 @@
 			
 			$('#yy-table-sublist').on('click','.materialcode',updateMaterialRef);//
 		});
+		
 		var t_refMaterialEle;
 		function updateMaterialRef(){
 			t_refMaterialEle = $(this);
@@ -235,75 +230,88 @@
 			var row =$(t).closest("tr");
 			var materialData = _subTableList.row(row).data().material;
 			var tr_limitCount = materialData.limitCount;
-			if(tr_limitCount==1){
-				var trCode = materialData.code;
-				console.info("code ========="+trCode);
-				var sameCodeCount = 0;
-				$(".materialCodeInputCls").each(function(){
-					if(trCode==$(this).val()){
-						sameCodeCount++;
-					}
-					if(sameCodeCount>1){
-						YYUI.promMsg("物料 "+trCode+" 限制数量为1,请确认物料或选择其他箱号");
-						$(t).val("");
-						return false;
-					}
-				});
+			var curBoxNum = $(t).val();//$(t).closest("tr").find("select[name='boxNum']").val();
+			console.info("changeBox>>>>11111>>"+curBoxNum);
+			if(curBoxNum==''){
+				return true;
+			}else{
+				if(tr_limitCount==1){
+					var trCode = materialData.code;
+					console.info("code ========="+trCode);
+					var sameCodeCount = 0;
+					$(".materialCodeInputCls").each(function(){
+						var trBoxNum = $(this).closest("tr").find("select[name='boxNum']").val();
+						if(trCode==$(this).val()&&trBoxNum==curBoxNum){
+							sameCodeCount++;
+							if(sameCodeCount>1){
+								YYUI.promMsg("物料 "+trCode+" 限制数量为1,请确认物料或选择其他箱号");
+								$(t).val("");
+								return false;
+							}
+						}
+					});
+				}
 			}
 		}
 		
-		function checkCanAdd(selNode){
-			var canAdd=true;
-			var sameCodeCount = 0;
-			$(".materialCodeInputCls").each(function(){
-				var trBoxNum = $(this).closest("tr").find("select[name='boxNum']").val();
-				console.info("trBoxNum>>>>>"+trBoxNum);
-				
-				if(selNode.code==$(this).val()){
-					console.info(selNode);
-					if(selNode.limitCount==1){
-						sameCodeCount++;
-						if(sameCodeCount>1){
-							YYUI.promMsg("物料 "+selNode.code+" 限制数量为1,请确认物料或选择其他箱号");
-							canAdd = false;
-							return false;
+		function checkCanAdd(selNode,curBoxNum){
+			console.info("curBoxNum>>>>>>>>>>"+curBoxNum);
+			if(curBoxNum==''){
+				return true;
+			}else{
+				var canAdd=true;
+				var sameCodeCount = 0;
+				if(selNode.limitCount==1){
+					$(".materialCodeInputCls").each(function(){
+						var trBoxNum = $(this).closest("tr").find("select[name='boxNum']").val();
+						console.info("trBoxNum>>>>>"+trBoxNum);
+						if(selNode.code==$(this).val()&&trBoxNum==curBoxNum){
+							console.info(selNode);
+							sameCodeCount++;
+							if(sameCodeCount>0){
+								YYUI.promMsg("物料 "+selNode.code+" 限制数量为1,请确认物料或选择其他箱号");
+								canAdd = false;
+								return false;
+							}
 						}
-					}
+					});
 				}
-			});
-			return canAdd;
+				return canAdd;
+			}
 		}
 		
 		//回调修改物料
 		function callBackSelectMaterial(selNode){
-			var canAdd=checkCanAdd(selNode);
+			var canAdd=checkCanAdd(selNode,$(t_refMaterialEle).closest("tr").find("select[name='boxNum']").val());
 			if(canAdd){
 				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='code']").val(selNode.code);
 				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='materialId']").val(selNode.uuid);
+				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='limitCount']").val(selNode.limitCount);
+			}else{
+				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='code']").val("");
+				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='materialId']").val("");
+				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='limitCount']").val("");
 			}
 		}
 		 
 		//回调添加物料
 		function callBackAddMaterial(selNode){
-			var canAdd=checkCanAdd(selNode);//判断是否能添加
-			if(canAdd){
-				var subNewData = [ {
-					'uuid' : '',
-					'material' : {"uuid":selNode.uuid,"code":selNode.code,"name":selNode.name,"limitCount":selNode.limitCount},
-					'planAmount':'',
-					'memo':''
-				} ];
-				var nRow = _subTableList.rows.add(subNewData).draw().nodes()[0];//添加行，并且获得第一行
-				_subTableList.on('order.dt search.dt',
-				        function() {
-					_subTableList.column(0, {
-						        search: 'applied',
-						        order: 'applied'
-					        }).nodes().each(function(cell, i) {
-						        cell.innerHTML = i + 1;
-					        });
-				}).draw();
-			}
+			var subNewData = [ {
+				'uuid' : '',
+				'material' : {"uuid":selNode.uuid,"code":selNode.code,"name":selNode.name,"limitCount":selNode.limitCount},
+				'planAmount':'',
+				'memo':''
+			} ];
+			var nRow = _subTableList.rows.add(subNewData).draw().nodes()[0];//添加行，并且获得第一行
+			_subTableList.on('order.dt search.dt',
+			        function() {
+				_subTableList.column(0, {
+					        search: 'applied',
+					        order: 'applied'
+				        }).nodes().each(function(cell, i) {
+					        cell.innerHTML = i + 1;
+				        });
+			}).draw();
 		}
 		
 		//表单校验
