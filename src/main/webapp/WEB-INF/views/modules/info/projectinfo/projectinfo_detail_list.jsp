@@ -39,33 +39,47 @@
 			</div>
 			<div class="row yy-searchbar form-inline">
 				<form id="yy-form-query">
-					<label for="search_LIKE_main.code" class="control-label">项目号</label>
+					<!-- <label for="search_LIKE_main.code" class="control-label">项目号&nbsp;&nbsp;&nbsp;&nbsp;</label>
 					<input type="text" autocomplete="on" name="search_LIKE_main.code"
 						id="search_LIKE_main.code" class="form-control input-sm">
 						
 					<label for="search_LIKE_main.name" class="control-label">项目名称</label>
 					<input type="text" autocomplete="on" name="search_LIKE_main.name"
-						id="search_LIKE_main.name" class="form-control input-sm">
+						id="search_LIKE_main.name" class="form-control input-sm"> -->
+					
+						<label class="control-label">项目</label>
+							<div class="input-group">
+								<input id="roleId" name="roleId" type="hidden"> 
+								<input id="roleName" name="roleName" type="text" class="form-control" readonly="readonly">
+								<span class="input-group-btn">
+									<button id="yy-role-select" class="btn btn-default btn-ref" type="button">
+										<span class="glyphicon glyphicon-search"></span>
+									</button>
+								</span>
+							</div>
 												
-					<label for="search_LIKE_main.name" class="control-label">箱号</label>
+					<label for="search_LIKE_main.name" class="control-label">箱号&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
 					<select class="yy-input-enumdata form-control" id="search_EQ_boxNum" name="search_EQ_boxNum"
 								 data-enum-group="BoxNum"></select>	
 								 
-					<label for="search_LIKE_material.code" class="control-label">物料编码</label>
-					<input type="text" autocomplete="on" name="search_LIKE_material.code" id="search_LIKE_material.code" class="form-control input-sm">
-					
-					<label for="search_LIKE_material.name" class="control-label">物料名称</label>
-					<input type="text" autocomplete="on" name="search_LIKE_material.name" id="search_LIKE_material.name" class="form-control input-sm">			 
-							
-					<label for="search_LIKE_barcode" class="control-label">条码</label>
-					<input type="text" autocomplete="on" name="search_LIKE_barcode" id="search_LIKE_barcode" class="form-control input-sm">		 
-
 					<button id="yy-btn-search" type="button" class="btn btn-sm btn-info">
 						<i class="fa fa-search"></i>查询
 					</button>
 					<button id="rap-searchbar-reset" type="reset" class="red">
 						<i class="fa fa-undo"></i> 清空
 					</button>
+					<div style="height: 5px;"></div>
+					
+					<label for="search_LIKE_material.code" class="control-label">物料编码</label>
+					<input type="text" autocomplete="on" name="search_LIKE_material.code" id="search_LIKE_material.code" class="form-control input-sm">
+					
+					<label for="search_LIKE_material.name" class="control-label">物料名称</label>
+					<input type="text" autocomplete="on" name="search_LIKE_material.name" id="search_LIKE_material.name" class="form-control input-sm">			 
+							
+					<label for="search_LIKE_barcode" class="control-label">条码&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+					<input type="text" autocomplete="on" name="search_LIKE_barcode" id="search_LIKE_barcode" class="form-control input-sm">		 
+
+					
 				</form>
 			</div>
 			<div class="row">
@@ -73,9 +87,9 @@
 					<thead>
 						<tr>
 							<th style="width: 30px;">序号</th>
-							<th class="table-checkbox">
+							<!-- <th class="table-checkbox">
 								<input type="checkbox" class="group-checkable" data-set="#yy-table-list .checkboxes"/>
-							</th>
+							</th> -->
 							<th>操作</th>
 							<th>单据状态</th>
 							<th>项目号</th>
@@ -85,7 +99,7 @@
 							<th>物料名称</th>
 							<th>计划数量</th>	
 							<th>条码</th>
-							<th>备注</th>
+							<!-- <th>备注</th> -->
 						</tr>
 					</thead>
 					<tbody></tbody>
@@ -104,14 +118,14 @@
 				data : null,
 				orderable : false,
 				className : "center",
-				width : "50"
-			},{				data : "uuid",
+				width : "30"
+			}/* ,{				data : "uuid",
 				orderable : false,
 				className : "center",
-				/* visible : false, */
+				//visible : false,
 				width : "20",
 				render : YYDataTableUtils.renderCheckCol
-			},{
+			} */,{
 				data : "uuid",
 				className : "center",
 				orderable : false,
@@ -137,7 +151,7 @@
 				orderable : false
 			}, {
 				data : 'boxNum',
-				width : "20",
+				width : "30",
 				className : "center",
 				orderable : false,
 				render : function(data, type, full) {
@@ -155,7 +169,7 @@
 				orderable : false
 			}, {
 				data : 'planAmount',
-				width : "80",
+				width : "60",
 				className : "center",
 				orderable : false
 			}, {
@@ -163,12 +177,12 @@
 				width : "80",
 				className : "center",
 				orderable : false
-			},{
+			}/* ,{
 				data : "memo",
 				width : "100",
 				className : "center",
 				orderable : false
-			}];
+			} */];
 
 
 		//var _setOrder = [[5,'desc']];
