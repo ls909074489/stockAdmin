@@ -97,7 +97,7 @@ public class StockStreamEntity extends BaseEntity {
 	
 	@MetaData(value = "计划数量")
 	@Column()
-	private Date WarningTime;
+	private Date warningTime;
 	
 	private String warningType="0";//0不需预警 1：要预警 2:以用完不需预警
 	
@@ -226,19 +226,16 @@ public class StockStreamEntity extends BaseEntity {
 
 	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+08:00")
 	public Date getWarningTime() {
-		return WarningTime;
+		return warningTime;
 	}
-
 
 	public void setWarningTime(Date warningTime) {
-		WarningTime = warningTime;
+		this.warningTime = warningTime;
 	}
-
 
 	public String getWarningType() {
 		return warningType;
 	}
-
 
 	public void setWarningType(String warningType) {
 		this.warningType = warningType;

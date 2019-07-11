@@ -59,12 +59,27 @@
 			</ul>
 			<div class="tab-content">
 				<div class="tab-pane active">
+					<form id="" class="form-horizontal">
+						<div class="row">
+							<div class="col-md-4"></div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<label class="control-label col-md-1" >条码号</label>
+									<div class="col-md-11" >
+										<input type="text" autocomplete="on" name="" id="" class="form-control input-sm">
+									</div>
+								</div>
+							</div>
+							<div class="col-md-4"></div>
+						</div>
+					</form>
 					<div class="row yy-toolbar">
-						<button id="addNewSub" class="btn blue btn-sm" type="button">
-							<i class="fa fa-plus"></i> 添加
-						</button>
 						<div role="form" class="form-inline" style="">
 							<form id="yy-form-subquery">	
+								<button id="addNewSub" class="btn blue btn-sm" type="button">
+									<i class="fa fa-plus"></i> 添加
+								</button>
+								&nbsp;&nbsp;&nbsp;&nbsp;
 								<input type="hidden" name="search_EQ_main.uuid" id="mainId" value="${entity.uuid}">	
 								&nbsp;&nbsp;
 								<label for="search_EQ_boxNum" class="control-label">箱号</label>
@@ -160,7 +175,12 @@
 			className : "center",
 			orderable : true,
 			render : function(data, type, full) {
+				var tUuid=full.uuid;
+				if (typeof(tUuid) == "undefined"){
+					tUuid="";
+				}
 				var str ='<div class="input-group materialRefDiv"> '+
+				 '<input type="hidden" name="uuid" value="'+tUuid+'">'+
 				 '<input class="form-control materialCodeInputCls"  value="'+ data.code + '" reallyname="code" name="code" readonly="readonly"> '+
 				 '<input class="form-control"  value="'+ data.uuid + '" type="hidden" reallyname="materialId" name="materialId"> '+
 				 '<input class="form-control"  value="'+ data.limitCount + '" type="hidden" reallyname="limitCount" name="limitCount"> '+
@@ -181,11 +201,11 @@
 				if(data==null){
 					data="";
 				}
-				var tUuid=full.uuid;
-				if (typeof(tUuid) == "undefined"){
-					tUuid="";
+				if(full.material.limitCount==1){
+					return '<input class="form-control" value="1" name="planAmount"  readonly="readonly">';
+				}else{
+					return '<input class="form-control" value="'+ data + '" name="planAmount">';
 				}
-				return '<input type="hidden" name="uuid" value="'+tUuid+'"><input class="form-control" value="'+ data + '" name="planAmount">';
 			}
 		}, {
 			data : 'memo',
@@ -257,7 +277,7 @@
 			    area: ['1000px', '95%'],
 			    shadeClose : false,
 				shade : 0.8,
-			    content: "${ctx}/sys/ref/refMaterial?callBackMethod=window.parent.callBackSelectMaterial"
+			    content: "${ctx}/sys/ref/refMaterial?callBackMethod=window.parent.callBackUpdateMaterial"
 			});
 		}
 		
@@ -320,7 +340,7 @@
 			}
 		}
 		
-		function callBackSelectMaterial(selNode){
+		function callBackUpdateMaterial(selNode){
 			var canAdd=checkCanAdd(selNode,$(t_refMaterialEle).closest("tr").find("select[name='boxNum']").val());
 			if(canAdd){
 				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='code']").val(selNode.code);

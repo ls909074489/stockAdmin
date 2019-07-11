@@ -157,7 +157,11 @@
 				if(data==null){
 					data="";
 				}
-				return '<input class="form-control" value="'+ data + '" name="planAmount">';
+				if(full.material.limitCount==1){
+					return '<input class="form-control" value="1" name="planAmount"  readonly="readonly">';
+				}else{
+					return '<input class="form-control" value="'+ data + '" name="planAmount">';
+				}
 			}
 		}, {
 			data : 'memo',
@@ -220,7 +224,7 @@
 			    area: ['1000px', '95%'],
 			    shadeClose : false,
 				shade : 0.8,
-			    content: "${ctx}/sys/ref/refMaterial?callBackMethod=window.parent.callBackSelectMaterial"
+			    content: "${ctx}/sys/ref/refMaterial?callBackMethod=window.parent.callBackUpdateMaterial"
 			});
 		}
 		
@@ -281,7 +285,7 @@
 		}
 		
 		//回调修改物料
-		function callBackSelectMaterial(selNode){
+		function callBackUpdateMaterial(selNode){
 			var canAdd=checkCanAdd(selNode,$(t_refMaterialEle).closest("tr").find("select[name='boxNum']").val());
 			if(canAdd){
 				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='code']").val(selNode.code);

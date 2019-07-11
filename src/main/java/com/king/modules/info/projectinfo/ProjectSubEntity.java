@@ -35,6 +35,8 @@ public class ProjectSubEntity extends BaseEntity {
 	@JoinColumn(name = "mainid")
 	private ProjectInfoEntity main;
 	
+	@Column(name = "mid",nullable=false,length=36)
+	private String mid;
 	
 	@MetaData(value = "物料")
 	@ManyToOne(cascade=CascadeType.REFRESH,optional = true)
@@ -56,6 +58,9 @@ public class ProjectSubEntity extends BaseEntity {
 	
 	@Column()
 	private Integer boxNum;
+	
+	@Column(name = "barcode",length=50)
+	private String barcode="";//条码
 	
 	@Transient
 	private String materialId;
@@ -116,7 +121,21 @@ public class ProjectSubEntity extends BaseEntity {
 	public void setBoxNum(Integer boxNum) {
 		this.boxNum = boxNum;
 	}
-	
-	
+
+	public String getMid() {
+		return mid;
+	}
+
+	public void setMid(String mid) {
+		this.mid = mid;
+	}
+
+	public String getBarcode() {
+		return barcode;
+	}
+
+	public void setBarcode(String barcode) {
+		this.barcode = barcode;
+	}
 
 }

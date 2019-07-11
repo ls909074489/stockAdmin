@@ -65,6 +65,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
   	  				sub.setCreatetime(new Date());
   				}
   				sub.setMain(savedEntity);
+  				sub.setMid(savedEntity.getUuid());
   				sub.setModifier(user.getUuid());
   				sub.setModifiername(user.getUsername());
   				sub.setModifytime(new Date());

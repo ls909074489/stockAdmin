@@ -20,14 +20,30 @@
 				<button id="yy-btn-refresh" class="btn blue btn-sm">
 					<i class="fa fa-refresh"></i> 刷新
 				</button>
+				<span id="importSpan">
+				<button class="btn green btn-sm btn-info" id="yy-btn-import" onclick="importfileClick();">
+					<i class="fa fa-chevron-down"></i> 导入
+				</button>
+				</span>
+				<button class="btn green btn-sm btn-info" id="yy-btn-templatedownload">
+					<i class="fa fa-chevron-down"></i> 导入模板下载
+				</button>
+				<button id="yy-btn-export-query" queryformId="yy-form-query" class="btn green btn-sm">
+					<i class="fa fa-chevron-up"></i> 导出
+				</button>
+			</div>
+			<div class="hide">
+				<form action="#" id="importfile">
+					<input type="file" id="multifile" multiple size="120" />
+				</form>
 			</div>
 			<div class="row yy-searchbar form-inline">
 				<form id="yy-form-query">
-					<label for="search_LIKE_name" class="control-label">仓库编码</label>
+					<label for="search_LIKE_name" class="control-label">供应商编码</label>
 					<input type="text" autocomplete="on" name="search_LIKE_code"
 						id="search_LIKE_code" class="form-control input-sm">
 						
-					<label for="search_LIKE_name" class="control-label">仓库名称</label>
+					<label for="search_LIKE_name" class="control-label">供应商名称</label>
 					<input type="text" autocomplete="on" name="search_LIKE_name"
 						id="search_LIKE_name" class="form-control input-sm">
 
@@ -48,6 +64,7 @@
 								<input type="checkbox" class="group-checkable" data-set="#yy-table-list .checkboxes"/>
 							</th>
 							<th>操作</th>
+							<th>供应商编码</th>
 							<th>名称</th>
 							<th>联系人</th>
 							<th>电话</th>
@@ -85,28 +102,33 @@
 							render : YYDataTableUtils.renderActionCol,
 							width : "40"
 						},{
+							data : "code",
+							width : "60",
+							className : "left",
+							orderable : true
+						},{
 							data : "name",
-							width : "30%",
+							width : "100",
 							className : "left",
 							orderable : true
 						},{
 							data : "contacts",
-							width : "10%",
+							width : "60",
 							className : "center",
 							orderable : true
 						},{
 							data : "phone",
-							width : "10%",
+							width : "60",
 							className : "center",
 							orderable : true
 						},{
 							data : "email",
-							width : "10%",
+							width : "60",
 							className : "center",
 							orderable : true
 						},{
 							data : "address",
-							width : "20%",
+							width : "100",
 							className : "left",
 							orderable : true
 						}];
@@ -117,7 +139,85 @@
 			_queryData = $("#yy-form-query").serializeArray();
 			bindListActions();
 			serverPage('${serviceurl}/query?orderby=createtime@desc');
+			
+			onImportExport();
 		});
+		
+		
+		function onImportExport(){
+			$("#importfile #multifile").bind('change', onImportData);
+			 
+			//模板下载
+			$("#yy-btn-templatedownload").bind('click',function(){
+				window.open('${ctx}${templatePath}',"_blank");
+			});
+			
+			$("#yy-btn-export-query").click(function(){
+				window.open('${serviceurl}/exportQuery?'+$("#yy-form-query").serialize(),"_blank"); 
+			});
+		}
+		
+		//点击选择文件按钮事件
+		function importfileClick(){
+			//点击选择文件按钮事件
+			$("#importfile #multifile").click();
+		}
+			
+
+		//导入数据
+		function onImportData() {
+			var file = this.form.multifile.value;
+			if (!file){
+				return;
+			}
+			var extArray = new Array(".xls", ".xlsx");
+			var allowSubmit = false;
+			while (file.indexOf("\\") != -1){
+				file = file.slice(file.indexOf("\\") + 1);
+			}
+			var ext = file.slice(file.indexOf(".")).toLowerCase();
+			for (var i = 0; i < extArray.length; i++) {
+				if (extArray[i] == ext) {
+					allowSubmit = true;
+					break;
+				}
+			}
+			if (allowSubmit){
+				var file = $("#importfile #multifile")[0].files[0];
+				var posturl = "${serviceurl}/import";
+				var formData = new FormData();
+				formData.append("attachment", file,file.name);
+				var importLoad = layer.msg('数据导入中，每100条数据大概需要50秒。', {icon:16,time: 500*1000});
+				$.ajax( {
+					url : posturl,
+					data: formData,
+		            cache: false,
+		            contentType: false,
+		            processData: false,
+		            type: 'POST',     
+					success : function(data) {
+						if(data.success){
+							layer.close(importLoad);
+							YYUI.succMsg("导入成功,重新加载页面。");
+							location.reload();
+						} else{
+							layer.close(importLoad);
+							YYUI.promAlert("导入错误：" + data.msg);
+							$("#importfile").html('<input type="file" id="multifile" multiple size="120" />');
+							$("#importfile #multifile").bind('change', onImportData);
+						}
+					},
+					"error" : function(XMLHttpRequest, textStatus, errorThrown) {
+						layer.close(importLoad);
+						YYUI.failMsg("导入失败。");
+						location.reload();
+					}
+				});
+			} else {
+				YYUI.promAlert("只能上传以下格式的文件:  " + (extArray.join("  "))
+							+ "\n请重新选择符合条件的文件" + "再上传.");
+			}
+		}
 	</script>
 </body>
 </html>	

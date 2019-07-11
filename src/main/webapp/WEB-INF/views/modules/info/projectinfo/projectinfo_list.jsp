@@ -32,7 +32,7 @@
 			</div>
 			<div class="row yy-searchbar form-inline">
 				<form id="yy-form-query">
-					<label for="search_LIKE_name" class="control-label">项目名称</label>
+					<label for="search_LIKE_name" class="control-label">项目号</label>
 					<input type="text" autocomplete="on" name="search_LIKE_code"
 						id="search_LIKE_code" class="form-control input-sm">
 						

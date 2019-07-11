@@ -1,9 +1,18 @@
 package com.king.modules.info.projectinfo;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import java.util.HashMap;
+import java.util.Map;
 
+import javax.servlet.ServletRequest;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.BaseController;
+import com.king.frame.controller.QueryRequest;
 
 /**
  * 
@@ -16,4 +25,20 @@ import com.king.frame.controller.BaseController;
 public class ProjectSubController extends BaseController<ProjectSubEntity> {
 
 
+	@RequestMapping("/detailList")
+	public String detailList(Model model) {
+		return "modules/info/projectinfo/projectinfo_detail_list";
+	}
+	
+	
+	@RequestMapping(value = "/dataDetail")
+	@ResponseBody
+	public ActionResultModel<ProjectSubEntity> dataWarning(ServletRequest request) {
+		Map<String, Object> addParam = new HashMap<String, Object>();
+		addParam.put("EQ_stock.uuid", request.getParameter("stockId"));
+		addParam.put("EQ_material.uuid", request.getParameter("materialId"));
+		QueryRequest<ProjectSubEntity> qr = getQueryRequest(request, addParam);
+		return execQuery(qr, baseService);
+	}
+	
 }

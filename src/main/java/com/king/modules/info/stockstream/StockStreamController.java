@@ -11,10 +11,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.king.common.utils.DateUtil;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.BaseController;
 import com.king.frame.controller.QueryRequest;
-import com.king.modules.info.stockdetail.StockDetailEntity;
 
 /**
  * 测试111
@@ -42,6 +42,31 @@ public class StockStreamController extends BaseController<StockStreamEntity> {
 		Map<String, Object> addParam = new HashMap<String, Object>();
 		addParam.put("EQ_stock.uuid", request.getParameter("stockId"));
 		addParam.put("EQ_material.uuid", request.getParameter("materialId"));
+		QueryRequest<StockStreamEntity> qr = getQueryRequest(request, addParam);
+		return execQuery(qr, baseService);
+	}
+	
+	
+	/**
+	 * 预警列表
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/warningList")
+	public String warningList(Model model) {
+		return "modules/info/stockstream/stockstream_warning_list";
+	}
+	
+	
+	@RequestMapping(value = "/dataWarning")
+	@ResponseBody
+	public ActionResultModel<StockStreamEntity> dataWarning(ServletRequest request) {
+		Map<String, Object> addParam = new HashMap<String, Object>();
+		addParam.put("EQ_stock.uuid", request.getParameter("stockId"));
+		addParam.put("EQ_material.uuid", request.getParameter("materialId"));
+		addParam.put("EQ_operType", StockStreamEntity.IN_STOCK);//增加库存
+		addParam.put("EQ_warningType", StockStreamEntity.WARNINGTYPE_BE_NEED);//要预警 
+		addParam.put("LTE_warningTime", DateUtil.getDateTime());//要预警 
 		QueryRequest<StockStreamEntity> qr = getQueryRequest(request, addParam);
 		return execQuery(qr, baseService);
 	}
