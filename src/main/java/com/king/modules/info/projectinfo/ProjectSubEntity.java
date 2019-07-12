@@ -65,6 +65,8 @@ public class ProjectSubEntity extends BaseEntity {
 	@Transient
 	private String materialId;
 
+	@Transient
+	private String newBarcode="";
 	
 	public ProjectInfoEntity getMain() {
 		return main;
@@ -136,6 +138,14 @@ public class ProjectSubEntity extends BaseEntity {
 
 	public void setBarcode(String barcode) {
 		this.barcode = barcode;
+	}
+
+	public String getNewBarcode() {
+		return newBarcode;
+	}
+
+	public void setNewBarcode(String newBarcode) {
+		this.newBarcode = newBarcode;
 	}
 
 }

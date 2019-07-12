@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.servlet.ServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +25,8 @@ import com.king.frame.controller.QueryRequest;
 @RequestMapping(value = "/info/projectinfoSub")
 public class ProjectSubController extends BaseController<ProjectSubEntity> {
 
+	@Autowired
+	private ProjectSubService projectSubService;
 
 	@RequestMapping("/detailList")
 	public String detailList(Model model) {
@@ -39,6 +42,13 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		addParam.put("EQ_material.uuid", request.getParameter("materialId"));
 		QueryRequest<ProjectSubEntity> qr = getQueryRequest(request, addParam);
 		return execQuery(qr, baseService);
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping(value = "/updateBarcode")
+	public ActionResultModel<ProjectSubEntity> updateBarcode(ServletRequest request,String subId,String newBarcode) {
+		return projectSubService.updateBarcode(newBarcode,subId);
 	}
 	
 }

@@ -1,3 +1,10 @@
+JAVA_HOME
+C:\Java\jdk1.8.0_181
+CLASSPATH
+%JAVA_HOME%\lib;%MAVEN_HOME%\bin;
+
+
+
 table 样式
 yy_table.css
 table.dataTable tbody tr

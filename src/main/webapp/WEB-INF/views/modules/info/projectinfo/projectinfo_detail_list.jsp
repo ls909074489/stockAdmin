@@ -5,7 +5,7 @@
 <c:set var="serviceurl" value="${ctx}/info/projectinfoSub"/>
 <html>
 <head>
-<title>项目</title>
+<title>项目明细</title>
 <style type="text/css">
 #yy-table-list{
 	width: 100% !important;
@@ -74,14 +74,6 @@
 					<select class="yy-input-enumdata form-control" id="search_EQ_boxNum" name="search_EQ_boxNum"
 								 data-enum-group="BoxNum"></select>	
 								 
-					<button id="yy-btn-search" type="button" class="btn btn-sm btn-info">
-						<i class="fa fa-search"></i>查询
-					</button>
-					<button id="rap-searchbar-reset" type="reset" class="red">
-						<i class="fa fa-undo"></i> 清空
-					</button>
-					<div style="height: 5px;"></div>
-					
 					<label for="search_LIKE_material.code" class="control-label">物料编码</label>
 					<input type="text" autocomplete="on" name="search_LIKE_material.code" id="search_LIKE_material.code" class="form-control input-sm">
 					
@@ -91,7 +83,12 @@
 					<label for="search_LIKE_barcode" class="control-label">条码&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
 					<input type="text" autocomplete="on" name="search_LIKE_barcode" id="search_LIKE_barcode" class="form-control input-sm">		 
 
-					
+					<button id="yy-btn-search" type="button" class="btn btn-sm btn-info">
+						<i class="fa fa-search"></i>查询
+					</button>
+					<button id="rap-searchbar-reset" type="reset" class="red">
+						<i class="fa fa-undo"></i> 清空
+					</button>
 				</form>
 			</div>
 			<div class="row">
@@ -143,8 +140,12 @@
 				data : "uuid",
 				className : "center",
 				orderable : false,
-				render : YYDataTableUtils.renderActionCol,
-				width : "60"
+				render : function(data, type, full) {
+					return "<div class='yy-btn-actiongroup'>"
+					+ "<button  onclick='saveNewBarcode(this);' rowUuid='"+full.uuid+"'class='btn btn-xs btn-info' data-rel='tooltip' title='保存'><i class='fa yy-btn-save'></i>保存</button>"
+					+ "</div>";
+				},
+				width : "30"
 			}, {
 				data : 'newBarcode',
 				width : "80",
@@ -337,6 +338,29 @@
 		function callBackSelectProject(selNode){
 			$("#search_LIKE_mainId").val(selNode.uuid);
 			$("#search_LIKE_mainName").val(selNode.name);
+		}
+		
+		function saveNewBarcode(t){
+			var newBarcodeVal = $(t).closest("tr").find("input[name='newBarcode']").val();
+			console.info($(t).attr("rowUuid"));
+			$.ajax({
+				type : "POST",
+				data :{"newBarcode": newBarcodeVal,"subId":$(t).attr("rowUuid")},
+				url : "${serviceurl}/updateBarcode",
+				async : true,
+				dataType : "json",
+				success : function(data) {
+					if(data.success){
+						YYUI.succMsg(data.msg);
+						onQuery();
+					}else{
+						YYUI.promMsg(data.msg);
+					}
+				},
+				error : function(data) {
+					YYUI.promMsg("操作失败，请联系管理员");
+				}
+			});
 		}
 	</script>
 </body>

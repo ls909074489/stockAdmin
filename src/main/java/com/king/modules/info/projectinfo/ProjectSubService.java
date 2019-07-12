@@ -89,6 +89,23 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 		return dao.findByMain(mainId);
 	}
 
+	
+	/**
+	 * 更新条形码
+	 * @param newBarcode
+	 * @param subId
+	 * @return
+	 */
+	@Transactional
+	public ActionResultModel<ProjectSubEntity> updateBarcode(String newBarcode, String subId) {
+		ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity>();
+		ProjectSubEntity sub = getOne(subId);
+		sub.setBarcode(newBarcode);
+		arm.setSuccess(true);
+		arm.setMsg("操作成功");
+		return arm;
+	}
+
 
 
 	
