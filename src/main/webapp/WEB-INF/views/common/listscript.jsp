@@ -1057,4 +1057,11 @@
 		//iframe的url
 		});
 	}
+	
+	
+	//清除参照输入框的值
+	function cleanDef(defId,defName){
+		$("#"+defId).val("");
+		$("#"+defName).val("");
+	}
 </script>

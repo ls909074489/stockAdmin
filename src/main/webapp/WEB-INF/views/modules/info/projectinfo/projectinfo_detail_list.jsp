@@ -6,6 +6,17 @@
 <html>
 <head>
 <title>项目</title>
+<style type="text/css">
+#yy-table-list{
+	width: 100% !important;
+}
+//如果遇到设有横向滚动条时，就固定设置Table宽度
+
+#yy-table-listxxxxx{
+	width: ***px !important;
+}
+
+</style>
 </head>
 <body>
 	<div id="yy-page" class="container-fluid page-container">
@@ -48,11 +59,12 @@
 						id="search_LIKE_main.name" class="form-control input-sm"> -->
 					
 						<label class="control-label">项目</label>
-							<div class="input-group">
-								<input id="roleId" name="roleId" type="hidden"> 
-								<input id="roleName" name="roleName" type="text" class="form-control" readonly="readonly">
+							<div class="input-group input-icon right">
+								<input id="search_LIKE_mainId" name="search_LIKE_main.uuid" type="hidden"> 
+								<i class="fa fa-remove" onclick="cleanDef('search_LIKE_mainId','search_LIKE_mainName');" title="清空"></i>
+								<input id="search_LIKE_mainName" name="search_LIKE_main.name" type="text" class="form-control" readonly="readonly">
 								<span class="input-group-btn">
-									<button id="yy-role-select" class="btn btn-default btn-ref" type="button">
+									<button id="yy-project-select" class="btn btn-default btn-ref" type="button">
 										<span class="glyphicon glyphicon-search"></span>
 									</button>
 								</span>
@@ -91,6 +103,8 @@
 								<input type="checkbox" class="group-checkable" data-set="#yy-table-list .checkboxes"/>
 							</th> -->
 							<th>操作</th>
+							<th>新条码</th>
+							<th>条码</th>
 							<th>单据状态</th>
 							<th>项目号</th>
 							<th>项目名称</th>
@@ -98,7 +112,6 @@
 							<th>物料编码</th>
 							<th>物料名称</th>
 							<th>计划数量</th>	
-							<th>条码</th>
 							<!-- <th>备注</th> -->
 						</tr>
 					</thead>
@@ -114,6 +127,7 @@
 
 	<script type="text/javascript">
 		_isNumber = true;
+		var _ismatchSearch=false;//是否条码匹配的
 		var _tableCols = [{
 				data : null,
 				orderable : false,
@@ -131,6 +145,22 @@
 				orderable : false,
 				render : YYDataTableUtils.renderActionCol,
 				width : "60"
+			}, {
+				data : 'newBarcode',
+				width : "80",
+				className : "center",
+				orderable : true,
+				render : function(data, type, full) {
+					if(data==null){
+						data="";
+					}
+					return '<input class="form-control" value="'+ data + '" name="newBarcode">';
+				}
+			}, {
+				data : 'barcode',
+				width : "80",
+				className : "center",
+				orderable : false
 			},{
 				data : "main.billstatus",
 				width : "60",
@@ -141,12 +171,12 @@
 				orderable : false
 			},{
 				data : "main.code",
-				width : "100",
+				width : "80",
 				className : "center",
 				orderable : false
 			},{
 				data : "main.name",
-				width : "200",
+				width : "100",
 				className : "center",
 				orderable : false
 			}, {
@@ -164,17 +194,12 @@
 				orderable : false
 			},{
 				data : "material.name",
-				width : "200",
+				width : "100",
 				className : "center",
 				orderable : false
 			}, {
 				data : 'planAmount',
-				width : "60",
-				className : "center",
-				orderable : false
-			}, {
-				data : 'barcode',
-				width : "80",
+				width : "30",
 				className : "center",
 				orderable : false
 			}/* ,{
@@ -192,18 +217,126 @@
 			serverPage('${serviceurl}/dataDetail?orderby=createtime@desc;mid@desc');
 			
 			$("#yy-btn-match").bind('click', matchMaterial);//
+			
+			//选择角色
+			$('#yy-project-select').on('click', function() {
+				layer.open({
+					type : 2,
+					title : '请选择项目',
+					shadeClose : false,
+					shade : 0.8,
+					area : [ '90%', '90%' ],
+					content : '${ctx}/sys/ref/refProjectInfo?callBackMethod=window.parent.callBackSelectProject'//iframe的url
+				});
+			});
 		});
+		
+		
+		//服务器分页
+		function serverPage(url) {
+			var serverPageWaitLoad=layer.load(2);//加载等待ceng edit by liusheng		
+			doBeforeServerPage();
+			if (url == null) {
+				url = '${serviceurl}/query';
+			}
+			_tableList = $('#yy-table-list').DataTable({
+				"columns" : _tableCols,
+				"createdRow" : YYDataTableUtils.setActions,
+				"order" : _setOrder,
+				"scrollX" : true,
+				"processing" : false,
+				"searching" : false,
+				"serverSide" : true,
+				"showRowNumber" : true,
+				"pagingType" : "bootstrap_full_number",
+				//"pageLength" : 15,
+				"paging" : true,
+				//"fixedHeader": true,//表头
+				"footerCallback" : setTotal,//合计
+				"fnDrawCallback" : fnDrawCallback,//列对齐设置
+				"ajax" : {
+					"url" : url,
+					"type" : 'POST',
+					"sync":'false',
+					"data" : function(d) {
+						freshLoad = layer.load(2);
+						d.orderby = getOrderbyParam(d);
+						if (_queryData == null)
+							return;
+						$.each(_queryData, function(index) {
+							if (this['value'] == null || this['value'] == "")
+								return;
+							d[this['name']] = this['value'];
+						});
+					},
+					"dataSrc" : function(json) {
+						if(freshLoad != null) {
+							layer.close(freshLoad);
+						}
+						_pageNumber = json.pageNumber;
+						console.info(_ismatchSearch+"============dataSrc>>>>>>>>>>fffffffffffff>>>>");
+						console.info(json);
+						if(_ismatchSearch){
+							console.info("_ismatchSearch>>>>>>>>>>>>>>"+_ismatchSearch);
+							var totalRecord = json.recordsTotal;
+							if(totalRecord>0){
+								YYUI.succMsg('匹配'+totalRecord+'条记录');
+								if(totalRecord==1){
+									json.records[0].newBarcode=$("#sweepCode").val();
+								}
+							}
+						}
+						console.info(json.records);
+						return json.records == null ? [] : json.records;
+					}
+				},
+				"initComplete": function(settings, json) {
+					console.info("initComplete>>>>>>>>>>>>>>");
+					if(freshLoad != null) {
+						layer.close(freshLoad);
+					}
+					layer.close(serverPageWaitLoad);//关闭加载等待ceng edit by liusheng
+				}
+			});
+		}
+		
 		
 		//匹配物料
 		function matchMaterial(){
-			console.info("matchMaterial>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+			console.info("matchMaterial>>>>>>>>>>>>>>>>>>>>1111>>>>>>>>>>>>>>>>>>>>>");
+			var t_projectId = $("#search_LIKE_mainId").val();
+			if(t_projectId==''){
+				YYUI.promMsg("请选择项目");
+				return false;
+			}
 			var t_boxNum = $("#search_EQ_boxNum").val();
-			console.info(t_boxNum+"============");
 			if(t_boxNum==''){
 				YYUI.promMsg("请选择箱号");
 				return false;
 			}
-			onQuery();
+			
+			_ismatchSearch=true;//设置为扫描条形码查询
+			
+			var t_sweepCode = $("#sweepCode").val();
+			if(t_sweepCode!=null){
+				
+			}
+			//获取查询数据，在表格刷新的时候自动提交到后台
+			_queryData = $("#yy-form-query").serializeArray();
+			onRefresh();
+		}
+		
+		
+		function doBeforeQuery() {
+			_ismatchSearch=false;
+			return true;
+		}
+		
+		
+		//回调选择项目
+		function callBackSelectProject(selNode){
+			$("#search_LIKE_mainId").val(selNode.uuid);
+			$("#search_LIKE_mainName").val(selNode.name);
 		}
 	</script>
 </body>

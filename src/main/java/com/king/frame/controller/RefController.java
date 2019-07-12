@@ -120,4 +120,11 @@ public class RefController {
 		model.addAttribute("callBackMethod",callBackMethod);
 		return "modules/ref/material_ref_select";
 	}
+	
+	
+	@RequestMapping("/refProjectInfo")
+	public String refProjectInfo(Model model, String callBackMethod,ServletRequest request) {
+		model.addAttribute("callBackMethod",callBackMethod);
+		return "modules/ref/projectinfo_ref_select";
+	}
 }
