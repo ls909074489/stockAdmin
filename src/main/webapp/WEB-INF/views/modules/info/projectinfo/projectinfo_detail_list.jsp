@@ -74,8 +74,8 @@
 					<select class="yy-input-enumdata form-control" id="search_EQ_boxNum" name="search_EQ_boxNum"
 								 data-enum-group="BoxNum"></select>	
 								 
-					<label for="search_LIKE_material.code" class="control-label">物料编码</label>
-					<input type="text" autocomplete="on" name="search_LIKE_material.code" id="search_LIKE_material.code" class="form-control input-sm">
+					<label for="search_LIKE_materialCode" class="control-label">物料编码</label>
+					<input type="text" autocomplete="on" name="search_LIKE_material.code" id="search_LIKE_materialCode" class="form-control input-sm">
 					
 					<label for="search_LIKE_material.name" class="control-label">物料名称</label>
 					<input type="text" autocomplete="on" name="search_LIKE_material.name" id="search_LIKE_material.name" class="form-control input-sm">			 
@@ -125,6 +125,7 @@
 	<script type="text/javascript">
 		_isNumber = true;
 		var _ismatchSearch=false;//是否条码匹配的
+		var jsonResp = jQuery.parseJSON('${subList}');
 		var _tableCols = [{
 				data : null,
 				orderable : false,
@@ -230,6 +231,7 @@
 					content : '${ctx}/sys/ref/refProjectInfo?callBackMethod=window.parent.callBackSelectProject'//iframe的url
 				});
 			});
+			
 		});
 		
 		
@@ -275,10 +277,7 @@
 							layer.close(freshLoad);
 						}
 						_pageNumber = json.pageNumber;
-						console.info(_ismatchSearch+"============dataSrc>>>>>>>>>>fffffffffffff>>>>");
-						console.info(json);
 						if(_ismatchSearch){
-							console.info("_ismatchSearch>>>>>>>>>>>>>>"+_ismatchSearch);
 							var totalRecord = json.recordsTotal;
 							if(totalRecord>0){
 								YYUI.succMsg('匹配'+totalRecord+'条记录');
@@ -287,7 +286,6 @@
 								}
 							}
 						}
-						console.info(json.records);
 						return json.records == null ? [] : json.records;
 					}
 				},
@@ -304,9 +302,8 @@
 		
 		//匹配物料
 		function matchMaterial(){
-			console.info("matchMaterial>>>>>>>>>>>>>>>>>>>>1111>>>>>>>>>>>>>>>>>>>>>");
 			var t_projectId = $("#search_LIKE_mainId").val();
-			if(t_projectId==''){
+			/* if(t_projectId==''){
 				YYUI.promMsg("请选择项目");
 				return false;
 			}
@@ -314,13 +311,26 @@
 			if(t_boxNum==''){
 				YYUI.promMsg("请选择箱号");
 				return false;
-			}
+			} */
 			
 			_ismatchSearch=true;//设置为扫描条形码查询
 			
+			var searchCode = "";
 			var t_sweepCode = $("#sweepCode").val();
-			if(t_sweepCode!=null){
-				
+			if(t_sweepCode!=null&&t_sweepCode!=''){
+				if(jsonResp!=null&&jsonResp.length>0){
+					for (i = 0; i < jsonResp.length; i++) {
+						var t_pre = jsonResp[i].enumdatakey;
+						var materialLength = parseInt(jsonResp[i].showorder);
+						console.info(t_pre+"======"+t_sweepCode.indexOf(t_pre)+">>>"+(t_pre.length+materialLength));
+						if(t_sweepCode.indexOf(t_pre)==0){
+							searchCode = t_sweepCode.substring(t_pre.length,t_pre.length+materialLength);
+							console.info("searchCode>>>>>>>>>"+searchCode);
+							$("#search_LIKE_materialCode").val(searchCode);
+							break;
+						}
+					}
+				}
 			}
 			//获取查询数据，在表格刷新的时候自动提交到后台
 			_queryData = $("#yy-form-query").serializeArray();

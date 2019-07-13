@@ -1,6 +1,7 @@
 package com.king.modules.info.projectinfo;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletRequest;
@@ -11,9 +12,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.king.common.utils.Json;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.BaseController;
 import com.king.frame.controller.QueryRequest;
+import com.king.modules.sys.enumdata.EnumDataSubEntity;
+import com.king.modules.sys.enumdata.EnumDataUtils;
 
 /**
  * 
@@ -30,6 +34,8 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 
 	@RequestMapping("/detailList")
 	public String detailList(Model model) {
+		List<EnumDataSubEntity> subList = EnumDataUtils.getEnumSubList("barCodeExtract");
+		model.addAttribute("subList", Json.toJson(subList));
 		return "modules/info/projectinfo/projectinfo_detail_list";
 	}
 	

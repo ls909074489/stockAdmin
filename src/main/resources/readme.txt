@@ -2,8 +2,18 @@ JAVA_HOME
 C:\Java\jdk1.8.0_181
 CLASSPATH
 %JAVA_HOME%\lib;%MAVEN_HOME%\bin;
+Path
+%JAVA_HOME%\bin;
 
+*****************启动tomcat 一闪而过************************************************
+1：在已解压的tomcat的bin文件夹下找到startup.bat，右击->编辑。在文件头加入下面两行：
+SET JAVA_HOME=D:\Java\jdk1.7 （java jdk目录）
+SET TOMCAT_HOME=E:\tomcat-7.0 （解压后的tomcat文件目录）
 
+2.在已解压的tomcat的bin文件夹下找到shutdown.bat，右击->编辑。在文件头加入下面两行：
+SET JAVA_HOME=D:\Java\jdk1.7 （java jdk目录）
+SET TOMCAT_HOME=E:\tomcat-7.0 （解压后的tomcat文件目录）
+*****************启动tomcat 一闪而过************************************************
 
 table 样式
 yy_table.css

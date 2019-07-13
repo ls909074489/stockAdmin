@@ -11,15 +11,15 @@
 	<meta name="Keywords" content="YY2.0" />
 	<meta name="Description" content="库存管理系统" />
 	<meta name="author" content="KingLiu" />
-	<title></title>
+	<title>库存管理系统</title>
 	
-	<link href="${ctx}/assets/metronic/v4.5/global/plugins/font-awesome/css/font-awesome.minffffff.css" rel="stylesheet" type="text/css" />
-	<link href="${ctx}/assets/metronic/v4.5/global/plugins/bootstrap/css/bootstrap.minfffffff.css?v=20171101" rel="stylesheet" type="text/css" />
+	<link href="${ctx}/assets/metronic/v4.5/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+	<link href="${ctx}/assets/metronic/v4.5/global/plugins/bootstrap/css/bootstrap.min.css?v=20171101" rel="stylesheet" type="text/css" />
 	<!-- END GLOBAL MANDATORY STYLES -->
 
 	<!-- BEGIN THEME GLOBAL STYLES -->
-	<link href="${ctx}/assets/metronic/v4.5/global/css/componentsffffff.min.css" rel="stylesheet" id="style_components" type="text/css" />
-	<link href="${ctx}/assets/metronic/v4.5/global/css/pluginsfffffffff.min.css" rel="stylesheet" type="text/css" />
+	<link href="${ctx}/assets/metronic/v4.5/global/css/components.min.css" rel="stylesheet" id="style_components" type="text/css" />
+	<link href="${ctx}/assets/metronic/v4.5/global/css/plugins.min.css" rel="stylesheet" type="text/css" />
 	<!-- END THEME GLOBAL STYLES -->
 	
 	<!-- BEGIN slider CSS -->
@@ -27,7 +27,7 @@
 	<!-- end slider CSS -->
 	
 	<!-- BEGIN PAGE LEVEL STYLES -->
-	<link href="${ctx}/assets/yy/login/yy-loginfffffffff.css?v=20171124" rel="stylesheet" type="text/css" />
+	<link href="${ctx}/assets/yy/login/yy-login.css?v=20171124" rel="stylesheet" type="text/css" />
 	<!-- END PAGE LEVEL STYLES -->
 	
 	<style type="text/css">
@@ -48,30 +48,59 @@
 </head>
 <!-- END HEAD -->
 
-<body class="login" oncontextmenu="return false" style="">
+<body class="login" oncontextmenu="return false" style="background-image: url(${ctx}/assets/yy/login/timg.jpg)">
+	<!-- BEGIN LOGO -->
+	<div class="header clearfix" id="header" style="margin-top: 14px;">
+		<!-- <h2 id="logo">YS云服务系统研发平台（3.0）</h2> -->
+		<p class="topLink" id="loginLink">
+			<a
+				href="http://rj.baidu.com/soft/detail/14744.html?ald"
+				target="_blank">推荐浏览器下载</a> | <a href="#" target="_blank">帮助中心</a> | <a
+				id="addFavorite" href="javascript:addFavorite();"
+				style="margin-right: 18px;">加入收藏夹</a>
+		</p>
+	</div>
+	<!-- END LOGO -->
 	<!-- BEGIN LOGIN -->
 	<div class="main" id="main">
+		<div class="leftcontent">
+			<h1 id="title">库存管理系统</h1>
+			<ul>
+				<li>库存数据管理</li>
+				<li>数据分析</li>
+				<li>了解更多&gt;&gt;</li>
+			</ul>
+		</div>
 		<div class="content">
 			<!-- BEGIN LOGIN FORM -->
-			<form class="login-form" id="login-form" name="login-form" th:action="@{/login}" method="post">
+			<form class="login-form" name="login-form" th:action="@{/login}" method="post">
 				<h3 class="form-title font-green">账户密码登录</h3>
+				
+				<div class="alert alert-danger display-hide">
+					<button class="close" data-close="alert"></button>
+					<span id="login-msg">请完成滑动验证，输入账号和密码</span>
+				</div>
 				
 				<div class="form-group">
 					<div class="input-icon input-icon-lg">
 						<i class="fa fa-user font-blue"></i>
 						<input class="form-control placeholder-no-fix" type="text" placeholder="用户名" 
-							id="username" name="username" value="1"/>
+							id="username" name="username" value=""/>
 					</div>
 				</div>
 				<div class="form-group">
 					<div class="input-icon input-icon-lg">
 						<i class="fa fa-unlock-alt font-blue"></i>
 						<input class="form-control placeholder-no-fix" 
-							type="password" placeholder="密码" id="password" name="password"  value="1"/>
+							type="password" placeholder="密码" id="password" name="password"  value=""/>
 					</div>
 				</div>
+				<input type="hidden" id="validatecode" name="validatecode" />
+				<div class="loginvalidate">
+					<div id="slider"></div>
+				</div>
 				<div class="form-actions">
-					<button type="submit" id="" class="btn btn-primary btn-lg uppercase">登 录</button>
+					<button type="submit" id="yy-login" class="btn btn-primary btn-lg uppercase">登 录</button>
 					<!-- <a href="javascript:;" id="forget-password" class="forget-password">忘记密码？</a> -->
 					
 					<div style="display:inline;float:right;font-size:14px;">
@@ -92,7 +121,25 @@
 				 -->
 			</form>
 			<!-- END LOGIN FORM -->
+			<!-- BEGIN FORGOT PASSWORD FORM -->
+			<form class="forget-form" action="index.html" method="post">
+				<h3 class="font-blue">找回密码</h3>
+				<p>输入您的手机号码重新设置您的密码。</p>
+				<div class="form-group">
+					<input class="form-control placeholder-no-fix" type="text"
+						autocomplete="off" placeholder="Email" name="email" />
+				</div>
+				<div class="form-actions">
+					<button type="button" id="back-btn" class="btn blue btn-outline">返回</button>
+					<button type="submit" class="btn btn-primary uppercase pull-right">提交</button>
+				</div>
+			</form>
+			<!-- END FORGOT PASSWORD FORM -->
 		</div>
+	</div>
+	<div class="footer">
+		Copyright © 2019-2020 <a href=""> King Liu</a> All Righ Reserved <br>
+		<span>推荐使用谷歌（Chrome）浏览器访问系统，或者支持HTML5的浏览器。建议使用1600*900 及以上分辨率</span>
 	</div>
 	
 	
@@ -145,8 +192,6 @@
 		Login.init();
 		// 检查浏览器
 		checkBrowser();
-		
-		//$("#login-form").submit();
 	});
 	
 	//点击忘记密码，弹出对话框

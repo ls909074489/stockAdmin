@@ -75,9 +75,10 @@
 							<th>物料编码</th>
 							<th>华为物料编码</th>
 							<th>名称</th>
-							<th>是否风险物料</th>
+							<th>风险物料</th>
 							<th>物料单位</th>
 							<th>分类描述</th>
+							<th>限制数量</th>
 						</tr>
 					</thead>
 					<tbody></tbody>
@@ -101,22 +102,22 @@
 				orderable : false,
 				className : "center",
 				/* visible : false, */
-				width : "40",
+				width : "30",
 				render : YYDataTableUtils.renderCheckCol
 			},{
 				data : "uuid",
 				className : "center",
 				orderable : false,
 				render : YYDataTableUtils.renderActionCol,
-				width : "50"
+				width : "60"
 			},{
 				data : "code",
-				width : "100",
+				width : "60",
 				className : "left",
 				orderable : true
 			},{
 				data : "hwcode",
-				width : "100",
+				width : "60",
 				className : "left",
 				orderable : true
 			},{
@@ -126,7 +127,7 @@
 				orderable : true
 			},{
 				data : "hasRisk",
-				width : "60",
+				width : "50",
 				className : "center",
 				render : function(data, type, full) {
 					return YYDataUtils.getEnumName("BooleanType", data);
@@ -134,7 +135,7 @@
 				orderable : true
 			},{
 				data : "unit",
-				width : "60",
+				width : "50",
 				className : "center",
 				render : function(data, type, full) {
 					return YYDataUtils.getEnumName("MaterialUnit", data);
@@ -144,6 +145,14 @@
 				data : "classDesc",
 				width : "60",
 				className : "left",
+				orderable : true
+			},{
+				data : "limitCount",
+				width : "50",
+				className : "center",
+				render : function(data, type, full) {
+					return YYDataUtils.getEnumName("MaterialLimitCount", data);
+				},
 				orderable : true
 			}];
 
