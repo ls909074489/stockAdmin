@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.king.common.utils.Constants;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.BaseController;
 import com.king.frame.utils.RequestUtil;
@@ -76,7 +78,11 @@ public class SupplierController extends BaseController<SupplierEntity> {
 			response.setCharacterEncoding("UTF-8");
 			MultipartFile file = request.getFile("attachment");
 			arm = service.importExcel(file);
-		} catch (Exception e) {
+		}catch (DataIntegrityViolationException e) {
+			e.printStackTrace();
+			arm.setSuccess(false);
+			arm.setMsg(Constants.getConstraintMsg(e.getMessage()));
+		}  catch (Exception e) {
 			arm.setSuccess(false);
 			arm.setMsg(e.getMessage());
 		}

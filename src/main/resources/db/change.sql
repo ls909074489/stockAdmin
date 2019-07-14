@@ -99,3 +99,14 @@ INSERT INTO `yy_imexlate_sub` (`uuid`, `create_time`, `createtime`, `creator`, `
 INSERT INTO `yy_parameter` (`uuid`, `status`, `defaultvalue`, `description`, `groudcode`, `isshow`, `paramtercode`, `paramtername`, `paramtertype`, `paramtervalue`, `showorder`, `sys`, `valuerange`, `create_time`, `creator`, `modifier`, `modify_time`, `createtime`, `creatorname`, `modifiername`, `modifytime`, `ispreset`, `ts`) VALUES ('4f5dcce3-91ef-4018-8fef-0ddddf3b2c20', '1', NULL, '', 'sys', '', 'supplierImportTemplatePath', '厂商信息导入模板', '', '/exceltemplate厂商导入.xlsx', NULL, '\0', '', NULL, '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, '2019-07-11 16:07:02', '超级系统管理员', NULL, NULL, '0', '2019-07-11 16:07:02');
 
 
+
+
+
+alter table yy_supplier add UNIQUE index idx_uni_suppliercode(code);
+
+alter table yy_stock_info add UNIQUE index idx_uni_stockcode(code);
+
+
+
+
+

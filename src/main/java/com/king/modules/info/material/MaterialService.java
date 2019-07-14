@@ -57,6 +57,7 @@ public class MaterialService extends BaseServiceImpl<MaterialEntity,String> {
 		return dao;
 	}
 
+	@Transactional
 	public ActionResultModel<MaterialEntity> importExcel(MultipartFile file) {
 		List<ImexlateSubEntity> implateSubList=imexlateSubService.findByTemCoding("materialImport");
 		Map<String,Integer> imexMap=new HashMap<String,Integer>();
@@ -99,12 +100,12 @@ public class MaterialService extends BaseServiceImpl<MaterialEntity,String> {
 								code = ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("code")));
 								entity.setCode(code);
 								entity.setName(ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("name"))));
-								codeMap.put(code,code);
 								if(codeMap.containsKey(code)){
 									repeatCode.add(code);
 								}else{
 									list.add(entity);
 								}
+								codeMap.put(code,code);
 							}
 						}
 					}
@@ -126,12 +127,12 @@ public class MaterialService extends BaseServiceImpl<MaterialEntity,String> {
 								code = ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("code")),df);
 								entity.setCode(code);
 								entity.setName(ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("name")),df));
-								codeMap.put(code,code);
 								if(codeMap.containsKey(code)){
 									repeatCode.add(code);
 								}else{
 									list.add(entity);
 								}
+								codeMap.put(code,code);
 							}
 						}
 					}
