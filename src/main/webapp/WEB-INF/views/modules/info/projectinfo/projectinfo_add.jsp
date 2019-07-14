@@ -291,6 +291,12 @@
 				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='code']").val(selNode.code);
 				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='materialId']").val(selNode.uuid);
 				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='limitCount']").val(selNode.limitCount);
+				if(selNode.limitCount==1){
+					$(t_refMaterialEle).closest("tr").find("input[name='planAmount']").attr("readonly","true");
+				}else{
+					$(t_refMaterialEle).closest("tr").find("input[name='planAmount']").attr("readonly","false");
+					$(t_refMaterialEle).closest("tr").find("input[name='planAmount']").attr("readonly","false");
+				}
 			}else{
 				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='code']").val("");
 				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='materialId']").val("");
