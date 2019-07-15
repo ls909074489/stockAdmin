@@ -7,7 +7,6 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.ParameterizedType;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -44,8 +43,6 @@ import com.king.frame.service.IService;
 import com.king.frame.specifications.DateConvertEditor;
 import com.king.frame.specifications.DynamicSpecifications;
 import com.king.frame.utils.RequestUtil;
-import com.king.modules.sys.enumdata.EnumDataSubEntity;
-import com.king.modules.sys.enumdata.EnumDataUtils;
 import com.king.modules.sys.org.OrgEntity;
 import com.king.modules.sys.user.UserEntity;
 
@@ -573,48 +570,6 @@ public class BaseController<T> {
 	}
 
 
-	/**
-	 * 设置默认的值，学年度、学期
-	 * 
-	 * @param model
-	 */
-	public void getDefaultModel(Model model) {
-		Calendar cal = Calendar.getInstance();
-		int year = cal.get(Calendar.YEAR);
-		int month = cal.get(Calendar.MONTH) + 1;
-		List<EnumDataSubEntity> enumList = EnumDataUtils.getEnumSubList("StudyTimes");
-//		for (EnumDataSubEntity sub : enumList) {
-//			if (sub.getEnumdataname().startsWith(year + "")) {
-//				model.addAttribute("currentYears", sub.getEnumdatakey());
-//			}
-//		}
-		if (month >= 3 && month < 9) {
-			model.addAttribute("currentSemester", 2);
-			for (EnumDataSubEntity sub : enumList) {
-				if (sub.getEnumdataname().startsWith((year-1) + "")) {
-					model.addAttribute("currentYears", sub.getEnumdatakey());
-					break;
-				}
-			}
-		} else {
-			model.addAttribute("currentSemester", 1);
-			if(month>=9){
-				for (EnumDataSubEntity sub : enumList) {
-					if (sub.getEnumdataname().startsWith(year + "")) {
-						model.addAttribute("currentYears", sub.getEnumdatakey());
-						break;
-					}
-				}
-			}else{
-				for (EnumDataSubEntity sub : enumList) {
-					if (sub.getEnumdataname().startsWith((year-1) + "")) {
-						model.addAttribute("currentYears", sub.getEnumdatakey());
-						break;
-					}
-				}
-			}
-		}
-	}
 	
 	public void setExportResponse(HttpServletResponse response,ServletRequest request,
 			String fileName) throws UnsupportedEncodingException{

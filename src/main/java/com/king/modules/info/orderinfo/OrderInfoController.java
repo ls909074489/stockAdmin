@@ -6,23 +6,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.king.common.utils.Constants;
 import com.king.frame.controller.ActionResultModel;
-import com.king.frame.controller.BaseController;
 import com.king.frame.controller.SuperController;
 import com.king.modules.info.material.MaterialEntity;
+import com.king.modules.sys.param.ParameterUtil;
 
 import net.sf.json.JSONObject;
 
@@ -52,6 +54,7 @@ public class OrderInfoController extends SuperController<OrderInfoEntity> {
 	 */
 	@RequestMapping("/list")
 	public String listView(Model model) {
+		model.addAttribute("templatePath", ParameterUtil.getParamValue("orderinfoImpTemplate", "/template/订单导入模板.xlsx"));
 		return "modules/info/orderinfo/orderinfo_list";
 	}
 
@@ -156,6 +159,39 @@ public class OrderInfoController extends SuperController<OrderInfoEntity> {
 			returnList.add(obj);
 		}
 		return returnList;
+	}
+	
+	
+	
+	
+	/**
+	 * 跳到导入页面
+	 * 
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/toImport")
+	public String toImport(Model model) {
+		model.addAttribute("templatePath", ParameterUtil.getParamValue("orderinfoImpTemplate", "/template/订单导入模板.xlsx"));
+		return "modules/info/orderinfo/orderinfo_import_page";
+	}
+
+
+
+	@ResponseBody
+	@RequestMapping(value = "/import")
+	public ActionResultModel<OrderInfoEntity> importExcel(MultipartHttpServletRequest request,OrderInfoEntity orderInfo,
+			HttpServletResponse response) {
+		ActionResultModel<OrderInfoEntity> arm = new ActionResultModel<OrderInfoEntity>();
+		try {
+			response.setCharacterEncoding("UTF-8");
+			MultipartFile file = request.getFile("attachment");
+			arm = subService.importExcel(file, orderInfo);
+		} catch (Exception e) {
+			arm.setSuccess(false);
+			arm.setMsg(e.getMessage());
+		}
+		return arm;
 	}
 	
 }

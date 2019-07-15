@@ -16,6 +16,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.king.common.annotation.MetaData;
 import com.king.frame.entity.BaseEntity;
 import com.king.modules.info.material.MaterialEntity;
@@ -59,6 +60,9 @@ public class OrderSubEntity extends BaseEntity {
 	
 	@Transient
 	private String materialId;
+	@Transient
+	@JsonIgnore
+	private String materialCode="";
 
 	public OrderInfoEntity getMain() {
 		return main;
@@ -123,6 +127,14 @@ public class OrderSubEntity extends BaseEntity {
 
 	public void setWarningType(String warningType) {
 		this.warningType = warningType;
+	}
+
+	public String getMaterialCode() {
+		return materialCode;
+	}
+
+	public void setMaterialCode(String materialCode) {
+		this.materialCode = materialCode;
 	}
 	
 

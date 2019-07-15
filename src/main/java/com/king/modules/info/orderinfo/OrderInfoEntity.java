@@ -42,12 +42,12 @@ public class OrderInfoEntity extends SuperEntity {
 	@Column(length = 10)
 	private String orderType;
 
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+08:00")
 	@MetaData(value = "实际到货时间")
 	@Column()
 	private Date actualArriveTime;
 
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+08:00")
 	@MetaData(value = "预计到货时间")
 	@Column()
 	private Date planArriveTime;

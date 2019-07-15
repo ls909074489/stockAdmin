@@ -1,7 +1,11 @@
 package com.king.modules.info.material;
 
-import com.king.frame.dao.IBaseDAO;
+import java.util.List;
+
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import com.king.frame.dao.IBaseDAO;
 
 /**
  * 物料
@@ -11,4 +15,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MaterialDao extends IBaseDAO<MaterialEntity,String> {
 
+	
+	/**
+	 * 根据code查询
+	 * @param codeList
+	 * @return
+	 */
+	@Query("FROM MaterialEntity o WHERE o.code in ?1")
+	List<MaterialEntity> findByCodes(List<String> codeList);
 }

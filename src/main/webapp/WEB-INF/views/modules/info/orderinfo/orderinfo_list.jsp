@@ -32,6 +32,12 @@
 				<!-- <button id="yy-btn-unapprove" class="btn yellow btn-sm btn-info">
 					<i class="fa fa-reply"></i> 取消审核
 				</button> -->
+				<button class="btn green btn-sm btn-info" id="yy-btn-import">
+					<i class="fa fa-chevron-down"></i> 导入
+				</button>
+				<button class="btn green btn-sm btn-info" id="yy-btn-templatedownload">
+					<i class="fa fa-chevron-down"></i> 导入模板下载
+				</button>
 				</div>
 			<div class="row yy-searchbar form-inline">
 				<form id="yy-form-query">
@@ -141,7 +147,26 @@
 			_queryData = $("#yy-form-query").serializeArray();
 			bindListActions();
 			serverPage('${serviceurl}/query?orderby=createtime@desc');
+			
+			//模板下载
+			$("#yy-btn-templatedownload").bind('click',function(){
+				window.open('${ctx}${templatePath}',"_blank");
+			});
+			
+			$("#yy-btn-import").bind('click', importfileClick);//附件
 		});
+		
+		//点击选择文件按钮事件
+		function importfileClick(){
+			layer.open({
+				title : '导入',
+				type : 2,
+				area : [ '550px', '300px' ],
+				shadeClose : false,
+				shade : 0.8,
+				content : '${serviceurl}/toImport'
+			});
+		}
 	</script>
 </body>
 </html>	

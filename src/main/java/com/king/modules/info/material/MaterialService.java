@@ -78,6 +78,7 @@ public class MaterialService extends BaseServiceImpl<MaterialEntity,String> {
 			String postfix = ExcelDataUtil.getPostfix(file.getOriginalFilename());
 			DecimalFormat df = new DecimalFormat("0");// 格式化 number String
 			String code="";
+			String hasRisk = "";
 			List<String> repeatCode = new ArrayList<>();
 			List<MaterialEntity> list = new ArrayList<>();
 			if (!ExcelDataUtil.EMPTY.equals(postfix)) {
@@ -100,6 +101,17 @@ public class MaterialService extends BaseServiceImpl<MaterialEntity,String> {
 								code = ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("code")));
 								entity.setCode(code);
 								entity.setName(ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("name"))));
+								entity.setHwcode(ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("hwcode"))));
+								entity.setMemo(ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("memo"))));
+								hasRisk = ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("hasRisk")));
+								entity.setHasRisk(0);
+								if(!StringUtils.isEmpty(hasRisk)&&(hasRisk.equals("1")||hasRisk.equals("是"))){
+									entity.setHasRisk(1);
+								}
+								entity.setClassDesc(ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("classDesc"))));
+								entity.setUnit(ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("unit"))));//单位
+//								private int limitCount=-1;
+								
 								if(codeMap.containsKey(code)){
 									repeatCode.add(code);
 								}else{
@@ -127,6 +139,15 @@ public class MaterialService extends BaseServiceImpl<MaterialEntity,String> {
 								code = ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("code")),df);
 								entity.setCode(code);
 								entity.setName(ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("name")),df));
+								entity.setHwcode(ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("hwcode"))));
+								entity.setMemo(ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("memo"))));
+								hasRisk = ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("hasRisk")));
+								entity.setHasRisk(0);
+								if(!StringUtils.isEmpty(hasRisk)&&(hasRisk.equals("1")||hasRisk.equals("是"))){
+									entity.setHasRisk(1);
+								}
+								entity.setClassDesc(ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("classDesc"))));
+								entity.setUnit(ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("unit"))));//单位
 								if(codeMap.containsKey(code)){
 									repeatCode.add(code);
 								}else{
@@ -228,11 +249,29 @@ public class MaterialService extends BaseServiceImpl<MaterialEntity,String> {
 		map = new HashMap<>();
 		map.put("code", obj.getCode());
 		map.put("name", obj.getName());
+		map.put("hwcode", obj.getHwcode());
 		map.put("hasRisk", EnumDataUtils.getEnumValue(obj.getHasRisk()+"", "BooleanType"));
 		map.put("unit", EnumDataUtils.getEnumValue(obj.getUnit(), "MaterialUnit"));
 		map.put("classDesc", obj.getClassDesc());
 		map.put("memo", obj.getMemo());
 		return map;
+	}
+	
+	
+	public List<MaterialEntity> findByCodes(List<String> codeList) {
+		List<MaterialEntity> list=new ArrayList<MaterialEntity>();
+		if(codeList!=null&&codeList.size()>0){
+			int pageSize=1000;
+			double pageCount=Math.ceil(Double.valueOf(codeList.size()+"")/pageSize);
+			for(int i=0;i<pageCount;i++){
+				if((i+1)*pageSize<codeList.size()){
+					list.addAll(dao.findByCodes(codeList.subList(i*pageSize, (i+1)*pageSize)));
+				}else{
+					list.addAll(dao.findByCodes(codeList.subList(i*pageSize, codeList.size())));
+				}
+			}
+		}
+		return list;
 	}
 	
 
