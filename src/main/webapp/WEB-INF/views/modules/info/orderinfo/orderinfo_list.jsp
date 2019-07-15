@@ -71,7 +71,8 @@
 							<th>订单编码</th>
 							<th>订单名称</th>
 							<th>预计到货时间</th>
-							<th>备注</th>
+							<th>创建人</th>
+							<th>创建时间</th>
 						</tr>
 					</thead>
 					<tbody></tbody>
@@ -135,7 +136,12 @@
 				className : "center",
 				orderable : true
 			},{
-				data : "memo",
+				data : "creatorname",
+				width : "100",
+				className : "center",
+				orderable : true
+			},{
+				data : "createtime",
 				width : "100",
 				className : "center",
 				orderable : true
