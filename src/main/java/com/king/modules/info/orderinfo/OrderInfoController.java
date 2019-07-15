@@ -60,6 +60,8 @@ public class OrderInfoController extends SuperController<OrderInfoEntity> {
 
 	@Override
 	public String addView(Model model, ServletRequest request) {
+		model.addAttribute("defaultStockName",ParameterUtil.getParamValue("defaultStockName"));
+		model.addAttribute("defaultStock",ParameterUtil.getParamValue("defaultStock"));
 		return "modules/info/orderinfo/orderinfo_add";
 	}
 
@@ -173,6 +175,8 @@ public class OrderInfoController extends SuperController<OrderInfoEntity> {
 	@RequestMapping("/toImport")
 	public String toImport(Model model) {
 		model.addAttribute("templatePath", ParameterUtil.getParamValue("orderinfoImpTemplate", "/template/订单导入模板.xlsx"));
+		model.addAttribute("defaultStockName",ParameterUtil.getParamValue("defaultStockName"));
+		model.addAttribute("defaultStock",ParameterUtil.getParamValue("defaultStock"));
 		return "modules/info/orderinfo/orderinfo_import_page";
 	}
 

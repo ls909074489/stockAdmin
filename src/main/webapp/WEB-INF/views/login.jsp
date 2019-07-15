@@ -12,7 +12,6 @@
 	<meta name="Description" content="库存管理系统" />
 	<meta name="author" content="KingLiu" />
 	<title>库存管理系统</title>
-	
 	<link href="${ctx}/assets/metronic/v4.5/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
 	<link href="${ctx}/assets/metronic/v4.5/global/plugins/bootstrap/css/bootstrap.min.css?v=20171101" rel="stylesheet" type="text/css" />
 	<!-- END GLOBAL MANDATORY STYLES -->

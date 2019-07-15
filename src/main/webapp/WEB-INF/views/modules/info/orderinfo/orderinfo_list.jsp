@@ -103,10 +103,10 @@
 				className : "center",
 				orderable : false,
 				render : YYDataTableUtils.renderActionCol,
-				width : "50"
+				width : "60"
 			},{
 				data : "billstatus",
-				width : "100",
+				width : "60",
 				className : "center",
 				render : function(data, type, full) {
 					   return '<a onclick="onApproveLook(\'orderInfo\',\''+full.uuid+'\');">'+YYDataUtils.getEnumName("BillStatus", data)+'</a>';
@@ -114,7 +114,7 @@
 				orderable : true
 			},{
 				data : "orderType",
-				width : "100",
+				width : "80",
 				className : "center",
 				render : function(data, type, full) {
 					return YYDataUtils.getEnumName("OrderType", data);
@@ -167,7 +167,7 @@
 			layer.open({
 				title : '导入',
 				type : 2,
-				area : [ '550px', '300px' ],
+				area : [ '850px', '510px' ],
 				shadeClose : false,
 				shade : 0.8,
 				content : '${serviceurl}/toImport'

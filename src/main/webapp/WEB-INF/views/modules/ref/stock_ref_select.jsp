@@ -9,26 +9,17 @@
 	<div class="" id="yy-page-list" style="background-color: #ffffff;">
 		<div role="form" class="row yy-toolbar">
 			<form id="yy-form-query">
-				<div class="col-sm-3 form-inline" style="">
-					<div id="div_col6_filter" data-column="6">
-						仓库编码
-						<input type="text" autocomplete="on" name="search_LIKE_code"
-						id="search_LIKE_code" class="form-control input-sm">
-					</div>
-				</div>
-				<div class="col-sm-3 form-inline" style="">
-					<div id="div_col3_filter" data-column="3">
-						仓库名称
-						<input type="text" autocomplete="on" name="search_LIKE_name"
-						id="search_LIKE_name" class="form-control input-sm">
-					</div>
-				</div>
-				<div class="col-sm-3 form-inline" style="">
+					仓库编码
+					<input type="text" autocomplete="on" name="search_LIKE_code"
+					id="search_LIKE_code" class="form-control222 input-sm">
+					仓库名称
+					<input type="text" autocomplete="on" name="search_LIKE_name"
+					id="search_LIKE_name" class="form-control222 input-sm">
+						
 					<button id="yy-btn-search" type="button" class="btn btn-sm btn-info">
 					<i class="fa fa-search"></i>查询</button>
 					<button id="yy-btn-clear" type="button" class="btn red btn-sm btn-info">
 					<i class="fa fa-trash-o"></i>清空</button>
-				</div>
 			</form>
 		</div>
 		<div class="row">

@@ -9,6 +9,15 @@
 <body>
 	<div id="yy-page" class="container-fluid page-container">
 	<div class="page-content" id="yy-page-list">
+			<div class="row yy-toolbar">
+				<button id="yy-import-btn-confirm" class="btn blue btn-sm">
+					<i class="fa fa-chevron-down"></i> 保存
+				</button>
+				<button id="yy-btn-cancel" class="btn blue btn-sm" onclick="javascript:downloadtemplate();">
+					<i class="fa fa-chevron-down"></i> 下载导入模板
+				</button>
+			</div>
+			
 			<div class="row" style="margin-left: 20px;">
 				<form id="yy-form-edit" >
 					<div>
@@ -22,6 +31,20 @@
 								<td style="color: #e02222;">&nbsp;&nbsp;&nbsp;&nbsp;订单名称&nbsp;&nbsp;&nbsp;&nbsp;</td>
 								<td>
 									<input name="name" id="name" type="text" value="${entity.name}" class="form-control">
+								</td>
+								<td style="color: #e02222;">&nbsp;&nbsp;&nbsp;&nbsp;仓库&nbsp;&nbsp;&nbsp;&nbsp;</td>
+								<td>
+									<div class="input-group input-icon right">
+										<input id="stockUuid" name="stock.uuid" type="hidden" value="${defaultStock}"> 
+										<i class="fa fa-remove" onclick="cleanDef('stockUuid','stockName');" title="清空"></i>
+										<input id="stockName" name="stockName" type="text" class="form-control" readonly="readonly" 
+											value="${defaultStockName}">
+										<span class="input-group-btn">
+											<button id="stock-select-btn" class="btn btn-default btn-ref" type="button">
+												<span class="glyphicon glyphicon-search"></span>
+											</button>
+										</span>
+									</div>
 								</td>
 							</tr>
 							<tr style="height: 50px;">
@@ -62,17 +85,6 @@
 						</form>
 					</div>
 			</div>
-			<div class="is-modal-footer" >
-				<div id="imexclate-button-pre">
-					<a href="javascript:downloadtemplate();">下载导入模板</a>
-					<button id="yy-import-btn-confirm" class="btn yellow btn-sm btn-info is-modal-btn" >
-						 导&nbsp;&nbsp;&nbsp;&nbsp;入
-					</button>
-				</div>
-				<div class="hide">
-					<button type="button" id="yy-import-btn-close" data-dismiss="modal" ></button>
-				</div>
-			</div>
 	</div>
 
 		<script type="text/javascript">
@@ -87,8 +99,24 @@
 				
 				 //验证表单
 				validateForms();
+				 
+				$('#stock-select-btn').on('click', function() {
+					layer.open({
+						type : 2,
+						title : '请选择仓库',
+						shadeClose : false,
+						shade : 0.8,
+						area : [ '90%', '90%' ],
+						content : '${ctx}/sys/ref/refStock?callBackMethod=window.parent.callBackStock'
+					});
+				});
 			});
 			
+			//回调选择
+			function callBackStock(data){
+				$("#stockUuid").val(data.uuid);
+				$("#stockName").val(data.name);
+			}
 			
 			//确定导入
 			function confirmImport(){
@@ -105,6 +133,7 @@
 				 
 					var file = $("#multifile")[0].files[0];
 					var formData = new FormData();
+					formData.append("stock.uuid", $("#stockUuid").val());
 					formData.append("orderType", $("#orderType").val());
 					formData.append("code", $("#code").val());
 					formData.append("name", $("#name").val());
@@ -164,6 +193,7 @@
 						'orderType' : {required : true,maxlength : 100},
 						'code' : {required : true,maxlength : 100},
 						'name' : {required : true,maxlength : 100},
+						'stockName' : {required : true,maxlength : 100},
 						'memo' : {maxlength : 100}
 					}	
 				}); 

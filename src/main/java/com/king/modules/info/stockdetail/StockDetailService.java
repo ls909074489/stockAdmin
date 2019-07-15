@@ -56,16 +56,14 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 	
 	@Transactional
 	public void incrStockDetail(OrderInfoEntity orderInfo,List<OrderSubEntity> subList){
-		StockInfoEntity stock = getStockByOrderType(orderInfo.getOrderType());
 		StockStreamEntity stream = new StockStreamEntity();
 		
 		Long totalBefore = 0l;
 		Long occupyBefore = 0l;
 		Long surplusBefore = 0l; 
-		StockBaseEntity stockBase = new StockBaseEntity();
-		stockBase.setUuid(stock.getUuid());
+		StockBaseEntity stockBase = orderInfo.getStock();
 		for(OrderSubEntity sub:subList){
-			StockDetailEntity detail  = findByStockAndMaterial(stock.getUuid(),sub.getMaterial().getUuid());
+			StockDetailEntity detail  = findByStockAndMaterial(stockBase.getUuid(),sub.getMaterial().getUuid());
 			
 			stream = new StockStreamEntity();
 			stream.setSourceId(orderInfo.getUuid());
@@ -80,7 +78,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			
 			if(detail==null){
 				detail = new StockDetailEntity();
-				detail.setStock(stock);
+				detail.setStock(stockBase);
 				detail.setMaterial(sub.getMaterial());
 				detail.setTotalAmount(sub.getActualAmount());
 				detail.setOccupyAmount(0l);

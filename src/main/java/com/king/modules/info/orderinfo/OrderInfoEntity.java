@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
@@ -14,6 +16,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.king.common.annotation.MetaData;
 import com.king.frame.entity.SuperEntity;
+import com.king.modules.info.stockinfo.StockBaseEntity;
 
 /**
  * 订单
@@ -28,6 +31,10 @@ import com.king.frame.entity.SuperEntity;
 public class OrderInfoEntity extends SuperEntity {
 
 	private static final long serialVersionUID = 1L;
+	
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "stockid")
+	private StockBaseEntity stock;
 
 	@MetaData(value = "订单编码")
 	@Column(length = 50)
@@ -103,6 +110,14 @@ public class OrderInfoEntity extends SuperEntity {
 
 	public void setMemo(String memo) {
 		this.memo = memo;
+	}
+
+	public StockBaseEntity getStock() {
+		return stock;
+	}
+
+	public void setStock(StockBaseEntity stock) {
+		this.stock = stock;
 	}
 
 }

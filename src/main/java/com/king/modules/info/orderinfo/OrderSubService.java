@@ -205,8 +205,6 @@ public class OrderSubService extends BaseServiceImpl<OrderSubEntity, String> {
 								}
 								if(materialCodeSet.contains(code)){
 									repeatCode.add(code);
-								}else{
-									list.add(entity);
 								}
 								entity.setMaterialCode(code);
 								materialCodeSet.add(code);
@@ -261,8 +259,6 @@ public class OrderSubService extends BaseServiceImpl<OrderSubEntity, String> {
 								}
 								if(materialCodeSet.contains(code)){
 									repeatCode.add(code);
-								}else{
-									list.add(entity);
 								}
 								entity.setMaterialCode(code);
 								materialCodeSet.add(code);

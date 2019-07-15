@@ -6,14 +6,16 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+
 import com.king.common.annotation.MetaData;
 import com.king.frame.entity.BaseEntity;
 import com.king.modules.info.material.MaterialEntity;
-import com.king.modules.info.stockinfo.StockInfoEntity;
+import com.king.modules.info.stockinfo.StockBaseEntity;
 
 /**
  * 库存明细
@@ -32,7 +34,7 @@ public class StockDetailEntity extends BaseEntity {
 	@MetaData(value = "仓库")
 	@ManyToOne(cascade=CascadeType.REFRESH,optional = true)
 	@JoinColumn(name = "stock_id",nullable=true)
-	private StockInfoEntity stock;
+	private StockBaseEntity stock;
 	
 	@MetaData(value = "物料")
 	@ManyToOne(cascade=CascadeType.REFRESH,optional = true)
@@ -61,11 +63,11 @@ public class StockDetailEntity extends BaseEntity {
 		this.material = material;
 	}
 
-	public StockInfoEntity getStock() {
+	public StockBaseEntity getStock() {
 		return stock;
 	}
 
-	public void setStock(StockInfoEntity stock) {
+	public void setStock(StockBaseEntity stock) {
 		this.stock = stock;
 	}
 
