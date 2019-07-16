@@ -119,6 +119,45 @@ INSERT INTO `yy_parameter` (`uuid`, `status`, `defaultvalue`, `description`, `gr
 INSERT INTO `yy_parameter` (`uuid`, `status`, `defaultvalue`, `description`, `groudcode`, `isshow`, `paramtercode`, `paramtername`, `paramtertype`, `paramtervalue`, `showorder`, `sys`, `valuerange`, `create_time`, `creator`, `modifier`, `modify_time`, `createtime`, `creatorname`, `modifiername`, `modifytime`, `ispreset`, `ts`) VALUES ('847f170c-1355-4c72-b522-969abd7e7bbc', '1', NULL, '', 'sys', '', 'defaultStockName', '默认仓库名称', '', '良品仓', NULL, '\0', '', NULL, '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, '2019-07-15 21:37:56', '超级系统管理员', NULL, NULL, '0', '2019-07-15 21:37:56');
 
 
+CREATE TABLE `yy_documents` (
+  `uuid` varchar(36) NOT NULL,
+  `create_time` datetime DEFAULT NULL,
+  `creator` varchar(36) DEFAULT NULL,
+  `creatorname` varchar(200) DEFAULT NULL,
+  `modifier` varchar(36) DEFAULT NULL,
+  `modifiername` varchar(200) DEFAULT NULL,
+  `modify_time` datetime DEFAULT NULL,
+  `status` int(11) NOT NULL,
+  `creation_time` datetime DEFAULT NULL,
+  `document_type` varchar(255) DEFAULT NULL,
+  `is_aad_years` varchar(255) DEFAULT NULL,
+  `is_add_day` varchar(255) DEFAULT NULL,
+  `is_add_month` varchar(255) DEFAULT NULL,
+  `new_serial_number` int(11) DEFAULT NULL,
+  `serial_number` int(11) DEFAULT NULL,
+  `zero_mark` varchar(255) DEFAULT NULL,
+  `createtime` datetime DEFAULT NULL,
+  `modifytime` datetime DEFAULT NULL,
+  `prefix` varchar(255) DEFAULT NULL,
+  `documents` varchar(255) DEFAULT NULL,
+  `jobs` varchar(255) DEFAULT NULL,
+  `ts` datetime DEFAULT NULL,
+  `version` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+
+INSERT INTO `yy_documents` (`uuid`, `create_time`, `creator`, `creatorname`, `modifier`, `modifiername`, `modify_time`, `status`, `creation_time`, `document_type`, `is_aad_years`, `is_add_day`, `is_add_month`, `new_serial_number`, `serial_number`, `zero_mark`, `createtime`, `modifytime`, `prefix`, `documents`, `jobs`, `ts`, `version`) VALUES ('56fc87f3-9259-4332-a87f-ebf813b92374', NULL, '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', '超级系统管理员', NULL, NULL, NULL, '1', '2019-07-16 00:00:00', 'orderInfoBillCode', 'y', 'y', 'y', '2', '5', '', '2019-07-16 22:23:40', NULL, 'A', '订单号', NULL, '2019-07-16 22:24:00', '2');
+
+
+INSERT INTO `yy_parameter` (`uuid`, `status`, `defaultvalue`, `description`, `groudcode`, `isshow`, `paramtercode`, `paramtername`, `paramtertype`, `paramtervalue`, `showorder`, `sys`, `valuerange`, `create_time`, `creator`, `modifier`, `modify_time`, `createtime`, `creatorname`, `modifiername`, `modifytime`, `ispreset`, `ts`) VALUES ('cca938c2-d87d-4a9f-8eb4-077cce21f8b5', '1', NULL, '', 'sys', '', 'projectInfoImpTemplate', '项目单导入模板', '', '/exceltemplate/项目单导入模板.xlsx', NULL, '\0', '', NULL, '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, '2019-07-16 22:29:47', '超级系统管理员', NULL, NULL, '0', '2019-07-16 22:29:47');
+
+INSERT INTO `yy_imexlate` (`uuid`, `create_time`, `createtime`, `creator`, `creatorname`, `modifier`, `modifiername`, `modify_time`, `modifytime`, `status`, `child_start_cell_num`, `coding`, `export_file_name`, `start_cell_num`, `start_row_num`, `template_name`, `ts`, `iscreate`) VALUES ('397a6f33-4498-4920-8ea9-09e6d12d61f7', NULL, '2019-07-16 22:33:51', '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', '超级系统管理员', NULL, NULL, NULL, NULL, '1', NULL, 'projectInfoImport', '项目导入模板', NULL, NULL, '项目导入模板', '2019-07-16 22:33:51', '1');
+INSERT INTO `yy_imexlate_sub` (`uuid`, `create_time`, `createtime`, `creator`, `creatorname`, `modifier`, `modifiername`, `modify_time`, `modifytime`, `status`, `chinese_field`, `export_cell_num`, `field_name`, `is_main_field`, `template_id`, `ts`, `enumdata`, `isnotempty`, `qualified_value`, `datatype`, `column_width`) VALUES ('352cf441-35c0-4942-af72-1a25805fab95', NULL, '2019-07-16 22:33:51', '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', '超级系统管理员', NULL, NULL, NULL, NULL, '1', '物料编码', 'B', 'materialCode', '\0', '397a6f33-4498-4920-8ea9-09e6d12d61f7', '2019-07-16 22:33:51', NULL, '\0', NULL, NULL, NULL);
+INSERT INTO `yy_imexlate_sub` (`uuid`, `create_time`, `createtime`, `creator`, `creatorname`, `modifier`, `modifiername`, `modify_time`, `modifytime`, `status`, `chinese_field`, `export_cell_num`, `field_name`, `is_main_field`, `template_id`, `ts`, `enumdata`, `isnotempty`, `qualified_value`, `datatype`, `column_width`) VALUES ('aeb4faa8-543f-4766-8700-476eedaa1545', NULL, '2019-07-16 22:33:51', '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', '超级系统管理员', NULL, NULL, NULL, NULL, '1', '箱号', 'A', 'boxNum', '\0', '397a6f33-4498-4920-8ea9-09e6d12d61f7', '2019-07-16 22:33:51', NULL, '\0', NULL, NULL, NULL);
+INSERT INTO `yy_imexlate_sub` (`uuid`, `create_time`, `createtime`, `creator`, `creatorname`, `modifier`, `modifiername`, `modify_time`, `modifytime`, `status`, `chinese_field`, `export_cell_num`, `field_name`, `is_main_field`, `template_id`, `ts`, `enumdata`, `isnotempty`, `qualified_value`, `datatype`, `column_width`) VALUES ('f07c8fbb-297b-4c0a-bff8-68f77e089271', NULL, '2019-07-16 22:33:51', '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', '超级系统管理员', NULL, NULL, NULL, NULL, '1', '备注', 'D', 'memo', '\0', '397a6f33-4498-4920-8ea9-09e6d12d61f7', '2019-07-16 22:33:51', NULL, '\0', NULL, NULL, NULL);
+INSERT INTO `yy_imexlate_sub` (`uuid`, `create_time`, `createtime`, `creator`, `creatorname`, `modifier`, `modifiername`, `modify_time`, `modifytime`, `status`, `chinese_field`, `export_cell_num`, `field_name`, `is_main_field`, `template_id`, `ts`, `enumdata`, `isnotempty`, `qualified_value`, `datatype`, `column_width`) VALUES ('fe7a7f23-6672-488e-a54f-0bb36d44e14e', NULL, '2019-07-16 22:33:51', '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', '超级系统管理员', NULL, NULL, NULL, NULL, '1', '计划数量', 'C', 'planAmount', '\0', '397a6f33-4498-4920-8ea9-09e6d12d61f7', '2019-07-16 22:33:51', NULL, '\0', NULL, NULL, NULL);
+
+
 
 
 

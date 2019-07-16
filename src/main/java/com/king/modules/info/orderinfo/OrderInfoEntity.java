@@ -2,6 +2,7 @@ package com.king.modules.info.orderinfo;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -18,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.king.common.annotation.MetaData;
 import com.king.frame.entity.SuperEntity;
 import com.king.modules.info.stockinfo.StockBaseEntity;
+import com.king.modules.info.supplier.SupplierBaseEntity;
 
 /**
  * 订单
@@ -36,6 +38,10 @@ public class OrderInfoEntity extends SuperEntity {
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "stockid")
 	private StockBaseEntity stock;
+	
+	@ManyToOne(cascade=CascadeType.REFRESH,optional = true)
+	@JoinColumn(name = "supplier_id",nullable=true)
+	private SupplierBaseEntity supplier;
 
 	@MetaData(value = "订单编码")
 	@Column(length = 50)
@@ -66,6 +72,9 @@ public class OrderInfoEntity extends SuperEntity {
 	
 	@Transient
 	private String stockId;
+	
+	@Transient
+	private String supplierId;
 	
 
 	public String getOrderType() {
@@ -132,5 +141,22 @@ public class OrderInfoEntity extends SuperEntity {
 	public void setStockId(String stockId) {
 		this.stockId = stockId;
 	}
+
+	public String getSupplierId() {
+		return supplierId;
+	}
+
+	public void setSupplierId(String supplierId) {
+		this.supplierId = supplierId;
+	}
+
+	public SupplierBaseEntity getSupplier() {
+		return supplier;
+	}
+
+	public void setSupplier(SupplierBaseEntity supplier) {
+		this.supplier = supplier;
+	}
+	
 
 }

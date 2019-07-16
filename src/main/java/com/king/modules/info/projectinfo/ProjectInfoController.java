@@ -168,7 +168,7 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 		model.addAttribute("templatePath", ParameterUtil.getParamValue("projectInfoImpTemplate", "/template/项目单导入模板.xlsx"));
 		model.addAttribute("defaultStockName",ParameterUtil.getParamValue("defaultStockName"));
 		model.addAttribute("defaultStock",ParameterUtil.getParamValue("defaultStock"));
-		return "modules/info/orderinfo/projectinfo_import_page";
+		return "modules/info/projectinfo/projectinfo_import_page";
 	}
 
 
@@ -182,6 +182,10 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 			response.setCharacterEncoding("UTF-8");
 			MultipartFile file = request.getFile("attachment");
 			arm = subService.importExcel(file, projectInfo);
+		} catch (DataIntegrityViolationException e) {
+			e.printStackTrace();
+			arm.setSuccess(false);
+			arm.setMsg(Constants.getConstraintMsg(e.getMessage()));
 		} catch (Exception e) {
 			arm.setSuccess(false);
 			arm.setMsg(e.getMessage());

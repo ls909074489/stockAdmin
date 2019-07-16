@@ -38,10 +38,8 @@
 					<tr>
 						<th>序号</th>
 						<th>操作</th>
+						<th>供应商编码</th>
 						<th>名称</th>
-						<th>企业类型</th>
-						<th>联系人</th>
-						<th>电话</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -69,26 +67,13 @@
 			width : "20",
 			render : YYDataTableUtils.renderSelectActionSubCol
 		},{
-			data : "name",
-			width : "40%",
-			className : "center",
-			orderable : true
-		},{
-			data : "enterpriseType",
-			width : "10%",
-			className : "center",
-			orderable : true,
-			render : function(data, type, full) {
-			       return YYDataUtils.getEnumName("EnterpriseType", data);
-			}
-		},{
-			data : "contracts",
+			data : "code",
 			width : "20%",
 			className : "center",
 			orderable : true
 		},{
-			data : "phone",
-			width : "10%",
+			data : "name",
+			width : "60%",
 			className : "center",
 			orderable : true
 		}];
@@ -107,7 +92,7 @@
 			"paging" : true,
 			"fnDrawCallback" : fnDrawCallback,
 			"ajax" : {
-				"url" : '${serviceurl}/query',
+				"url" : '${serviceurl}/query?orderby=createtime@desc',
 				"type" : 'POST',
 				"data" : function(d) {
 					d.orderby = getOrderbyParam(d);
@@ -161,7 +146,7 @@
 	function loadList(url, isnumber) {
 		//doBeforeLoadList();
 		if (url == null) {
-			url = '${serviceurl}/query';
+			url = '${serviceurl}/query?orderby=createtime@desc';
 		}
 		$.ajax({
 			url : url,

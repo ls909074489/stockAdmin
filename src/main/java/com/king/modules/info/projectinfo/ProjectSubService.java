@@ -142,7 +142,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 
 	@Transactional
 	public ActionResultModel<ProjectInfoEntity> importExcel(MultipartFile file, ProjectInfoEntity projectInfo) {
-		List<ImexlateSubEntity> implateSubList = imexlateSubService.findByTemCoding("orderInfoImport");
+		List<ImexlateSubEntity> implateSubList = imexlateSubService.findByTemCoding("projectInfoImport");
 		Map<String, Integer> imexMap = new HashMap<String, Integer>();
 		String exportCellNum = "";
 		for (ImexlateSubEntity implateSub : implateSubList) {
@@ -203,7 +203,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 									throw new ServiceException("第" + (rowNum + 1) + "箱号不能为空");
 								} else {
 									try {
-										boxNumStr = planCount.replace(".0", "");
+										boxNumStr = boxNumStr.replace(".0", "");
 										entity.setBoxNum(Integer.parseInt(boxNumStr));
 									} catch (Exception e) {
 										e.printStackTrace();
@@ -259,7 +259,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 									throw new ServiceException("第" + (rowNum + 1) + "箱号不能为空");
 								} else {
 									try {
-										boxNumStr = planCount.replace(".0", "");
+										boxNumStr = boxNumStr.replace(".0", "");
 										entity.setBoxNum(Integer.parseInt(boxNumStr));
 									} catch (Exception e) {
 										e.printStackTrace();

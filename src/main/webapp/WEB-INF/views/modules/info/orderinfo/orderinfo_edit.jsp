@@ -25,7 +25,7 @@
 				<div class="row">
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4 required" >订单编码</label>
+							<label class="control-label col-md-4" >订单编码</label>
 							<div class="col-md-8" >
 								<input name="orderInfoCode" id="orderInfoCode" type="text" value="${entity.code}" class="form-control" readonly="readonly">
 							</div>
@@ -75,6 +75,24 @@
 							</div>
 						</div>
 					</div> --%>
+					<div class="col-md-4">
+						<div class="form-group">
+							<label class="control-label col-md-4">供应商</label>
+							<div class="col-md-8">
+								<div class="input-group input-icon right">
+										<input id="supplierUuid" name="supplier.uuid" type="hidden" value="${entity.supplier.uuid}"> 
+										<i class="fa fa-remove" onclick="cleanDef('supplierUuid','supplierName');" title="清空"></i>
+										<input id="supplierName" name="supplierName" type="text" class="form-control" readonly="readonly" 
+											value="${entity.supplier.name}">
+										<span class="input-group-btn">
+											<button id="supplier-select-btn" class="btn btn-default btn-ref" type="button">
+												<span class="glyphicon glyphicon-search"></span>
+											</button>
+										</span>
+									</div>
+							</div>
+						</div>
+					</div>
 				</div>
 				<div class="row">
 					<div class="col-md-8">
@@ -276,12 +294,29 @@
 					content : '${ctx}/sys/ref/refStock?callBackMethod=window.parent.callBackStock'
 				});
 			});
+			
+			$('#supplier-select-btn').on('click', function() {
+				layer.open({
+					type : 2,
+					title : '请选择供应商',
+					shadeClose : false,
+					shade : 0.8,
+					area : [ '1000px', '90%' ],
+					content : '${ctx}/sys/ref/refSupperlierSel?callBackMethod=window.parent.callBackSupplier'
+				});
+			});
 		});
 		
 		//回调选择
 		function callBackStock(data){
 			$("#stockUuid").val(data.uuid);
 			$("#stockName").val(data.name);
+		}
+		
+		//回调选择
+		function callBackSupplier(data){
+			$("#supplierUuid").val(data.uuid);
+			$("#supplierName").val(data.name);
 		}
 		
 		var t_refMaterialEle;

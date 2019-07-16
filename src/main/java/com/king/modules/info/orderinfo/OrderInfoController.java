@@ -24,8 +24,8 @@ import com.king.common.utils.Constants;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.SuperController;
 import com.king.modules.info.material.MaterialBaseEntity;
-import com.king.modules.info.material.MaterialEntity;
 import com.king.modules.info.stockinfo.StockBaseEntity;
+import com.king.modules.info.supplier.SupplierEntity;
 import com.king.modules.sys.param.ParameterUtil;
 
 import net.sf.json.JSONObject;
@@ -113,6 +113,9 @@ public class OrderInfoController extends SuperController<OrderInfoEntity> {
 		try {
 			StockBaseEntity stock = new StockBaseEntity();
 			stock.setUuid(entity.getStockId());
+			entity.setStock(stock);
+			SupplierEntity supplier = new SupplierEntity();
+			supplier.setUuid(entity.getSupplierId());
 			entity.setStock(stock);
 			arm = subService.saveSelfAndSubList(entity, subList, deletePKs);
 		}catch (DataIntegrityViolationException e) {
