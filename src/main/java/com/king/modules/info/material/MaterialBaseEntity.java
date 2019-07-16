@@ -33,6 +33,10 @@ public class MaterialBaseEntity extends BaseEntity {
 	@MetaData(value = "名称")
 	@Column(length = 250)
 	private String name;
+	
+	@MetaData(value = "限制每箱数量")
+	@Column(length = 10)
+	private int limitCount=-1;//-1表示不限制
 
 	public String getCode() {
 		return code;
@@ -49,8 +53,12 @@ public class MaterialBaseEntity extends BaseEntity {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
 
-	
+	public int getLimitCount() {
+		return limitCount;
+	}
 
+	public void setLimitCount(int limitCount) {
+		this.limitCount = limitCount;
+	}
 }

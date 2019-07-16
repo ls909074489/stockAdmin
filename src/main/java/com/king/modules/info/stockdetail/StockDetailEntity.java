@@ -14,7 +14,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import com.king.common.annotation.MetaData;
 import com.king.frame.entity.BaseEntity;
-import com.king.modules.info.material.MaterialEntity;
+import com.king.modules.info.material.MaterialBaseEntity;
 import com.king.modules.info.stockinfo.StockBaseEntity;
 
 /**
@@ -39,7 +39,7 @@ public class StockDetailEntity extends BaseEntity {
 	@MetaData(value = "物料")
 	@ManyToOne(cascade=CascadeType.REFRESH,optional = true)
 	@JoinColumn(name = "material_id",nullable=true)
-	private MaterialEntity material;
+	private MaterialBaseEntity material;
 	
 
 	@MetaData(value = "总数量")
@@ -55,11 +55,11 @@ public class StockDetailEntity extends BaseEntity {
 	private Long surplusAmount;
 
 	
-	public MaterialEntity getMaterial() {
+	public MaterialBaseEntity getMaterial() {
 		return material;
 	}
 
-	public void setMaterial(MaterialEntity material) {
+	public void setMaterial(MaterialBaseEntity material) {
 		this.material = material;
 	}
 

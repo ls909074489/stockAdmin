@@ -39,6 +39,24 @@
 							</div>
 						</div>
 					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+							<label class="control-label col-md-4 required">仓库</label>
+							<div class="col-md-8">
+								<div class="input-group input-icon right">
+										<input id="stockUuid" name="stockId" type="hidden" value="${entity.stock.uuid}"> 
+										<i class="fa fa-remove" onclick="cleanDef('stockUuid','stockName');" title="清空"></i>
+										<input id="stockName" name="stockName" type="text" class="form-control" readonly="readonly" 
+											value="${entity.stock.name}">
+										<span class="input-group-btn">
+											<button id="stock-select-btn" class="btn btn-default btn-ref" type="button">
+												<span class="glyphicon glyphicon-search"></span>
+											</button>
+										</span>
+									</div>
+							</div>
+						</div>
+					</div>
 				</div>
 				<div class="row">
 					<div class="col-md-8">
@@ -181,7 +199,7 @@
 				}
 				var str ='<div class="input-group materialRefDiv"> '+
 				 '<input type="hidden" name="uuid" value="'+tUuid+'">'+
-				 '<input class="form-control materialCodeInputCls"  value="'+ data.code + '" reallyname="code" name="code" readonly="readonly"> '+
+				 '<input class="form-control materialCodeInputCls"  value="'+ data.code + '" reallyname="materialCode" name="materialCode" readonly="readonly"> '+
 				 '<input class="form-control"  value="'+ data.uuid + '" type="hidden" reallyname="materialId" name="materialId"> '+
 				 '<input class="form-control"  value="'+ data.limitCount + '" type="hidden" reallyname="limitCount" name="limitCount"> '+
 				 '<span class="input-group-btn"> '+
@@ -266,7 +284,24 @@
 			});
 			
 			$('#yy-table-sublist').on('click','.materialcode',updateMaterialRef);//
+			
+			$('#stock-select-btn').on('click', function() {
+				layer.open({
+					type : 2,
+					title : '请选择仓库',
+					shadeClose : false,
+					shade : 0.8,
+					area : [ '1000px', '90%' ],
+					content : '${ctx}/sys/ref/refStock?callBackMethod=window.parent.callBackStock'
+				});
+			});
 		});
+		
+		//回调选择
+		function callBackStock(data){
+			$("#stockUuid").val(data.uuid);
+			$("#stockName").val(data.name);
+		}
 		
 		var t_refMaterialEle;
 		function updateMaterialRef(){
@@ -343,7 +378,7 @@
 		function callBackUpdateMaterial(selNode){
 			var canAdd=checkCanAdd(selNode,$(t_refMaterialEle).closest("tr").find("select[name='boxNum']").val());
 			if(canAdd){
-				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='code']").val(selNode.code);
+				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='materialCode']").val(selNode.code);
 				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='materialId']").val(selNode.uuid);
 				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='limitCount']").val(selNode.limitCount);
 				if(selNode.limitCount==1){
@@ -353,7 +388,7 @@
 					$(t_refMaterialEle).closest("tr").find("input[name='planAmount']").attr("readonly","false");
 				}
 			}else{
-				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='code']").val("");
+				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='materialCode']").val("");
 				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='materialId']").val("");
 				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='limitCount']").val("");
 			}
@@ -397,6 +432,7 @@
 				rules : {
 					'code' : {required : true,maxlength : 100},
 					'name' : {required : true,maxlength : 100},
+					'stockName' : {required : true,maxlength : 100},
 					'memo' : {maxlength : 100}
 				}
 			});

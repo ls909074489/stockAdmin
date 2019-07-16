@@ -29,6 +29,12 @@
 				<button id="yy-btn-approve-x" class="btn yellow btn-sm btn-info">
 					<i class="fa fa-check"></i> 审核
 				</button>
+				<button class="btn green btn-sm btn-info" id="yy-btn-import">
+					<i class="fa fa-chevron-down"></i> 导入
+				</button>
+				<button class="btn green btn-sm btn-info" id="yy-btn-templatedownload">
+					<i class="fa fa-chevron-down"></i> 导入模板下载
+				</button>
 			</div>
 			<div class="row yy-searchbar form-inline">
 				<form id="yy-form-query">
@@ -60,7 +66,9 @@
 							<th>单据状态</th>
 							<th>项目号</th>
 							<th>项目名称</th>
-							<th>备注</th>
+							<th>仓库</th>
+							<th>创建人</th>
+							<th>创建时间</th>
 						</tr>
 					</thead>
 					<tbody></tbody>
@@ -111,7 +119,17 @@
 				className : "center",
 				orderable : true
 			},{
-				data : "memo",
+				data : "stock.name",
+				width : "100",
+				className : "center",
+				orderable : true
+			},{
+				data : "creatorname",
+				width : "100",
+				className : "center",
+				orderable : true
+			},{
+				data : "createtime",
 				width : "100",
 				className : "center",
 				orderable : true
@@ -123,7 +141,25 @@
 			_queryData = $("#yy-form-query").serializeArray();
 			bindListActions();
 			serverPage('${serviceurl}/query?orderby=createtime@desc');
+			//模板下载
+			$("#yy-btn-templatedownload").bind('click',function(){
+				window.open('${ctx}${templatePath}',"_blank");
+			});
+			
+			$("#yy-btn-import").bind('click', importfileClick);//附件
 		});
+		
+		//点击选择文件按钮事件
+		function importfileClick(){
+			layer.open({
+				title : '导入',
+				type : 2,
+				area : [ '850px', '510px' ],
+				shadeClose : false,
+				shade : 0.8,
+				content : '${serviceurl}/toImport'
+			});
+		}
 	</script>
 </body>
 </html>	

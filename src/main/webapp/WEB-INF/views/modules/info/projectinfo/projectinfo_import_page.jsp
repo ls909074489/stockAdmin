@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="ctx" value="${pageContext.request.contextPath}" />
-<c:set var="serviceurl" value="${ctx}/info/orderinfo"/>
+<c:set var="serviceurl" value="${ctx}/info/projectinfo"/>
 <html>
 <head>
 <title>导入</title>
@@ -24,14 +24,14 @@
 						<div style="height: 20px;"></div>
 						<table>
 							<tr>
-								<%-- <td style="color: #e02222;">订单编码&nbsp;&nbsp;&nbsp;&nbsp;</td>
+								<td style="color: #e02222;">项目号&nbsp;&nbsp;&nbsp;&nbsp;</td>
 								<td>
 									<input name="code" id="code" type="text" value="${entity.code}" class="form-control">
 								</td>
-								<td style="color: #e02222;">&nbsp;&nbsp;&nbsp;&nbsp;订单名称&nbsp;&nbsp;&nbsp;&nbsp;</td>
+								<td style="color: #e02222;">&nbsp;&nbsp;&nbsp;&nbsp;项目名称&nbsp;&nbsp;&nbsp;&nbsp;</td>
 								<td>
 									<input name="name" id="name" type="text" value="${entity.name}" class="form-control">
-								</td> --%>
+								</td>
 								<td style="color: #e02222;">&nbsp;&nbsp;&nbsp;&nbsp;仓库&nbsp;&nbsp;&nbsp;&nbsp;</td>
 								<td>
 									<div class="input-group input-icon right">
@@ -46,16 +46,6 @@
 										</span>
 									</div>
 								</td>
-							</tr>
-							<tr style="height: 50px;">
-								<td style="color: #e02222;">订单类型&nbsp;&nbsp;&nbsp;&nbsp;</td>
-								<td>
-									<select name="orderType" id="orderType" data-enum-group="OrderType" class="yy-input-enumdata form-control"></select>
-								</td>
-								<%-- <td style="color: #e02222;">&nbsp;&nbsp;&nbsp;&nbsp;预计到货时间</td>
-								<td>
-									<input name="planArriveTime" id="planArriveTime" type="text" value="${entity.planArriveTime}" class="Wdate form-control" onclick="WdatePicker();">
-								</td> --%>
 							</tr>
 							
 							<tr style="height: 50px;">
@@ -134,11 +124,9 @@
 					var file = $("#multifile")[0].files[0];
 					var formData = new FormData();
 					formData.append("stock.uuid", $("#stockUuid").val());
-					formData.append("orderType", $("#orderType").val());
-					//formData.append("code", $("#code").val());
-					//formData.append("name", $("#name").val());
+					formData.append("code", $("#code").val());
+					formData.append("name", $("#name").val());
 					formData.append("memo", $("#memo").val());
-					//formData.append("planArriveTime", $("#planArriveTime").val());
 					formData.append("attachment", file,file.name);
 					var importLoad = layer.msg('数据导入中，每100条数据大概需要50秒。', {icon:16,time: 500*1000});
 					$.ajax( {
@@ -191,8 +179,8 @@
 				$('#yy-form-edit').validate({
 					rules : {
 						'orderType' : {required : true,maxlength : 100},
-						//'code' : {required : true,maxlength : 100},
-						//'name' : {required : true,maxlength : 100},
+						'code' : {required : true,maxlength : 100},
+						'name' : {required : true,maxlength : 100},
 						'stockName' : {required : true,maxlength : 100},
 						'memo' : {maxlength : 100}
 					}	

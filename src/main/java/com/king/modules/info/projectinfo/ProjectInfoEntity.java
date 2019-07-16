@@ -2,7 +2,10 @@ package com.king.modules.info.projectinfo;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -11,6 +14,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import com.king.common.annotation.MetaData;
 import com.king.frame.entity.SuperEntity;
+import com.king.modules.info.stockinfo.StockBaseEntity;
 
 /**
  * 项目
@@ -26,6 +30,10 @@ public class ProjectInfoEntity extends SuperEntity {
 
 	private static final long serialVersionUID = 1L;
 
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "stockid")
+	private StockBaseEntity stock;
+	
 	@Column(length = 50)
 	private String code;
 	
@@ -37,6 +45,17 @@ public class ProjectInfoEntity extends SuperEntity {
 	@Column(length = 250)
 	private String memo;
 	
+	@Transient
+	private String stockId;
+	
+
+	public StockBaseEntity getStock() {
+		return stock;
+	}
+
+	public void setStock(StockBaseEntity stock) {
+		this.stock = stock;
+	}
 
 	public String getCode() {
 		return code;
@@ -60,6 +79,14 @@ public class ProjectInfoEntity extends SuperEntity {
 
 	public void setMemo(String memo) {
 		this.memo = memo;
+	}
+
+	public String getStockId() {
+		return stockId;
+	}
+
+	public void setStockId(String stockId) {
+		this.stockId = stockId;
 	}
 
 }

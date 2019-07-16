@@ -29,7 +29,7 @@
 					</div>
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4 required">华为物料编码</label>
+							<label class="control-label col-md-4">华为物料编码</label>
 							<div class="col-md-8" >
 								<input name="hwcode" id="hwcode" type="text" value="${entity.hwcode}" class="form-control">
 							</div>
@@ -122,7 +122,7 @@
 				onsubmit : true,
 				rules : {
 					'code' : {required : true,maxlength : 100},
-					'hwcode' : {required : true,maxlength : 50},
+					//'hwcode' : {required : true,maxlength : 50},
 					'name' : {required : true,maxlength : 100},
 					'hasRisk' : {required : true,maxlength : 100},
 					'limitCount' : {required : true,maxlength : 100},

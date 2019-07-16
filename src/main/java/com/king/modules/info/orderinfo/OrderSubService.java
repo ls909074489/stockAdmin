@@ -32,9 +32,11 @@ import com.king.frame.controller.ActionResultModel;
 import com.king.frame.dao.IBaseDAO;
 import com.king.frame.security.ShiroUser;
 import com.king.frame.service.BaseServiceImpl;
+import com.king.modules.info.material.MaterialBaseEntity;
 import com.king.modules.info.material.MaterialEntity;
 import com.king.modules.info.material.MaterialService;
 import com.king.modules.info.stockstream.StockStreamEntity;
+import com.king.modules.sys.documents.BillCodeService;
 import com.king.modules.sys.imexlate.ImexlateSubEntity;
 import com.king.modules.sys.imexlate.ImexlateSubService;
 import com.king.modules.sys.user.UserEntity;
@@ -57,6 +59,8 @@ public class OrderSubService extends BaseServiceImpl<OrderSubEntity, String> {
 	private ImexlateSubService imexlateSubService;
 	@Autowired
 	private MaterialService materialService;
+	@Autowired
+	private BillCodeService billCodeService;
 
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -85,32 +89,35 @@ public class OrderSubService extends BaseServiceImpl<OrderSubEntity, String> {
   		// 保存自身数据
   		if(StringUtils.isEmpty(entity.getUuid())){
 			entity.setBillstatus(BillStatus.FREE.toStatusValue());
+			//后台生成订单编号
+			entity.setCode(billCodeService.createBillCode("orderInfoBillCode", ""));
 		}
   		savedEntity = mainService.save(entity);
   		
   		UserEntity user = ShiroUser.getCurrentUserEntity();
   		// 保存子表数据
   		if(subList!=null&&subList.size()>0){
+  			Map<String,String> codeMap = new HashMap<>();
   			for (OrderSubEntity sub : subList) {
   				if(StringUtils.isEmpty(sub.getUuid())){
   	  				sub.setCreator(user.getUuid());
   	  				sub.setCreatorname(user.getUsername());
   	  				sub.setCreatetime(new Date());
   				}
-  				MaterialEntity material = new MaterialEntity();
-  				material.setUuid(sub.getMaterialId());
-  				
   				if(sub.getWarningTime()!=null){
   					sub.setWarningType(StockStreamEntity.WARNINGTYPE_BE_NEED);
   				}else{
   					sub.setWarningType(StockStreamEntity.WARNINGTYPE_NO_NEED);
   				}
-  				sub.setMaterial(material);
   				sub.setActualAmount(sub.getPlanAmount());
   				sub.setMain(savedEntity);
   				sub.setModifier(user.getUuid());
   				sub.setModifiername(user.getUsername());
   				sub.setModifytime(new Date());
+  				if(codeMap.containsKey(sub.getMaterialCode())){
+					throw new ServiceException("料号"+sub.getMaterialCode()+"不能重复");
+				}
+				codeMap.put(sub.getMaterialCode(), "料号"+sub.getMaterialCode());
   			}
   			save(subList);
   		}
@@ -276,12 +283,16 @@ public class OrderSubService extends BaseServiceImpl<OrderSubEntity, String> {
 				List<MaterialEntity> materialList = materialService.findByCodes(codeList);
 				boolean hasMaterial = false;//是否存在料号
 				List<String> notExitCode = new ArrayList<>();//不存在的料号
+				MaterialBaseEntity materialBase =null;
 				for(OrderSubEntity orderSub : list){
 					hasMaterial = false;
 					for(MaterialEntity material:materialList){
 						if(orderSub.getMaterialCode().equals(material.getCode())){
 							hasMaterial = true;
-							orderSub.setMaterialId(material.getUuid());
+							materialBase = new MaterialBaseEntity();
+							materialBase.setUuid(material.getUuid());
+							orderSub.setMaterial(materialBase);
+							orderSub.setMaterialCode(material.getCode());
 							break;
 						}
 					}

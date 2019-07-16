@@ -1,5 +1,6 @@
 package com.king.modules.info.projectinfo;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,9 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 	@RequestMapping("/detailList")
 	public String detailList(Model model) {
 		List<EnumDataSubEntity> subList = EnumDataUtils.getEnumSubList("barCodeExtract");
+		if(subList==null){
+			subList = new ArrayList<>();
+		}
 		model.addAttribute("subList", Json.toJson(subList));
 		return "modules/info/projectinfo/projectinfo_detail_list";
 	}

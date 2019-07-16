@@ -1,12 +1,17 @@
 package com.king.modules.info.projectinfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
+import com.king.common.dao.DbUtilsDAO;
+import com.king.common.exception.DAOException;
+import com.king.frame.controller.ActionResultModel;
 import com.king.frame.dao.IBaseDAO;
 import com.king.frame.service.SuperServiceImpl;
 import com.king.modules.info.stockdetail.StockDetailEntity;
@@ -28,6 +33,8 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 	private ProjectSubService projectSubService;
 	@Autowired
 	private StockDetailService stockDetailService;
+	@Autowired
+	private DbUtilsDAO dbDao;
 
 	protected IBaseDAO<ProjectInfoEntity, String> getDAO() {
 		return dao;
@@ -59,6 +66,33 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 		List<ProjectSubEntity> subList = projectSubService.findByMain(entity.getUuid());
 		stockDetailService.descStockDetail(entity, subList);
 		super.afterApprove(entity);
+	}
+
+
+
+	public ActionResultModel<ProjectInfoVo> select2Query(String codeOrName) {
+		ActionResultModel<ProjectInfoVo> arm = new ActionResultModel<ProjectInfoVo>();
+		List<ProjectInfoVo> voList = new ArrayList<ProjectInfoVo>();
+		if(StringUtils.isEmpty(codeOrName)){
+			try {
+				voList =  dbDao.find(ProjectInfoVo.class, "select uuid,name,code from yy_project_info order by createtime desc");
+				arm.setSuccess(true);
+			} catch (DAOException e) {
+				arm.setSuccess(false);
+				e.printStackTrace();
+			}
+		}else{
+			Object [] params  = {"%"+codeOrName+"%","%"+codeOrName+"%"};
+			try {
+				voList =  dbDao.find(ProjectInfoVo.class, "select uuid,name,code from yy_project_info where code like ? or name like ? order by createtime desc", params);
+				arm.setSuccess(true);
+			} catch (DAOException e) {
+				arm.setSuccess(false);
+				e.printStackTrace();
+			}
+		}
+		arm.setRecords(voList);
+		return arm;
 	}
 	
 	

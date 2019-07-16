@@ -35,6 +35,16 @@
 							</div>
 						</div>
 					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+							<label class="control-label col-md-4">仓库</label>
+							<div class="col-md-8">
+								<input id="stockUuid" name="stock.uuid" type="hidden" value="${entity.stock.uuid}"> 
+								<input id="stockName" name="stockName" type="text" class="form-control" readonly="readonly" 
+									value="${entity.stock.name}">
+							</div>
+						</div>
+					</div>
 				</div>
 				<div class="row">
 					<div class="col-md-8">

@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import com.king.frame.redis.YYRedisCache;
 import com.king.modules.sys.alertmsg.AlertmsgService;
 import com.king.modules.sys.alertmsg.YYMsg;
+import com.king.modules.sys.documents.DocumentsService;
+import com.king.modules.sys.documents.DocumentsUtil;
 import com.king.modules.sys.enumdata.EnumDataService;
 import com.king.modules.sys.enumdata.EnumDataSubEntity;
 import com.king.modules.sys.enumdata.EnumDataUtils;
@@ -51,6 +53,9 @@ public class YYInitializtion implements ApplicationListener<ContextRefreshedEven
 
 	@Autowired
 	YYRedisCache yyRedisCache;
+	
+	@Autowired
+	DocumentsService documentsService;
 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
@@ -122,6 +127,14 @@ public class YYInitializtion implements ApplicationListener<ContextRefreshedEven
 			logger.info(">>>>>>>>>> 导出导入模板生成完成！>>>>>>>>");
 		} catch (ServiceException e) {
 			logger.error(">>>>>>>>> 导出导入模板生成失败！！！>>>>>>>>");
+			e.printStackTrace();
+		}
+		
+		try {
+			DocumentsUtil.updateEntitys(documentsService.findAll());
+			logger.info(">>>>>>>>>> 单据号规则缓存加载完成！>>>>>>>>");
+		} catch (ServiceException e) {
+			logger.error(">>>>>>>>> 单据号规则缓存加载失败！>>>>>>>>");
 			e.printStackTrace();
 		}
 

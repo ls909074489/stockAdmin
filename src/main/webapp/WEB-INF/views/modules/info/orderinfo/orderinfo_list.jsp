@@ -69,8 +69,9 @@
 							<th>单据状态</th>
 							<th>订单类型</th>
 							<th>订单编码</th>
-							<th>订单名称</th>
-							<th>预计到货时间</th>
+							<!-- <th>订单名称</th> -->
+							<th>仓库</th>
+							<!-- <th>预计到货时间</th> -->
 							<th>创建人</th>
 							<th>创建时间</th>
 						</tr>
@@ -125,17 +126,22 @@
 				width : "100",
 				className : "center",
 				orderable : true
-			},{
+			}/* ,{
 				data : "name",
 				width : "100",
 				className : "center",
 				orderable : true
-			},{
+			} */,{
+				data : "stock.name",
+				width : "100",
+				className : "center",
+				orderable : true
+			}/* ,{
 				data : "planArriveTime",
 				width : "100",
 				className : "center",
 				orderable : true
-			},{
+			} */,{
 				data : "creatorname",
 				width : "100",
 				className : "center",

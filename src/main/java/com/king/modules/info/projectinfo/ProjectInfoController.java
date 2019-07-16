@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +17,15 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.king.common.utils.Constants;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.SuperController;
-import com.king.modules.info.material.MaterialEntity;
+import com.king.modules.info.material.MaterialBaseEntity;
+import com.king.modules.info.stockinfo.StockBaseEntity;
+import com.king.modules.sys.param.ParameterUtil;
 
 import net.sf.json.JSONObject;
 
@@ -50,11 +55,14 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 	 */
 	@RequestMapping("/list")
 	public String listView(Model model) {
+		model.addAttribute("templatePath", ParameterUtil.getParamValue("projectInfoImpTemplate", "/template/项目单导入模板.xlsx"));
 		return "modules/info/projectinfo/projectinfo_list";
 	}
 
 	@Override
 	public String addView(Model model, ServletRequest request) {
+		model.addAttribute("defaultStockName",ParameterUtil.getParamValue("defaultStockName"));
+		model.addAttribute("defaultStock",ParameterUtil.getParamValue("defaultStock"));
 		return "modules/info/projectinfo/projectinfo_add";
 	}
 
@@ -102,6 +110,9 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 		arm.setSuccess(true);
 		List<ProjectSubEntity> subList = this.convertToEntities(subArrs);
 		try {
+			StockBaseEntity stock = new StockBaseEntity();
+			stock.setUuid(entity.getStockId());
+			entity.setStock(stock);
 			arm = subService.saveSelfAndSubList(entity, subList, deletePKs);
 		} catch (DataIntegrityViolationException e) {
 			e.printStackTrace();
@@ -136,11 +147,52 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 			}
 			ProjectSubEntity obj = (ProjectSubEntity) JSONObject.toBean(jsonObject,
 					ProjectSubEntity.class);
-			MaterialEntity material = new MaterialEntity();
+			MaterialBaseEntity material = new MaterialBaseEntity();
 			material.setUuid(obj.getMaterialId());
 			obj.setMaterial(material);
 			returnList.add(obj);
 		}
 		return returnList;
+	}
+	
+	
+
+	/**
+	 * 跳到导入页面
+	 * 
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/toImport")
+	public String toImport(Model model) {
+		model.addAttribute("templatePath", ParameterUtil.getParamValue("projectInfoImpTemplate", "/template/项目单导入模板.xlsx"));
+		model.addAttribute("defaultStockName",ParameterUtil.getParamValue("defaultStockName"));
+		model.addAttribute("defaultStock",ParameterUtil.getParamValue("defaultStock"));
+		return "modules/info/orderinfo/projectinfo_import_page";
+	}
+
+
+
+	@ResponseBody
+	@RequestMapping(value = "/import")
+	public ActionResultModel<ProjectInfoEntity> importExcel(MultipartHttpServletRequest request,ProjectInfoEntity projectInfo,
+			HttpServletResponse response) {
+		ActionResultModel<ProjectInfoEntity> arm = new ActionResultModel<ProjectInfoEntity>();
+		try {
+			response.setCharacterEncoding("UTF-8");
+			MultipartFile file = request.getFile("attachment");
+			arm = subService.importExcel(file, projectInfo);
+		} catch (Exception e) {
+			arm.setSuccess(false);
+			arm.setMsg(e.getMessage());
+		}
+		return arm;
+	}
+	
+	
+	@RequestMapping(value = "/select2Query")
+	@ResponseBody
+	public ActionResultModel<ProjectInfoVo> select2Query(String codeOrName) {
+		return service.select2Query(codeOrName);
 	}
 }

@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.king.common.annotation.MetaData;
 import com.king.frame.entity.BaseEntity;
-import com.king.modules.info.material.MaterialEntity;
+import com.king.modules.info.material.MaterialBaseEntity;
 
 @MetaData(value = "订单")
 @Entity
@@ -38,7 +38,7 @@ public class OrderSubEntity extends BaseEntity {
 	@MetaData(value = "物料")
 	@ManyToOne(cascade=CascadeType.REFRESH,optional = true)
 	@JoinColumn(name = "material_id",nullable=true)
-	private MaterialEntity material;
+	private MaterialBaseEntity material;
 	
 	@MetaData(value = "计划数量")
 	@Column()
@@ -96,11 +96,11 @@ public class OrderSubEntity extends BaseEntity {
 		this.planAmount = planAmount;
 	}
 
-	public MaterialEntity getMaterial() {
+	public MaterialBaseEntity getMaterial() {
 		return material;
 	}
 
-	public void setMaterial(MaterialEntity material) {
+	public void setMaterial(MaterialBaseEntity material) {
 		this.material = material;
 	}
 

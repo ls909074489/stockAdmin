@@ -27,14 +27,14 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-md-4">
+					<%-- <div class="col-md-4">
 						<div class="form-group">
 							<label class="control-label col-md-4" >订单名称</label>
 							<div class="col-md-8" >
 								<input name="name" id="name" type="text" value="${entity.name}" class="form-control">
 							</div>
 						</div>
-					</div>
+					</div> --%>
 					<div class="col-md-4">
 						<div class="form-group">
 							<label class="control-label col-md-4">仓库</label>
@@ -55,14 +55,14 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-md-4">
+					<%-- <div class="col-md-4">
 						<div class="form-group">
 							<label class="control-label col-md-4" >预计到货时间</label>
 							<div class="col-md-8" >
 								<input name="planArriveTime" id="planArriveTime" type="text" value="${entity.planArriveTime}" class="Wdate form-control" onclick="WdatePicker();">
 							</div>
 						</div>
-					</div>
+					</div> --%>
 				</div>
 				<div class="row">
 					<div class="col-md-8">

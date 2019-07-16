@@ -23,7 +23,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.king.common.utils.Constants;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.SuperController;
+import com.king.modules.info.material.MaterialBaseEntity;
 import com.king.modules.info.material.MaterialEntity;
+import com.king.modules.info.stockinfo.StockBaseEntity;
 import com.king.modules.sys.param.ParameterUtil;
 
 import net.sf.json.JSONObject;
@@ -109,6 +111,9 @@ public class OrderInfoController extends SuperController<OrderInfoEntity> {
 		arm.setSuccess(true);
 		List<OrderSubEntity> subList = this.convertToEntities(subArrs);
 		try {
+			StockBaseEntity stock = new StockBaseEntity();
+			stock.setUuid(entity.getStockId());
+			entity.setStock(stock);
 			arm = subService.saveSelfAndSubList(entity, subList, deletePKs);
 		}catch (DataIntegrityViolationException e) {
 			e.printStackTrace();
@@ -145,7 +150,7 @@ public class OrderInfoController extends SuperController<OrderInfoEntity> {
 			}
 			OrderSubEntity obj = (OrderSubEntity) JSONObject.toBean(jsonObject,
 					OrderSubEntity.class);
-			MaterialEntity material = new MaterialEntity();
+			MaterialBaseEntity material = new MaterialBaseEntity();
 			material.setUuid(obj.getMaterialId());
 			obj.setMaterial(material);
 //			if(StringUtils.isEmpty(obj.getUuid())){

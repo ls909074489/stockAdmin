@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -62,6 +63,10 @@ public class OrderInfoEntity extends SuperEntity {
 	@MetaData(value = "备注")
 	@Column(length = 250)
 	private String memo;
+	
+	@Transient
+	private String stockId;
+	
 
 	public String getOrderType() {
 		return orderType;
@@ -118,6 +123,14 @@ public class OrderInfoEntity extends SuperEntity {
 
 	public void setStock(StockBaseEntity stock) {
 		this.stock = stock;
+	}
+
+	public String getStockId() {
+		return stockId;
+	}
+
+	public void setStockId(String stockId) {
+		this.stockId = stockId;
 	}
 
 }

@@ -58,17 +58,24 @@
 					<input type="text" autocomplete="on" name="search_LIKE_main.name"
 						id="search_LIKE_main.name" class="form-control input-sm"> -->
 					
-						<label class="control-label">项目</label>
-							<div class="input-group input-icon right">
-								<input id="search_LIKE_mainId" name="search_LIKE_main.uuid" type="hidden"> 
-								<i class="fa fa-remove" onclick="cleanDef('search_LIKE_mainId','search_LIKE_mainName');" title="清空"></i>
-								<input id="search_LIKE_mainName" name="search_LIKE_main.name" type="text" class="form-control" readonly="readonly">
-								<span class="input-group-btn">
-									<button id="yy-project-select" class="btn btn-default btn-ref" type="button">
-										<span class="glyphicon glyphicon-search"></span>
-									</button>
-								</span>
-							</div>
+					<!-- <label class="control-label">项目</label>
+					<div class="input-group input-icon right">
+						<input id="search_LIKE_mainId" name="search_LIKE_main.uuid" type="hidden"> 
+						<i class="fa fa-remove" onclick="cleanDef('search_LIKE_mainId','search_LIKE_mainName');" title="清空"></i>
+						<input id="search_LIKE_mainName" name="search_LIKE_main.name" type="text" class="form-control" readonly="readonly">
+						<span class="input-group-btn">
+							<button id="yy-project-select" class="btn btn-default btn-ref" type="button">
+								<span class="glyphicon glyphicon-search"></span>
+							</button>
+						</span>
+					</div> -->
+					
+					<label class="control-label">项目</label>
+					<div class="input-group">
+						<select class="combox form-control" id="search_LIKE_mainId" name="search_LIKE_main.uuid" style="float: left;width: 200px;">
+							<option value=""></option>
+						</select>
+					</div>
 												
 					<label for="search_LIKE_main.name" class="control-label">箱号&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
 					<select class="yy-input-enumdata form-control" id="search_EQ_boxNum" name="search_EQ_boxNum"
@@ -81,7 +88,7 @@
 					<input type="text" autocomplete="on" name="search_LIKE_material.name" id="search_LIKE_material.name" class="form-control input-sm">			 
 							
 					<label for="search_LIKE_barcode" class="control-label">条码&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-					<input type="text" autocomplete="on" name="search_LIKE_barcode" id="search_LIKE_barcode" class="form-control input-sm">		 
+					<input type="text" autocomplete="on" name="search_LIKE_barcode" id="search_LIKE_barcode" class="form-control input-sm">	  
 
 					<button id="yy-btn-search" type="button" class="btn btn-sm btn-info">
 						<i class="fa fa-search"></i>查询
@@ -232,6 +239,36 @@
 				});
 			});
 			
+			$("#search_LIKE_mainId").select2({
+		        theme: "bootstrap",
+		        allowClear: true,
+		        placeholder: "请选择",
+		        ajax:{
+		            url:"${ctx}/info/projectinfo/select2Query",
+		            dataType:"json",
+		            delay:250,
+		            data:function(params){
+		                return {codeOrName: params.term};
+		            },
+		            cache:true,
+		            processResults: function (res, params) {
+		            	console.info(res);
+		            	console.info(params);
+		                var options = [];
+		                var records = res.records;
+		                for(var i= 0, len=records.length;i<len;i++){
+		                    var option = {"id":records[i].uuid, "text":records[i].name+"("+records[i].code+")"};
+		                    options.push(option);
+		                }
+		                return {
+		                    results: options
+		                };
+		            },
+		            escapeMarkup: function (markup) { return markup; },
+		            minimumInputLength: 1
+		        }
+		    });
+			
 		});
 		
 		
@@ -303,7 +340,7 @@
 		//匹配物料
 		function matchMaterial(){
 			var t_projectId = $("#search_LIKE_mainId").val();
-			/* if(t_projectId==''){
+			if(t_projectId==''){
 				YYUI.promMsg("请选择项目");
 				return false;
 			}
@@ -311,7 +348,7 @@
 			if(t_boxNum==''){
 				YYUI.promMsg("请选择箱号");
 				return false;
-			} */
+			}
 			
 			_ismatchSearch=true;//设置为扫描条形码查询
 			

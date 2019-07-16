@@ -26,18 +26,18 @@
 						<div class="form-group">
 							<label class="control-label col-md-4 required" >订单编码</label>
 							<div class="col-md-8" >
-								<input name="code" id="code" type="text" value="${entity.code}" class="form-control">
+								<input name="code" id="code" type="text" value="后台自动生成" class="form-control" readonly="readonly">
 							</div>
 						</div>
 					</div>
-					<div class="col-md-4">
+					<%-- <div class="col-md-4">
 						<div class="form-group">
 							<label class="control-label col-md-4 required" >订单名称</label>
 							<div class="col-md-8" >
 								<input name="name" id="name" type="text" value="${entity.name}" class="form-control">
 							</div>
 						</div>
-					</div>
+					</div> --%>
 					<div class="col-md-4">
 						<div class="form-group">
 							<label class="control-label col-md-4 required">仓库</label>
@@ -66,14 +66,14 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-md-4">
+					<%-- <div class="col-md-4">
 						<div class="form-group">
 							<label class="control-label col-md-4" >预计到货时间</label>
 							<div class="col-md-8" >
 								<input name="planArriveTime" id="planArriveTime" type="text" value="${entity.planArriveTime}" class="Wdate form-control" onclick="WdatePicker();">
 							</div>
 						</div>
-					</div>
+					</div> --%>
 				</div>
 				<div class="row">
 					<div class="col-md-8">
@@ -147,7 +147,7 @@
 				orderable : true,
 				render : function(data, type, full) {
 					var str ='<div class="input-group materialRefDiv"> '+
-					 '<input class="form-control materialCodeInputCls"  value="'+ data.code + '" reallyname="code" name="code" readonly="readonly"> '+
+					 '<input class="form-control materialCodeInputCls"  value="'+ data.code + '" reallyname="materialCode" name="materialCode" readonly="readonly"> '+
 					 '<input class="form-control"  value="'+ data.uuid + '" type="hidden" reallyname="materialId" name="materialId"> '+
 					 '<span class="input-group-btn"> '+
 					 '<button id="" class="btn btn-default btn-ref materialcode" type="button" data-select2-open="single-append-text"> '+
@@ -288,7 +288,7 @@
 				}
 			});
 			if(canAdd){
-				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='code']").val(selNode.code);
+				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='materialCode']").val(selNode.code);
 				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='materialId']").val(selNode.uuid);
 				$(t_refMaterialEle).closest("tr").find(".materialNameInputCls").html(selNode.name);
 			}
@@ -350,8 +350,8 @@
 				onsubmit : true,
 				rules : {
 					'orderType' : {required : true,maxlength : 100},
-					'code' : {required : true,maxlength : 100},
-					'name' : {required : true,maxlength : 100},
+					//'code' : {required : true,maxlength : 100},
+					//'name' : {required : true,maxlength : 100},
 					'stockName' : {required : true,maxlength : 100},
 					'memo' : {maxlength : 100}
 				}
