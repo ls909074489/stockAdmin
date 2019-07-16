@@ -93,7 +93,7 @@
 					<button id="yy-btn-search" type="button" class="btn btn-sm btn-info">
 						<i class="fa fa-search"></i>查询
 					</button>
-					<button id="rap-searchbar-reset" type="reset" class="red">
+					<button id="yy-searchbar-reset" type="button" class="red">
 						<i class="fa fa-undo"></i> 清空
 					</button>
 				</form>
@@ -271,6 +271,18 @@
 			
 		});
 		
+		
+		//清空
+		function onReset() {
+			YYFormUtils.clearQueryForm("yy-form-query");
+			$("#search_LIKE_mainId").select2("val", " "); 
+			return false;
+		}
+		
+		//重写双击点击
+		function onEditRow(aData, iDataIndex, nRow){
+			return false;
+		}
 		
 		//服务器分页
 		function serverPage(url) {
