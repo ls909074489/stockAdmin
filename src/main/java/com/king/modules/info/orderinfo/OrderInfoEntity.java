@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.king.common.annotation.MetaData;
 import com.king.frame.entity.SuperEntity;
 import com.king.modules.info.stockinfo.StockBaseEntity;
-import com.king.modules.info.supplier.SupplierBaseEntity;
+import com.king.modules.info.supplier.SupplierEntity;
 
 /**
  * 订单
@@ -40,8 +40,8 @@ public class OrderInfoEntity extends SuperEntity {
 	private StockBaseEntity stock;
 	
 	@ManyToOne(cascade=CascadeType.REFRESH,optional = true)
-	@JoinColumn(name = "supplier_id",nullable=true)
-	private SupplierBaseEntity supplier;
+	@JoinColumn(name = "supplierid",nullable=true)
+	private SupplierEntity supplier;
 
 	@MetaData(value = "订单编码")
 	@Column(length = 50)
@@ -150,11 +150,11 @@ public class OrderInfoEntity extends SuperEntity {
 		this.supplierId = supplierId;
 	}
 
-	public SupplierBaseEntity getSupplier() {
+	public SupplierEntity getSupplier() {
 		return supplier;
 	}
 
-	public void setSupplier(SupplierBaseEntity supplier) {
+	public void setSupplier(SupplierEntity supplier) {
 		this.supplier = supplier;
 	}
 	

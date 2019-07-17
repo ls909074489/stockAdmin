@@ -80,7 +80,7 @@
 							<label class="control-label col-md-4">供应商</label>
 							<div class="col-md-8">
 								<div class="input-group input-icon right">
-										<input id="supplierUuid" name="supplier.uuid" type="hidden" value="${entity.supplier.uuid}"> 
+										<input id="supplierUuid" name="supplierId" type="hidden" value="${entity.supplier.uuid}"> 
 										<i class="fa fa-remove" onclick="cleanDef('supplierUuid','supplierName');" title="清空"></i>
 										<input id="supplierName" name="supplierName" type="text" class="form-control" readonly="readonly" 
 											value="${entity.supplier.name}">

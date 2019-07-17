@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -88,6 +89,13 @@ public class OrderInfoController extends SuperController<OrderInfoEntity> {
 		arm.setSuccess(true);
 		List<OrderSubEntity> subList = this.convertToEntities(subArrs);
 		try {
+			if(StringUtils.isEmpty(entity.getSupplierId())){
+				entity.setSupplier(null);
+			}else{
+				SupplierEntity supplier = new SupplierEntity();
+				supplier.setUuid(entity.getSupplierId());
+				entity.setSupplier(supplier);
+			}
 			arm = subService.saveSelfAndSubList(entity, subList, deletePKs);
 		}catch (DataIntegrityViolationException e) {
 			e.printStackTrace();
@@ -114,9 +122,13 @@ public class OrderInfoController extends SuperController<OrderInfoEntity> {
 			StockBaseEntity stock = new StockBaseEntity();
 			stock.setUuid(entity.getStockId());
 			entity.setStock(stock);
-			SupplierEntity supplier = new SupplierEntity();
-			supplier.setUuid(entity.getSupplierId());
-			entity.setStock(stock);
+			if(StringUtils.isEmpty(entity.getSupplierId())){
+				entity.setSupplier(null);
+			}else{
+				SupplierEntity supplier = new SupplierEntity();
+				supplier.setUuid(entity.getSupplierId());
+				entity.setSupplier(supplier);
+			}
 			arm = subService.saveSelfAndSubList(entity, subList, deletePKs);
 		}catch (DataIntegrityViolationException e) {
 			e.printStackTrace();
@@ -198,6 +210,13 @@ public class OrderInfoController extends SuperController<OrderInfoEntity> {
 		try {
 			response.setCharacterEncoding("UTF-8");
 			MultipartFile file = request.getFile("attachment");
+			if(StringUtils.isEmpty(orderInfo.getSupplierId())){
+				orderInfo.setSupplier(null);
+			}else{
+				SupplierEntity supplier = new SupplierEntity();
+				supplier.setUuid(orderInfo.getSupplierId());
+				orderInfo.setSupplier(supplier);
+			}
 			arm = subService.importExcel(file, orderInfo);
 		} catch (Exception e) {
 			arm.setSuccess(false);
