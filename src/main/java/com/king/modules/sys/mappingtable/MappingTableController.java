@@ -137,6 +137,7 @@ public class MappingTableController extends BaseController<MappingTableEntity> {
 			}
 			MappingTableSubEntity obj = (MappingTableSubEntity) JSONObject.toBean(jsonObject,
 					MappingTableSubEntity.class);
+			obj.setMainTable(true);
 			returnList.add(obj);
 		}
 		return returnList;

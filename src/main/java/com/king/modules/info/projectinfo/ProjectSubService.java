@@ -57,6 +57,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 	@Autowired
 	private MaterialService materialService;
 
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	protected IBaseDAO getDAO() {
@@ -65,7 +66,6 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 
 	/**
 	 * 保存
-	 * 
 	 * @param entity
 	 * @param subList
 	 * @param deletePKs

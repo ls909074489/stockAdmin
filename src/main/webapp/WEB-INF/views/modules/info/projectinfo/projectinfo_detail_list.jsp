@@ -70,14 +70,26 @@
 						</span>
 					</div> -->
 					
-					<label class="control-label">项目</label>
-					<div class="input-group">
-						<select class="combox form-control" id="search_LIKE_mainId" name="search_LIKE_main.uuid" style="float: left;width: 200px;">
-							<option value=""></option>
-						</select>
-					</div>
+					<c:choose>
+						<c:when test="${empty sourceBillId}">
+							<label class="control-label">项目</label>
+							<div class="input-group">
+								<select class="combox form-control projectSelectCls" id="search_LIKE_mainId" name="search_LIKE_main.uuid" style="float: left;width: 200px;">
+									<option value=""></option>
+								</select>
+							</div>
+						</c:when>
+						<c:otherwise>
+							<input name="search_LIKE_main.uuid" id="search_LIKE_mainId" type="hidden" value="${sourceBillId}" class="yy-input"> 
+							<span style="display: none;">
+								<select class="combox form-control projectSelectCls"  name="" style="display: none;">
+										<option value="${sourceBillId}">${sourceBillId}</option>
+								</select>
+							</span>
+						</c:otherwise>
+					</c:choose>
 												
-					<label for="search_LIKE_main.name" class="control-label">箱号&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+					<label for="search_EQ_boxNum" class="control-label">箱号&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
 					<select class="yy-input-enumdata form-control" id="search_EQ_boxNum" name="search_EQ_boxNum"
 								 data-enum-group="BoxNum"></select>	
 								 
@@ -239,7 +251,7 @@
 				});
 			});
 			
-			$("#search_LIKE_mainId").select2({
+			$(".projectSelectCls").select2({
 		        theme: "bootstrap",
 		        allowClear: true,
 		        placeholder: "请选择",
@@ -275,7 +287,7 @@
 		//清空
 		function onReset() {
 			YYFormUtils.clearQueryForm("yy-form-query");
-			$("#search_LIKE_mainId").select2("val", " "); 
+			$(".projectSelectCls").select2("val", " "); 
 			return false;
 		}
 		
@@ -352,6 +364,7 @@
 		//匹配物料
 		function matchMaterial(){
 			var t_projectId = $("#search_LIKE_mainId").val();
+			console.info(">>>>>>>>>>>>"+t_projectId);
 			if(t_projectId==''){
 				YYUI.promMsg("请选择项目");
 				return false;
@@ -367,6 +380,7 @@
 			var searchCode = "";
 			var t_sweepCode = $("#sweepCode").val();
 			if(t_sweepCode!=null&&t_sweepCode!=''){
+				var hasMatch=false;
 				if(jsonResp!=null&&jsonResp.length>0){
 					for (i = 0; i < jsonResp.length; i++) {
 						var t_pre = jsonResp[i].enumdatakey;
@@ -376,9 +390,13 @@
 							searchCode = t_sweepCode.substring(t_pre.length,t_pre.length+materialLength);
 							console.info("searchCode>>>>>>>>>"+searchCode);
 							$("#search_LIKE_materialCode").val(searchCode);
+							hasMatch=true;
 							break;
 						}
 					}
+				}
+				if(!hasMatch){
+					$("#search_LIKE_materialCode").val(t_sweepCode);
 				}
 			}
 			//获取查询数据，在表格刷新的时候自动提交到后台

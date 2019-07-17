@@ -67,6 +67,7 @@ public class MappingTableSubEntity extends BaseEntity {
 	private boolean isListVisiable=true;//列表是否显示
 	@Column(length = 100)
 	private boolean isDetailVisiable=true;//明细是否显示
+	
 	@Column(length = 100)
 	private boolean mainTable=true;//是否主表
 	

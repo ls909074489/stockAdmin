@@ -67,7 +67,7 @@
 							<th>剩余数量</th>
 							<th>预警时间</th>
 							<th>预警剩余数量</th>
-							<th>预警状态</th>
+							<!-- <th>预警状态</th> -->
 						</tr>
 					</thead>
 					<tbody></tbody>
@@ -163,12 +163,12 @@
 				width : "60",
 				className : "center",
 				orderable : false
-			},{
+			}/* ,{
 				data : "warningType",
 				width : "60",
 				className : "center",
 				orderable : false
-			}];
+			} */];
 		
 		//var _setOrder = [[5,'desc']];
 		$(document).ready(function() {

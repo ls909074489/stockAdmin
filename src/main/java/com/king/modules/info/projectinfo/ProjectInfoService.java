@@ -14,6 +14,8 @@ import com.king.common.exception.DAOException;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.dao.IBaseDAO;
 import com.king.frame.service.SuperServiceImpl;
+import com.king.modules.info.apply.ProjectApplyEntity;
+import com.king.modules.info.apply.ProjectApplyService;
 import com.king.modules.info.stockdetail.StockDetailEntity;
 import com.king.modules.info.stockdetail.StockDetailService;
 import com.king.modules.info.stockinfo.StockInfoEntity;
@@ -35,6 +37,9 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 	private StockDetailService stockDetailService;
 	@Autowired
 	private DbUtilsDAO dbDao;
+	
+	@Autowired
+	private ProjectApplyService projectApplyService;
 
 	protected IBaseDAO<ProjectInfoEntity, String> getDAO() {
 		return dao;
@@ -57,6 +62,17 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 			}
 		}
 		super.beforeSubmit(entity);
+	}
+
+	@Override
+	public void afterSubmit(ProjectInfoEntity entity) throws ServiceException {
+		ProjectApplyEntity apply = new ProjectApplyEntity();
+		apply.setApplyType(ProjectApplyEntity.APPLYING);
+		apply.setContent("提交项目单");
+		apply.setSourceBillId(entity.getUuid());
+		apply.setSourceBillCode(entity.getBillcode());
+		projectApplyService.doAdd(apply);
+		super.afterSubmit(entity);
 	}
 
 

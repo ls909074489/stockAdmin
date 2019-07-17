@@ -18,7 +18,7 @@
 								<i class="fa fa-weixin"></i> 系统消息
 							</div>
 							<div class="tools">
-								<a href="" class="reload" onclick="getMessage()"> </a>
+								<a href="" class="reload" onclick="loadApply()"> </a>
 							</div>
 						</div>
 						<div class="portlet-body">
@@ -29,26 +29,8 @@
 										<li style="height: 35px;">
 											<div class="task-title">
 												<!-- <span class="label label-sm label-success">业务消息</span>&nbsp; -->
-												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
-												<a href="javascript:;" style="color:green;">张三-订购单CS001，请及时处理</a>
-												</span>
-												<span style="float: right;">2018-06-28 11:21:26</span>
-											</div>
-										</li>
-										<li style="height: 35px;">
-											<div class="task-title">
-												<!-- <span class="label label-sm label-success">业务消息</span>&nbsp; -->
-												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
-												<a href="javascript:;" style="color:green;">李四-订购单CS002，请及时处理</a>
-												</span>
-												<span style="float: right;">2018-06-28 11:21:26</span>
-											</div>
-										</li>
-										<li style="height: 35px;">
-											<div class="task-title">
-												<!-- <span class="label label-sm label-success">业务消息</span>&nbsp; -->
-												<span class="task-title-sp" style="font-size:14px;" onclick="showMessage('/ver/slaveapprove/slaveCheckList?approveType=1','1513a863-d20c-474f-b6ce-e18f1e2bd208','1','信息点表核查','bd6bd436-e256-4c96-9828-80ebbc2f5bad')">
-												<a href="javascript:;" style="color:green;">王五-订购单CS003，请及时处理</a>
+												<span class="task-title-sp" style="font-size:14px;" onclick="">
+												<a href="javascript:;" style="color:green;">业务消息提示</a>
 												</span>
 												<span style="float: right;">2018-06-28 11:21:26</span>
 											</div>
@@ -184,6 +166,8 @@
 			serverPage('${serviceurl}/dataSearch?orderby=createtime@desc');
 			
 			$(".showDivHeightCls").height((window.screen.availHeight-350));
+			
+			loadApply();
 		});
 		
 		
@@ -203,6 +187,55 @@
 		function searchStock(){
 			$("#rap-searchbar-reset").click();
 			onQuery();
+		}
+		
+		function loadApply(){
+			$.ajax({
+				"dataType" : "json",
+				"data":{
+					"start": 0,
+					"length": 10,
+					"search_EQ_applyType": "1",
+					"rderby": "createtime@desc"
+				},
+				"type" : "POST",
+				"url" : "${ctx}/info/apply/query",
+				"async" : false,
+				"success" : function(data) {
+					console.info(data);
+					if (data.success) {
+						var records = data.records;
+						var str="";
+						for(var i=0;i<records.length;i++){
+							str+='<li style="height: 35px;">'+
+									'<div class="task-title">'+
+										'<span class="task-title-sp" style="font-size:14px;" onclick="showApplyBill(\''+records[i].sourceBillId+'\');">'+
+										'<a href="javascript:;" style="color:green;">'+records[i].creatorname+"  "+records[i].content+'</a>'+
+										'</span>'+
+										'<span style="float: right;">'+records[i].createtime+'</span>'+
+									'</div>'+
+								'</li>';
+						}
+						$("#messageList").html(str);
+					} else {
+						//YYUI.promAlert("获取失败，原因：" + data.msg);
+					}
+				},
+				"error" : function(XMLHttpRequest, textStatus, errorThrown) {
+					//YYUI.promAlert("HTTP错误。");
+				}
+			});
+		}
+		
+		function showApplyBill(sid){
+			layer.open({
+				title:"项目单",
+			    type: 2,
+			    area: ['96%', '95%'],
+			    shadeClose : false,
+				shade : 0.8,
+			    content: "${ctx}/info/projectinfoSub/detailList?sourceBillId="+sid
+			});
 		}
 	</script>
 </body>

@@ -34,12 +34,13 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 	private ProjectSubService projectSubService;
 
 	@RequestMapping("/detailList")
-	public String detailList(Model model) {
+	public String detailList(Model model,String sourceBillId) {
 		List<EnumDataSubEntity> subList = EnumDataUtils.getEnumSubList("barCodeExtract");
 		if(subList==null){
 			subList = new ArrayList<>();
 		}
 		model.addAttribute("subList", Json.toJson(subList));
+		model.addAttribute("sourceBillId", sourceBillId);
 		return "modules/info/projectinfo/projectinfo_detail_list";
 	}
 	
