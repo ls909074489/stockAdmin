@@ -364,24 +364,22 @@ public class BaseController<T> {
 		} catch (DataIntegrityViolationException e) {// edit by ls2008
 			arm.setSuccess(false);
 			arm.setMsg("存在关联不能删除");
-			StringWriter sw = new StringWriter();
-			e.printStackTrace(new PrintWriter(sw, true));
-			String strs = sw.toString();
-			try {
-				if (!strs.contains("constraint")) {
-					strs = e.getMessage();
-				}
-				sw.close();
-				arm.setSuccess(false);
-				arm.setMsg(e.getMessage());
-			} catch (IOException e1) {
-				e1.printStackTrace();
-				arm.setSuccess(false);
-				arm.setMsg("存在关联不能删除");
-				throw new ServiceException(e.getMessage());
-			}
-			// throw new ServiceException(strs);
-			// e.printStackTrace();
+//			StringWriter sw = new StringWriter();
+//			e.printStackTrace(new PrintWriter(sw, true));
+//			String strs = sw.toString();
+//			try {
+//				if (!strs.contains("constraint")) {
+//					strs = e.getMessage();
+//				}
+//				sw.close();
+//				arm.setSuccess(false);
+//				arm.setMsg(e.getMessage());
+//			} catch (IOException e1) {
+//				e1.printStackTrace();
+//				arm.setSuccess(false);
+//				arm.setMsg("存在关联不能删除");
+//				throw new ServiceException(e.getMessage());
+//			}
 		} catch (ServiceException e) {
 			arm.setSuccess(false);
 			arm.setMsg(e.getMessage());

@@ -127,26 +127,16 @@ nav.page-tabs {
 	<!-- 如果是首次登录则修改密码 -->
 	<c:if test="${empty user.changepwd or user.changepwd eq 0}">
 		<script type="text/javascript">
-			layer.open({
+			/* layer.open({
 				title : '密码修改',
 				type : 2,
 				area : [ '450px', '280px' ],
-				fix : false, //不固定
+				fix : false,
 				content : '${ctx}/sys/user/pwd',
 				closeBtn : 0,
-				/* btn: ['提交','清空']
-				  ,btn1: function(index, layero){ 
-					  alert(11);
-					  console.info(layer.close(index));
-					  return false;
-				  },btn2: function(index){
-				    alert(2);
-				 }, */
 				cancel : function(index) {
-					//YYUI.promMsg('首次登录请修改默认密码!',3000);
-					//return false;
 				}
-			});
+			}); */
 		</script>
 	</c:if>
 	<!-- BEGIN HEADER -->
@@ -545,7 +535,7 @@ nav.page-tabs {
 			// loadAdmin();
 			showUserMenu(); //加载快捷菜单
 			
-			showNewMsg("您有新的订单，请及时处理。");
+			//showNewMsg("您有新的订单，请及时处理。");
 			
 			connect();
 			//定时拉取消息

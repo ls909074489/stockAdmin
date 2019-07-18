@@ -139,6 +139,11 @@
 				}
 			});
 		}
+		
+		//重写防止双击
+		function onEditRow(aData, iDataIndex, nRow){
+			return false;
+		}
 	</script>
 </body>
 </html>	

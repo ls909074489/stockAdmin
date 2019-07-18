@@ -136,6 +136,11 @@
 			    content: "${ctx}/info/stockstream/toRecord?stockId="+data.stock.uuid+"&materialId="+data.material.uuid
 			});
 		}
+		
+		//重写防止双击
+		function onEditRow(aData, iDataIndex, nRow){
+			return false;
+		}
 	</script>
 </body>
 </html>	

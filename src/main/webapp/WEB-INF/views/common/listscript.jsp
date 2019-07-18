@@ -149,7 +149,7 @@
 			var orderName = _tableCols[orderby.column].data;
 			return orderName + "@" + dir;
 		}
-		return "uuid@desc";
+		return "createtime@desc";
 	}
 	//===================按钮事件===================
 	//增加

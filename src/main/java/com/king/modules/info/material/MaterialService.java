@@ -24,6 +24,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,6 +57,27 @@ public class MaterialService extends BaseServiceImpl<MaterialEntity,String> {
 	protected IBaseDAO<MaterialEntity, String> getDAO() {
 		return dao;
 	}
+	
+	
+
+	@Override
+	public Iterable<MaterialEntity> doAdd(Iterable<MaterialEntity> entities) throws ServiceException {
+		List<String> codeList = new ArrayList<>();
+		for (MaterialEntity entity : entities) {
+			codeList.add(entity.getCode());
+		}
+		List<MaterialEntity> materialList = dao.findByCodes(codeList);
+		if(materialList!=null&&materialList.size()>0){
+			List<String> code = new ArrayList<>();
+			for(MaterialEntity m:materialList){
+				code.add(m.getCode());
+			}
+			throw new ServiceException("料号"+StringUtils.join(code)+"已存在");
+		}
+		return super.doAdd(entities);
+	}
+
+
 
 	@Transactional
 	public ActionResultModel<MaterialEntity> importExcel(MultipartFile file) {

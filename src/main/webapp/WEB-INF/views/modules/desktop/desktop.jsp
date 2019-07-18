@@ -62,15 +62,15 @@
 										<form id="yy-form-query">
 											<label for="search_LIKE_name" class="control-label">仓库名称</label>
 											<input type="text" autocomplete="on" name="search_LIKE_stock.name"
-												id="search_LIKE_stock.name" class="form-control input-sm">
+												id="search_LIKE_stock.name" class="form-control input-sm" style="width: 140px;">
 												
 											<label for="search_LIKE_name" class="control-label">物料编码</label>
 											<input type="text" autocomplete="on" name="search_LIKE_material.code"
-												id="search_LIKE_material.code" class="form-control input-sm">
+												id="search_LIKE_material.code" class="form-control input-sm" style="width: 140px;">
 												
 											<label for="search_LIKE_name" class="control-label">物料名称</label>
 											<input type="text" autocomplete="on" name="search_LIKE_material.name"
-												id="search_LIKE_material.name" class="form-control input-sm">
+												id="search_LIKE_material.name" class="form-control input-sm" style="width: 140px;">
 						
 											<button id="yy-btn-search" type="button" class="btn btn-sm btn-info">
 												<i class="fa fa-search"></i>查询

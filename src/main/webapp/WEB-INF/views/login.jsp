@@ -51,13 +51,11 @@
 	<!-- BEGIN LOGO -->
 	<div class="header clearfix" id="header" style="margin-top: 14px;">
 		<!-- <h2 id="logo">YS云服务系统研发平台（3.0）</h2> -->
-		<p class="topLink" id="loginLink">
-			<a
-				href="http://rj.baidu.com/soft/detail/14744.html?ald"
-				target="_blank">推荐浏览器下载</a> | <a href="#" target="_blank">帮助中心</a> | <a
-				id="addFavorite" href="javascript:addFavorite();"
-				style="margin-right: 18px;">加入收藏夹</a>
-		</p>
+		<!-- <p class="topLink" id="loginLink">
+			<a href="http://rj.baidu.com/soft/detail/14744.html?ald" target="_blank">推荐浏览器下载</a> | 
+			<a href="#" target="_blank">帮助中心</a> | 
+			<a id="addFavorite" href="javascript:addFavorite();"  style="margin-right: 18px;">加入收藏夹</a>
+		</p> -->
 	</div>
 	<!-- END LOGO -->
 	<!-- BEGIN LOGIN -->
@@ -102,9 +100,9 @@
 					<button type="submit" id="yy-login" class="btn btn-primary btn-lg uppercase">登 录</button>
 					<!-- <a href="javascript:;" id="forget-password" class="forget-password">忘记密码？</a> -->
 					
-					<div style="display:inline;float:right;font-size:14px;">
+					<!-- <div style="display:inline;float:right;font-size:14px;">
 						<a href="#" onclick="javascript:showEnterAccount();">忘记密码?</a>
-					</div> 
+					</div> --> 
 				</div>
 				
 				<!-- 
@@ -137,7 +135,7 @@
 		</div>
 	</div>
 	<div class="footer">
-		Copyright © 2019-2020 <a href=""> King Liu</a> All Righ Reserved <br>
+		Copyright © 2019-2020  King Liu  All Righ Reserved <br>
 		<span>推荐使用谷歌（Chrome）浏览器访问系统，或者支持HTML5的浏览器。建议使用1600*900 及以上分辨率</span>
 	</div>
 	

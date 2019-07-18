@@ -81,30 +81,31 @@ public class HomeController {
 			}
 			model.addAttribute("hasSelStation", hasSelStation);
 		}
-		model.addAttribute("apiurl", ParameterUtil.getParamValue("apiurl", "http://app.weishiao.com:8080/qjb"));
-		if(user.getUsertype()!=null&&user.getUsertype()==2){//用户类型为管理
-			return "frame/yy_main";
-		}else{
-			List<EnumDataSubEntity> topMenus=EnumDataUtils.getEnumSubList("CommonMenus");
-			model.addAttribute("apiurl", ParameterUtil.getParamValue("apiurl", "http://app.weishiao.com:8080/qjb"));
-			model.addAttribute("topMenus", topMenus);
-			String apiUserType=user.getApiUserType();
-			if(StringUtils.isEmpty(apiUserType)){
-				apiUserType="1";
-			}
-			EnumDataSubEntity indexEnum=topMenus.get(0);
-			for(EnumDataSubEntity sub:topMenus){
-				String []arr=sub.getDescription().split(",");
-				for(String s:arr){
-					if(s.equals(apiUserType)){
-						indexEnum=sub;
-						break;
-					}
-				}
-			}
-			model.addAttribute("indexEnum", indexEnum);
-			return "frame/yy_main_topmenu";
-		}
+//		model.addAttribute("apiurl", ParameterUtil.getParamValue("apiurl", "http://app.weishiao.com:8080/qjb"));
+//		if(user.getUsertype()!=null&&user.getUsertype()==2){//用户类型为管理
+//			return "frame/yy_main";
+//		}else{
+//			List<EnumDataSubEntity> topMenus=EnumDataUtils.getEnumSubList("CommonMenus");
+//			model.addAttribute("apiurl", ParameterUtil.getParamValue("apiurl", "http://app.weishiao.com:8080/qjb"));
+//			model.addAttribute("topMenus", topMenus);
+//			String apiUserType=user.getApiUserType();
+//			if(StringUtils.isEmpty(apiUserType)){
+//				apiUserType="1";
+//			}
+//			EnumDataSubEntity indexEnum=topMenus.get(0);
+//			for(EnumDataSubEntity sub:topMenus){
+//				String []arr=sub.getDescription().split(",");
+//				for(String s:arr){
+//					if(s.equals(apiUserType)){
+//						indexEnum=sub;
+//						break;
+//					}
+//				}
+//			}
+//			model.addAttribute("indexEnum", indexEnum);
+//			return "frame/yy_main_topmenu";
+//		}
+		return "frame/yy_main";
 	}
 	
 	
