@@ -11,9 +11,9 @@
 			<form id="yy-form-query">
 				<div class="col-sm-4 form-inline" style="">
 					<div id="div_col3_filter" data-column="3">
-						名称
-						<input type="text" autocomplete="on" name="search_LIKE_name"
-						id="search_LIKEname" class="form-control input-sm">
+						用户姓名
+						<input type="text" autocomplete="on" name="search_username"
+						id="search_username" class="form-control input-sm">
 					</div>
 				</div>
 				
@@ -31,8 +31,9 @@
 					<tr>
 						<th>序号</th>
 						<th>操作</th>
-						<th>用户名</th>
-						<th>部门</th>
+						<th>登录账号</th>
+						<th>用户姓名</th>
+						<th>手机号码</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -60,13 +61,18 @@
 			width : "20",
 			render : YYDataTableUtils.renderSelectActionSubCol
 		},{
-			data : "username",
-			width : "40%",
+			data : "loginname",
+			width : "30%",
 			className : "center",
 			orderable : true
 		},{
-			data : "deptname",
-			width : "40%",
+			data : "username",
+			width : "30%",
+			className : "center",
+			orderable : true
+		},{
+			data : "mobilephone",
+			width : "30%",
 			className : "center",
 			orderable : true
 		}];

@@ -64,6 +64,7 @@
 				/info/stockdetail/dataSearch = anon
 				/info/stockstream/toRecord = anon
 				/info/stockstream/dataRecord = anon
+				/info/apply/query = anon
 				/** = user,perms
 			</value>
 		</property>

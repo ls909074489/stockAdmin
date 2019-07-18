@@ -97,15 +97,15 @@ nav.page-tabs {
 				//5秒钟后更新页面
 				setTimeout(function() {
 					//清除消息
-					window.frames["desktopFrame"].getMessage();
-				}, 5000);
+					window.frames["desktopFrame"].loadApply();
+				}, 100);
 			} else {
 				showNewMsg(event.data);
 				//5秒钟后更新页面
 				setTimeout(function() {
 					//刷新指点页签的  方法
-					window.frames["desktopFrame"].getMessage();
-				}, 5000);
+					window.frames["desktopFrame"].loadApply();
+				}, 100);
 			}
 			//$(window.parent.document).contents().find("#frame1")[0].contentWindow.getMessage();
 		};
@@ -548,6 +548,12 @@ nav.page-tabs {
 			showNewMsg("您有新的订单，请及时处理。");
 			
 			connect();
+			//定时拉取消息
+			setInterval("loadDesktopMsg();",30000);
+
+			
+			
+			
 			//测试还有多少的缓存
 			//if(window.localStorage)
 			//{  var aaaaa = 1024 * 1024 * 5 - unescape(encodeURIComponent(JSON.stringify(localStorage))).length;
@@ -674,6 +680,10 @@ nav.page-tabs {
 			lsAddTab(url, funcname,funcid);
 		}
 		
+		//拉取首页的消息
+		function loadDesktopMsg(){
+			window.frames["desktopFrame"].loadApply();
+		}
 	</script>
 </body>
 </html>

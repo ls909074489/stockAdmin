@@ -65,9 +65,9 @@
 		<div class="leftcontent">
 			<h1 id="title">库存管理系统</h1>
 			<ul>
-				<li>库存数据管理</li>
-				<li>数据分析</li>
-				<li>了解更多&gt;&gt;</li>
+				<li onclick="toSearchPage();">物料查询</li>
+				<!-- <li>数据分析</li>
+				<li>了解更多&gt;&gt;</li> -->
 			</ul>
 		</div>
 		<div class="content">
@@ -203,6 +203,11 @@
 			area : [ '420px', '250px' ],
 			content : '${ctx}/login/showEnterAccount'//iframe的url
 		});
+	}
+	
+	//跳转到物料查询页面
+	function toSearchPage(){
+		window.open('${ctx}/info/stockdetail/search',"_blank");
 	}
 </script>
 </body>

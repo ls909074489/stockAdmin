@@ -24,4 +24,10 @@ public class ProjectApplyService extends BaseServiceImpl<ProjectApplyEntity,Stri
 		return dao;
 	}
 
+	
+	@Transactional
+	public void handleApply(String sourceBillId) {
+		dao.handleApply(ProjectApplyEntity.HANDLED,sourceBillId, ProjectApplyEntity.APPLYING,ProjectApplyEntity.DEALING);
+	}
+
 }

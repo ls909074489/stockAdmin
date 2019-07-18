@@ -12,14 +12,11 @@ import com.king.frame.service.BaseServiceImpl;
 import com.king.modules.info.material.MaterialBaseEntity;
 import com.king.modules.info.orderinfo.OrderInfoEntity;
 import com.king.modules.info.orderinfo.OrderSubEntity;
-import com.king.modules.info.orderinfo.OrderSubService;
 import com.king.modules.info.projectinfo.ProjectInfoEntity;
 import com.king.modules.info.projectinfo.ProjectSubEntity;
 import com.king.modules.info.stockinfo.StockBaseEntity;
-import com.king.modules.info.stockinfo.StockInfoEntity;
 import com.king.modules.info.stockstream.StockStreamEntity;
 import com.king.modules.info.stockstream.StockStreamService;
-import com.king.modules.sys.param.ParameterUtil;
 
 /**
  * 库存明细
@@ -32,8 +29,8 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 
 	@Autowired
 	private StockDetailDao dao;
-	@Autowired
-	private OrderSubService orderSubService;
+//	@Autowired
+//	private OrderSubService orderSubService;
 	@Autowired
 	private StockStreamService stockStreamService;
 	
@@ -43,11 +40,11 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 	}
 	
 	
-	public StockInfoEntity getStockByOrderType(String orderType){
-		StockInfoEntity stock = new StockInfoEntity();
-		stock.setUuid(ParameterUtil.getParamValue("defaultStock"));
-		return stock;
-	}
+//	public StockInfoEntity getStockByOrderType(String orderType){
+//		StockInfoEntity stock = new StockInfoEntity();
+//		stock.setUuid(ParameterUtil.getParamValue("defaultStock"));
+//		return stock;
+//	}
 	
 	public StockDetailEntity findByStockAndMaterial(String stockId, String materialId) {
 		return dao.findByStockAndMaterial(stockId, materialId);
@@ -118,7 +115,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 
 	@Transactional
 	public void descStockDetail(ProjectInfoEntity projectInfo,List<ProjectSubEntity> subList){
-		StockInfoEntity stock = getStockByOrderType(projectInfo.getBilltype());
+		StockBaseEntity stock = projectInfo.getStock();//getStockByOrderType(projectInfo.getBilltype());
 		StockStreamEntity stream = new StockStreamEntity();
 		stream.setSourceId(projectInfo.getUuid());
 		stream.setSourceBillCode(projectInfo.getCode());
@@ -126,14 +123,12 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 		Long totalBefore = 0l;
 		Long occupyBefore = 0l;
 		Long surplusBefore = 0l; 
-		StockBaseEntity stockBase = new StockBaseEntity();
-		stockBase.setUuid(stock.getUuid());
 		
 		long actualAmount = 0l;
 		for(ProjectSubEntity sub:subList){
 			StockDetailEntity detail  = findByStockAndMaterial(stock.getUuid(),sub.getMaterial().getUuid());
 			
-			stream.setStock(stockBase);
+			stream.setStock(stock);
 			MaterialBaseEntity material = new MaterialBaseEntity();
 			material.setUuid(sub.getMaterial().getUuid());
 			stream.setMaterial(material);

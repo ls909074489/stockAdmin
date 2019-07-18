@@ -195,8 +195,8 @@
 				"data":{
 					"start": 0,
 					"length": 10,
-					"search_EQ_applyType": "1",
-					"rderby": "createtime@desc"
+					"search_IN_applyType": "1,2",
+					"orderby": "createtime@desc"
 				},
 				"type" : "POST",
 				"url" : "${ctx}/info/apply/query",

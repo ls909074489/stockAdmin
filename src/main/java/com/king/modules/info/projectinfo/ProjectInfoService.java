@@ -3,22 +3,27 @@ package com.king.modules.info.projectinfo;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.socket.TextMessage;
 
 import com.king.common.dao.DbUtilsDAO;
 import com.king.common.exception.DAOException;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.dao.IBaseDAO;
 import com.king.frame.service.SuperServiceImpl;
+import com.king.frame.websocket.YyWebSocketHandler;
 import com.king.modules.info.apply.ProjectApplyEntity;
 import com.king.modules.info.apply.ProjectApplyService;
+import com.king.modules.info.approve.ApproveUserEntity;
+import com.king.modules.info.approve.ApproveUserService;
 import com.king.modules.info.stockdetail.StockDetailEntity;
 import com.king.modules.info.stockdetail.StockDetailService;
-import com.king.modules.info.stockinfo.StockInfoEntity;
+import com.king.modules.info.stockinfo.StockBaseEntity;
 
 /**
  * 项目
@@ -37,24 +42,33 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 	private StockDetailService stockDetailService;
 	@Autowired
 	private DbUtilsDAO dbDao;
-	
+	@Autowired
+	private YyWebSocketHandler webSocketHandler;
 	@Autowired
 	private ProjectApplyService projectApplyService;
-
+	@Autowired
+	private ApproveUserService approveUserService;
+	
+	
+	
 	protected IBaseDAO<ProjectInfoEntity, String> getDAO() {
 		return dao;
 	}
+	
+	@Override
+	public void beforeSave(ProjectInfoEntity entity) throws ServiceException {
+		entity.setBillcode(entity.getCode());
+		super.beforeSave(entity);
+	}
 
-	
-	
 	@Override
 	public void beforeSubmit(ProjectInfoEntity entity) throws ServiceException {
 		List<ProjectSubEntity> subList = projectSubService.findByMain(entity.getUuid());
-		StockInfoEntity stock = stockDetailService.getStockByOrderType(entity.getBilltype());
+		StockBaseEntity stock = entity.getStock();
 		for(ProjectSubEntity sub:subList){
 			StockDetailEntity detail  = stockDetailService.findByStockAndMaterial(stock.getUuid(),sub.getMaterial().getUuid());
 			if(detail==null){
-				throw new ServiceException("库存不存在物料"+sub.getMaterial().getCode());
+				throw new ServiceException("仓库"+stock.getName()+"不存在物料"+sub.getMaterial().getCode());
 			}else{
 				if(detail.getSurplusAmount()<sub.getPlanAmount()){
 					throw new ServiceException("物料"+sub.getMaterial().getCode()+"库存不足");
@@ -68,10 +82,18 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 	public void afterSubmit(ProjectInfoEntity entity) throws ServiceException {
 		ProjectApplyEntity apply = new ProjectApplyEntity();
 		apply.setApplyType(ProjectApplyEntity.APPLYING);
-		apply.setContent("提交项目单");
+		apply.setContent("提交项目单"+entity.getCode());
 		apply.setSourceBillId(entity.getUuid());
-		apply.setSourceBillCode(entity.getBillcode());
+		apply.setSourceBillCode(entity.getCode());
 		projectApplyService.doAdd(apply);
+		
+		
+		List<ApproveUserEntity> userList = approveUserService.findByAppplyType(ApproveUserEntity.PROJECTINFO_TYPE);
+		if(CollectionUtils.isNotEmpty(userList)){
+			for(ApproveUserEntity u:userList){
+				webSocketHandler.sendMessageToUser(u.getUser().getUuid(), new TextMessage(apply.getCreatorname()+" "+apply.getContent()+",请及时处理。"));
+			}
+		}
 		super.afterSubmit(entity);
 	}
 
@@ -81,6 +103,8 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 	public void afterApprove(ProjectInfoEntity entity) throws ServiceException {
 		List<ProjectSubEntity> subList = projectSubService.findByMain(entity.getUuid());
 		stockDetailService.descStockDetail(entity, subList);
+		//将申请标志为已处理
+		projectApplyService.handleApply(entity.getUuid());
 		super.afterApprove(entity);
 	}
 
