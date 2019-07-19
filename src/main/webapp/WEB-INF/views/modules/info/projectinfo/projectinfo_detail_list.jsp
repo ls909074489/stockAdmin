@@ -47,6 +47,11 @@
 				<button id="yy-btn-match" type="button" class="btn btn-sm btn-info">
 					<i class="fa fa-search"></i> 匹配
 				</button>
+				
+				
+				 <button id="yy-btn-approve-project" class="btn yellow btn-sm btn-info" type="button">
+					<i class="fa fa-check"></i> 审核
+				</button>
 			</div>
 			<div class="row yy-searchbar form-inline">
 				<form id="yy-form-query">
@@ -238,6 +243,7 @@
 			serverPage('${serviceurl}/dataDetail?orderby=createtime@desc;mid@desc');
 			
 			$("#yy-btn-match").bind('click', matchMaterial);//
+			$("#yy-btn-approve-project").bind('click', approveProject);//
 			
 			//选择角色
 			$('#yy-project-select').on('click', function() {
@@ -424,6 +430,34 @@
 				type : "POST",
 				data :{"newBarcode": newBarcodeVal,"subId":$(t).attr("rowUuid")},
 				url : "${serviceurl}/updateBarcode",
+				async : true,
+				dataType : "json",
+				success : function(data) {
+					if(data.success){
+						YYUI.succMsg(data.msg);
+						onQuery();
+					}else{
+						YYUI.promMsg(data.msg);
+					}
+				},
+				error : function(data) {
+					YYUI.promMsg("操作失败，请联系管理员");
+				}
+			});
+		}
+		
+		function approveProject(){
+			var t_projectId = $("#search_LIKE_mainId").val();
+			console.info(">>>>>>>>>>>>"+t_projectId);
+			if(t_projectId==''){
+				YYUI.promMsg("请选择项目");
+				return false;
+			}
+			
+			$.ajax({
+				type : "POST",
+				data :{"pks": t_projectId},
+				url : "${ctx}/info/projectinfo/batchApprove",
 				async : true,
 				dataType : "json",
 				success : function(data) {

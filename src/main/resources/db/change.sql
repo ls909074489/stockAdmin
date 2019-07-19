@@ -181,8 +181,11 @@ INSERT INTO `yy_role_func` (`uuid`, `status`, `func_id`, `role_id`, `create_time
 
 
 
-
-
+###2019/7/19
+INSERT INTO `yy_enumdata` (`uuid`, `status`, `description`, `groupcode`, `groupname`, `modulecode`, `sys`, `creator`, `modifier`, `create_time`, `modify_time`, `creatorname`, `modifiername`, `createtime`, `modifytime`, `ts`) VALUES ('0d8d9edb-3283-4327-a5c7-74e69ee68e49', '1', '0不需预警 1：要预警 2:以用完不需预警', 'StockStreamWarningType', '库存流水预警类型', 'sys', '\0', '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, NULL, '超级系统管理员', NULL, '2019-07-19 13:51:56', NULL, '2019-07-19 13:51:56');
+INSERT INTO `yy_enumdata_sub` (`uuid`, `status`, `description`, `enumdatakey`, `enumdataname`, `icon`, `isdefault`, `showorder`, `enumdataid`, `creator`, `modifier`, `create_time`, `modify_time`, `creatorname`, `modifiername`, `createtime`, `modifytime`, `ts`) VALUES ('ab4e92cd-c8f9-4976-b9b5-9b852146bf4b', '1', NULL, '1', '预警中', NULL, '\0', NULL, '0d8d9edb-3283-4327-a5c7-74e69ee68e49', '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, NULL, '超级系统管理员', NULL, '2019-07-19 13:51:56', NULL, '2019-07-19 13:51:56');
+INSERT INTO `yy_enumdata_sub` (`uuid`, `status`, `description`, `enumdatakey`, `enumdataname`, `icon`, `isdefault`, `showorder`, `enumdataid`, `creator`, `modifier`, `create_time`, `modify_time`, `creatorname`, `modifiername`, `createtime`, `modifytime`, `ts`) VALUES ('ed403d46-225d-4c29-bb25-f8f5fddd0b44', '1', NULL, '2', '预警结束', NULL, '\0', NULL, '0d8d9edb-3283-4327-a5c7-74e69ee68e49', '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, NULL, '超级系统管理员', NULL, '2019-07-19 13:51:56', NULL, '2019-07-19 13:51:56');
+INSERT INTO `yy_enumdata_sub` (`uuid`, `status`, `description`, `enumdatakey`, `enumdataname`, `icon`, `isdefault`, `showorder`, `enumdataid`, `creator`, `modifier`, `create_time`, `modify_time`, `creatorname`, `modifiername`, `createtime`, `modifytime`, `ts`) VALUES ('f9e3782a-90db-48be-9345-823e49803b67', '1', NULL, '0', '无预警', NULL, '\0', NULL, '0d8d9edb-3283-4327-a5c7-74e69ee68e49', '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, NULL, '超级系统管理员', NULL, '2019-07-19 13:51:56', NULL, '2019-07-19 13:51:56');
 
 
 

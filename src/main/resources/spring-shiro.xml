@@ -65,6 +65,7 @@
 				/info/stockstream/toRecord = anon
 				/info/stockstream/dataRecord = anon
 				/info/apply/query = anon
+				/sys/enumdata/getEnumDataMap = anon
 				/** = user,perms
 			</value>
 		</property>

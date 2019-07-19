@@ -17,6 +17,9 @@ import com.king.common.utils.Json;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.BaseController;
 import com.king.frame.controller.QueryRequest;
+import com.king.frame.security.ShiroUser;
+import com.king.modules.info.approve.ApproveUserEntity;
+import com.king.modules.info.approve.ApproveUserService;
 import com.king.modules.sys.enumdata.EnumDataSubEntity;
 import com.king.modules.sys.enumdata.EnumDataUtils;
 
@@ -32,6 +35,8 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 
 	@Autowired
 	private ProjectSubService projectSubService;
+	@Autowired
+	private ApproveUserService approveUserService;
 
 	@RequestMapping("/detailList")
 	public String detailList(Model model,String sourceBillId) {
@@ -59,6 +64,13 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 	@ResponseBody
 	@RequestMapping(value = "/updateBarcode")
 	public ActionResultModel<ProjectSubEntity> updateBarcode(ServletRequest request,String subId,String newBarcode) {
+		boolean hasPri = approveUserService.checkIsApproveUser(ShiroUser.getCurrentUserEntity(), ApproveUserEntity.PROJECTINFO_TYPE);
+		if(!hasPri){
+			ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity>();
+			arm.setSuccess(false);
+			arm.setMsg("您不是审核用户，不能进行操作.");
+			return arm;
+		}
 		return projectSubService.updateBarcode(newBarcode,subId);
 	}
 	

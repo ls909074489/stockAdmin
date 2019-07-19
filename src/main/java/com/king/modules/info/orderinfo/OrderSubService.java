@@ -210,6 +210,7 @@ public class OrderSubService extends BaseServiceImpl<OrderSubEntity, String> {
 								if(StringUtils.isEmpty(code)){
 									throw new ServiceException("第"+(rowNum+1)+"行物料不能为空");
 								}
+								code = code.trim();
 								if(materialCodeSet.contains(code)){
 									repeatCode.add(code);
 								}
@@ -264,6 +265,7 @@ public class OrderSubService extends BaseServiceImpl<OrderSubEntity, String> {
 								if(StringUtils.isEmpty(code)){
 									throw new ServiceException("第"+(rowNum+1)+"行物料不能为空");
 								}
+								code = code.trim();
 								if(materialCodeSet.contains(code)){
 									repeatCode.add(code);
 								}

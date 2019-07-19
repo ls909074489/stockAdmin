@@ -122,13 +122,13 @@ public class YYInitializtion implements ApplicationListener<ContextRefreshedEven
 		}
 
 
-		try {
-			imexlateService.initImexlate();
-			logger.info(">>>>>>>>>> 导出导入模板生成完成！>>>>>>>>");
-		} catch (ServiceException e) {
-			logger.error(">>>>>>>>> 导出导入模板生成失败！！！>>>>>>>>");
-			e.printStackTrace();
-		}
+//		try {
+//			imexlateService.initImexlate();
+//			logger.info(">>>>>>>>>> 导出导入模板生成完成！>>>>>>>>");
+//		} catch (ServiceException e) {
+//			logger.error(">>>>>>>>> 导出导入模板生成失败！！！>>>>>>>>");
+//			e.printStackTrace();
+//		}
 		
 		try {
 			DocumentsUtil.updateEntitys(documentsService.findAll());

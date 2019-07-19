@@ -26,9 +26,9 @@
 				<button id="yy-btn-unsubmit" class="btn yellow btn-sm btn-info">
 					<i class="fa fa-undo"></i> 撤销提交
 				</button>
-				<button id="yy-btn-approve-x" class="btn yellow btn-sm btn-info">
+				<!-- <button id="yy-btn-approve-x" class="btn yellow btn-sm btn-info">
 					<i class="fa fa-check"></i> 审核
-				</button>
+				</button> -->
 				<button class="btn green btn-sm btn-info" id="yy-btn-import">
 					<i class="fa fa-chevron-down"></i> 导入
 				</button>

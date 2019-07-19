@@ -15,6 +15,7 @@ import com.king.common.dao.DbUtilsDAO;
 import com.king.common.exception.DAOException;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.dao.IBaseDAO;
+import com.king.frame.security.ShiroUser;
 import com.king.frame.service.SuperServiceImpl;
 import com.king.frame.websocket.YyWebSocketHandler;
 import com.king.modules.info.apply.ProjectApplyEntity;
@@ -24,6 +25,7 @@ import com.king.modules.info.approve.ApproveUserService;
 import com.king.modules.info.stockdetail.StockDetailEntity;
 import com.king.modules.info.stockdetail.StockDetailService;
 import com.king.modules.info.stockinfo.StockBaseEntity;
+import com.king.modules.sys.user.UserEntity;
 
 /**
  * 项目
@@ -98,6 +100,15 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 	}
 
 
+	@Override
+	public void beforeApprove(ProjectInfoEntity entity) throws ServiceException {
+		UserEntity user = ShiroUser.getCurrentUserEntity();
+		boolean hasPri = approveUserService.checkIsApproveUser(user, ApproveUserEntity.PROJECTINFO_TYPE);
+		if(!hasPri){
+			throw new ServiceException("您不是审核用户，不能进行审核.");
+		}
+		super.beforeApprove(entity);
+	}
 
 	@Override
 	public void afterApprove(ProjectInfoEntity entity) throws ServiceException {

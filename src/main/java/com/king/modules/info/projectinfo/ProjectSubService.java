@@ -214,6 +214,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 								if (StringUtils.isEmpty(code)) {
 									throw new ServiceException("第" + (rowNum + 1) + "行物料不能为空");
 								}
+								code = code.trim();
 								distinctCode = "第" + entity.getPlanAmount() + "箱料号" + code;
 								if (materialCodeSet.contains(distinctCode)) {
 									repeatCode.add(distinctCode);
@@ -271,6 +272,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 								if (StringUtils.isEmpty(code)) {
 									throw new ServiceException("第" + (rowNum + 1) + "行物料不能为空");
 								}
+								code = code.trim();
 								distinctCode = "第" + entity.getPlanAmount() + "箱料号" + code;
 								if (materialCodeSet.contains(distinctCode)) {
 									repeatCode.add(distinctCode);

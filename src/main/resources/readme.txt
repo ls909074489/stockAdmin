@@ -83,4 +83,25 @@ path="/stockAdmin/jlbcuploadfiles/qrcode/temp"/>
 		}
 		return selectStr;
 	}
-#######################################################################################################s
+#######################################################################################################
+
+
+	$.ajax({
+				type : "POST",
+				data :{"newBarcode": newBarcodeVal,"subId":$(t).attr("rowUuid")},
+				url : "${serviceurl}/updateBarcode",
+				async : true,
+				dataType : "json",
+				success : function(data) {
+					if(data.success){
+						YYUI.succMsg(data.msg);
+						onQuery();
+					}else{
+						YYUI.promMsg(data.msg);
+					}
+				},
+				error : function(data) {
+					YYUI.promMsg("操作失败，请联系管理员");
+				}
+			});
+#######################################################################################################

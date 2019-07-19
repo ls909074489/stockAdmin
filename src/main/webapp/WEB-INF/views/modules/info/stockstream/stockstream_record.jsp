@@ -93,7 +93,7 @@
 				width : "100",
 				className : "center",
 				render : function(data, type, full) {
-				       return YYDataUtils.getEnumName("StockSteamOperType", data);
+				       return YYDataUtils.getEnumName("StockStreamOperType", data);
 				},
 				orderable : true
 			},{
@@ -139,15 +139,41 @@
 				data : "warningType",
 				width : "60",
 				className : "center",
+				render : function(data, type, full) {
+					   return YYDataUtils.getEnumName("StockStreamWarningType", data);
+				},
 				orderable : true
 			}];
 		
 		//var _setOrder = [[5,'desc']];
 		$(document).ready(function() {
+			loadEnumData();
+			
 			_queryData = $("#yy-form-query").serializeArray();
 			bindListActions();
 			serverPage('${serviceurl}/dataRecord?stockId=${stockId}&materialId=${materialId}&orderby=createtime@desc');
 		});
+		
+		
+		/**
+		 * 加载枚举数据到本地缓存中 xuechen
+		 */
+		function loadEnumData() {
+			var url = '${ctx}/sys/enumdata/getEnumDataMap';
+			$.ajax({
+				"dataType" : "json",
+				"url" : url,
+				"success" : function(data) {
+					if (data.success) {
+						var map = data.records[0];
+						localStorage.setItem("yy-enum-map", JSON.stringify(map));
+						YYUI.setEnumField();
+					} else {
+						//YYUI.failMsg("加载枚举数据失败" + data.msg);
+					}
+				}
+			});
+		}
 	</script>
 </body>
 </html>	
