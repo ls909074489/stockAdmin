@@ -29,6 +29,10 @@ public class MaterialBaseEntity extends BaseEntity {
 	@MetaData(value = "物料编码")
 	@Column(length = 50)
 	private String code;
+	
+	@MetaData(value = "华为物料编码")
+	@Column(length = 50)
+	private String hwcode;
 
 	@MetaData(value = "名称")
 	@Column(length = 250)
@@ -61,4 +65,13 @@ public class MaterialBaseEntity extends BaseEntity {
 	public void setLimitCount(int limitCount) {
 		this.limitCount = limitCount;
 	}
+
+	public String getHwcode() {
+		return hwcode;
+	}
+
+	public void setHwcode(String hwcode) {
+		this.hwcode = hwcode;
+	}
+	
 }

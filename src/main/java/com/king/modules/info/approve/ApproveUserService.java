@@ -51,7 +51,7 @@ public class ApproveUserService extends BaseServiceImpl<ApproveUserEntity,String
 		boolean hasPri = false;//是否有权限
 		if(CollectionUtils.isNotEmpty(userList)){
 			for(ApproveUserEntity u:userList){
-				if(user.getUuid().equals(u.getUuid())){
+				if(user.getUuid().equals(u.getUser().getUuid())){
 					hasPri = true;
 					break;
 				}

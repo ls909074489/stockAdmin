@@ -11,9 +11,18 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -341,4 +350,95 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 		return arm;
 	}
 
+	public void changeToSheet(List<ProjectInfoEntity> mainList, Workbook wb) {
+		for(ProjectInfoEntity main:mainList){
+			List<ProjectSubEntity> subList = findByMain(main.getUuid());
+			changeToCells(main.getName() + "(" + main.getCode() + ")", subList, wb);
+		}
+	}
+
+	
+	private void changeToCells(String sheetName, List<ProjectSubEntity> subList, Workbook wb) {
+		Row row = null;
+		Cell cell =null;
+		Sheet sh =null;
+		sh = wb.createSheet(sheetName);
+		CellStyle  style=wb.createCellStyle();// 样式对象    
+		//生成一个字体
+        Font font=wb.createFont();
+        font.setColor(HSSFColor.BLACK.index);//字体颜色
+        font.setFontHeightInPoints((short)12);
+        font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);         //字体增粗
+        //把字体应用到当前的样式
+        style.setFont(font);
+//        style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);  //填充单元格
+//        style.setFillForegroundColor(HSSFColor.BLUE_GREY.index);//设置背景颜色
+        style.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);// 垂直      
+        style.setAlignment(HSSFCellStyle.ALIGN_CENTER);// 水平      
+		
+		
+		sh.setColumnWidth(1, 10 * 256);//设置宽度
+		sh.setColumnWidth(2, 10 * 256);//设置宽度
+		sh.setColumnWidth(3, 20 * 256);//设置宽度
+		sh.setColumnWidth(4, 20 * 256);//设置宽度
+		sh.setColumnWidth(5, 20 * 256);//设置宽度
+		sh.setColumnWidth(6, 20 * 256);//设置宽度
+		sh.setColumnWidth(7, 10 * 256);//设置宽度
+		
+		row=sh.createRow(0);
+		cell = row.createCell(0);
+		cell.setCellStyle(style);
+		cell.setCellValue("箱号");
+		
+		cell = row.createCell(1);
+		cell.setCellStyle(style);
+		cell.setCellValue("物料编码");
+		
+		cell = row.createCell(2);
+		cell.setCellStyle(style);
+		cell.setCellValue("华为物料编码");
+		
+		cell = row.createCell(3);
+		cell.setCellStyle(style);
+		cell.setCellValue("计划数量");
+		
+		cell = row.createCell(4);
+		cell.setCellStyle(style);
+		cell.setCellValue("实际数量");
+		
+		cell = row.createCell(5);
+		cell.setCellStyle(style);
+		cell.setCellValue("条形码");
+		
+		cell = row.createCell(6);
+		cell.setCellStyle(style);
+		cell.setCellValue("备注");
+		
+		int rownum=0;
+		for(ProjectSubEntity sub:subList){
+			rownum++;
+			row = sh.createRow(rownum);
+			
+			cell = row.createCell(0);//
+			cell.setCellValue((sub.getBoxNum()));
+			
+			cell = row.createCell(1);//
+			cell.setCellValue(sub.getMaterial().getCode());
+			
+			cell = row.createCell(2);//
+			cell.setCellValue(sub.getMaterial().getHwcode());
+			
+			cell = row.createCell(3);//
+			cell.setCellValue(sub.getPlanAmount());
+			
+			cell = row.createCell(4);//
+			cell.setCellValue(sub.getActualAmount());
+			
+			cell = row.createCell(5);//
+			cell.setCellValue(sub.getBarcode());
+			
+			cell = row.createCell(6);//
+			cell.setCellValue(sub.getMemo());
+		}
+	}
 }

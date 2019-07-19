@@ -371,12 +371,12 @@
 		function matchMaterial(){
 			var t_projectId = $("#search_LIKE_mainId").val();
 			console.info(">>>>>>>>>>>>"+t_projectId);
-			if(t_projectId==''){
+			if(t_projectId==null||t_projectId==''){
 				YYUI.promMsg("请选择项目");
 				return false;
 			}
 			var t_boxNum = $("#search_EQ_boxNum").val();
-			if(t_boxNum==''){
+			if(t_boxNum==null||t_boxNum==''){
 				YYUI.promMsg("请选择箱号");
 				return false;
 			}
@@ -449,7 +449,7 @@
 		function approveProject(){
 			var t_projectId = $("#search_LIKE_mainId").val();
 			console.info(">>>>>>>>>>>>"+t_projectId);
-			if(t_projectId==''){
+			if(t_projectId==null||t_projectId==''){
 				YYUI.promMsg("请选择项目");
 				return false;
 			}

@@ -35,6 +35,10 @@
 				<button class="btn green btn-sm btn-info" id="yy-btn-templatedownload">
 					<i class="fa fa-chevron-down"></i> 导入模板下载
 				</button>
+				
+				<button id="yy-btn-export-pks" queryformid="yy-form-query" class="btn green btn-sm btn-info">
+					<i class="fa fa-chevron-up"></i> 导出
+				</button>
 			</div>
 			<div class="row yy-searchbar form-inline">
 				<form id="yy-form-query">
@@ -147,6 +151,8 @@
 			});
 			
 			$("#yy-btn-import").bind('click', importfileClick);//附件
+			
+			$("#yy-btn-export-pks").bind('click', exportPks);//选择导出
 		});
 		
 		//点击选择文件按钮事件
@@ -159,6 +165,22 @@
 				shade : 0.8,
 				content : '${serviceurl}/toImport'
 			});
+		}
+		
+		//选择导出
+		function exportPks(){
+			var pks = YYDataTableUtils.getSelectPks();
+			if(pks==""){
+				YYUI.failMsg("请选择导出数据");
+				return;
+			}
+			var sentence=pks+"";
+			if(sentence.split(',').length>20){
+				YYUI.promMsg('最多只能选择20条导出');
+			}else{
+				YYUI.promMsg('正在导出，请稍后.',3000);
+				window.open('${serviceurl}/exportCsByIds?pks='+pks,"_blank");
+			}
 		}
 	</script>
 </body>
