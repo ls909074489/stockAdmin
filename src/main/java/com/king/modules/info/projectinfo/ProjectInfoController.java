@@ -1,14 +1,17 @@
 package com.king.modules.info.projectinfo;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
@@ -19,14 +22,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-
 import com.king.common.utils.Constants;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.SuperController;
+import com.king.frame.utils.RequestUtil;
 import com.king.modules.info.material.MaterialBaseEntity;
 import com.king.modules.info.stockinfo.StockBaseEntity;
 import com.king.modules.sys.param.ParameterUtil;
-
 import net.sf.json.JSONObject;
 
 /**
@@ -198,5 +200,57 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 	@ResponseBody
 	public ActionResultModel<ProjectInfoVo> select2Query(String codeOrName) {
 		return service.select2Query(codeOrName);
+	}
+	
+	
+	
+	
+	/**
+	 * 导出
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping(value = "/exportQuery")
+	public void exportQuery(HttpServletRequest request, HttpServletResponse response) {
+		ActionResultModel<ProjectInfoEntity> arm=new ActionResultModel<ProjectInfoEntity>();
+		OutputStream os = null;
+		Workbook wb = null;
+		try {
+			os = response.getOutputStream();// 取得输出流   
+	        response.reset();// 清空输出流   
+	        response.setContentType("application/octet-stream; charset=utf-8");
+			String explorerType = RequestUtil.getExplorerType((HttpServletRequest)request);
+			
+			arm= doQuery(request);
+			
+			List<ProjectInfoEntity> resultList = arm.getRecords();
+			
+			if (explorerType == null || explorerType.contains("IE")) {// IE
+				response.setHeader("Content-Disposition",
+				"attachment; filename=\"" + RequestUtil.encode(("项目单信息"),"utf-8")+".xlsx" + "\"");
+			} else {// fireFox/Chrome
+				response.setHeader("Content-Disposition",
+						"attachment; filename=" + new String(("项目单信息").getBytes("utf-8"), "ISO8859-1")+".xlsx");
+			}
+	        response.setContentType("application/msexcel");// 定义输出类型 
+			wb = new SXSSFWorkbook(100);
+			service.changeToStatisCells(resultList, wb);
+			wb.write(os);
+		} catch (Exception e) {
+			arm.setSuccess(false);
+			arm.setMsg(e.getMessage());
+			e.printStackTrace();
+		}finally{
+			try {
+				if(wb!=null){
+					wb.close();
+				}
+				if(os!=null){
+					os.close();// 关闭流
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} 
+		} 
 	}
 }
