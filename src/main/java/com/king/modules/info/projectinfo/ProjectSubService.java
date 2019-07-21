@@ -211,13 +211,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 								if (StringUtils.isEmpty(boxNumStr)) {
 									throw new ServiceException("第" + (rowNum + 1) + "箱号不能为空");
 								} else {
-									try {
-										boxNumStr = boxNumStr.replace(".0", "");
-										entity.setBoxNum(Integer.parseInt(boxNumStr));
-									} catch (Exception e) {
-										e.printStackTrace();
-										throw new ServiceException("第" + (rowNum + 1) + "行箱号不为有效数字");
-									}
+									entity.setBoxNum(boxNumStr);
 								}
 								code = ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("materialCode")));
 								if (StringUtils.isEmpty(code)) {
@@ -268,13 +262,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 								if (StringUtils.isEmpty(boxNumStr)) {
 									throw new ServiceException("第" + (rowNum + 1) + "箱号不能为空");
 								} else {
-									try {
-										boxNumStr = boxNumStr.replace(".0", "");
-										entity.setBoxNum(Integer.parseInt(boxNumStr));
-									} catch (Exception e) {
-										e.printStackTrace();
-										throw new ServiceException("第" + (rowNum + 1) + "行箱号不为有效数字");
-									}
+									entity.setBoxNum(boxNumStr);
 								}
 
 								code = ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("materialCode")));
