@@ -39,10 +39,6 @@
 			</div>
 			<div class="row yy-searchbar form-inline">
 				<form id="yy-form-query">
-					<label for="search_EQ_billstatus" class="control-label">是否风险物料</label>
-					<select class="yy-input-enumdata form-control" id="search_EQ_hasRisk" 
-						name="search_EQ_hasRisk" data-enum-group="BooleanType"></select>
-
 					<label for="search_LIKE_name" class="control-label">物料编码</label>
 					<input type="text" autocomplete="on" name="search_LIKE_code"
 						id="search_LIKE_code" class="form-control input-sm">
@@ -54,6 +50,10 @@
 					<label for="search_LIKE_name" class="control-label">物料名称</label>
 					<input type="text" autocomplete="on" name="search_LIKE_name"
 						id="search_LIKE_name" class="form-control input-sm">
+						
+					<label for="search_EQ_purchaseType" class="control-label">采购模式</label>
+					<select class="yy-input-enumdata form-control" id="search_EQ_purchaseType" 
+						name="search_EQ_purchaseType" data-enum-group="PurchaselType"></select>
 
 					<button id="yy-btn-search" type="button" class="btn btn-sm btn-info">
 						<i class="fa fa-search"></i>查询
@@ -114,38 +114,35 @@
 				data : "code",
 				width : "60",
 				className : "left",
-				orderable : true
+				orderable : false
 			},{
 				data : "hwcode",
 				width : "60",
 				className : "left",
-				orderable : true
+				orderable : false
 			},{
 				data : "name",
 				width : "100",
 				className : "left",
-				orderable : true
+				orderable : false
 			},{
-				data : "hasRisk",
+				data : "purchaseType",
 				width : "50",
 				className : "center",
 				render : function(data, type, full) {
-					return YYDataUtils.getEnumName("BooleanType", data);
+					return YYDataUtils.getEnumName("PurchaseType", data);
 				},
-				orderable : true
+				orderable : false
 			},{
 				data : "unit",
 				width : "50",
 				className : "center",
-				render : function(data, type, full) {
-					return YYDataUtils.getEnumName("MaterialUnit", data);
-				},
-				orderable : true
+				orderable : false
 			},{
 				data : "classDesc",
 				width : "60",
 				className : "left",
-				orderable : true
+				orderable : false
 			},{
 				data : "limitCount",
 				width : "50",
@@ -153,7 +150,7 @@
 				render : function(data, type, full) {
 					return YYDataUtils.getEnumName("MaterialLimitCount", data);
 				},
-				orderable : true
+				orderable : false
 			}];
 
 

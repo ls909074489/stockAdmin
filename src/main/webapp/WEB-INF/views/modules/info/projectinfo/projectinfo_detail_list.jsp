@@ -186,24 +186,57 @@
 				data : 'barcode',
 				width : "80",
 				className : "center",
+				render : function(data, type, full) {
+					if(full.checkStatus=='30'){
+						return '<span style="color:#e02222;">'+data+'</span>';
+					} else if(full.checkStatus=='20'){
+						return '<span style="color:#319430;">'+data+'</span>';
+					}else{
+						return data;
+					}
+				},
 				orderable : false
 			},{
 				data : "main.billstatus",
 				width : "60",
 				className : "center",
 				render : function(data, type, full) {
-					return YYDataUtils.getEnumName("BillStatus", data);
+					if(full.checkStatus=='30'){
+						return '<span style="color:#e02222;">'+YYDataUtils.getEnumName("BillStatus", data)+'</span>';
+					} else if(full.checkStatus=='20'){
+						return '<span style="color:#319430;">'+YYDataUtils.getEnumName("BillStatus", data)+'</span>';
+					}else{
+						return YYDataUtils.getEnumName("BillStatus", data);
+					}
 				},
 				orderable : false
 			},{
 				data : "main.code",
 				width : "80",
 				className : "center",
+				render : function(data, type, full) {
+					if(full.checkStatus=='30'){
+						return '<span style="color:#e02222;">'+data+'</span>';
+					} else if(full.checkStatus=='20'){
+						return '<span style="color:#319430;">'+data+'</span>';
+					}else{
+						return data;
+					}
+				},
 				orderable : false
 			},{
 				data : "main.name",
 				width : "100",
 				className : "center",
+				render : function(data, type, full) {
+					if(full.checkStatus=='30'){
+						return '<span style="color:#e02222;">'+data+'</span>';
+					} else if(full.checkStatus=='20'){
+						return '<span style="color:#319430;">'+data+'</span>';
+					}else{
+						return data;
+					}
+				},
 				orderable : false
 			}, {
 				data : 'boxNum',
@@ -217,11 +250,17 @@
 				data : "material.code",
 				width : "100",
 				className : "center",
+				render : function(data, type, full) {
+					return '<a onclick="showMaterial(\''+full.material.uuid+'\');">'+data+'</a>';
+				},
 				orderable : false
 			},{
 				data : "material.name",
 				width : "100",
 				className : "center",
+				render : function(data, type, full) {
+					return '<a onclick="showMaterial(\''+full.material.uuid+'\');">'+data+'</a>';
+				},
 				orderable : false
 			}, {
 				data : 'planAmount',
@@ -237,6 +276,9 @@
 
 
 		//var _setOrder = [[5,'desc']];
+			//分页页码
+		$.fn.dataTable.defaults.aLengthMenu = [ [10, 50, 100, 200, 500 ],
+			[ 10, 50, 100, 200, 500 ] ];
 		$(document).ready(function() {
 			_queryData = $("#yy-form-query").serializeArray();
 			bindListActions();
@@ -319,7 +361,7 @@
 				"serverSide" : true,
 				"showRowNumber" : true,
 				"pagingType" : "bootstrap_full_number",
-				//"pageLength" : 15,
+				"pageLength" : 200,
 				"paging" : true,
 				//"fixedHeader": true,//表头
 				"footerCallback" : setTotal,//合计
@@ -471,6 +513,18 @@
 				error : function(data) {
 					YYUI.promMsg("操作失败，请联系管理员");
 				}
+			});
+		}
+		
+		//查看物料明细
+		function showMaterial(uuid){
+			layer.open({
+				type : 2,
+				title : '物料信息',
+				shadeClose : false,
+				shade : 0.8,
+				area : [ '90%', '90%' ],
+				content : '${ctx}/info/material/onDetail?isShowBtn=0&uuid='+uuid//iframe的url
 			});
 		}
 	</script>

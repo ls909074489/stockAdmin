@@ -87,7 +87,8 @@
 								<th>序号</th>	
 								<th>操作</th>	
 								<th>箱号</th>	
-								<th>物料</th>	
+								<th>物料编码</th>	
+								<th>华为物料编码</th>
 								<th>计划数量</th>	
 								<th>备注</th>	
 							</tr>
@@ -128,11 +129,10 @@
 			width : "20",
 			className : "center",
 			orderable : true,
-			render : function(data, type, full) {
+			/* render : function(data, type, full) {
 				if(data==null){
 					data="";
 				}
-				//return creSelectStr('BoxNum','boxNum',data,false);
 				var selectStr = '';
 				selectStr = selectStr +'<select class="yy-input-enumdata form-control" id="boxNum" reallyname="boxNum" name="boxNum" data-enum-group="BoxNum" onchange="changeBox(this);">';
 				if(enumdatas){
@@ -147,6 +147,12 @@
 				}
 				selectStr = selectStr +'</select>';
 				return selectStr;
+			} */
+			render : function(data, type, full) {
+				if(data==null){
+					data="";
+				}
+				return '<input class="form-control" value="'+ data + '" name="boxNum">';
 			}
 		}, {
 			data : 'material',
@@ -163,6 +169,17 @@
 				 '<span class="glyphicon glyphicon-search"></span> '+
 				 '</button> '+
 				 '</span> '+
+				 '</div> ';
+				return str;
+			}
+		}, {
+			data : 'material',
+			width : "80",
+			className : "center",
+			orderable : true,
+			render : function(data, type, full) {
+				var str ='<div class="input-group"> '+
+				 '<input class="form-control materialHwCodeInputCls"  value="'+ data.hwcode + '" reallyname="hwcode" name="hwcode" readonly="readonly"> '+
 				 '</div> ';
 				return str;
 			}
@@ -326,16 +343,18 @@
 				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='materialCode']").val(selNode.code);
 				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='materialId']").val(selNode.uuid);
 				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='limitCount']").val(selNode.limitCount);
-				if(selNode.limitCount==1){
+				$(t_refMaterialEle).closest("tr").find(".materialHwCodeInputCls").val(selNode.hwcode);
+				/* if(selNode.limitCount==1){
 					$(t_refMaterialEle).closest("tr").find("input[name='planAmount']").attr("readonly","true");
 				}else{
 					$(t_refMaterialEle).closest("tr").find("input[name='planAmount']").attr("readonly","false");
 					$(t_refMaterialEle).closest("tr").find("input[name='planAmount']").attr("readonly","false");
-				}
+				} */
 			}else{
 				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='materialCode']").val("");
 				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='materialId']").val("");
 				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='limitCount']").val("");
+				$(t_refMaterialEle).closest("tr").find(".materialHwCodeInputCls").val(selNode.hwcode);
 			}
 		}
 		 
@@ -343,7 +362,7 @@
 		function callBackAddMaterial(selNode){
 			var subNewData = [ {
 				'uuid' : '',
-				'material' : {"uuid":selNode.uuid,"code":selNode.code,"name":selNode.name,"limitCount":selNode.limitCount},
+				'material' : {"uuid":selNode.uuid,"code":selNode.code,"hwcode":selNode.hwcode,"name":selNode.name,"limitCount":selNode.limitCount},
 				'planAmount':'',
 				'memo':''
 			} ];

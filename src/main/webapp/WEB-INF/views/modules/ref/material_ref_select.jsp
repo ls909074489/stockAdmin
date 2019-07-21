@@ -10,17 +10,17 @@
 		<div role="form" class="row yy-toolbar">
 			<form id="yy-form-query">
 				<div class="col-sm-3 form-inline" style="">
-					<div id="div_col6_filter" data-column="6">
-						是否风险物料
-						<select class="yy-input-enumdata form-control" id="search_EQ_hasRisk" 
-						name="search_EQ_hasRisk" data-enum-group="BooleanType"></select>
-					</div>
-				</div>
-				<div class="col-sm-3 form-inline" style="">
 					<div id="div_col3_filter" data-column="3">
 						物料编码
 						<input type="text" autocomplete="on" name="search_LIKE_code"
 						id="search_LIKE_code" class="form-control input-sm">
+					</div>
+				</div>
+				<div class="col-sm-4 form-inline" style="">
+					<div id="div_col3_filter" data-column="3">
+						华为物料编码
+						<input type="text" autocomplete="on" name="search_LIKE_hwcode"
+						id="search_LIKE_hwcode" class="form-control input-sm">
 					</div>
 				</div>
 				<div class="col-sm-3 form-inline" style="">
@@ -31,7 +31,7 @@
 					</div>
 				</div>
 				
-				<div class="col-sm-3 form-inline" style="">
+				<div class="col-sm-2 form-inline" style="">
 					<button id="yy-btn-search" type="button" class="btn btn-sm btn-info">
 					<i class="fa fa-search"></i>查询</button>
 					<button id="yy-btn-clear" type="button" class="btn red btn-sm btn-info">
@@ -46,6 +46,7 @@
 						<th>序号</th>
 						<th>操作</th>
 						<th>物料编码</th>
+						<th>华为物料编码</th>
 						<th>物料名称</th>
 						<th>分类描述</th>
 					</tr>
@@ -80,13 +81,18 @@
 			className : "center",
 			orderable : true
 		},{
+			data : "hwcode",
+			width : "20%",
+			className : "center",
+			orderable : true
+		},{
 			data : "name",
 			width : "20%",
 			className : "center",
 			orderable : true
 		},{
 			data : "classDesc",
-			width : "50%",
+			width : "30%",
 			className : "center",
 			orderable : true
 		}];

@@ -8,6 +8,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +16,13 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.king.common.enums.BillState;
 import com.king.common.utils.Constants;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.BaseController;
@@ -69,6 +73,21 @@ public class MaterialController extends BaseController<MaterialEntity> {
 		return "modules/info/material/material_edit";
 	}
 
+	
+	@RequestMapping(value = "/onDetail", method = RequestMethod.GET)
+	public String onDetail(Model model, ServletRequest request,
+			@RequestParam(value = "uuid", required = true) String uuid) {
+		model.addAttribute(OPENSTATE, BillState.OPENSTATE_DETAIL);
+		MaterialEntity entity = baseService.getOne(uuid);
+		model.addAttribute(ENTITY, entity);
+		String isShowBtn=request.getParameter("isShowBtn");
+		if(StringUtils.isEmpty(isShowBtn)){
+			isShowBtn = "1";
+		}
+		model.addAttribute("isShowBtn", isShowBtn);
+		return detailView(model, request, entity);
+	}
+	
 	@Override
 	public String detailView(Model model, ServletRequest request, MaterialEntity entity) {
 		return "modules/info/material/material_detail";

@@ -34,6 +34,10 @@ public class MaterialEntity extends BaseEntity {
 	@Column(length = 50)
 	private String hwcode;
 
+	@MetaData(value = "华为物料编码")
+	@Column(length = 50)
+	private String codeAndHw;
+	
 	@MetaData(value = "名称")
 	@Column(length = 250)
 	private String name;
@@ -58,6 +62,14 @@ public class MaterialEntity extends BaseEntity {
 	@MetaData(value = "限制每箱数量")
 	@Column(length = 10)
 	private int limitCount=-1;//-1表示不限制
+	
+	@MetaData(value = "采购模式")
+	@Column(length = 2)
+	private String purchaseType;
+	
+	@MetaData(value = "领域")
+	@Column(length = 250)
+	private String position;
 	
 	public String getMemo() {
 		return memo;
@@ -121,6 +133,31 @@ public class MaterialEntity extends BaseEntity {
 
 	public void setHwcode(String hwcode) {
 		this.hwcode = hwcode;
+	}
+
+
+	public String getPurchaseType() {
+		return purchaseType;
+	}
+
+	public void setPurchaseType(String purchaseType) {
+		this.purchaseType = purchaseType;
+	}
+
+	public String getPosition() {
+		return position;
+	}
+
+	public void setPosition(String position) {
+		this.position = position;
+	}
+
+	public String getCodeAndHw() {
+		return codeAndHw;
+	}
+
+	public void setCodeAndHw(String codeAndHw) {
+		this.codeAndHw = codeAndHw;
 	}
 	
 

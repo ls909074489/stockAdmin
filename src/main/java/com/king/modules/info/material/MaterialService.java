@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -61,6 +62,18 @@ public class MaterialService extends BaseServiceImpl<MaterialEntity,String> {
 	
 
 	@Override
+	public void beforeSave(MaterialEntity entity) throws ServiceException {
+		String code = entity.getCode();
+		String hwCode = entity.getHwcode();
+		code = StringUtils.isEmpty(code)?"*":code;
+		hwCode = StringUtils.isEmpty(hwCode)?"*":hwCode;
+		entity.setCodeAndHw(code+"_"+hwCode);
+		super.beforeSave(entity);
+	}
+
+
+
+	@Override
 	public Iterable<MaterialEntity> doAdd(Iterable<MaterialEntity> entities) throws ServiceException {
 		List<String> codeList = new ArrayList<>();
 		for (MaterialEntity entity : entities) {
@@ -94,15 +107,17 @@ public class MaterialService extends BaseServiceImpl<MaterialEntity,String> {
 		XSSFWorkbook xssfWorkbook = null;
 		InputStream is=null;
 		try {
-			Map<String,String> codeMap=new HashMap<String,String>();
+//			Map<String,String> codeMap=new HashMap<String,String>();
 			MaterialEntity entity = null;
-			
 			String postfix = ExcelDataUtil.getPostfix(file.getOriginalFilename());
 			DecimalFormat df = new DecimalFormat("0");// 格式化 number String
 			String code="";
-			String hasRisk = "";
+			String hwcode="";
+			String purchaseType = "";
 			List<String> repeatCode = new ArrayList<>();
 			List<MaterialEntity> list = new ArrayList<>();
+			List<String> codeList = new ArrayList<>();
+			List<String> hwcodeList = new ArrayList<>();
 			if (!ExcelDataUtil.EMPTY.equals(postfix)) {
 				is = file.getInputStream();
 				if (ExcelDataUtil.OFFICE_EXCEL_2003_POSTFIX.equals(postfix)) {
@@ -118,28 +133,46 @@ public class MaterialService extends BaseServiceImpl<MaterialEntity,String> {
 						for (int rowNum = 1; rowNum <= hssfSheet.getLastRowNum(); rowNum++) {
 							HSSFRow hssfRow = hssfSheet.getRow(rowNum);
 							if (hssfRow != null) {
-								
 								entity = new MaterialEntity();
-								code = ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("code")));
+								code = ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("code")),df);
+								if(StringUtils.isNotEmpty(code)){
+									code = code.trim();
+									code = code.replace(".0", "");
+									codeList.add(code);
+								}
 								entity.setCode(code);
-								entity.setName(ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("name"))));
-								entity.setHwcode(ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("hwcode"))));
+								hwcode=ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("hwcode")));
+								if(StringUtils.isNotEmpty(hwcode)){
+									hwcode = hwcode.trim();
+									hwcode = hwcode.replace(".0", "");
+									hwcodeList.add(hwcode);
+								}
+								entity.setHwcode(hwcode);
+								
+								entity.setName(ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("name")),df));
 								entity.setMemo(ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("memo"))));
-								hasRisk = ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("hasRisk")));
+								purchaseType = ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("purchaselType")));
 								entity.setHasRisk(0);
-								if(!StringUtils.isEmpty(hasRisk)&&(hasRisk.equals("1")||hasRisk.equals("是"))){
-									entity.setHasRisk(1);
+								if(!StringUtils.isEmpty(purchaseType)){
+									if((purchaseType.equals("CS")||purchaseType.equals("C/S"))){
+										entity.setPurchaseType("CS");
+									} if(purchaseType.equals("TK")){
+										entity.setPurchaseType("TK");
+									}else{
+										throw new ServiceException("第"+(rowNum+1)+"行采购模式必须为TK或CS");
+									}
+								}else{
+									throw new ServiceException("第"+(rowNum+1)+"行采购模式不能为空");
 								}
 								entity.setClassDesc(ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("classDesc"))));
 								entity.setUnit(ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("unit"))));//单位
-//								private int limitCount=-1;
-								
-								if(codeMap.containsKey(code)){
-									repeatCode.add(code);
-								}else{
-									list.add(entity);
-								}
-								codeMap.put(code,code);
+//								if(codeMap.containsKey(code)){
+//									repeatCode.add(code);
+//								}else{
+//									list.add(entity);
+//								}
+//								codeMap.put(code,code);
+								list.add(entity);
 							}
 						}
 					}
@@ -156,39 +189,64 @@ public class MaterialService extends BaseServiceImpl<MaterialEntity,String> {
 						for (int rowNum = 1; rowNum <= xssfSheet.getLastRowNum(); rowNum++) {
 							XSSFRow xssfRow = xssfSheet.getRow(rowNum);
 							if (xssfRow != null) {
-								
 								entity = new MaterialEntity();
 								code = ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("code")),df);
+								if(StringUtils.isNotEmpty(code)){
+									code = code.trim();
+									code = code.replace(".0", "");
+									codeList.add(code);
+								}
 								entity.setCode(code);
+								hwcode=ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("hwcode")));
+								if(StringUtils.isNotEmpty(hwcode)){
+									hwcode = hwcode.trim();
+									hwcode = hwcode.replace(".0", "");
+									hwcodeList.add(hwcode);
+								}
+								entity.setHwcode(hwcode);
+								
 								entity.setName(ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("name")),df));
-								entity.setHwcode(ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("hwcode"))));
 								entity.setMemo(ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("memo"))));
-								hasRisk = ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("hasRisk")));
+								purchaseType = ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("purchaselType")));
 								entity.setHasRisk(0);
-								if(!StringUtils.isEmpty(hasRisk)&&(hasRisk.equals("1")||hasRisk.equals("是"))){
-									entity.setHasRisk(1);
+								if(!StringUtils.isEmpty(purchaseType)){
+									if((purchaseType.equals("CS")||purchaseType.equals("C/S"))){
+										entity.setPurchaseType("CS");
+									} if(purchaseType.equals("TK")){
+										entity.setPurchaseType("TK");
+									}else{
+										throw new ServiceException("第"+(rowNum+1)+"行采购模式必须为TK或CS");
+									}
+								}else{
+									throw new ServiceException("第"+(rowNum+1)+"行采购模式不能为空");
 								}
 								entity.setClassDesc(ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("classDesc"))));
 								entity.setUnit(ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("unit"))));//单位
-								if(codeMap.containsKey(code)){
-									repeatCode.add(code);
-								}else{
-									list.add(entity);
-								}
-								codeMap.put(code,code);
+//								if(codeMap.containsKey(code)){
+//									repeatCode.add(code);
+//								}else{
+//									list.add(entity);
+//								}
+//								codeMap.put(code,code);
+								list.add(entity);
 							}
 						}
 					}
 				}
 			}
-			if(repeatCode.size()>0){
-				arm.setSuccess(false);
-				arm.setMsg(StringUtils.join(repeatCode)+"存在相同的物料编码");
-			}else{
-				doAdd(list);
-				arm.setSuccess(true);
-				arm.setMsg("导入成功.");
+			List<MaterialEntity> tkMaterial = findByCodes(codeList);
+			List<MaterialEntity> csMaterial = findByCodes(hwcodeList);
+			for(MaterialEntity obj:list){
+				if(saveWithHwCode(obj, csMaterial)){
+					continue;
+				}
+				if(saveWithCode(obj, tkMaterial)){
+					continue;
+				}
+				doAdd(obj);
 			}
+			arm.setSuccess(true);
+			arm.setMsg("导入成功.");
 		} catch (Exception e) {
 			e.printStackTrace();
 			arm.setSuccess(false);
@@ -212,6 +270,43 @@ public class MaterialService extends BaseServiceImpl<MaterialEntity,String> {
 		return arm;
 	}
 
+	private boolean saveWithHwCode(MaterialEntity obj,List<MaterialEntity> mList){
+		if(CollectionUtils.isNotEmpty(mList)){
+			return false;
+		}
+		for(MaterialEntity m:mList){
+			if(m.getHwcode().equals(obj.getHwcode())){
+				m.setCode(obj.getCode());
+				m.setName(obj.getName());
+				m.setUnit(obj.getUnit());
+				m.setClassDesc(obj.getClassDesc());
+				m.setMemo(obj.getMemo());
+				m.setPurchaseType(obj.getPurchaseType());
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean saveWithCode(MaterialEntity obj,List<MaterialEntity> mList){
+		if(CollectionUtils.isNotEmpty(mList)){
+			return false;
+		}
+		for(MaterialEntity m:mList){
+			if(m.getCode().equals(obj.getCode())){
+				m.setHwcode(obj.getHwcode());
+				m.setName(obj.getName());
+				m.setUnit(obj.getUnit());
+				m.setClassDesc(obj.getClassDesc());
+				m.setMemo(obj.getMemo());
+				m.setPurchaseType(obj.getPurchaseType());
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	
 	public void changeToStatisCells(List<MaterialEntity> resultList, Workbook wb) {
 		List<ImexlateSubEntity> implateSubList=imexlateSubService.findByTemCoding("materialExport");
 		Row row = null;
@@ -276,6 +371,8 @@ public class MaterialService extends BaseServiceImpl<MaterialEntity,String> {
 		map.put("unit", EnumDataUtils.getEnumValue(obj.getUnit(), "MaterialUnit"));
 		map.put("classDesc", obj.getClassDesc());
 		map.put("memo", obj.getMemo());
+		map.put("purchaselType", obj.getPurchaseType());
+		map.put("position", obj.getPosition());
 		return map;
 	}
 	
@@ -296,5 +393,20 @@ public class MaterialService extends BaseServiceImpl<MaterialEntity,String> {
 		return list;
 	}
 	
+	public List<MaterialEntity> findByHwCodes(List<String> hwCodeList) {
+		List<MaterialEntity> list=new ArrayList<MaterialEntity>();
+		if(hwCodeList!=null&&hwCodeList.size()>0){
+			int pageSize=1000;
+			double pageCount=Math.ceil(Double.valueOf(hwCodeList.size()+"")/pageSize);
+			for(int i=0;i<pageCount;i++){
+				if((i+1)*pageSize<hwCodeList.size()){
+					list.addAll(dao.findByCodes(hwCodeList.subList(i*pageSize, (i+1)*pageSize)));
+				}else{
+					list.addAll(dao.findByCodes(hwCodeList.subList(i*pageSize, hwCodeList.size())));
+				}
+			}
+		}
+		return list;
+	}
 
 }

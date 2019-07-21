@@ -9,9 +9,11 @@
 <body>
 	<div id="yy-page-detail" class="container-fluid page-container page-content" >
 		<div class="row yy-toolbar">
+			<c:if test="${isShowBtn eq '1'}">
 			<button id="yy-btn-backtolist" class="btn blue btn-sm">
 				<i class="fa fa-rotate-left"></i> 返回
 			</button>
+			</c:if>
 		</div>
 		<form id="yy-form-detail" class="form-horizontal yy-form-detail">
 			<input name="uuid" type="text" class="hide" value="${entity.uuid}">
@@ -42,27 +44,46 @@
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-md-4">
+					<!-- <div class="col-md-4">
 						<div class="form-group">
 							<label class="control-label col-md-4" >是否风险物料</label>
 							<div class="col-md-8" >
 								<select name="hasRisk" id="hasRisk" data-enum-group="BooleanType" class="yy-input-enumdata form-control"></select>
 							</div>
 						</div>
-					</div>
+					</div> -->
 					<div class="col-md-4">
 						<div class="form-group">
 							<label class="control-label col-md-4" >物料单位</label>
 							<div class="col-md-8" >
-								<select name="unit" id="unit" data-enum-group="MaterialUnit" class="yy-input-enumdata form-control"></select>
+								<!-- <select name="unit" id="unit" data-enum-group="MaterialUnit" class="yy-input-enumdata form-control"></select> -->
+								<input name="unit" id="unit" type="text" value="${entity.unit}" class="form-control">
 							</div>
 						</div>
 					</div>
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4" >限制数量</label>
+							<label class="control-label col-md-4" >条码类型</label>
 							<div class="col-md-8" >
 								<select name="limitCount" id="limitCount" data-enum-group="MaterialLimitCount" class="yy-input-enumdata form-control"></select>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+							<label class="control-label col-md-4">采购模式</label>
+							<div class="col-md-8" >
+								<select name="purchaseType" id="purchaseType" data-enum-group="PurchaseType" class="yy-input-enumdata form-control"></select>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div>
+					<div class="col-md-8">
+						<div class="form-group">
+							<label class="control-label col-md-2" >领域</label>
+							<div class="col-md-10" >
+								<input name="position" id="position" type="text" value="${entity.position}" class="form-control">
 							</div>
 						</div>
 					</div>
@@ -108,9 +129,10 @@
 			if ('${openstate}' == 'add') {
 				//$("select[name='is_use']").val('1');
 			} else if ('${openstate}' == 'detail') {
-				$("select[name='hasRisk']").val('${entity.hasRisk}');
+				//$("select[name='hasRisk']").val('${entity.hasRisk}');
 				$("select[name='unit']").val('${entity.unit}');
 				$("select[name='limitCount']").val('${entity.limitCount}');
+				$("select[name='purchaseType']").val('${entity.purchaseType}');
 			}
 		}
 

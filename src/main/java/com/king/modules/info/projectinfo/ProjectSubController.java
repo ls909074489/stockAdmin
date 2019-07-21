@@ -7,6 +7,8 @@ import java.util.Map;
 
 import javax.servlet.ServletRequest;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -57,7 +59,21 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		addParam.put("EQ_stock.uuid", request.getParameter("stockId"));
 		addParam.put("EQ_material.uuid", request.getParameter("materialId"));
 		QueryRequest<ProjectSubEntity> qr = getQueryRequest(request, addParam);
-		return execQuery(qr, baseService);
+		ActionResultModel<ProjectSubEntity> arm =  execQuery(qr, baseService);
+		List<ProjectSubEntity> subList = arm.getRecords();
+		if(CollectionUtils.isEmpty(subList)){
+			return arm;
+		}
+		for(ProjectSubEntity sub : subList){
+			if(StringUtils.isEmpty(sub.getBarcode())){
+				sub.setCheckStatus(ProjectSubEntity.checkStatus_init);
+			}else if(sub.getBarcode().contains(sub.getMaterial().getHwcode())){
+				sub.setCheckStatus(ProjectSubEntity.checkStatus_pass);
+			}else{
+				sub.setCheckStatus(ProjectSubEntity.checkStatus_error);
+			}
+		}
+		return arm;
 	}
 	
 	

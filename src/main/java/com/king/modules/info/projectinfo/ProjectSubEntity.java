@@ -30,6 +30,11 @@ import com.king.modules.info.material.MaterialBaseEntity;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class ProjectSubEntity extends BaseEntity {
 
+	
+	public static final String checkStatus_init="10";
+	public static final String checkStatus_pass="20";
+	public static final String checkStatus_error="30";
+	
 	private static final long serialVersionUID = 1L;
 
 	@ManyToOne(optional = false)
@@ -57,11 +62,15 @@ public class ProjectSubEntity extends BaseEntity {
 	@Column()
 	private String memo;
 	
-	@Column()
-	private Integer boxNum;
+	@Column(length=50)
+	private String boxNum;
 	
 	@Column(name = "barcode",length=50)
 	private String barcode="";//条码
+	
+	@MetaData(value = "条码验证状态")
+	@Column(length=2)
+	private String checkStatus="10";//条码验证状态
 	
 	@Transient
 	private String materialId;
@@ -121,11 +130,11 @@ public class ProjectSubEntity extends BaseEntity {
 		this.materialId = materialId;
 	}
 
-	public Integer getBoxNum() {
+	public String getBoxNum() {
 		return boxNum;
 	}
 
-	public void setBoxNum(Integer boxNum) {
+	public void setBoxNum(String boxNum) {
 		this.boxNum = boxNum;
 	}
 
@@ -159,6 +168,14 @@ public class ProjectSubEntity extends BaseEntity {
 
 	public void setMaterialCode(String materialCode) {
 		this.materialCode = materialCode;
+	}
+
+	public String getCheckStatus() {
+		return checkStatus;
+	}
+
+	public void setCheckStatus(String checkStatus) {
+		this.checkStatus = checkStatus;
 	}
 
 }

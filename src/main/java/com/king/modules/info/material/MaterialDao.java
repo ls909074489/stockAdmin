@@ -23,4 +23,7 @@ public interface MaterialDao extends IBaseDAO<MaterialEntity,String> {
 	 */
 	@Query("FROM MaterialEntity o WHERE o.code in ?1")
 	List<MaterialEntity> findByCodes(List<String> codeList);
+	
+	@Query("FROM MaterialEntity o WHERE o.hwcode in ?1")
+	List<MaterialEntity> findByHwCodes(List<String> hwCodeList);
 }
