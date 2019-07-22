@@ -106,6 +106,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 						sub.setCreator(user.getUuid());
 						sub.setCreatorname(user.getUsername());
 						sub.setCreatetime(new Date());
+						sub.setLimitCount(sub.getMaterial().getLimitCount());
 					}
 					sub.setMain(savedEntity);
 					sub.setMid(savedEntity.getUuid());
@@ -210,7 +211,9 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 		}else{
 			blist.add(newBarcode);
 		}
-		sub.setBarcode(newBarcode);
+		if(Integer.parseInt(idArr[0])==0){
+			sub.setBarcode(newBarcode);
+		}
 		sub.setBarcodejson(JSON.toJSONString(blist));
 		arm.setSuccess(true);
 		arm.setMsg("操作成功");
@@ -573,7 +576,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 
 	public ActionResultModel<ProjectSubEntity> checkBarcode(String newBarcode, String subId) {
 		ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity> ();
-		List<ProjectSubEntity> subList = dao.findByBarcode(newBarcode);
+		List<ProjectSubEntity> subList = dao.findByBarcode("\""+newBarcode+"\"");
 		if(CollectionUtils.isEmpty(subList)){
 			arm.setSuccess(true);
 			arm.setMsg("没有重复的条码");

@@ -239,6 +239,7 @@ INSERT INTO `stock_admin`.`yy_imexlate_sub` (`uuid`, `create_time`, `createtime`
 INSERT INTO `stock_admin`.`yy_imexlate_sub` (`uuid`, `create_time`, `createtime`, `creator`, `creatorname`, `modifier`, `modifiername`, `modify_time`, `modifytime`, `status`, `chinese_field`, `export_cell_num`, `field_name`, `is_main_field`, `template_id`, `ts`, `enumdata`, `isnotempty`, `qualified_value`, `datatype`, `column_width`) VALUES ('fe7a7f23-6672-488e-a54f-0bb36d44e14e', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', '物料描述', 'C', 'materialDesc', '\0', '397a6f33-4498-4920-8ea9-09e6d12d61f7', '2019-07-22 10:58:01', NULL, '\0', NULL, NULL, NULL);
 
 
+update yy_project_sub set limit_count=-1 where limit_count is null;
 
 
 

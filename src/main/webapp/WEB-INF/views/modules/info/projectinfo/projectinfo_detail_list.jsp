@@ -172,7 +172,7 @@
 				orderable : false,
 				render : function(data, type, full) {
 					return "<div class='yy-btn-actiongroup'>"
-					+ "<button  onclick='saveNewBarcode(this);' rowUuid='"+full.uuid+"'class='btn btn-xs btn-info' data-rel='tooltip' title='保存'><i class='fa yy-btn-save'></i>保存</button>"
+					+ "<button  onclick='saveNewBarcode(this);' rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info' data-rel='tooltip' title='保存'><i class='fa yy-btn-save'></i>保存</button>"
 					+ "</div>";
 				},
 				width : "30"
@@ -403,7 +403,7 @@
 							var totalRecord = json.recordsTotal;
 							if(totalRecord>0){
 								YYUI.succMsg('匹配'+totalRecord+'条记录');
-								if(totalRecord==1){
+								if(json.records.length==1){
 									json.records[0].newBarcode=$("#sweepCode").val();
 								}
 							}
@@ -520,7 +520,7 @@
 		function onSaveBarCode(newBarcodeVal,subId){
 			$.ajax({
 				type : "POST",
-				data :{"newBarcode": newBarcodeVal,"subId":subId},
+				data :{"newBarcode": newBarcodeVal,"newUuid":subId},
 				url : "${serviceurl}/updateBarcode",
 				async : true,
 				dataType : "json",

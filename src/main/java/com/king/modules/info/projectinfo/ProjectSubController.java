@@ -1,5 +1,6 @@
 package com.king.modules.info.projectinfo;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Map;
 
 import javax.servlet.ServletRequest;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,6 @@ import com.king.frame.security.ShiroUser;
 import com.king.modules.info.approve.ApproveUserEntity;
 import com.king.modules.info.approve.ApproveUserService;
 import com.king.modules.info.material.MaterialBaseEntity;
-import com.king.modules.info.material.MaterialEntity;
 import com.king.modules.sys.enumdata.EnumDataSubEntity;
 import com.king.modules.sys.enumdata.EnumDataUtils;
 
@@ -69,6 +70,7 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		}
 		List<ProjectSubEntity> resultList = new ArrayList<>();
 		List<String> subBarcodelist = null;
+		ProjectSubEntity desSub = null;
 		for(ProjectSubEntity sub : subList){
 			if(StringUtils.isEmpty(sub.getBarcode())){
 				sub.setCheckStatus(ProjectSubEntity.checkStatus_init);
@@ -77,6 +79,9 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 			}else{
 				sub.setCheckStatus(ProjectSubEntity.checkStatus_error);
 			}
+			if(sub.getUuid().equals("4e7c4530-0e89-4169-84c1-4d3c424217c5")){
+				System.out.println("aaaaaaaaaaaaa");
+			}
 			if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
 				if(StringUtils.isNotEmpty(sub.getBarcodejson())){
 					subBarcodelist = JSON.parseArray(sub.getBarcodejson(), String.class);
@@ -84,14 +89,22 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 				if(subBarcodelist==null){
 					subBarcodelist = new ArrayList<String>();
 				}
-				for(int i=0;i<sub.getLimitCount();i++){
-					sub.setNewUuid(i+"_"+sub.getUuid());
-					if(i<subBarcodelist.size()){
-						sub.setBarcode(subBarcodelist.get(i));
-					}else{
-						sub.setBarcode("");
+				for(int i=0;i<sub.getPlanAmount();i++){
+					desSub = new ProjectSubEntity();
+					try {
+						BeanUtils.copyProperties(desSub, sub);
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						e.printStackTrace();
 					}
-					resultList.add(sub);
+					desSub.setNewUuid(i+"_"+sub.getUuid());
+					if(i<subBarcodelist.size()){
+						desSub.setBarcode(subBarcodelist.get(i));
+					}else{
+						desSub.setBarcode("");
+					}
+					resultList.add(desSub);
 				}
 			}else{
 				sub.setNewUuid("0_"+sub.getUuid());
