@@ -212,7 +212,7 @@
 			orderable : true,
 			render : function(data, type, full) {
 				var str ='<div class="input-group"> '+
-				 '<input class="form-control materialHwCodeInputCls"  value="'+ data.hwcode + '" reallyname="hwcode" name="hwcode" readonly="readonly"> '+
+				 '<input class="form-control materialHwCodeInputCls"  value="'+ data.hwcode + '" reallyname="materialHwCode" name="materialHwCode" readonly="readonly"> '+
 				 '</div> ';
 				return str;
 			}

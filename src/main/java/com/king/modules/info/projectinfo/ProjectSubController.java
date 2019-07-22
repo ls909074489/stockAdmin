@@ -9,6 +9,8 @@ import java.util.Map;
 import javax.servlet.ServletRequest;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,16 +74,6 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		List<String> subBarcodelist = null;
 		ProjectSubEntity desSub = null;
 		for(ProjectSubEntity sub : subList){
-			if(StringUtils.isEmpty(sub.getBarcode())){
-				sub.setCheckStatus(ProjectSubEntity.checkStatus_init);
-			}else if(sub.getBarcode().contains(sub.getMaterial().getHwcode())){
-				sub.setCheckStatus(ProjectSubEntity.checkStatus_pass);
-			}else{
-				sub.setCheckStatus(ProjectSubEntity.checkStatus_error);
-			}
-			if(sub.getUuid().equals("4e7c4530-0e89-4169-84c1-4d3c424217c5")){
-				System.out.println("aaaaaaaaaaaaa");
-			}
 			if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
 				if(StringUtils.isNotEmpty(sub.getBarcodejson())){
 					subBarcodelist = JSON.parseArray(sub.getBarcodejson(), String.class);
@@ -92,6 +84,7 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 				for(int i=0;i<sub.getPlanAmount();i++){
 					desSub = new ProjectSubEntity();
 					try {
+						ConvertUtils.register(new DateConverter(null), java.util.Date.class);
 						BeanUtils.copyProperties(desSub, sub);
 					} catch (IllegalAccessException e) {
 						e.printStackTrace();
@@ -104,9 +97,11 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 					}else{
 						desSub.setBarcode("");
 					}
+					checkStyle(desSub);
 					resultList.add(desSub);
 				}
 			}else{
+				checkStyle(sub);
 				sub.setNewUuid("0_"+sub.getUuid());
 				resultList.add(sub);
 			}
@@ -115,6 +110,16 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		return arm;
 	}
 	
+	private ProjectSubEntity checkStyle(ProjectSubEntity sub){
+		if(StringUtils.isEmpty(sub.getBarcode())){
+			sub.setCheckStatus(ProjectSubEntity.checkStatus_init);
+		}else if(sub.getBarcode().contains(sub.getMaterial().getHwcode())){
+			sub.setCheckStatus(ProjectSubEntity.checkStatus_pass);
+		}else{
+			sub.setCheckStatus(ProjectSubEntity.checkStatus_error);
+		}
+		return sub;
+	}
 	
 	@ResponseBody
 	@RequestMapping(value = "/updateBarcode")
@@ -134,5 +139,21 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 	@RequestMapping(value = "/checkBarcode")
 	public ActionResultModel<ProjectSubEntity> checkBarcode(ServletRequest request,String subId,String newBarcode) {
 		return projectSubService.checkBarcode(newBarcode,subId);
+	}
+	
+	
+	
+	@RequestMapping("/toUpdateLimitCount")
+	public String toUpdateLimitCount(Model model,String subId) {
+		ProjectSubEntity sub = projectSubService.getOne(subId);
+		model.addAttribute("entity", sub);
+		return "modules/info/projectinfo/projectinfo_sub_limitcount";
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping(value = "/updateLimitCount")
+	public ActionResultModel<ProjectSubEntity> updateLimitCount(ServletRequest request,String subId,int limitCount) {
+		return projectSubService.updateLimitCount(limitCount,subId);
 	}
 }

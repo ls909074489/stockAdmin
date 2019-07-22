@@ -203,7 +203,7 @@
 				orderable : false
 			},{
 				data : "main.billstatus",
-				width : "60",
+				width : "50",
 				className : "center",
 				render : function(data, type, full) {
 					if(full.checkStatus=='30'){
@@ -253,7 +253,7 @@
 				}
 			},{
 				data : "material.code",
-				width : "100",
+				width : "60",
 				className : "center",
 				render : function(data, type, full) {
 					return '<a onclick="showMaterial(\''+full.material.uuid+'\');">'+data+'</a>';
@@ -264,7 +264,9 @@
 				width : "100",
 				className : "center",
 				render : function(data, type, full) {
-					return '<a onclick="showMaterial(\''+full.material.uuid+'\');">'+data+'</a>';
+					var str = '<a onclick="showMaterial(\''+full.material.uuid+'\');">'+data+'</a>'+
+					'<a onclick="toUpdateLimitCount(\''+full.uuid+'\');">【'+YYDataUtils.getEnumName("MaterialLimitCount", full.limitCount)+'】</a>';
+					return str;
 				},
 				orderable : false
 			},{
@@ -575,6 +577,18 @@
 				shade : 0.8,
 				area : [ '90%', '90%' ],
 				content : '${ctx}/info/material/onDetail?isShowBtn=0&uuid='+uuid//iframe的url
+			});
+		}
+		
+		//修改批次数量
+		function toUpdateLimitCount(subId){
+			layer.open({
+				type : 2,
+				title : '修改条码类型',
+				shadeClose : false,
+				shade : 0.8,
+				area : [ '500px', '250px;' ],
+				content : '${ctx}/info/projectinfoSub/toUpdateLimitCount?subId='+subId//iframe的url
 			});
 		}
 	</script>

@@ -80,9 +80,6 @@
 		<script type="text/javascript">
 			
 			$(document).ready(function() {
-				$("#years").val('${currentYears}');
-				$("#semester").val('${currentSemester}');
-				
 				$("#yy-import-btn-confirm").bind('click', confirmImport);//确定导入
 				$("#yy-btn-findfile").bind('click', onfindfileFile);
 				$("#multifile").bind('change', onQueryFile);

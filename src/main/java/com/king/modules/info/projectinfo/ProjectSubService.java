@@ -115,10 +115,10 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 					sub.setModifytime(new Date());
 					sub.setActualAmount(sub.getPlanAmount());
 					
-					if(codeMap.containsKey(sub.getBoxNum()+"_"+sub.getMaterialCode())){
-						throw new ServiceException("第"+sub.getBoxNum()+"箱料号"+sub.getMaterialCode()+"不能重复");
+					if(codeMap.containsKey(sub.getBoxNum()+"_"+sub.getMaterialHwCode())){
+						throw new ServiceException("第"+sub.getBoxNum()+"箱华为料号"+sub.getMaterialHwCode()+"不能重复");
 					}
-					codeMap.put(sub.getBoxNum()+"_"+sub.getMaterialCode(), "第"+sub.getBoxNum()+"箱料号"+sub.getMaterialCode());
+					codeMap.put(sub.getBoxNum()+"_"+sub.getMaterialHwCode(), "第"+sub.getBoxNum()+"箱料号"+sub.getMaterialHwCode());
 					
 					//设置条形码
 					setBarcodeJson(sub);
@@ -574,6 +574,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 		}
 	}
 
+	
 	public ActionResultModel<ProjectSubEntity> checkBarcode(String newBarcode, String subId) {
 		ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity> ();
 		List<ProjectSubEntity> subList = dao.findByBarcode("\""+newBarcode+"\"");
@@ -595,5 +596,16 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 			arm.setMsg(org.apache.commons.lang.StringUtils.join(repeatList, ",")+"已存在条码"+newBarcode);
 			return arm;
 		}
+	}
+
+
+	@Transactional
+	public ActionResultModel<ProjectSubEntity> updateLimitCount(int limitCount, String subId) {
+		ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity>();
+		ProjectSubEntity sub = getOne(subId);
+		sub.setLimitCount(limitCount);
+		arm.setSuccess(true);
+		arm.setMsg("操作成功");
+		return arm;
 	}
 }

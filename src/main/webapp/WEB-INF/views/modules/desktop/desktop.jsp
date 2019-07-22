@@ -10,7 +10,7 @@
 <body>
 	<div id="yy-page" class="container-fluid page-container">
 		<div class="row">
-			<div class="col-md-4" style="padding-left: 0px;">
+			<div class="col-md-3" style="padding-left: 0px;">
 				<!-- BEGIN SAMPLE TABLE PORTLET-->
 					<div class="portlet box blue tasks-widget">
 						<div class="portlet-title">
@@ -41,7 +41,7 @@
 					</div>
 					<!-- END SAMPLE TABLE PORTLET-->
 			</div>
-			<div class="col-md-8" style="padding-left: 0px;">
+			<div class="col-md-9" style="padding-left: 0px;">
 				<div class="portlet box blue tasks-widget">
 					<div class="portlet-title">
 						<div class="caption">
@@ -76,12 +76,6 @@
 											<input type="text" autocomplete="on" name="search_LIKE_sourceBillCode"
 												id="search_LIKE_sourceBillCode" class="form-control input-sm">
 											
-											<button id="yy-btn-search" type="button" class="btn btn-sm btn-info">
-												<i class="fa fa-search"></i>查询
-											</button>
-											<button id="rap-searchbar-reset" type="reset" class="red">
-												<i class="fa fa-undo"></i> 清空
-											</button>	
 											<div style="height: 5px;"></div>	
 											<label for="search_LIKE_creatorname" class="control-label">操作人&nbsp;&nbsp;&nbsp;&nbsp;</label>	
 											<input type="text" autocomplete="on" name="search_LIKE_creatorname"
@@ -92,9 +86,15 @@
 											onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:00',maxDate:'#F{$dp.$D(\'search_LTE_createtime\')}'});">
 											
 											<label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;到&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </label> 
-											 <input type="text" autocomplete="on" name="search_LTE_createtime" style="width: 150px;" id="search_LTE_createtime"
-										class="form-control input-sm Wdate" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:00',minDate:'#F{$dp.$D(\'search_GTE_createtime\')}'});">	
-						
+											<input type="text" autocomplete="on" name="search_LTE_createtime" style="width: 150px;" id="search_LTE_createtime"
+											class="form-control input-sm Wdate" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:00',minDate:'#F{$dp.$D(\'search_GTE_createtime\')}'});">	
+											
+											<button id="yy-btn-search" type="button" class="btn btn-sm btn-info">
+												<i class="fa fa-search"></i>查询
+											</button>
+											<button id="rap-searchbar-reset" type="reset" class="red">
+												<i class="fa fa-undo"></i> 清空
+											</button>
 										</form>
 									</div>
 									<div class="row">
