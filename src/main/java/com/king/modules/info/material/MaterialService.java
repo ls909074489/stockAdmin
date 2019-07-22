@@ -155,9 +155,9 @@ public class MaterialService extends BaseServiceImpl<MaterialEntity,String> {
 								entity.setHasRisk(0);
 								if(!StringUtils.isEmpty(purchaseType)){
 									if((purchaseType.equals("CS")||purchaseType.equals("C/S"))){
-										entity.setPurchaseType("CS");
-									} if(purchaseType.equals("TK")){
-										entity.setPurchaseType("TK");
+										entity.setPurchaseType(MaterialEntity.PURCHASETYPE_CS);
+									}else if(purchaseType.equals("TK")){
+										entity.setPurchaseType(MaterialEntity.PURCHASETYPE_TK);
 									}else{
 										throw new ServiceException("第"+(rowNum+1)+"行采购模式必须为TK或CS");
 									}
@@ -211,9 +211,9 @@ public class MaterialService extends BaseServiceImpl<MaterialEntity,String> {
 								entity.setHasRisk(0);
 								if(!StringUtils.isEmpty(purchaseType)){
 									if((purchaseType.equals("CS")||purchaseType.equals("C/S"))){
-										entity.setPurchaseType("CS");
-									} if(purchaseType.equals("TK")){
-										entity.setPurchaseType("TK");
+										entity.setPurchaseType(MaterialEntity.PURCHASETYPE_CS);
+									}else if(purchaseType.equals("TK")){
+										entity.setPurchaseType(MaterialEntity.PURCHASETYPE_TK);
 									}else{
 										throw new ServiceException("第"+(rowNum+1)+"行采购模式必须为TK或CS");
 									}

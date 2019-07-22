@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.alibaba.fastjson.JSON;
 import com.king.common.utils.Json;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.BaseController;
@@ -22,6 +23,8 @@ import com.king.frame.controller.QueryRequest;
 import com.king.frame.security.ShiroUser;
 import com.king.modules.info.approve.ApproveUserEntity;
 import com.king.modules.info.approve.ApproveUserService;
+import com.king.modules.info.material.MaterialBaseEntity;
+import com.king.modules.info.material.MaterialEntity;
 import com.king.modules.sys.enumdata.EnumDataSubEntity;
 import com.king.modules.sys.enumdata.EnumDataUtils;
 
@@ -64,6 +67,8 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		if(CollectionUtils.isEmpty(subList)){
 			return arm;
 		}
+		List<ProjectSubEntity> resultList = new ArrayList<>();
+		List<String> subBarcodelist = null;
 		for(ProjectSubEntity sub : subList){
 			if(StringUtils.isEmpty(sub.getBarcode())){
 				sub.setCheckStatus(ProjectSubEntity.checkStatus_init);
@@ -72,14 +77,35 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 			}else{
 				sub.setCheckStatus(ProjectSubEntity.checkStatus_error);
 			}
+			if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
+				if(StringUtils.isNotEmpty(sub.getBarcodejson())){
+					subBarcodelist = JSON.parseArray(sub.getBarcodejson(), String.class);
+				}
+				if(subBarcodelist==null){
+					subBarcodelist = new ArrayList<String>();
+				}
+				for(int i=0;i<sub.getLimitCount();i++){
+					sub.setNewUuid(i+"_"+sub.getUuid());
+					if(i<subBarcodelist.size()){
+						sub.setBarcode(subBarcodelist.get(i));
+					}else{
+						sub.setBarcode("");
+					}
+					resultList.add(sub);
+				}
+			}else{
+				sub.setNewUuid("0_"+sub.getUuid());
+				resultList.add(sub);
+			}
 		}
+		arm.setRecords(resultList);
 		return arm;
 	}
 	
 	
 	@ResponseBody
 	@RequestMapping(value = "/updateBarcode")
-	public ActionResultModel<ProjectSubEntity> updateBarcode(ServletRequest request,String subId,String newBarcode) {
+	public ActionResultModel<ProjectSubEntity> updateBarcode(ServletRequest request,String newUuid,String newBarcode) {
 		boolean hasPri = approveUserService.checkIsApproveUser(ShiroUser.getCurrentUserEntity(), ApproveUserEntity.PROJECTINFO_TYPE);
 		if(!hasPri){
 			ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity>();
@@ -87,7 +113,13 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 			arm.setMsg("您不是审核用户，不能进行操作.");
 			return arm;
 		}
-		return projectSubService.updateBarcode(newBarcode,subId);
+		return projectSubService.updateBarcode(newBarcode,newUuid);
 	}
 	
+	
+	@ResponseBody
+	@RequestMapping(value = "/checkBarcode")
+	public ActionResultModel<ProjectSubEntity> checkBarcode(ServletRequest request,String subId,String newBarcode) {
+		return projectSubService.checkBarcode(newBarcode,subId);
+	}
 }

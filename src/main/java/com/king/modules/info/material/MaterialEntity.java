@@ -26,6 +26,10 @@ public class MaterialEntity extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 	
+	public static final String PURCHASETYPE_CS="CS";
+	
+	public static final String PURCHASETYPE_TK="TK";
+	
 	@MetaData(value = "物料编码")
 	@Column(length = 50)
 	private String code;

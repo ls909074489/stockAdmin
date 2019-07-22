@@ -45,7 +45,7 @@
 				<div class="portlet box blue tasks-widget">
 					<div class="portlet-title">
 						<div class="caption">
-							<i class="fa fa-bell-o"></i>库存查询
+							<i class="fa fa-bell-o"></i>预警物料
 						</div>
 						<div class="tools">
 							<a href="" class="reload" onclick="searchStock()"> </a>
@@ -62,22 +62,39 @@
 										<form id="yy-form-query">
 											<label for="search_LIKE_name" class="control-label">仓库名称</label>
 											<input type="text" autocomplete="on" name="search_LIKE_stock.name"
-												id="search_LIKE_stock.name" class="form-control input-sm" style="width: 140px;">
+												id="search_LIKE_stock.name" class="form-control input-sm">
 												
 											<label for="search_LIKE_name" class="control-label">物料编码</label>
 											<input type="text" autocomplete="on" name="search_LIKE_material.code"
-												id="search_LIKE_material.code" class="form-control input-sm" style="width: 140px;">
+												id="search_LIKE_material.code" class="form-control input-sm">
 												
 											<label for="search_LIKE_name" class="control-label">物料名称</label>
 											<input type="text" autocomplete="on" name="search_LIKE_material.name"
-												id="search_LIKE_material.name" class="form-control input-sm" style="width: 140px;">
-						
+												id="search_LIKE_material.name" class="form-control input-sm">
+																	
+											<label for="search_LIKE_sourceBillCode" class="control-label">源单号</label>
+											<input type="text" autocomplete="on" name="search_LIKE_sourceBillCode"
+												id="search_LIKE_sourceBillCode" class="form-control input-sm">
+											
 											<button id="yy-btn-search" type="button" class="btn btn-sm btn-info">
 												<i class="fa fa-search"></i>查询
 											</button>
 											<button id="rap-searchbar-reset" type="reset" class="red">
 												<i class="fa fa-undo"></i> 清空
-											</button>
+											</button>	
+											<div style="height: 5px;"></div>	
+											<label for="search_LIKE_creatorname" class="control-label">操作人&nbsp;&nbsp;&nbsp;&nbsp;</label>	
+											<input type="text" autocomplete="on" name="search_LIKE_creatorname"
+												id="search_LIKE_creatorname" class="form-control input-sm">
+												
+											<label class="control-label">操作时间</label> 
+											<input type="text" autocomplete="on" name="search_GTE_createtime" style="width: 150px;" id="search_GTE_createtime" class="form-control input-sm Wdate"
+											onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:00',maxDate:'#F{$dp.$D(\'search_LTE_createtime\')}'});">
+											
+											<label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;到&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </label> 
+											 <input type="text" autocomplete="on" name="search_LTE_createtime" style="width: 150px;" id="search_LTE_createtime"
+										class="form-control input-sm Wdate" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:00',minDate:'#F{$dp.$D(\'search_GTE_createtime\')}'});">	
+						
 										</form>
 									</div>
 									<div class="row">
@@ -85,13 +102,20 @@
 											<thead>
 												<tr>
 													<th style="width: 30px;">序号</th>
-													<th>操作</th>
 													<th>仓库名称</th>
 													<th>物料编码</th>
 													<th>物料名称</th>
+													<th>源单号</th>
+													<th>操作人</th>
+													<th>操作时间</th>
+													<!-- <th>单据类型</th> -->
+													<th>调整数量</th>
 													<th>总数量</th>
 													<th>预占数量</th>
 													<th>剩余数量</th>
+													<th>预警时间</th>
+													<th>预警剩余数量</th>
+													<!-- <th>预警状态</th> -->
 												</tr>
 											</thead>
 											<tbody></tbody>
@@ -112,58 +136,99 @@
 	<script type="text/javascript">
 		_isNumber = true;
 		var _tableCols = [{
-				data : null,
-				orderable : false,
-				className : "center",
-				width : "50"
-			},{
-				data : "uuid",
-				className : "center",
-				orderable : false,
-				render: function (data,type,row,meta ) {
-					return "<div class='yy-btn-actiongroup'>" 
-					+ "<button id='yy-btn-view-row' class='btn btn-xs btn-success' data-rel='tooltip' title='查看'><i class='fa fa-search-plus'></i>查看记录</button>"
-					+ "</div>";
-		        },
-				width : "50"
-			},{
-				data : "stock.name",
-				width : "100",
-				className : "center",
-				orderable : true
-			},{
-				data : "material.code",
-				width : "100",
-				className : "center",
-				orderable : true
-			},{
-				data : "material.name",
-				width : "100",
-				className : "center",
-				orderable : true
-			},{
-				data : "totalAmount",
-				width : "100",
-				className : "center",
-				orderable : true
-			},{
-				data : "occupyAmount",
-				width : "100",
-				className : "center",
-				orderable : true
-			},{
-				data : "surplusAmount",
-				width : "100",
-				className : "center",
-				orderable : true
-			}];
-
+			data : null,
+			orderable : false,
+			className : "center",
+			width : "50"
+		},{
+			data : "stock.name",
+			width : "100",
+			className : "center",
+			orderable : false
+		},{
+			data : "material.code",
+			width : "100",
+			className : "center",
+			orderable : false
+		},{
+			data : "material.name",
+			width : "100",
+			className : "center",
+			orderable : false
+		},{
+			data : "sourceBillCode",
+			width : "100",
+			className : "center",
+			orderable : false
+		},{
+			data : "creatorname",
+			width : "100",
+			className : "center",
+			orderable : false
+		},{
+			data : "createtime",
+			width : "100",
+			className : "center",
+			orderable : false
+		}/* ,{
+			data : "operType",
+			width : "100",
+			className : "center",
+			render : function(data, type, full) {
+			       return YYDataUtils.getEnumName("StockSteamOperType", data);
+			},
+			orderable : false
+		} */,{
+			data : "actualAmount",
+			width : "60",
+			className : "center",
+			orderable : false
+		},{
+			data : "totalBefore",
+			width : "60",
+			className : "center",
+			render: function (data,type,row,meta) {
+				return data+"->"+row.totalAfter;
+	        },
+			orderable : false
+		},{
+			data : "occupyBefore",
+			width : "60",
+			className : "center",
+			render: function (data,type,row,meta) {
+				return data+"->"+row.occupyAfter;
+	        },
+			orderable : false
+		},{
+			data : "surplusBefore",
+			width : "60",
+			className : "center",
+			render: function (data,type,row,meta) {
+				return data+"->"+row.surplusAfter;
+	        },
+			orderable : false
+		},{
+			data : "warningTime",
+			width : "60",
+			className : "center",
+			orderable : false
+		},{
+			data : "surplusAmount",
+			width : "60",
+			className : "center",
+			orderable : false
+		}/* ,{
+			data : "warningType",
+			width : "60",
+			className : "center",
+			orderable : false
+		} */];
 
 		//var _setOrder = [[5,'desc']];
 		$(document).ready(function() {
 			_queryData = $("#yy-form-query").serializeArray();
 			bindListActions();
-			serverPage('${serviceurl}/dataSearch?orderby=createtime@desc');
+			serverPage('${ctx}/info/stockstream/dataWarning?orderby=createtime@desc');
 			
 			$(".showDivHeightCls").height((window.screen.availHeight-350));
 			

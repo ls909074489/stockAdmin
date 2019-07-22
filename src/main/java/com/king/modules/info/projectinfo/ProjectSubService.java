@@ -3,6 +3,7 @@ package com.king.modules.info.projectinfo;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.alibaba.fastjson.JSON;
 import com.google.protobuf.ServiceException;
 import com.king.common.utils.ExcelDataUtil;
 import com.king.frame.controller.ActionResultModel;
@@ -73,6 +75,8 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 		return dao;
 	}
 
+	
+	
 	/**
 	 * 保存
 	 * @param entity
@@ -114,6 +118,9 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 						throw new ServiceException("第"+sub.getBoxNum()+"箱料号"+sub.getMaterialCode()+"不能重复");
 					}
 					codeMap.put(sub.getBoxNum()+"_"+sub.getMaterialCode(), "第"+sub.getBoxNum()+"箱料号"+sub.getMaterialCode());
+					
+					//设置条形码
+					setBarcodeJson(sub);
 				}
 				save(subList);
 			}
@@ -125,6 +132,46 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 			e.printStackTrace();
 		}
 		return arm;
+	}
+	
+	private ProjectSubEntity setBarcodeJson(ProjectSubEntity sub){
+		if (StringUtils.isEmpty(sub.getUuid())) {
+			if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
+//				List<String> list = new ArrayList<>();
+//				for(int i=0;i<sub.getPlanAmount();i++){
+//					list.add("");
+//				}
+//				sub.setBarcodejson(JSON.toJSONString(list));
+				sub.setBarcodejson(JSON.toJSONString(new String[sub.getPlanAmount().intValue()]));
+			}else{
+				sub.setBarcodejson("[]");
+			}
+		}else{
+			if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
+				String barcodeJson = sub.getBarcodejson();
+				if(StringUtils.isEmpty(barcodeJson)){
+//					List<String> list = new ArrayList<>();
+//					for(int i=0;i<sub.getPlanAmount();i++){
+//						list.add("");
+//					}
+//					sub.setBarcodejson(JSON.toJSONString(list));
+					sub.setBarcodejson(JSON.toJSONString(new String[sub.getPlanAmount().intValue()]));
+				}else{
+					List<String> blist = JSON.parseArray(barcodeJson, String.class);
+					if(sub.getPlanAmount()>blist.size()){//增加了数量
+						for(int i=0;i<(sub.getPlanAmount()-blist.size());i++){
+							blist.add("");
+						}
+					}else if(blist.size()>sub.getPlanAmount()){//减少了数量
+						blist = blist.subList(0, sub.getPlanAmount().intValue());
+					}
+					sub.setBarcodejson(JSON.toJSONString(blist));
+				}
+			}else{
+				sub.setBarcodejson("[]");
+			}
+		}
+		return sub;
 	}
 
 	@Transactional(readOnly = true)
@@ -140,15 +187,37 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 	 * @return
 	 */
 	@Transactional
-	public ActionResultModel<ProjectSubEntity> updateBarcode(String newBarcode, String subId) {
+	public ActionResultModel<ProjectSubEntity> updateBarcode(String newBarcode, String newUuid) {
 		ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity>();
-		ProjectSubEntity sub = getOne(subId);
+		String []idArr = newUuid.split("_");
+		ProjectSubEntity sub = getOne(idArr[1]);
+		String barcodeJson = sub.getBarcodejson();
+		List<String> blist = new ArrayList<>();
+		if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
+			String [] barcodeArr = new String[sub.getPlanAmount().intValue()];
+			if(!StringUtils.isEmpty(barcodeJson)){
+				blist = JSON.parseArray(barcodeJson, String.class);
+			}
+			for(int i=0;i<barcodeArr.length;i++){
+				if(blist.size()>i){
+					barcodeArr[i] = blist.get(i);
+				}else{
+					barcodeArr[i] = "";
+				}
+			}
+			barcodeArr[Integer.parseInt(idArr[0])] = newBarcode;
+			blist = Arrays.asList(barcodeArr);
+		}else{
+			blist.add(newBarcode);
+		}
 		sub.setBarcode(newBarcode);
+		sub.setBarcodejson(JSON.toJSONString(blist));
 		arm.setSuccess(true);
 		arm.setMsg("操作成功");
 		return arm;
 	}
 
+	
 	@Transactional
 	public ActionResultModel<ProjectInfoEntity> importExcel(MultipartFile file, ProjectInfoEntity projectInfo) {
 		List<ImexlateSubEntity> implateSubList = imexlateSubService.findByTemCoding("projectInfoImport");
@@ -171,6 +240,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 			String code = "";
 			String planCount = "";
 			String boxNumStr = "";
+			String materialPurchaseType = "";
 			List<ProjectSubEntity> list = new ArrayList<>();
 			Set<String> materialCodeSet = new HashSet<>();
 			List<String> codeList = new ArrayList<>();
@@ -192,6 +262,44 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 							HSSFRow hssfRow = hssfSheet.getRow(rowNum);
 							if (hssfRow != null) {
 								entity = new ProjectSubEntity();
+								
+								boxNumStr = ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("boxNum")));
+								if (StringUtils.isEmpty(boxNumStr)) {
+									throw new ServiceException("第" + (rowNum + 1) + "箱号不能为空");
+								} else {
+									entity.setBoxNum(boxNumStr);
+								}
+								
+								materialPurchaseType = ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("materialPurchaseType")));
+								if (StringUtils.isEmpty(materialPurchaseType)) {
+									throw new ServiceException("第" + (rowNum + 1) + "行采购模式不能为空");
+								} else {
+									if((materialPurchaseType.equals("CS")||materialPurchaseType.equals("C/S"))){
+										entity.setMaterialPurchaseType(MaterialEntity.PURCHASETYPE_CS);
+									}else if(materialPurchaseType.equals("TK")){
+										entity.setMaterialPurchaseType(MaterialEntity.PURCHASETYPE_TK);
+									}else{
+										throw new ServiceException("第"+(rowNum+1)+"行采购模式必须为TK或CS");
+									}
+								}
+								
+								code = ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("materialCode")));
+								if (StringUtils.isEmpty(code)) {
+									throw new ServiceException("第" + (rowNum + 1) + "行物料不能为空");
+								}
+								code = code.trim();
+								distinctCode = "第" + entity.getPlanAmount() + "箱料号" + code;
+								if (materialCodeSet.contains(distinctCode)) {
+									repeatCode.add(distinctCode);
+								}
+								if(entity.getMaterialPurchaseType().equals(materialPurchaseType.equals("CS"))){
+									entity.setMaterialHwCode(code);//华为物料编码
+								}else{
+									entity.setMaterialCode(code);//华为物料编码
+								}
+								
+								entity.setMaterialDesc(ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("materialDesc"))));
+								
 								planCount = ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("planAmount")));
 								if (StringUtils.isEmpty(planCount)) {
 									throw new ServiceException("第" + (rowNum + 1) + "计划数量不能为空");
@@ -205,24 +313,10 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 									}
 								}
 								entity.setActualAmount(entity.getPlanAmount());
+								
+								entity.setMaterialUnit(ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("materialUnit"))));
 								entity.setMemo(ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("memo"))));
-
-								boxNumStr = ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("boxNum")));
-								if (StringUtils.isEmpty(boxNumStr)) {
-									throw new ServiceException("第" + (rowNum + 1) + "箱号不能为空");
-								} else {
-									entity.setBoxNum(boxNumStr);
-								}
-								code = ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("materialCode")));
-								if (StringUtils.isEmpty(code)) {
-									throw new ServiceException("第" + (rowNum + 1) + "行物料不能为空");
-								}
-								code = code.trim();
-								distinctCode = "第" + entity.getPlanAmount() + "箱料号" + code;
-								if (materialCodeSet.contains(distinctCode)) {
-									repeatCode.add(distinctCode);
-								}
-								entity.setMaterialCode(code);
+								
 								materialCodeSet.add(distinctCode);
 								codeList.add(code);
 								list.add(entity);
@@ -244,6 +338,44 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 							XSSFRow xssfRow = xssfSheet.getRow(rowNum);
 							if (xssfRow != null) {
 								entity = new ProjectSubEntity();
+								
+								boxNumStr = ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("boxNum")));
+								if (StringUtils.isEmpty(boxNumStr)) {
+									throw new ServiceException("第" + (rowNum + 1) + "箱号不能为空");
+								} else {
+									entity.setBoxNum(boxNumStr);
+								}
+								
+								materialPurchaseType = ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("materialPurchaseType")));
+								if (StringUtils.isEmpty(materialPurchaseType)) {
+									throw new ServiceException("第" + (rowNum + 1) + "行采购模式不能为空");
+								} else {
+									if((materialPurchaseType.equals("CS")||materialPurchaseType.equals("C/S"))){
+										entity.setMaterialPurchaseType(MaterialEntity.PURCHASETYPE_CS);
+									}else if(materialPurchaseType.equals("TK")){
+										entity.setMaterialPurchaseType(MaterialEntity.PURCHASETYPE_TK);
+									}else{
+										throw new ServiceException("第"+(rowNum+1)+"行采购模式必须为TK或CS");
+									}
+								}
+								
+								code = ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("materialCode")));
+								if (StringUtils.isEmpty(code)) {
+									throw new ServiceException("第" + (rowNum + 1) + "行物料不能为空");
+								}
+								code = code.trim();
+								distinctCode = "第" + entity.getPlanAmount() + "箱料号" + code;
+								if (materialCodeSet.contains(distinctCode)) {
+									repeatCode.add(distinctCode);
+								}
+								if(entity.getMaterialPurchaseType().equals(materialPurchaseType.equals("CS"))){
+									entity.setMaterialHwCode(code);//华为物料编码
+								}else{
+									entity.setMaterialCode(code);//华为物料编码
+								}
+								
+								entity.setMaterialDesc(ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("materialDesc"))));
+								
 								planCount = ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("planAmount")));
 								if (StringUtils.isEmpty(planCount)) {
 									throw new ServiceException("第" + (rowNum + 1) + "计划数量不能为空");
@@ -257,24 +389,10 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 									}
 								}
 								entity.setActualAmount(entity.getPlanAmount());
+								
+								entity.setMaterialUnit(ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("materialUnit"))));
 								entity.setMemo(ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("memo"))));
-								boxNumStr = ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("boxNum")));
-								if (StringUtils.isEmpty(boxNumStr)) {
-									throw new ServiceException("第" + (rowNum + 1) + "箱号不能为空");
-								} else {
-									entity.setBoxNum(boxNumStr);
-								}
-
-								code = ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("materialCode")));
-								if (StringUtils.isEmpty(code)) {
-									throw new ServiceException("第" + (rowNum + 1) + "行物料不能为空");
-								}
-								code = code.trim();
-								distinctCode = "第" + entity.getPlanAmount() + "箱料号" + code;
-								if (materialCodeSet.contains(distinctCode)) {
-									repeatCode.add(distinctCode);
-								}
-								entity.setMaterialCode(code);
+								
 								materialCodeSet.add(distinctCode);
 								codeList.add(code);
 								list.add(entity);
@@ -294,27 +412,50 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 				for (ProjectSubEntity projectSub : list) {
 					hasMaterial = false;
 					for (MaterialEntity material : materialList) {
-						if (projectSub.getMaterialCode().equals(material.getCode())) {
+						if (projectSub.getMaterialPurchaseType().equals(MaterialEntity.PURCHASETYPE_CS)&&projectSub.getMaterialCode().equals(material.getHwcode())) {
 							hasMaterial = true;
 							materialBase = new MaterialBaseEntity();
 							materialBase.setUuid(material.getUuid());
 							projectSub.setMaterial(materialBase);
-							projectSub.setMaterialCode(material.getCode());
+							projectSub.setMaterialCode(material.getHwcode());
+							break;
+						}
+						if (projectSub.getMaterialPurchaseType().equals(MaterialEntity.PURCHASETYPE_TK)&&projectSub.getMaterialCode().equals(material.getCode())) {
+							hasMaterial = true;
+							materialBase = new MaterialBaseEntity();
+							materialBase.setUuid(material.getUuid());
+							projectSub.setMaterial(materialBase);
+							projectSub.setMaterialCode(material.getHwcode());
 							break;
 						}
 					}
-					if (!hasMaterial) {
+					if (!hasMaterial) {//物料不存在 先添加
 						notExitCode.add(projectSub.getMaterialCode());
+						
+						MaterialEntity material = new MaterialEntity();
+						material.setCode("");
+						material.setHwcode(projectSub.getMaterialCode());
+						material.setPurchaseType(projectSub.getMaterialPurchaseType());
+						material.setName(projectSub.getMaterialDesc());
+						material.setClassDesc(projectSub.getMaterialDesc());
+						material.setMemo(projectSub.getMaterialDesc());
+						material.setUnit(projectSub.getMaterialUnit());
+						material.setLimitCount(-1);
+						materialService.doAdd(material);
+						
+						materialBase = new MaterialBaseEntity();
+						materialBase.setUuid(material.getUuid());
+						projectSub.setMaterial(materialBase);
 					}
 				}
-				if (CollectionUtils.isEmpty(notExitCode)) {
+//				if (CollectionUtils.isEmpty(notExitCode)) {
 					saveSelfAndSubList(projectInfo, list, null);
 					arm.setSuccess(true);
 					arm.setMsg("导入成功.");
-				} else {
-					arm.setSuccess(false);
-					arm.setMsg("料号" + org.apache.commons.lang3.StringUtils.join(notExitCode) + "不存在");
-				}
+//				} else {
+//					arm.setSuccess(false);
+//					arm.setMsg("料号" + org.apache.commons.lang3.StringUtils.join(notExitCode) + "不存在");
+//				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -427,6 +568,29 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 			
 			cell = row.createCell(6);//
 			cell.setCellValue(sub.getMemo());
+		}
+	}
+
+	public ActionResultModel<ProjectSubEntity> checkBarcode(String newBarcode, String subId) {
+		ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity> ();
+		List<ProjectSubEntity> subList = dao.findByBarcode(newBarcode);
+		if(CollectionUtils.isEmpty(subList)){
+			arm.setSuccess(true);
+			arm.setMsg("没有重复的条码");
+			return arm;
+		}
+		if(subList.size()==1&&subList.get(0).getUuid().equals(subId)){
+			arm.setSuccess(true);
+			arm.setMsg("没有重复的条码");
+			return arm;
+		}else{
+			List<String> repeatList = new ArrayList<>();
+			for(ProjectSubEntity sub:subList){
+				repeatList.add(sub.getMain().getName()+"("+sub.getMain().getCode()+")箱号"+sub.getBoxNum());
+			}
+			arm.setSuccess(false);
+			arm.setMsg(org.apache.commons.lang.StringUtils.join(repeatList, ",")+"已存在条码"+newBarcode);
+			return arm;
 		}
 	}
 }

@@ -95,11 +95,15 @@
 					</c:choose>
 												
 					<label for="search_EQ_boxNum" class="control-label">箱号&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-					<select class="yy-input-enumdata form-control" id="search_EQ_boxNum" name="search_EQ_boxNum"
-								 data-enum-group="BoxNum"></select>	
+					<!-- <select class="yy-input-enumdata form-control" id="search_EQ_boxNum" name="search_EQ_boxNum"
+								 data-enum-group="BoxNum"></select>	 -->
+					<input type="text" autocomplete="on" name="search_EQ_boxNum" id="search_EQ_boxNum" class="form-control input-sm">
 								 
 					<label for="search_LIKE_materialCode" class="control-label">物料编码</label>
 					<input type="text" autocomplete="on" name="search_LIKE_material.code" id="search_LIKE_materialCode" class="form-control input-sm">
+					
+					<label for="search_LIKE_materialHwCode" class="control-label">华为物料编码</label>
+					<input type="text" autocomplete="on" name="search_LIKE_material.hwcode" id="search_LIKE_materialHwCode" class="form-control input-sm">
 					
 					<label for="search_LIKE_material.name" class="control-label">物料名称</label>
 					<input type="text" autocomplete="on" name="search_LIKE_material.name" id="search_LIKE_material.name" class="form-control input-sm">			 
@@ -131,6 +135,7 @@
 							<th>项目名称</th>
 							<th>箱号</th>
 							<th>物料编码</th>
+							<th>华为物料编码</th>
 							<th>物料名称</th>
 							<th>计划数量</th>	
 							<!-- <th>备注</th> -->
@@ -248,6 +253,14 @@
 				}
 			},{
 				data : "material.code",
+				width : "100",
+				className : "center",
+				render : function(data, type, full) {
+					return '<a onclick="showMaterial(\''+full.material.uuid+'\');">'+data+'</a>';
+				},
+				orderable : false
+			},{
+				data : "material.hwcode",
 				width : "100",
 				className : "center",
 				render : function(data, type, full) {
@@ -419,7 +432,7 @@
 			}
 			var t_boxNum = $("#search_EQ_boxNum").val();
 			if(t_boxNum==null||t_boxNum==''){
-				YYUI.promMsg("请选择箱号");
+				YYUI.promMsg("请填写箱号");
 				return false;
 			}
 			
@@ -434,17 +447,17 @@
 						var t_pre = jsonResp[i].enumdatakey;
 						var materialLength = parseInt(jsonResp[i].showorder);
 						console.info(t_pre+"======"+t_sweepCode.indexOf(t_pre)+">>>"+(t_pre.length+materialLength));
-						if(t_sweepCode.indexOf(t_pre)==0){
-							searchCode = t_sweepCode.substring(t_pre.length,t_pre.length+materialLength);
+						if(t_sweepCode.indexOf(t_pre)==0){//以19,39...开头的
+							searchCode = t_sweepCode.substring(t_pre.length,t_pre.length+materialLength);//截取位数
 							console.info("searchCode>>>>>>>>>"+searchCode);
-							$("#search_LIKE_materialCode").val(searchCode);
+							$("#search_LIKE_materialHwCode").val(searchCode);
 							hasMatch=true;
 							break;
 						}
 					}
 				}
 				if(!hasMatch){
-					$("#search_LIKE_materialCode").val(t_sweepCode);
+					$("#search_LIKE_materialHwCode").val(t_sweepCode);
 				}
 			}
 			//获取查询数据，在表格刷新的时候自动提交到后台
@@ -467,10 +480,47 @@
 		
 		function saveNewBarcode(t){
 			var newBarcodeVal = $(t).closest("tr").find("input[name='newBarcode']").val();
-			console.info($(t).attr("rowUuid"));
+			var row = $(t).closest("tr");
+			var tr_hwcode = _tableList.row(row).data().material.hwcode;
+			console.info("tr_hwcode>>>>11>>>>"+tr_hwcode);
+			console.info(tr_hwcode+">>>>>>>>>"+newBarcodeVal);
+			console.info(newBarcodeVal.indexOf(tr_hwcode));
+			if(newBarcodeVal!=null&&newBarcodeVal.indexOf(tr_hwcode)>=0){
+				onCheckBarCode(newBarcodeVal,$(t).attr("rowUuid"));
+			}else{
+				layer.confirm("条码与华为物料编码不符合，确定要保存吗", function() {
+					onCheckBarCode(newBarcodeVal,$(t).attr("rowUuid"));
+				});
+			}
+		}
+		
+		
+		function onCheckBarCode(newBarcodeVal,subId){
 			$.ajax({
 				type : "POST",
-				data :{"newBarcode": newBarcodeVal,"subId":$(t).attr("rowUuid")},
+				data :{"newBarcode": newBarcodeVal,"subId":subId},
+				url : "${serviceurl}/checkBarcode",
+				async : true,
+				dataType : "json",
+				success : function(data) {
+					if(data.success){
+						onSaveBarCode(newBarcodeVal,subId);
+					}else{
+						layer.confirm(data.msg+",确定要修改吗?", function() {
+							onSaveBarCode(newBarcodeVal,subId);
+						});
+					}
+				},
+				error : function(data) {
+					YYUI.promMsg("操作失败，请联系管理员");
+				}
+			});
+		}
+		
+		function onSaveBarCode(newBarcodeVal,subId){
+			$.ajax({
+				type : "POST",
+				data :{"newBarcode": newBarcodeVal,"subId":subId},
 				url : "${serviceurl}/updateBarcode",
 				async : true,
 				dataType : "json",

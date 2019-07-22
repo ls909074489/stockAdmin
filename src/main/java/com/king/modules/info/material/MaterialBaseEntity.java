@@ -26,6 +26,8 @@ public class MaterialBaseEntity extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 	
+	public static final int limitCount_unique=1;
+	
 	@MetaData(value = "物料编码")
 	@Column(length = 50)
 	private String code;

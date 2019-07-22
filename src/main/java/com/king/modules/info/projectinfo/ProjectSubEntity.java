@@ -69,18 +69,41 @@ public class ProjectSubEntity extends BaseEntity {
 	private String barcode="";//条码
 	
 	@MetaData(value = "条码验证状态")
+	@Column(length=2000)
+	private String barcodejson="[]";//条码json
+	
+	@MetaData(value = "条码验证状态")
 	@Column(length=2)
 	private String checkStatus="10";//条码验证状态
+	
+	@MetaData(value = "限制每箱数量")
+	@Column(length = 10)
+	private int limitCount=-1;//-1表示不限制
 	
 	@Transient
 	private String materialId;
 
 	@Transient
 	private String newBarcode="";
+	@Transient
+	private String newUuid="";
 	
 	@Transient
 	@JsonIgnore
 	private String materialCode="";
+	@Transient
+	@JsonIgnore
+	private String materialHwCode="";
+	@Transient
+	@JsonIgnore
+	private String materialDesc="";
+	@Transient
+	@JsonIgnore
+	private String materialUnit="";
+	@Transient
+	@JsonIgnore
+	private String materialPurchaseType="";//采购模式
+	
 	
 	public ProjectInfoEntity getMain() {
 		return main;
@@ -178,4 +201,61 @@ public class ProjectSubEntity extends BaseEntity {
 		this.checkStatus = checkStatus;
 	}
 
+	public String getMaterialDesc() {
+		return materialDesc;
+	}
+
+	public void setMaterialDesc(String materialDesc) {
+		this.materialDesc = materialDesc;
+	}
+
+	public String getMaterialUnit() {
+		return materialUnit;
+	}
+
+	public void setMaterialUnit(String materialUnit) {
+		this.materialUnit = materialUnit;
+	}
+
+	public String getMaterialHwCode() {
+		return materialHwCode;
+	}
+
+	public void setMaterialHwCode(String materialHwCode) {
+		this.materialHwCode = materialHwCode;
+	}
+
+	public String getMaterialPurchaseType() {
+		return materialPurchaseType;
+	}
+
+	public void setMaterialPurchaseType(String materialPurchaseType) {
+		this.materialPurchaseType = materialPurchaseType;
+	}
+
+	public String getBarcodejson() {
+		return barcodejson;
+	}
+
+	public void setBarcodejson(String barcodejson) {
+		this.barcodejson = barcodejson;
+	}
+
+	public int getLimitCount() {
+		return limitCount;
+	}
+
+	public void setLimitCount(int limitCount) {
+		this.limitCount = limitCount;
+	}
+
+	public String getNewUuid() {
+		return newUuid;
+	}
+
+	public void setNewUuid(String newUuid) {
+		this.newUuid = newUuid;
+	}
+	
+	
 }
