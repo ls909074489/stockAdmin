@@ -44,6 +44,8 @@ import com.king.frame.service.BaseServiceImpl;
 import com.king.modules.info.material.MaterialBaseEntity;
 import com.king.modules.info.material.MaterialEntity;
 import com.king.modules.info.material.MaterialService;
+import com.king.modules.info.receive.ProjectReceiveEntity;
+import com.king.modules.info.receive.ProjectReceiveService;
 import com.king.modules.sys.imexlate.ImexlateSubEntity;
 import com.king.modules.sys.imexlate.ImexlateSubService;
 import com.king.modules.sys.user.UserEntity;
@@ -67,6 +69,8 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 	private ImexlateSubService imexlateSubService;
 	@Autowired
 	private MaterialService materialService;
+	@Autowired
+	private ProjectReceiveService receiveService;
 
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -630,6 +634,12 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 	}
 
 
+	/**
+	 * 暂存收货
+	 * @param entity
+	 * @param subList
+	 * @return
+	 */
 	@Transactional
 	public ActionResultModel<ProjectInfoEntity> tempReceive(ProjectInfoEntity entity, List<ProjectSubEntity> subList) {
 		ActionResultModel<ProjectInfoEntity> arm = new ActionResultModel<ProjectInfoEntity>();
@@ -650,6 +660,12 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 	}
 
 
+	/**
+	 * 确认收货
+	 * @param entity
+	 * @param subList
+	 * @return
+	 */
 	@Transactional
 	public ActionResultModel<ProjectInfoEntity> confirmReceive(ProjectInfoEntity entity,
 			List<ProjectSubEntity> subList) {
@@ -662,9 +678,19 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 		}
 		obj.setReceiveType(ProjectInfoEntity.receiveType_yes);
 		ProjectSubEntity subEntity = null;
+		ProjectReceiveEntity receive = null;
+		ProjectSubBaseEntity subBase = null;
 		for(ProjectSubEntity sub:subList){
 			subEntity = getOne(sub.getUuid());
 			subEntity.setActualAmount(sub.getActualAmount());
+		
+			receive = new ProjectReceiveEntity();
+			receive.setMain(obj);
+			subBase = new ProjectSubBaseEntity();
+			receive.setSub(subBase);
+			receive.setReceiveAmount(subEntity.getActualAmount());
+			receive.setReceiveType(ProjectReceiveEntity.receiveType_add);
+			receiveService.doAdd(receive);
 		}
 		arm.setSuccess(true);
 		arm.setMsg("操作成功");

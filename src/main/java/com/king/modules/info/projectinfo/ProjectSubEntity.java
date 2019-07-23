@@ -87,6 +87,8 @@ public class ProjectSubEntity extends BaseEntity {
 	private String newBarcode="";
 	@Transient
 	private String newUuid="";
+	@Transient
+	private String receiveLog="";
 	
 	@Transient
 	@JsonIgnore
@@ -255,6 +257,14 @@ public class ProjectSubEntity extends BaseEntity {
 
 	public void setNewUuid(String newUuid) {
 		this.newUuid = newUuid;
+	}
+
+	public String getReceiveLog() {
+		return receiveLog;
+	}
+
+	public void setReceiveLog(String receiveLog) {
+		this.receiveLog = receiveLog;
 	}
 	
 	
