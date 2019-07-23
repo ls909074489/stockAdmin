@@ -132,9 +132,9 @@
 							<th>条码</th>
 							<th>单据状态</th>
 							<th>项目号</th>
-							<th>项目名称</th>
+							<!-- <th>项目名称</th> -->
 							<th>箱号</th>
-							<th>物料编码</th>
+							<th>条码类型</th>
 							<th>华为物料编码</th>
 							<th>物料名称</th>
 							<th>计划数量</th>	
@@ -229,7 +229,7 @@
 					}
 				},
 				orderable : false
-			},{
+			}/* ,{
 				data : "main.name",
 				width : "100",
 				className : "center",
@@ -243,7 +243,7 @@
 					}
 				},
 				orderable : false
-			}, {
+			} */, {
 				data : 'boxNum',
 				width : "30",
 				className : "center",
@@ -252,11 +252,11 @@
 					return YYDataUtils.getEnumName("BoxNum", data);
 				}
 			},{
-				data : "material.code",
+				data : "limitCount",
 				width : "60",
 				className : "center",
 				render : function(data, type, full) {
-					return '<a onclick="showMaterial(\''+full.material.uuid+'\');">'+data+'</a>';
+					return '<a onclick="toUpdateLimitCount(\''+full.uuid+'\');">【'+YYDataUtils.getEnumName("MaterialLimitCount", data)+'】</a>';
 				},
 				orderable : false
 			},{
@@ -264,9 +264,7 @@
 				width : "100",
 				className : "center",
 				render : function(data, type, full) {
-					var str = '<a onclick="showMaterial(\''+full.material.uuid+'\');">'+data+'</a>'+
-					'<a onclick="toUpdateLimitCount(\''+full.uuid+'\');">【'+YYDataUtils.getEnumName("MaterialLimitCount", full.limitCount)+'】</a>';
-					return str;
+					return '<a onclick="showMaterial(\''+full.material.uuid+'\');">'+data+'</a>';
 				},
 				orderable : false
 			},{

@@ -19,18 +19,23 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.king.common.enums.BillState;
 import com.king.common.utils.Constants;
 import com.king.common.utils.DateUtil;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.SuperController;
+import com.king.frame.security.ShiroUser;
 import com.king.modules.info.material.MaterialBaseEntity;
 import com.king.modules.info.stockinfo.StockBaseEntity;
+import com.king.modules.sys.org.OrgEntity;
 import com.king.modules.sys.param.ParameterUtil;
+import com.king.modules.sys.user.UserEntity;
 
 import net.sf.json.JSONObject;
 
@@ -63,7 +68,7 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 		model.addAttribute("templatePath", ParameterUtil.getParamValue("projectInfoImpTemplate", "/template/项目单导入模板.xlsx"));
 		return "modules/info/projectinfo/projectinfo_list";
 	}
-
+	
 	@Override
 	public String addView(Model model, ServletRequest request) {
 		model.addAttribute("defaultStockName",ParameterUtil.getParamValue("defaultStockName"));
@@ -81,6 +86,57 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 		return "modules/info/projectinfo/projectinfo_detail";
 	}
 
+	
+	
+	/**
+	 * 收货
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/receiveList")
+	public String receiveList(Model model) {
+		model.addAttribute("templatePath", ParameterUtil.getParamValue("projectInfoImpTemplate", "/template/项目单导入模板.xlsx"));
+		return "modules/info/projectinfo/projectinfo_receive_list";
+	}
+	
+	/**
+	 * 收货-编辑
+	 * @param model
+	 * @param request
+	 * @param uuid
+	 * @return
+	 */
+	@RequestMapping(value = "/onReceiveEdit", method = RequestMethod.GET)
+	public String onReceiveEdit(Model model, ServletRequest request,
+			@RequestParam(value = "uuid", required = true) String uuid) {
+		UserEntity userEntity = ShiroUser.getCurrentUserEntity();
+		OrgEntity orgEntity = ShiroUser.getCurrentOrgEntity();
+		model.addAttribute("user", userEntity);// 用户
+		model.addAttribute("org", orgEntity);// 组织
+		model.addAttribute(OPENSTATE, BillState.OPENSTATE_EDIT);
+		ProjectInfoEntity entity = baseService.getOne(uuid);
+		model.addAttribute(ENTITY, entity);
+		return "modules/info/projectinfo/projectinfo_receive_edit";
+	}
+	
+	/**
+	 * 收货-查看
+	 * @param model
+	 * @param request
+	 * @param uuid
+	 * @return
+	 */
+	@RequestMapping(value = "/onReceiveDetail", method = RequestMethod.GET)
+	public String onReceiveDetail(Model model, ServletRequest request,
+			@RequestParam(value = "uuid", required = true) String uuid) {
+		model.addAttribute(OPENSTATE, BillState.OPENSTATE_DETAIL);
+		ProjectInfoEntity entity = baseService.getOne(uuid);
+		model.addAttribute(ENTITY, entity);
+		return "modules/info/projectinfo/projectinfo_receive_detail";
+	}
+	
+	
+	
 	
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "/addwithsub")
@@ -119,6 +175,66 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 			stock.setUuid(entity.getStockId());
 			entity.setStock(stock);
 			arm = subService.saveSelfAndSubList(entity, subList, deletePKs);
+		} catch (DataIntegrityViolationException e) {
+			e.printStackTrace();
+			arm.setSuccess(false);
+			arm.setMsg(Constants.getConstraintMsg(e.getMessage()));
+		} catch (Exception e) {
+			arm.setSuccess(false);
+			arm.setMsg("保存失败");
+			e.printStackTrace();
+		}
+		return arm;
+	}
+	
+	
+	/**
+	 * 暂存收货
+	 * @param request
+	 * @param model
+	 * @param entity
+	 * @param subArrs
+	 * @return
+	 */
+	@RequestMapping(value = "/tempReceive")
+	@ResponseBody
+	public ActionResultModel<ProjectInfoEntity> tempReceive(ServletRequest request, Model model, ProjectInfoEntity entity,
+			@RequestParam(value = "subList[]", required = false) String[] subArrs) {
+		ActionResultModel<ProjectInfoEntity> arm = new ActionResultModel<ProjectInfoEntity>();
+		arm.setSuccess(true);
+		List<ProjectSubEntity> subList = this.convertToEntities(subArrs);
+		try {
+			arm = subService.tempReceive(entity, subList);
+		} catch (DataIntegrityViolationException e) {
+			e.printStackTrace();
+			arm.setSuccess(false);
+			arm.setMsg(Constants.getConstraintMsg(e.getMessage()));
+		} catch (Exception e) {
+			arm.setSuccess(false);
+			arm.setMsg("保存失败");
+			e.printStackTrace();
+		}
+		return arm;
+	}
+	
+	
+	/**
+	 * 确定收货
+	 * @param request
+	 * @param model
+	 * @param entity
+	 * @param subArrs
+	 * @return
+	 */
+	@RequestMapping(value = "/confirmReceive")
+	@ResponseBody
+	public ActionResultModel<ProjectInfoEntity> confirmReceive(ServletRequest request, Model model, ProjectInfoEntity entity,
+			@RequestParam(value = "subList[]", required = false) String[] subArrs) {
+		ActionResultModel<ProjectInfoEntity> arm = new ActionResultModel<ProjectInfoEntity>();
+		arm.setSuccess(true);
+		List<ProjectSubEntity> subList = this.convertToEntities(subArrs);
+		try {
+			arm = subService.confirmReceive(entity, subList);
 		} catch (DataIntegrityViolationException e) {
 			e.printStackTrace();
 			arm.setSuccess(false);

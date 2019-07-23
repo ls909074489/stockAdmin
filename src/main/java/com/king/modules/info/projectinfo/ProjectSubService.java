@@ -98,6 +98,9 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 			savedEntity = mainService.save(entity);
 
 			UserEntity user = ShiroUser.getCurrentUserEntity();	
+			
+			List<ProjectSubEntity> addList = new ArrayList<>();
+			List<ProjectSubEntity> updateList = new ArrayList<>();
 			// 保存子表数据
 			if (subList != null && subList.size() > 0) {
 				Map<String,String> codeMap = new HashMap<>();
@@ -107,6 +110,9 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 						sub.setCreatorname(user.getUsername());
 						sub.setCreatetime(new Date());
 						sub.setLimitCount(sub.getMaterial().getLimitCount());
+						addList.add(sub);
+					}else{
+						updateList.add(sub);
 					}
 					sub.setMain(savedEntity);
 					sub.setMid(savedEntity.getUuid());
@@ -123,7 +129,21 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 					//设置条形码
 					setBarcodeJson(sub);
 				}
-				save(subList);
+//				save(subList);
+				if(CollectionUtils.isNotEmpty(addList)){
+					doAdd(addList);
+				}
+				if(CollectionUtils.isNotEmpty(updateList)){
+					ProjectSubEntity subEntity = null;
+					for(ProjectSubEntity sub :updateList){
+						subEntity = getOne(sub.getUuid());
+						subEntity.setBoxNum(sub.getBoxNum());
+						subEntity.setMaterial(sub.getMaterial());
+						subEntity.setLimitCount(sub.getLimitCount());
+						subEntity.setPlanAmount(sub.getPlanAmount());
+						subEntity.setMemo(sub.getMemo());
+					}
+				}
 			}
 			arm.setRecords(savedEntity);
 			arm.setSuccess(true);
@@ -608,4 +628,50 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 		arm.setMsg("操作成功");
 		return arm;
 	}
+
+
+	@Transactional
+	public ActionResultModel<ProjectInfoEntity> tempReceive(ProjectInfoEntity entity, List<ProjectSubEntity> subList) {
+		ActionResultModel<ProjectInfoEntity> arm = new ActionResultModel<ProjectInfoEntity>();
+		ProjectInfoEntity obj = mainService.getOne(entity.getUuid());
+		if(obj.getReceiveType()!=null&&obj.getReceiveType().equals(ProjectInfoEntity.receiveType_yes)){
+			arm.setSuccess(false);
+			arm.setMsg("已确认收货，不能保存，请单独添加物料收货明细");
+			return arm;
+		}
+		ProjectSubEntity subEntity = null;
+		for(ProjectSubEntity sub:subList){
+			subEntity = getOne(sub.getUuid());
+			subEntity.setActualAmount(sub.getActualAmount());
+		}
+		arm.setSuccess(true);
+		arm.setMsg("操作成功");
+		return arm;
+	}
+
+
+	@Transactional
+	public ActionResultModel<ProjectInfoEntity> confirmReceive(ProjectInfoEntity entity,
+			List<ProjectSubEntity> subList) {
+		ActionResultModel<ProjectInfoEntity> arm = new ActionResultModel<ProjectInfoEntity>();
+		ProjectInfoEntity obj = mainService.getOne(entity.getUuid());
+		if(obj.getReceiveType()!=null&&obj.getReceiveType().equals(ProjectInfoEntity.receiveType_yes)){
+			arm.setSuccess(false);
+			arm.setMsg("已确认收货，不能保存，请单独添加物料收货明细");
+			return arm;
+		}
+		obj.setReceiveType(ProjectInfoEntity.receiveType_yes);
+		ProjectSubEntity subEntity = null;
+		for(ProjectSubEntity sub:subList){
+			subEntity = getOne(sub.getUuid());
+			subEntity.setActualAmount(sub.getActualAmount());
+		}
+		arm.setSuccess(true);
+		arm.setMsg("操作成功");
+		return arm;
+	}
+	
+	
+	
+	
 }

@@ -65,6 +65,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			stream = new StockStreamEntity();
 			stream.setSourceId(orderInfo.getUuid());
 			stream.setSourceBillCode(orderInfo.getCode());
+			stream.setSourceSubId(sub.getUuid());
 			stream.setStock(stockBase);
 			MaterialBaseEntity material = new MaterialBaseEntity();
 			material.setUuid(sub.getMaterial().getUuid());
@@ -132,6 +133,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			MaterialBaseEntity material = new MaterialBaseEntity();
 			material.setUuid(sub.getMaterial().getUuid());
 			stream.setMaterial(material);
+			stream.setSourceSubId(sub.getUuid());
 			
 			if(detail==null){
 				throw new ServiceException("库存不存在物料"+sub.getMaterial().getCode());

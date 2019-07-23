@@ -66,7 +66,7 @@
 				return;
 			}
 			if(result == "NOT_FOUND"){
-				YYUI.promAlert('请重新输入您的教师编号或学号！');
+				YYUI.promAlert('请重新输入您的登录账号！');
 				return;
 			}
 			if(result == "WRONG_UNAME"){

@@ -104,7 +104,7 @@
 					if(tUserType==3){
 						layer.open({
 							type : 2,
-							title : '请选择教师',
+							title : '请选择',
 							shadeClose : true,
 							shade : 0.8,
 							area : [ '800px', '90%' ],

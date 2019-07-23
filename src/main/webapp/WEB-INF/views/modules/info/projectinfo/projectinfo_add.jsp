@@ -89,6 +89,7 @@
 								<th>箱号</th>	
 								<th>物料编码</th>	
 								<th>华为物料编码</th>
+								<th>条码类型</th>
 								<th>计划数量</th>	
 								<th>备注</th>	
 							</tr>
@@ -107,7 +108,7 @@
 	
 	<script type="text/javascript">
 		var enumMap = YYDataUtils.getEnumMap();
-		var enumdatas = enumMap['BoxNum'];
+		var enumdatas = enumMap['MaterialLimitCount'];
 		
 		var _subTableList;//子表
 		var _columnNum;
@@ -128,7 +129,7 @@
 			data : 'boxNum',
 			width : "20",
 			className : "center",
-			orderable : true,
+			orderable : false,
 			/* render : function(data, type, full) {
 				if(data==null){
 					data="";
@@ -158,12 +159,12 @@
 			data : 'material',
 			width : "80",
 			className : "center",
-			orderable : true,
+			orderable : false,
 			render : function(data, type, full) {
 				var str ='<div class="input-group materialRefDiv"> '+
 				 '<input class="form-control materialCodeInputCls"  value="'+ data.code + '" reallyname="materialCode" name="materialCode" readonly="readonly"> '+
 				 '<input class="form-control"  value="'+ data.uuid + '" type="hidden" reallyname="materialId" name="materialId"> '+
-				 '<input class="form-control"  value="'+ data.limitCount + '" type="hidden" reallyname="limitCount" name="limitCount"> '+
+				 //'<input class="form-control"  value="'+ data.limitCount + '" type="hidden" reallyname="limitCount" name="limitCount"> '+
 				 '<span class="input-group-btn"> '+
 				 '<button id="" class="btn btn-default btn-ref materialcode" type="button" data-select2-open="single-append-text"> '+
 				 '<span class="glyphicon glyphicon-search"></span> '+
@@ -176,33 +177,53 @@
 			data : 'material',
 			width : "80",
 			className : "center",
-			orderable : true,
+			orderable : false,
 			render : function(data, type, full) {
 				var str ='<div class="input-group"> '+
-				 '<input class="form-control materialHwCodeInputCls"  value="'+ data.hwcode + '" reallyname="hwcode" name="hwcode" readonly="readonly"> '+
+				 '<input class="form-control materialHwCodeInputCls"  value="'+ data.hwcode + '" reallyname="materialHwCode" name="materialHwCode" readonly="readonly"> '+
 				 '</div> ';
 				return str;
+			}
+		}, {
+			data : 'limitCount',
+			width : "20",
+			className : "center",
+			orderable : false,
+			render : function(data, type, full) {
+				if(data==null){
+					data="";
+				}
+				var selectStr = '';
+				selectStr = selectStr +'<select class="yy-input-enumdata form-control materialLimitCountSelectCls" id="limitCount" reallyname="limitCount" name="limitCount" data-enum-group="MaterialLimitCount">';
+				if(enumdatas){
+					selectStr = selectStr + '<option value="">&nbsp;</option>';
+					for (i = 0; i < enumdatas.length; i++) {
+						if(enumdatas[i].enumdatakey == data){ 
+							selectStr = selectStr + "<option selected='selected' value='" + enumdatas[i].enumdatakey + "'>" + enumdatas[i].enumdataname + "</option>";
+						} else {
+							selectStr = selectStr + "<option value='" + enumdatas[i].enumdatakey + "'>" + enumdatas[i].enumdataname + "</option>";
+						}
+					}
+				}
+				selectStr = selectStr +'</select>';
+				return selectStr;
 			}
 		}, {
 			data : 'planAmount',
 			width : "80",
 			className : "center",
-			orderable : true,
+			orderable : false,
 			render : function(data, type, full) {
 				if(data==null){
 					data="";
 				}
-				if(full.material.limitCount==1){
-					return '<input class="form-control" value="1" name="planAmount"  readonly="readonly">';
-				}else{
-					return '<input class="form-control" value="'+ data + '" name="planAmount">';
-				}
+				return '<input class="form-control" value="'+ data + '" name="planAmount">';
 			}
 		}, {
 			data : 'memo',
 			width : "160",
 			className : "center",
-			orderable : true,
+			orderable : false,
 			render : function(data, type, full) {
 				if(data==null){
 					data="";
@@ -338,31 +359,19 @@
 		
 		//回调修改物料
 		function callBackUpdateMaterial(selNode){
-			var canAdd=checkCanAdd(selNode,$(t_refMaterialEle).closest("tr").find("select[name='boxNum']").val());
-			if(canAdd){
-				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='materialCode']").val(selNode.code);
-				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='materialId']").val(selNode.uuid);
-				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='limitCount']").val(selNode.limitCount);
-				$(t_refMaterialEle).closest("tr").find(".materialHwCodeInputCls").val(selNode.hwcode);
-				/* if(selNode.limitCount==1){
-					$(t_refMaterialEle).closest("tr").find("input[name='planAmount']").attr("readonly","true");
-				}else{
-					$(t_refMaterialEle).closest("tr").find("input[name='planAmount']").attr("readonly","false");
-					$(t_refMaterialEle).closest("tr").find("input[name='planAmount']").attr("readonly","false");
-				} */
-			}else{
-				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='materialCode']").val("");
-				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='materialId']").val("");
-				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='limitCount']").val("");
-				$(t_refMaterialEle).closest("tr").find(".materialHwCodeInputCls").val(selNode.hwcode);
-			}
+			$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='materialCode']").val(selNode.code);
+			$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='materialId']").val(selNode.uuid);
+			$(t_refMaterialEle).closest("tr").find(".materialHwCodeInputCls").val(selNode.hwcode);
+			$(t_refMaterialEle).closest("tr").find(".materialLimitCountSelectCls").val(selNode.limitCount);
 		}
 		 
 		//回调添加物料
 		function callBackAddMaterial(selNode){
+			console.info(selNode);
 			var subNewData = [ {
 				'uuid' : '',
 				'material' : {"uuid":selNode.uuid,"code":selNode.code,"hwcode":selNode.hwcode,"name":selNode.name,"limitCount":selNode.limitCount},
+				'limitCount': selNode.limitCount,
 				'planAmount':'',
 				'memo':''
 			} ];
@@ -468,6 +477,16 @@
 						message : {
 							required : "请选择",
 							maxlength : "最大长度为3"
+						}
+					},{
+						name : "limitCount",
+						rules : {
+							required : true,
+							maxlength:50
+						},
+						message : {
+							required : "请选择",
+							maxlength : "最大长度为50"
 						}
 					}
 			];

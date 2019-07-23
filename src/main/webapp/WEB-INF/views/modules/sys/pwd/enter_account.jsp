@@ -12,7 +12,7 @@
 				<div class="col-md-10">
 					<div class="form-group">
 							<div class="col-md-10">
-								<label class="control-label">输入您的教师编号或学号</label>
+								<label class="control-label">输入您的登录账号</label>
 							</div>
 						</div>
 				</div>

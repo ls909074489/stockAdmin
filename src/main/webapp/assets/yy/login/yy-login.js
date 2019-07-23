@@ -38,7 +38,7 @@ var Login = function() {
 		        if(validatecode.length == 0){
 		        	$("#login-msg").html("请先完成滑动验证");
 		        } else if(loginname.length == 0){
-		        	$("#login-msg").html("请输入教师编号或学号");
+		        	$("#login-msg").html("请输入用户名");
 		        } else if(password.length == 0){
 		        	$("#login-msg").html("请输入密码");
 		        }

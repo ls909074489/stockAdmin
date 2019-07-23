@@ -12,8 +12,11 @@
 <div id="yy-page-edit" class="container-fluid page-container page-content">
 	
 		<div class="row yy-toolbar">
-			<button id="yy-btn-save" class="btn blue btn-sm">
-				<i class="fa fa-save"></i> 保存
+			<button id="yy-btn-confrim-receive" class="btn blue btn-sm">
+				<i class="fa fa-save"></i> 确认收货
+			</button>
+			<button id="yy-btn-temp-receive" class="btn blue btn-sm">
+				<i class="fa fa-save"></i> 暂存
 			</button>
 			<button id="yy-btn-cancel" class="btn blue btn-sm">
 				<i class="fa fa-rotate-left"></i> 取消
@@ -22,6 +25,7 @@
 		<div>
 			<form id="yy-form-edit" class="form-horizontal yy-form-edit">
 				<input name="uuid" id="uuid" type="hidden" value="${entity.uuid}"/>
+				<fieldset disabled="disabled">
 				<div class="row">
 					<div class="col-md-4">
 						<div class="form-group">
@@ -68,6 +72,7 @@
 						</div>
 					</div>
 				</div>
+				</fieldset>
 			</form>
 		</div>
 		<div class="tabbable-line">
@@ -80,9 +85,9 @@
 					<div class="row yy-toolbar">
 						<div role="form" class="form-inline" style="">
 							<form id="yy-form-subquery">	
-								<button id="addNewSub" class="btn blue btn-sm" type="button">
+								<!-- <button id="addNewSub" class="btn blue btn-sm" type="button">
 									<i class="fa fa-plus"></i> 添加
-								</button>
+								</button> -->
 								&nbsp;&nbsp;&nbsp;&nbsp;
 								<input type="hidden" name="search_EQ_main.uuid" id="mainId" value="${entity.uuid}">	
 								&nbsp;&nbsp;
@@ -119,6 +124,7 @@
 								<th>条码类型</th>
 								<th>计划数量</th>	
 								<th>备注</th>	
+								<th>收货数量</th>	
 							</tr>
 						</thead>
 						<tbody>
@@ -157,32 +163,7 @@
 			data : 'boxNum',
 			width : "20",
 			className : "center",
-			orderable : false,
-			/* render : function(data, type, full) {
-				if(data==null){
-					data="";
-				}
-				var selectStr = '';
-				selectStr = selectStr +'<select class="yy-input-enumdata form-control" id="boxNum" reallyname="boxNum" name="boxNum" data-enum-group="BoxNum" onchange="changeBox(this);">';
-				if(enumdatas){
-					selectStr = selectStr + '<option value="">&nbsp;</option>';
-					for (i = 0; i < enumdatas.length; i++) {
-						if(enumdatas[i].enumdatakey == data){ 
-							selectStr = selectStr + "<option selected='selected' value='" + enumdatas[i].enumdatakey + "'>" + enumdatas[i].enumdataname + "</option>";
-						} else {
-							selectStr = selectStr + "<option value='" + enumdatas[i].enumdatakey + "'>" + enumdatas[i].enumdataname + "</option>";
-						}
-					}
-				}
-				selectStr = selectStr +'</select>';
-				return selectStr;
-			} */
-			render : function(data, type, full) {
-				if(data==null){
-					data="";
-				}
-				return '<input class="form-control" value="'+ data + '" name="boxNum">';
-			}
+			orderable : false
 		}, {
 			data : 'material',
 			width : "80",
@@ -194,56 +175,36 @@
 					tUuid="";
 				}
 				var str ='<div class="input-group materialRefDiv"> '+
-				 '<input type="hidden" name="uuid" value="'+tUuid+'">'+
-				 '<input class="form-control materialCodeInputCls"  value="'+ data.code + '" reallyname="materialCode" name="materialCode" readonly="readonly"> '+
+				 '<input type="hidden" name="uuid" value="'+tUuid+'">'+data.code
 				 '<input class="form-control"  value="'+ data.uuid + '" type="hidden" reallyname="materialId" name="materialId"> '+
-				 //'<input class="form-control"  value="'+ data.limitCount + '" type="hidden" reallyname="limitCount" name="limitCount"> '+
-				 '<span class="input-group-btn"> '+
-				 '<button id="" class="btn btn-default btn-ref materialcode" type="button" data-select2-open="single-append-text"> '+
-				 '<span class="glyphicon glyphicon-search"></span> '+
-				 '</button> '+
-				 '</span> '+
 				 '</div> ';
 				return str;
 			}
 		}, {
-			data : 'material',
+			data : 'material.hwcode',
 			width : "80",
 			className : "center",
-			orderable : false,
-			render : function(data, type, full) {
-				var str ='<div class="input-group"> '+
-				 '<input class="form-control materialHwCodeInputCls"  value="'+ data.hwcode + '" reallyname="materialHwCode" name="materialHwCode" readonly="readonly"> '+
-				 '</div> ';
-				return str;
-			}
+			orderable : false
 		}, {
 			data : 'limitCount',
 			width : "20",
 			className : "center",
 			orderable : false,
 			render : function(data, type, full) {
-				console.info(">>>>>>>>>>"+data);
-				if(data==null){
-					data="";
-				}
-				var selectStr = '';
-				selectStr = selectStr +'<select class="yy-input-enumdata form-control materialLimitCountSelectCls" id="limitCount" reallyname="limitCount" name="limitCount" data-enum-group="MaterialLimitCount">';
-				if(enumdatas){
-					selectStr = selectStr + '<option value="">&nbsp;</option>';
-					for (i = 0; i < enumdatas.length; i++) {
-						if(enumdatas[i].enumdatakey == data){ 
-							selectStr = selectStr + "<option selected='selected' value='" + enumdatas[i].enumdatakey + "'>" + enumdatas[i].enumdataname + "</option>";
-						} else {
-							selectStr = selectStr + "<option value='" + enumdatas[i].enumdatakey + "'>" + enumdatas[i].enumdataname + "</option>";
-						}
-					}
-				}
-				selectStr = selectStr +'</select>';
-				return selectStr;
+			       return YYDataUtils.getEnumName("MaterialLimitCount", data);
 			}
 		}, {
 			data : 'planAmount',
+			width : "80",
+			className : "center",
+			orderable : false
+		}, {
+			data : 'memo',
+			width : "160",
+			className : "center",
+			orderable : false
+		}, {
+			data : 'actualAmount',
 			width : "80",
 			className : "center",
 			orderable : false,
@@ -251,18 +212,7 @@
 				if(data==null){
 					data="";
 				}
-				return '<input class="form-control" value="'+ data + '" name="planAmount">';
-			}
-		}, {
-			data : 'memo',
-			width : "160",
-			className : "center",
-			orderable : false,
-			render : function(data, type, full) {
-				if(data==null){
-					data="";
-				}
-				return '<input class="form-control" value="'+ data + '" name="memo">';
+				return '<input class="form-control" value="'+ data + '" name="actualAmount">';
 			}
 		}];
 
@@ -276,6 +226,13 @@
 			});
 			
 			bindEditActions();//綁定平台按鈕
+			
+			$("#yy-btn-confrim-receive").bind("click", function() {
+				confirmReceive(isClose);
+			});
+			$("#yy-btn-temp-receive").bind("click", function() {
+				tempReceive(isClose);
+			});
 			
 			validateForms();
 			
@@ -310,138 +267,8 @@
 					}
 				});
 			});
-			
-			$('#yy-table-sublist').on('click','.materialcode',updateMaterialRef);//
-			
-			$('#stock-select-btn').on('click', function() {
-				layer.open({
-					type : 2,
-					title : '请选择仓库',
-					shadeClose : false,
-					shade : 0.8,
-					area : [ '1000px', '90%' ],
-					content : '${ctx}/sys/ref/refStock?callBackMethod=window.parent.callBackStock'
-				});
-			});
 		});
 		
-		//回调选择
-		function callBackStock(data){
-			$("#stockUuid").val(data.uuid);
-			$("#stockName").val(data.name);
-		}
-		
-		var t_refMaterialEle;
-		function updateMaterialRef(){
-			t_refMaterialEle = $(this);
-			layer.open({
-				title:"物料",
-			    type: 2,
-			    area: ['1000px', '95%'],
-			    shadeClose : false,
-				shade : 0.8,
-			    content: "${ctx}/sys/ref/refMaterial?callBackMethod=window.parent.callBackUpdateMaterial"
-			});
-		}
-		
-		
-		//换箱
-		function changeBox(t){
-			console.info("select>>>>>>>>>>>>>>>"+$(t).val());
-			var row =$(t).closest("tr");
-			var materialData = _subTableList.row(row).data().material;
-			var tr_limitCount = materialData.limitCount;
-			var curBoxNum = $(t).val();//$(t).closest("tr").find("select[name='boxNum']").val();
-			console.info("changeBox>>>>11111>>"+curBoxNum+">>>>>>"+tr_limitCount);
-			if(curBoxNum==''){
-				return true;
-			}else{
-				if(tr_limitCount==1){
-					var trCode = materialData.code;
-					console.info("code ========="+trCode);
-					var sameCodeCount = 0;
-					$(".materialCodeInputCls").each(function(){
-						var trBoxNum = $(this).closest("tr").find("select[name='boxNum']").val();
-						console.info("trBoxNum========"+trBoxNum);
-						console.info(trCode+"============"+$(this).val());
-						if(trCode==$(this).val()&&trBoxNum==curBoxNum){
-							sameCodeCount++;
-							if(sameCodeCount>1){
-								YYUI.promMsg("物料 "+trCode+" 限制数量为1,请确认物料或选择其他箱号");
-								$(t).val("");
-								return false;
-							}
-						}
-					});
-				}
-			}
-		}
-		
-		function checkCanAdd(selNode,curBoxNum){
-			console.info("curBoxNum>>>>>>>>>>"+curBoxNum);
-			if(curBoxNum==''){
-				return true;
-			}else{
-				var canAdd=true;
-				var sameCodeCount = 0;
-				if(selNode.limitCount==1){
-					$(".materialCodeInputCls").each(function(){
-						var trBoxNum = $(this).closest("tr").find("select[name='boxNum']").val();
-						console.info("trBoxNum>>>>>"+trBoxNum);
-						if(selNode.code==$(this).val()&&trBoxNum==curBoxNum){
-							console.info(selNode);
-							sameCodeCount++;
-							if(sameCodeCount>0){
-								YYUI.promMsg("物料 "+selNode.code+" 限制数量为1,请确认物料或选择其他箱号");
-								canAdd = false;
-								return false;
-							}
-						}
-					});
-				}
-				return canAdd;
-			}
-		}
-		
-		function callBackUpdateMaterial(selNode){
-			$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='materialCode']").val(selNode.code);
-			$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='materialId']").val(selNode.uuid);
-			$(t_refMaterialEle).closest("tr").find(".materialHwCodeInputCls").val(selNode.hwcode);
-			$(t_refMaterialEle).closest("tr").find(".materialLimitCountSelectCls").val(selNode.limitCount);
-		}
-		
-		//添加子表
-		function onAddSub(){
-			layer.open({
-				title:"物料",
-			    type: 2,
-			    area: ['1000px', '95%'],
-			    shadeClose : false,
-				shade : 0.8,
-			    content: "${ctx}/sys/ref/refMaterial?callBackMethod=window.parent.callBackAddMaterial"
-			});
-		}
-		
-		function callBackAddMaterial(selNode){
-			var subNewData = [ {
-				'uuid' : '',
-				'material' : {"uuid":selNode.uuid,"code":selNode.code,"hwcode":selNode.hwcode,"name":selNode.name,"limitCount":selNode.limitCount},
-				'limitCount': selNode.limitCount,
-				'planAmount':'',
-				'memo':''
-			} ];
-			var nRow = _subTableList.rows.add(subNewData).draw().nodes()[0];//添加行，并且获得第一行
-			_subTableList.on('order.dt search.dt',
-			        function() {
-				_subTableList.column(0, {
-					        search: 'applied',
-					        order: 'applied'
-				        }).nodes().each(function(cell, i) {
-					        cell.innerHTML = i + 1;
-				        });
-			}).draw();
-		}
-		 
 		//表单校验
 		function validateForms(){
 			validata = $('#yy-form-edit').validate({
@@ -466,10 +293,9 @@
 		}
 		
 		//主子表保存
-		function onSave(isClose) {
-			var subValidate=validOther();
+		function confirmReceive(isClose) {
+			var subValidate=validConfirm();
 			var mainValidate=$('#yy-form-edit').valid();
-			console.info(mainValidate+"======"+subValidate);
 			if(!subValidate||!mainValidate){
 				return false;
 			}
@@ -487,7 +313,50 @@
 			
 			var saveWaitLoad=layer.load(2);
 			var opt = {
-				url : "${serviceurl}/updatewithsub",
+				url : "${serviceurl}/confirmReceive",
+				type : "post",
+				data : {"subList" : subList,"deletePKs" : _deletePKs},
+				success : function(data) {
+					layer.close(saveWaitLoad);
+					if (data.success == true) {
+						_deletePKs = new Array();
+						if (isClose) {
+							window.parent.YYUI.succMsg('保存成功!');
+							window.parent.onRefresh(true);
+							closeEditView();
+						} else {
+							YYUI.succMsg('保存成功!');
+						}
+					} else {
+						YYUI.promAlert("保存失败：" + data.msg);
+					}
+				}
+			}
+			$("#yy-form-edit").ajaxSubmit(opt);
+		}
+		
+		
+		function tempReceive(isClose) {
+			var subValidate=validTemp();
+			var mainValidate=$('#yy-form-edit').valid();
+			if(!subValidate||!mainValidate){
+				return false;
+			}
+			//保存新增的子表记录 
+	        var _subTable = $("#yy-table-sublist").dataTable();
+	        var subList = new Array();
+	        var rows = _subTable.fnGetNodes();
+	        for(var i = 0; i < rows.length; i++){
+	            subList.push(getRowData(rows[i]));
+	        }
+	        if(subList.length==0){
+	        	YYUI.promAlert("请添加明细");
+	        	return false;
+	        }
+			
+			var saveWaitLoad=layer.load(2);
+			var opt = { 
+				url : "${serviceurl}/tempReceive",
 				type : "post",
 				data : {"subList" : subList,"deletePKs" : _deletePKs},
 				success : function(data) {
@@ -510,8 +379,16 @@
 		}
 		
 		//校验子表
-		function validOther(){
-			if(validateRowsData($("#yy-table-sublist tbody tr:visible[role=row]"),getRowValidator())==false){
+		function validTemp(){
+			if(validateRowsData($("#yy-table-sublist tbody tr:visible[role=row]"),getRowValidatorTemp())==false){
+				return false;
+			}else{
+				return true;
+			} 
+		}
+		
+		function validConfirm(){
+			if(validateRowsData($("#yy-table-sublist tbody tr:visible[role=row]"),getRowValidatorConfirm())==false){
 				return false;
 			}else{
 				return true;
@@ -519,9 +396,27 @@
 		}
 		
 		//表体校验
-		function getRowValidator() {
+		function getRowValidatorTemp() {
 			return [ {
-				name : "planAmount",
+				name : "actualAmount",
+				rules : {
+					//required : true,
+					//number :true,
+					digits :true,
+					maxlength:8
+				},
+				message : {
+					//required : "必输",
+					//number :"请输入合法的数字",
+					digits :"只能输入整数",
+					maxlength : "最大长度为8"
+				}
+			}];
+		}
+		
+		function getRowValidatorConfirm() {
+			return [ {
+				name : "actualAmount",
 				rules : {
 					required : true,
 					//number :true,
@@ -533,26 +428,6 @@
 					//number :"请输入合法的数字",
 					digits :"只能输入整数",
 					maxlength : "最大长度为8"
-				}
-			},{
-				name : "boxNum",
-				rules : {
-					required : true,
-					maxlength:50
-				},
-				message : {
-					required : "必输",
-					maxlength : "最大长度为50"
-				}
-			},{
-				name : "limitCount",
-				rules : {
-					required : true,
-					maxlength:50
-				},
-				message : {
-					required : "请选择",
-					maxlength : "最大长度为50"
 				}
 			}];
 		}

@@ -29,6 +29,9 @@ import com.king.modules.info.stockinfo.StockBaseEntity;
 public class ProjectInfoEntity extends SuperEntity {
 
 	private static final long serialVersionUID = 1L;
+	
+	public static final String receiveType_no="0";
+	public static final String receiveType_yes="1";
 
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "stockid")
@@ -44,6 +47,10 @@ public class ProjectInfoEntity extends SuperEntity {
 	@MetaData(value = "备注")
 	@Column(length = 250)
 	private String memo;
+	
+	@MetaData(value = "收货类型 0：未收 1：已收")
+	@Column(length = 2)
+	private String receiveType="0";
 	
 	@Transient
 	private String stockId;
@@ -89,4 +96,11 @@ public class ProjectInfoEntity extends SuperEntity {
 		this.stockId = stockId;
 	}
 
+	public String getReceiveType() {
+		return receiveType;
+	}
+
+	public void setReceiveType(String receiveType) {
+		this.receiveType = receiveType;
+	}
 }

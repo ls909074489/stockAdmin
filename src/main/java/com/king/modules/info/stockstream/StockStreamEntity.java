@@ -60,6 +60,10 @@ public class StockStreamEntity extends BaseEntity {
 	@MetaData(value = "源单号")
 	@Column(length = 50)
 	private String sourceBillCode;
+	
+	@MetaData(value = "源子表id")
+	@Column(length = 36)
+	private String sourceSubId;
 
 	@MetaData(value = "总数量")
 	@Column()
@@ -241,14 +245,21 @@ public class StockStreamEntity extends BaseEntity {
 		this.warningType = warningType;
 	}
 
-
 	public Long getSurplusAmount() {
 		return surplusAmount;
 	}
 
-
 	public void setSurplusAmount(Long surplusAmount) {
 		this.surplusAmount = surplusAmount;
 	}
+
+	public String getSourceSubId() {
+		return sourceSubId;
+	}
+
+	public void setSourceSubId(String sourceSubId) {
+		this.sourceSubId = sourceSubId;
+	}
+	
 
 }
