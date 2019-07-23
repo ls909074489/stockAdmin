@@ -1,6 +1,7 @@
 package com.king.modules.info.projectinfo;
 
 import java.lang.reflect.InvocationTargetException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +29,8 @@ import com.king.frame.security.ShiroUser;
 import com.king.modules.info.approve.ApproveUserEntity;
 import com.king.modules.info.approve.ApproveUserService;
 import com.king.modules.info.material.MaterialBaseEntity;
+import com.king.modules.info.receive.ProjectReceiveEntity;
+import com.king.modules.info.receive.ProjectReceiveService;
 import com.king.modules.sys.enumdata.EnumDataSubEntity;
 import com.king.modules.sys.enumdata.EnumDataUtils;
 
@@ -45,6 +48,53 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 	private ProjectSubService projectSubService;
 	@Autowired
 	private ApproveUserService approveUserService;
+	@Autowired
+	private ProjectReceiveService receiveService;
+	
+	
+	@RequestMapping(value = "/query")
+	@ResponseBody
+	public ActionResultModel<ProjectSubEntity> query(ServletRequest request, Model model) {
+		String isShowReceiveLog = request.getParameter("isShowReceiveLog");
+		if(isShowReceiveLog!=null&&isShowReceiveLog.equals("1")){
+			ActionResultModel<ProjectSubEntity> arm = doQuery(request);
+			List<ProjectSubEntity> list = arm.getRecords();
+			if(CollectionUtils.isNotEmpty(list)){
+				List<ProjectReceiveEntity> rList = receiveService.findByMainSql(request.getParameter("search_EQ_main.uuid"));
+				Map<String,List<ProjectReceiveEntity>> map = changeToMap(rList);
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				for(ProjectSubEntity sub:list){
+					setReceiveLog(sub, map.get(sub.getUuid()), sdf);
+				}
+			}
+		}
+		return doQuery(request);
+	}
+	
+	private Map<String,List<ProjectReceiveEntity>> changeToMap(List<ProjectReceiveEntity> rList){
+		Map<String,List<ProjectReceiveEntity>> map = new HashMap<String,List<ProjectReceiveEntity>>();
+		if(CollectionUtils.isNotEmpty(rList)){
+			List<ProjectReceiveEntity> list = null;
+			for(ProjectReceiveEntity r:rList){
+				list =map.get(r.getSubId());
+				if(list ==null){
+					list = new ArrayList<>();
+				}
+				list.add(r);
+				map.put(r.getSubId(), list);
+			}
+		}
+		return map;
+	}
+	
+	private void setReceiveLog(ProjectSubEntity sub,List<ProjectReceiveEntity> list,SimpleDateFormat sdf){
+		StringBuilder str = new StringBuilder();
+		for(ProjectReceiveEntity r:list){
+			str.append(r.getCreatorname()).append(sdf.format(r.getCreatetime()));
+			str.append(" 收货数量").append(r.getReceiveAmount()).append(";");
+		}
+		sub.setReceiveLog(str.toString());
+	}
 
 	@RequestMapping("/detailList")
 	public String detailList(Model model,String sourceBillId) {

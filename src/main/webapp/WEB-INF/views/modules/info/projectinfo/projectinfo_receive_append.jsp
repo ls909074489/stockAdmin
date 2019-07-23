@@ -12,12 +12,12 @@
 <div id="yy-page-edit" class="container-fluid page-container page-content">
 	
 		<div class="row yy-toolbar">
-			<button id="yy-btn-confrim-receive" class="btn blue btn-sm">
+			<!-- <button id="yy-btn-confrim-receive" class="btn blue btn-sm">
 				<i class="fa fa-save"></i> 确认收货
 			</button>
 			<button id="yy-btn-temp-receive" class="btn blue btn-sm">
 				<i class="fa fa-save"></i> 暂存
-			</button>
+			</button> -->
 			<button id="yy-btn-cancel" class="btn blue btn-sm">
 				<i class="fa fa-rotate-left"></i> 取消
 			</button>
@@ -90,6 +90,7 @@
 								</button> -->
 								&nbsp;&nbsp;&nbsp;&nbsp;
 								<input type="hidden" name="search_EQ_main.uuid" id="mainId" value="${entity.uuid}">	
+								<input type="hidden" name="isShowReceiveLog" id="isShowReceiveLog" value="1">	
 								&nbsp;&nbsp;
 								<label for="search_LIKE_boxNum" class="control-label">箱号</label>
 								<input type="text" autocomplete="on" name="search_LIKE_boxNum" id="search_LIKE_boxNum" 
@@ -117,13 +118,15 @@
 						<thead>
 							<tr>
 								<th>序号</th>	
+								<th>操作</th>	
 								<th>箱号</th>	
 								<th>物料编码</th>	
 								<th>华为物料编码</th>
 								<th>条码类型</th>
 								<th>计划数量</th>	
 								<th>备注</th>	
-								<th>收货数量</th>	
+								<th>已收数量</th>	
+								<th>收货记录</th>	
 							</tr>
 						</thead>
 						<tbody>
@@ -151,6 +154,14 @@
 			data : null,
 			orderable : false,
 			className : "center",
+			width : "20"
+		},{
+			data : "uuid",
+			className : "center",
+			orderable : false,
+			render : function(data, type, full) {
+				return '<button class="btn btn-xs btn-info" onclick="appendLog(\''+data+'\');" data-rel="tooltip" title="添加收货记录"><i class="fa fa-edit"></i>添加收货记录</button>';
+			},
 			width : "20"
 		}, {
 			data : 'boxNum',
@@ -200,13 +211,12 @@
 			data : 'actualAmount',
 			width : "80",
 			className : "center",
-			orderable : false,
-			render : function(data, type, full) {
-				if(data==null){
-					data="";
-				}
-				return '<input class="form-control" value="'+ data + '" name="actualAmount">';
-			}
+			orderable : false
+		}, {
+			data : 'receiveLog',
+			width : "160",
+			className : "center",
+			orderable : false
 		}];
 
 		 
@@ -476,6 +486,18 @@
 						        });
 					}).draw();
 				}
+			});
+		}
+		
+		function appendLog(subId){
+			console.info(subId);
+			layer.open({
+				type : 2,
+				title : '收货记录',
+				shadeClose : false,
+				shade : 0.8,
+				area : [ '90%', '90%' ],
+				content : '${ctx}/info/receive/toAppendLog?subId='+subId
 			});
 		}
 	</script>

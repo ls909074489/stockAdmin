@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.BaseController;
 
 /**
@@ -38,17 +40,27 @@ public class ProjectReceiveController extends BaseController<ProjectReceiveEntit
 
 	@Override
 	public String addView(Model model, ServletRequest request) {
-		return "modules/info/receive/projectreceive_edit";
+		return "404";
 	}
 
 	@Override
 	public String editView(Model model, ServletRequest request, ProjectReceiveEntity entity) {
-		return "modules/info/receive/projectreceive_edit";
+		return "404";
 	}
 
 	@Override
 	public String detailView(Model model, ServletRequest request, ProjectReceiveEntity entity) {
 		return "modules/info/receive/projectreceive_detail";
 	}
+	
+	@RequestMapping(value = "/toAppendLog", method = RequestMethod.GET)
+	public String onEdit(Model model, ServletRequest request,String subId) {
+		return "modules/info/receive/project_receive_append";
+	}
 
+	
+	@RequestMapping(value = "/saveReceiveLog")
+	public ActionResultModel<ProjectReceiveEntity> saveReceiveLog(Model model, ServletRequest request,String subId) {
+		return null;
+	}
 }

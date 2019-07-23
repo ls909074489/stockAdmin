@@ -242,4 +242,7 @@ INSERT INTO `stock_admin`.`yy_imexlate_sub` (`uuid`, `create_time`, `createtime`
 update yy_project_sub set limit_count=-1 where limit_count is null;
 
 
+###2019/7/23
+INSERT INTO `yy_func` (`uuid`, `status`, `create_ts`, `creator`, `modifier`, `modify_ts`, `nodepath`, `auth_type`, `description`, `fun_css`, `func_code`, `func_name`, `func_type`, `func_url`, `help_code`, `hint`, `iconcls`, `islast`, `parentid`, `permission_code`, `showorder`, `sys`, `create_time`, `modify_time`, `createtime`, `creatorname`, `modifiername`, `modifytime`, `usestatus`, `ts`) VALUES ('980d5b76-7a59-4963-81d1-48fc036e8300', '1', NULL, '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, 'root,79f79877-5599-4b52-9e3c-e22307630fb8,980d5b76-7a59-4963-81d1-48fc036e8300', NULL, '', NULL, '1060', '物料收货', 'func', '@ctx@/info/projectinfo/receiveList', NULL, NULL, '', '', '79f79877-5599-4b52-9e3c-e22307630fb8', NULL, NULL, '\0', NULL, NULL, '2019-07-23 21:06:42', '超级系统管理员', NULL, NULL, '1', '2019-07-23 21:06:42');
+
 

@@ -116,6 +116,10 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 		model.addAttribute(OPENSTATE, BillState.OPENSTATE_EDIT);
 		ProjectInfoEntity entity = baseService.getOne(uuid);
 		model.addAttribute(ENTITY, entity);
+		
+		if(entity.getReceiveType().equals(ProjectInfoEntity.receiveType_yes)){
+			return "modules/info/projectinfo/projectinfo_receive_append";
+		}
 		return "modules/info/projectinfo/projectinfo_receive_edit";
 	}
 	

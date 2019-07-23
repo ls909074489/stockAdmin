@@ -687,6 +687,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 			receive = new ProjectReceiveEntity();
 			receive.setMain(obj);
 			subBase = new ProjectSubBaseEntity();
+			subBase.setUuid(sub.getUuid());
 			receive.setSub(subBase);
 			receive.setReceiveAmount(subEntity.getActualAmount());
 			receive.setReceiveType(ProjectReceiveEntity.receiveType_add);
