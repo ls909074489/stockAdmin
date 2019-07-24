@@ -485,12 +485,43 @@
 			console.info("tr_hwcode>>>>11>>>>"+tr_hwcode);
 			console.info(tr_hwcode+">>>>>>>>>"+newBarcodeVal);
 			console.info(newBarcodeVal.indexOf(tr_hwcode));
-			if(newBarcodeVal!=null&&newBarcodeVal.indexOf(tr_hwcode)>=0){
-				onCheckBarCode(newBarcodeVal,$(t).attr("rowUuid"));
-			}else{
-				layer.confirm("条码与华为物料编码不符合，确定要保存吗", function() {
-					onCheckBarCode(newBarcodeVal,$(t).attr("rowUuid"));
+			
+			var showLengthConfirm=false;
+			if(jsonResp!=null&&jsonResp.length>0&&newBarcodeVal!=null){
+				for (i = 0; i < jsonResp.length; i++) {
+					var t_pre = jsonResp[i].enumdatakey;
+					var materialLength = parseInt(jsonResp[i].showorder);
+					console.info(t_pre+"======"+newBarcodeVal.indexOf(t_pre)+">>>"+(t_pre.length+materialLength));
+					if(newBarcodeVal.indexOf(t_pre)==0){//以19,39...开头的
+						searchCode = newBarcodeVal.substring(t_pre.length,t_pre.length+materialLength);//截取位数
+						console.info("searchCode>>>>>>>>>"+searchCode);
+						console.info("限制长度："+jsonResp[i].description+">>条码长度："+newBarcodeVal.length);
+						var limitLength = jsonResp[i].description;
+						if(limitLength!=null&&limitLength!=''&&parseInt(limitLength)!=newBarcodeVal.length){
+							showLengthConfirm =true;
+						}
+						break;
+					}
+				}
+			}
+			if(showLengthConfirm){
+				layer.confirm(jsonResp[i].enumdataname+'限制长度为'+limitLength+',确定要保存吗', function(index) {
+					if(newBarcodeVal!=null&&newBarcodeVal.indexOf(tr_hwcode)>=0){
+						onCheckBarCode(newBarcodeVal,$(t).attr("rowUuid"));
+					}else{
+						layer.confirm("条码与华为物料编码不符合，确定要保存吗", function() {
+							onCheckBarCode(newBarcodeVal,$(t).attr("rowUuid"));
+						});
+					}
 				});
+			}else{
+				if(newBarcodeVal!=null&&newBarcodeVal.indexOf(tr_hwcode)>=0){
+					onCheckBarCode(newBarcodeVal,$(t).attr("rowUuid"));
+				}else{
+					layer.confirm("条码与华为物料编码不符合，确定要保存吗", function() {
+						onCheckBarCode(newBarcodeVal,$(t).attr("rowUuid"));
+					});
+				}
 			}
 		}
 		

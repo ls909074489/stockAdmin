@@ -153,7 +153,7 @@
 			
 			_queryData = $("#yy-form-query").serializeArray();
 			bindListActions();
-			serverPage('${serviceurl}/dataRecord?stockId=${stockId}&materialId=${materialId}&orderby=createtime@desc');
+			serverPage('${serviceurl}/dataStockMaterialIn?stockId=${stockId}&materialId=${materialId}&orderby=createtime@desc');
 		});
 		
 		
