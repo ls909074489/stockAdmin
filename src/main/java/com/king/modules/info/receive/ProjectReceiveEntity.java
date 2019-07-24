@@ -1,5 +1,8 @@
 package com.king.modules.info.receive;
 
+import java.util.Date;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -12,9 +15,11 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.king.common.annotation.MetaData;
 import com.king.frame.entity.BaseEntity;
+import com.king.modules.info.material.MaterialBaseEntity;
 import com.king.modules.info.projectinfo.ProjectInfoEntity;
 import com.king.modules.info.projectinfo.ProjectSubBaseEntity;
 
@@ -43,14 +48,32 @@ public class ProjectReceiveEntity extends BaseEntity {
 	@JoinColumn(name = "subid")
 	private ProjectSubBaseEntity sub;
 	
+	@MetaData(value = "物料")
+	@ManyToOne(cascade=CascadeType.REFRESH,optional = true)
+	@JoinColumn(name = "material_id",nullable=true)
+	private MaterialBaseEntity material;
+	
 	@MetaData(value = "收货数量")
 	@Column()
 	private Long receiveAmount;
+	
+	@MetaData(value = "收货时间")
+	@Column()
+	private Date receiveTime = new Date();
 	
 	@MetaData(value = "收货 类型")
 	@Column(length=2)
 	private String receiveType;
 	
+	
+	@MetaData(value = "备注")
+	@Column(length=250)
+	private String memo;
+	
+	
+	@MetaData(value = "计划数量")
+	@Column()
+	private Date warningTime;
 	
 	@Transient
 	@JsonIgnore
@@ -106,6 +129,39 @@ public class ProjectReceiveEntity extends BaseEntity {
 	public void setSubId(String subId) {
 		this.subId = subId;
 	}
+	
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+08:00")
+	public Date getReceiveTime() {
+		return receiveTime;
+	}
 
+	public void setReceiveTime(Date receiveTime) {
+		this.receiveTime = receiveTime;
+	}
 
+	public String getMemo() {
+		return memo;
+	}
+
+	public void setMemo(String memo) {
+		this.memo = memo;
+	}
+
+	public MaterialBaseEntity getMaterial() {
+		return material;
+	}
+
+	public void setMaterial(MaterialBaseEntity material) {
+		this.material = material;
+	}
+
+	public Date getWarningTime() {
+		return warningTime;
+	}
+
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+08:00")
+	public void setWarningTime(Date warningTime) {
+		this.warningTime = warningTime;
+	}
+	
 }

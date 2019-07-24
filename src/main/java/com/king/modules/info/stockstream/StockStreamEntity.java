@@ -90,11 +90,6 @@ public class StockStreamEntity extends BaseEntity {
 	private Long surplusAfter;
 	
 	
-	@MetaData(value = "实际数量")
-	@Column()
-	private Long actualAmount;
-	
-
 	@MetaData(value = "操作类型0：增加库存  1：减少库存")
 	@Column(length = 1)
 	private String operType;
@@ -105,10 +100,24 @@ public class StockStreamEntity extends BaseEntity {
 	
 	private String warningType="0";//0不需预警 1：要预警 2:以用完不需预警
 	
+
+	@MetaData(value = "实际数量")
+	@Column()
+	private Long actualAmount;
+	
+	@MetaData(value = "总数量")
+	@Column()
+	private Long totalAmount;
+	
+	@MetaData(value = "预占数量")
+	@Column()
+	private Long occupyAmount;
+	
 	@MetaData(value = "剩余数量")
 	@Column()
 	private Long surplusAmount;
-
+	
+	
 	public StockBaseEntity getStock() {
 		return stock;
 	}
@@ -259,6 +268,26 @@ public class StockStreamEntity extends BaseEntity {
 
 	public void setSourceSubId(String sourceSubId) {
 		this.sourceSubId = sourceSubId;
+	}
+
+
+	public Long getTotalAmount() {
+		return totalAmount;
+	}
+
+
+	public void setTotalAmount(Long totalAmount) {
+		this.totalAmount = totalAmount;
+	}
+
+
+	public Long getOccupyAmount() {
+		return occupyAmount;
+	}
+
+
+	public void setOccupyAmount(Long occupyAmount) {
+		this.occupyAmount = occupyAmount;
 	}
 	
 

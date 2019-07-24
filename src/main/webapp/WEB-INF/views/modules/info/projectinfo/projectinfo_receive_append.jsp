@@ -216,7 +216,10 @@
 			data : 'receiveLog',
 			width : "160",
 			className : "center",
-			orderable : false
+			orderable : false,
+			render : function(data, type, full) {
+			       return "<a onclick=\"showReceiveLog(\'"+full.uuid+"\');\">"+data+"</a>";
+			}
 		}];
 
 		 
@@ -490,14 +493,25 @@
 		}
 		
 		function appendLog(subId){
-			console.info(subId);
+			layer.open({
+				type : 2,
+				title : '收货记录',
+				shadeClose : false,
+				shade : 0.8,
+				area : [ '800px', '250px' ],
+				content : '${ctx}/info/receive/toAppendLog?subId='+subId
+			});
+		}
+		
+		//查看记录
+		function showReceiveLog(subId){
 			layer.open({
 				type : 2,
 				title : '收货记录',
 				shadeClose : false,
 				shade : 0.8,
 				area : [ '90%', '90%' ],
-				content : '${ctx}/info/receive/toAppendLog?subId='+subId
+				content : '${ctx}/info/receive/toViewLog?subId='+subId
 			});
 		}
 	</script>

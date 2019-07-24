@@ -69,6 +69,7 @@
 						<div role="form" class="form-inline" style="">
 							<form id="yy-form-subquery">	
 								<input type="hidden" name="search_EQ_main.uuid" id="mainId" value="${entity.uuid}">	
+								<input type="hidden" name="isShowReceiveLog" id="isShowReceiveLog" value="1">	
 								&nbsp;&nbsp;	
 								<label for="search_LIKE_boxNum" class="control-label">箱号</label>
 								<input type="text" autocomplete="on" name="search_LIKE_boxNum" id="search_LIKE_boxNum" 
@@ -99,6 +100,8 @@
 								<th>条码类型</th>
 								<th>计划数量</th>	
 								<th>备注</th>	
+								<th>已收数量</th>	
+								<th>收货记录</th>	
 							</tr>
 						</thead>
 						<tbody>
@@ -157,6 +160,19 @@
 			width : "160",
 			className : "center",
 			orderable : false
+		}, {
+			data : 'actualAmount',
+			width : "80",
+			className : "center",
+			orderable : false
+		}, {
+			data : 'receiveLog',
+			width : "160",
+			className : "center",
+			orderable : false,
+			render : function(data, type, full) {
+			       return "<a onclick=\"showReceiveLog(\'"+full.uuid+"\');\">"+data+"</a>";
+			}
 		}];
 		 
 		$(document).ready(function() {
@@ -241,6 +257,18 @@
 				return orderName + "@" + dir;
 			}
 			return "uuid@desc";
+		}
+		
+		//查看记录
+		function showReceiveLog(subId){
+			layer.open({
+				type : 2,
+				title : '收货记录',
+				shadeClose : false,
+				shade : 0.8,
+				area : [ '90%', '90%' ],
+				content : '${ctx}/info/receive/toViewLog?subId='+subId
+			});
 		}
 	</script>
 </body>

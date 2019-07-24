@@ -32,6 +32,8 @@ import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.SuperController;
 import com.king.frame.security.ShiroUser;
 import com.king.modules.info.material.MaterialBaseEntity;
+import com.king.modules.info.receive.ProjectReceiveService;
+import com.king.modules.info.receive.ProjectReceiveVo;
 import com.king.modules.info.stockinfo.StockBaseEntity;
 import com.king.modules.sys.org.OrgEntity;
 import com.king.modules.sys.param.ParameterUtil;
@@ -52,7 +54,8 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 	private ProjectInfoService service;
 	@Autowired
 	private ProjectSubService subService;
-	
+	@Autowired
+	private ProjectReceiveService receiveService;
 	/**
 	 * 
 	 * @Title: listView
@@ -117,7 +120,7 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 		ProjectInfoEntity entity = baseService.getOne(uuid);
 		model.addAttribute(ENTITY, entity);
 		
-		if(entity.getReceiveType().equals(ProjectInfoEntity.receiveType_yes)){
+		if(entity.getReceiveType()!=null&&entity.getReceiveType().equals(ProjectInfoEntity.receiveType_yes)){
 			return "modules/info/projectinfo/projectinfo_receive_append";
 		}
 		return "modules/info/projectinfo/projectinfo_receive_edit";
@@ -206,9 +209,9 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 			@RequestParam(value = "subList[]", required = false) String[] subArrs) {
 		ActionResultModel<ProjectInfoEntity> arm = new ActionResultModel<ProjectInfoEntity>();
 		arm.setSuccess(true);
-		List<ProjectSubEntity> subList = this.convertToEntities(subArrs);
+		List<ProjectReceiveVo> subList = this.convertToEntitieVos(subArrs);
 		try {
-			arm = subService.tempReceive(entity, subList);
+			arm = receiveService.tempReceive(entity, subList);
 		} catch (DataIntegrityViolationException e) {
 			e.printStackTrace();
 			arm.setSuccess(false);
@@ -236,9 +239,9 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 			@RequestParam(value = "subList[]", required = false) String[] subArrs) {
 		ActionResultModel<ProjectInfoEntity> arm = new ActionResultModel<ProjectInfoEntity>();
 		arm.setSuccess(true);
-		List<ProjectSubEntity> subList = this.convertToEntities(subArrs);
+		List<ProjectReceiveVo> subList = this.convertToEntitieVos(subArrs);
 		try {
-			arm = subService.confirmReceive(entity, subList);
+			arm = receiveService.confirmReceive(entity, subList);
 		} catch (DataIntegrityViolationException e) {
 			e.printStackTrace();
 			arm.setSuccess(false);
@@ -275,6 +278,33 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 			MaterialBaseEntity material = new MaterialBaseEntity();
 			material.setUuid(obj.getMaterialId());
 			obj.setMaterial(material);
+			returnList.add(obj);
+		}
+		return returnList;
+	}
+	
+	
+	private List<ProjectReceiveVo> convertToEntitieVos(String[] paramArr) {
+		List<ProjectReceiveVo> returnList = new ArrayList<ProjectReceiveVo>();
+		if (paramArr == null || paramArr.length == 0)
+			return returnList;
+		for (String data : paramArr) {
+			JSONObject jsonObject = new JSONObject();
+			String[] properties = data.split("&");
+			for (String property : properties) {
+				String[] nameAndValue = property.split("=");
+				if (nameAndValue.length == 2) {
+					try {
+						nameAndValue[0] = URLDecoder.decode(nameAndValue[0], "UTF-8");
+						nameAndValue[1] = URLDecoder.decode(nameAndValue[1], "UTF-8");
+					} catch (UnsupportedEncodingException e) {
+						e.printStackTrace();
+					}
+					jsonObject.put(nameAndValue[0], nameAndValue[1]);
+				}
+			}
+			ProjectReceiveVo obj = (ProjectReceiveVo) JSONObject.toBean(jsonObject,
+					ProjectReceiveVo.class);
 			returnList.add(obj);
 		}
 		return returnList;

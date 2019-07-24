@@ -43,6 +43,7 @@
 							</th>
 							<th>操作</th>
 							<th>单据状态</th>
+							<th>收货状态</th>
 							<th>项目号</th>
 							<th>项目名称</th>
 							<th>仓库</th>
@@ -85,6 +86,14 @@
 				className : "center",
 				render : function(data, type, full) {
 					return YYDataUtils.getEnumName("BillStatus", data);
+				},
+				orderable : true
+			},{
+				data : "receiveType",
+				width : "60",
+				className : "center",
+				render : function(data, type, full) {
+					return YYDataUtils.getEnumName("ReceiveStatus", data);
 				},
 				orderable : true
 			},{

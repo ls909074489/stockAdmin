@@ -1,5 +1,7 @@
 package com.king.modules.info.projectinfo;
 
+import java.util.Date;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,6 +15,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.king.common.annotation.MetaData;
 import com.king.frame.entity.BaseEntity;
@@ -79,6 +82,13 @@ public class ProjectSubEntity extends BaseEntity {
 	@MetaData(value = "限制每箱数量")
 	@Column(length = 10)
 	private int limitCount=-1;//-1表示不限制
+	
+	@Column()
+	private Date receiveTime;
+	
+	@Column(length = 250)
+	private String receiveMemo;
+
 	
 	@Transient
 	private String materialId;
@@ -267,5 +277,21 @@ public class ProjectSubEntity extends BaseEntity {
 		this.receiveLog = receiveLog;
 	}
 	
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+08:00")
+	public Date getReceiveTime() {
+		return receiveTime;
+	}
+
+	public void setReceiveTime(Date receiveTime) {
+		this.receiveTime = receiveTime;
+	}
+
+	public String getReceiveMemo() {
+		return receiveMemo;
+	}
+
+	public void setReceiveMemo(String receiveMemo) {
+		this.receiveMemo = receiveMemo;
+	}
 	
 }

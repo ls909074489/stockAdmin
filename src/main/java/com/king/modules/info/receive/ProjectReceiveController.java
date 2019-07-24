@@ -7,7 +7,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.king.common.utils.DateUtil;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.BaseController;
 
@@ -50,17 +52,30 @@ public class ProjectReceiveController extends BaseController<ProjectReceiveEntit
 
 	@Override
 	public String detailView(Model model, ServletRequest request, ProjectReceiveEntity entity) {
-		return "modules/info/receive/projectreceive_detail";
+		return "";
 	}
 	
 	@RequestMapping(value = "/toAppendLog", method = RequestMethod.GET)
-	public String onEdit(Model model, ServletRequest request,String subId) {
-		return "modules/info/receive/project_receive_append";
+	public String subId(Model model, ServletRequest request,String subId) {
+		model.addAttribute("subId", subId);
+		model.addAttribute("curDate", DateUtil.getDate());
+		return "modules/info/receive/project_receive_addlog";
 	}
 
 	
+	@ResponseBody
 	@RequestMapping(value = "/saveReceiveLog")
-	public ActionResultModel<ProjectReceiveEntity> saveReceiveLog(Model model, ServletRequest request,String subId) {
-		return null;
+	public ActionResultModel<ProjectReceiveEntity> saveReceiveLog(Model model, ServletRequest request,ProjectReceiveEntity entity) {
+		return service.saveReceiveLog(entity);
 	}
+	
+	
+	@RequestMapping(value = "/toViewLog", method = RequestMethod.GET)
+	public String toViewLog(Model model, ServletRequest request,String subId) {
+		model.addAttribute("subId", subId);
+		return "modules/info/receive/project_receive_viewlog";
+	}
+	
+	
+	
 }

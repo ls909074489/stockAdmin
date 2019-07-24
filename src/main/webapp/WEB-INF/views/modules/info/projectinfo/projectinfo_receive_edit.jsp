@@ -123,7 +123,9 @@
 								<th>条码类型</th>
 								<th>计划数量</th>	
 								<th>备注</th>	
-								<th>收货数量</th>	
+								<th>收货数量</th>
+								<th>收货时间</th>
+								<th>收货备注</th>	
 							</tr>
 						</thead>
 						<tbody>
@@ -206,6 +208,28 @@
 					data="";
 				}
 				return '<input class="form-control" value="'+ data + '" name="actualAmount">';
+			}
+		}, {
+			data : 'receiveTime',
+			width : "80",
+			className : "center",
+			orderable : false,
+			render : function(data, type, full) {
+				if(data==null){
+					data="";
+				}
+				return '<input class="form-control Wdate" value="'+ data + '" name="receiveTime" onClick="WdatePicker()">';
+			}
+		}, {
+			data : 'receiveMemo',
+			width : "80",
+			className : "center",
+			orderable : false,
+			render : function(data, type, full) {
+				if(data==null){
+					data="";
+				}
+				return '<input class="form-control" value="'+data+'" name="memo">';
 			}
 		}];
 

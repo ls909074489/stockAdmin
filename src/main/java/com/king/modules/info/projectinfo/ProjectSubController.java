@@ -88,12 +88,16 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 	}
 	
 	private void setReceiveLog(ProjectSubEntity sub,List<ProjectReceiveEntity> list,SimpleDateFormat sdf){
-		StringBuilder str = new StringBuilder();
-		for(ProjectReceiveEntity r:list){
-			str.append(r.getCreatorname()).append(sdf.format(r.getCreatetime()));
-			str.append(" 收货数量").append(r.getReceiveAmount()).append(";");
+		if(list==null){
+			sub.setReceiveLog("");
+		}else{
+			StringBuilder str = new StringBuilder();
+			for(ProjectReceiveEntity r:list){
+				str.append(r.getCreatorname()).append(sdf.format(r.getCreatetime()));
+				str.append(" 收货数量").append(r.getReceiveAmount()).append(";");
+			}
+			sub.setReceiveLog(str.toString());
 		}
-		sub.setReceiveLog(str.toString());
 	}
 
 	@RequestMapping("/detailList")
