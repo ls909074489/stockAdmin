@@ -73,29 +73,29 @@ public class StockStreamEntity extends BaseEntity {
 	@Column(length = 36)
 	private String projectSubId;
 
-	@MetaData(value = "总数量")
-	@Column()
-	private Long totalBefore;
-
-	@MetaData(value = "预占数量")
-	@Column()
-	private Long occupyBefore;
-
-	@MetaData(value = "剩余数量")
-	@Column()
-	private Long surplusBefore;
-	
-	@MetaData(value = "总数量")
-	@Column()
-	private Long totalAfter;
-
-	@MetaData(value = "预占数量")
-	@Column()
-	private Long occupyAfter;
-
-	@MetaData(value = "剩余数量")
-	@Column()
-	private Long surplusAfter;
+//	@MetaData(value = "总数量")
+//	@Column()
+//	private Long totalBefore;
+//
+//	@MetaData(value = "预占数量")
+//	@Column()
+//	private Long occupyBefore;
+//
+//	@MetaData(value = "剩余数量")
+//	@Column()
+//	private Long surplusBefore;
+//	
+//	@MetaData(value = "总数量")
+//	@Column()
+//	private Long totalAfter;
+//
+//	@MetaData(value = "预占数量")
+//	@Column()
+//	private Long occupyAfter;
+//
+//	@MetaData(value = "剩余数量")
+//	@Column()
+//	private Long surplusAfter;
 	
 	
 	@MetaData(value = "操作类型0：增加库存  1：减少库存")
@@ -168,67 +168,6 @@ public class StockStreamEntity extends BaseEntity {
 	public void setSourceBillCode(String sourceBillCode) {
 		this.sourceBillCode = sourceBillCode;
 	}
-
-
-	public Long getTotalBefore() {
-		return totalBefore;
-	}
-
-
-	public void setTotalBefore(Long totalBefore) {
-		this.totalBefore = totalBefore;
-	}
-
-
-	public Long getOccupyBefore() {
-		return occupyBefore;
-	}
-
-
-	public void setOccupyBefore(Long occupyBefore) {
-		this.occupyBefore = occupyBefore;
-	}
-
-
-	public Long getSurplusBefore() {
-		return surplusBefore;
-	}
-
-
-	public void setSurplusBefore(Long surplusBefore) {
-		this.surplusBefore = surplusBefore;
-	}
-
-
-	public Long getTotalAfter() {
-		return totalAfter;
-	}
-
-
-	public void setTotalAfter(Long totalAfter) {
-		this.totalAfter = totalAfter;
-	}
-
-
-	public Long getOccupyAfter() {
-		return occupyAfter;
-	}
-
-
-	public void setOccupyAfter(Long occupyAfter) {
-		this.occupyAfter = occupyAfter;
-	}
-
-
-	public Long getSurplusAfter() {
-		return surplusAfter;
-	}
-
-
-	public void setSurplusAfter(Long surplusAfter) {
-		this.surplusAfter = surplusAfter;
-	}
-
 
 	public Long getActualAmount() {
 		return actualAmount;
