@@ -48,15 +48,11 @@
 							<th>操作人</th>
 							<th>操作时间</th>
 							<th>单据类型</th>
-							<th>调整数量</th>
-							<!-- 							
 							<th>总数量</th>
-							<th>预占数量</th>
 							<th>剩余数量</th>
-							 -->
+							<th>预占数量</th>
+							<th>可用数量</th>
 							<th>预警时间</th>
-							<th>预警剩余数量</th>
-							<th>预警状态</th>
 						</tr>
 					</thead>
 					<tbody></tbody>
@@ -99,52 +95,30 @@
 				},
 				orderable : true
 			},{
-				data : "actualAmount",
+				data : "totalAmount",
 				width : "60",
 				className : "center",
-				orderable : true
-			}/* ,{
-				data : "totalBefore",
-				width : "60",
-				className : "center",
-				render: function (data,type,row,meta) {
-					return data+"->"+row.totalAfter;
-		        },
-				orderable : true
-			},{
-				data : "occupyBefore",
-				width : "60",
-				className : "center",
-				render: function (data,type,row,meta) {
-					return data+"->"+row.occupyAfter;
-		        },
-				orderable : true
-			},{
-				data : "surplusBefore",
-				width : "60",
-				className : "center",
-				render: function (data,type,row,meta) {
-					return data+"->"+row.surplusAfter;
-		        },
-				orderable : true
-			} */,{
-				data : "warningTime",
-				width : "60",
-				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "surplusAmount",
 				width : "60",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
-				data : "warningType",
+				data : "occupyAmount",
 				width : "60",
 				className : "center",
-				render : function(data, type, full) {
-					   return YYDataUtils.getEnumName("StockStreamWarningType", data);
-				},
-				orderable : true
+				orderable : false
+			},{
+				data : "actualAmount",
+				width : "60",
+				className : "center",
+				orderable : false
+			},{
+				data : "warningTime",
+				width : "60",
+				className : "center",
+				orderable : false
 			}];
 		
 		//var _setOrder = [[5,'desc']];

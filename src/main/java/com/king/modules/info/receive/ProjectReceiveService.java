@@ -160,16 +160,18 @@ public class ProjectReceiveService extends BaseServiceImpl<ProjectReceiveEntity,
 			entity.setReceiveTime(new Date());
 		}
 		entity = doAdd(entity);
+		List<ProjectReceiveEntity> receiveList = new ArrayList<>();
 		if(entity.getReceiveType().equals(ProjectReceiveEntity.receiveType_add)){
 			sub.setActualAmount(sub.getActualAmount()+entity.getReceiveAmount());
 			entity.setReceiveAmount(Math.abs(entity.getReceiveAmount()));
+			receiveList.add(entity);
+			stockDetailService.incrStockDetail(sub.getMain(), receiveList);
 		}else{
 			sub.setActualAmount(sub.getActualAmount()-Math.abs(entity.getReceiveAmount()));
 			entity.setReceiveAmount(Math.abs(entity.getReceiveAmount())*-1);
+			receiveList.add(entity);
+			stockDetailService.descStockDetailOnReceive(sub.getMain(), receiveList);
 		}
-		List<ProjectReceiveEntity> receiveList = new ArrayList<>();
-		receiveList.add(entity);
-		stockDetailService.incrStockDetail(sub.getMain(), receiveList);
 		return new ActionResultModel<>(true, "保存成功");
 	}
 	

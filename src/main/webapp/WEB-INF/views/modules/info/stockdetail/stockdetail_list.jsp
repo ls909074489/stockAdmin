@@ -57,8 +57,9 @@
 							<th>物料编码</th>
 							<th>物料名称</th>
 							<th>总数量</th>
-							<th>预占数量</th>
 							<th>剩余数量</th>
+							<th>预占数量</th>
+							<th>可用数量</th>
 						</tr>
 					</thead>
 					<tbody></tbody>
@@ -108,12 +109,17 @@
 				className : "center",
 				orderable : true
 			},{
+				data : "surplusAmount",
+				width : "100",
+				className : "center",
+				orderable : true
+			},{
 				data : "occupyAmount",
 				width : "100",
 				className : "center",
 				orderable : true
 			},{
-				data : "surplusAmount",
+				data : "actualAmount",
 				width : "100",
 				className : "center",
 				orderable : true

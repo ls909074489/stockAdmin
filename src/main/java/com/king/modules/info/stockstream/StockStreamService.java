@@ -31,8 +31,8 @@ public class StockStreamService extends BaseServiceImpl<StockStreamEntity,String
 		return dao.findsurplusByStockAndMaterial(stockId, materialId);
 	}
 	
-	public List<StockStreamEntity> findsurplusBySourceSubIdAndMaterial(String sourceSubId, String materialId) {
-		return dao.findsurplusBySourceSubIdAndMaterial(sourceSubId, materialId);
+	public List<StockStreamEntity> findsurplusByProjectSubIdAndMaterial(String sourceSubId, String materialId) {
+		return dao.findsurplusByProjectSubIdAndMaterial(sourceSubId, materialId);
 	}
 
 	public List<StockStreamEntity> findsurplusBySourceId(String sourceId) {

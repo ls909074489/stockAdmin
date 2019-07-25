@@ -109,7 +109,6 @@
 													<th>操作人</th>
 													<th>操作时间</th>
 													<!-- <th>单据类型</th> -->
-													<th>调整数量</th>
 													<th>总数量</th>
 													<th>剩余数量</th>
 													<th>预占数量</th>
@@ -200,11 +199,6 @@
 			orderable : false
 		},{
 			data : "warningTime",
-			width : "60",
-			className : "center",
-			orderable : false
-		},{
-			data : "surplusAmount",
 			width : "60",
 			className : "center",
 			orderable : false

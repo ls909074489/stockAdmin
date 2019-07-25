@@ -141,6 +141,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 						subEntity.setMaterial(sub.getMaterial());
 						subEntity.setLimitCount(sub.getLimitCount());
 						subEntity.setPlanAmount(sub.getPlanAmount());
+						subEntity.setActualAmount(subEntity.getPlanAmount());
 						subEntity.setMemo(sub.getMemo());
 					}
 				}
