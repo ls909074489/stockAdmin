@@ -42,6 +42,10 @@ public class StockStreamEntity extends BaseEntity {
 	public static String WARNINGTYPE_BE_NEED="1";
 	public static String WARNINGTYPE_HAS_USE="2";
 	
+	public static String BILLTYPE_ORDER="1";
+	public static String BILLTYPE_RECEIVE="2";
+	public static String BILLTYPE_PROJECT="3";
+	
 	@MetaData(value = "仓库")
 	@ManyToOne(cascade=CascadeType.REFRESH,optional = true)
 	@JoinColumn(name = "stock_id",nullable=true)
@@ -64,6 +68,10 @@ public class StockStreamEntity extends BaseEntity {
 	@MetaData(value = "源子表id")
 	@Column(length = 36)
 	private String sourceSubId;
+	
+	@MetaData(value = "项目子表id")
+	@Column(length = 36)
+	private String projectSubId;
 
 	@MetaData(value = "总数量")
 	@Column()
@@ -94,6 +102,10 @@ public class StockStreamEntity extends BaseEntity {
 	@Column(length = 1)
 	private String operType;
 	
+	@MetaData(value = "操作类型1：订单  1：收货")
+	@Column(length = 1)
+	private String billType;
+	
 	@MetaData(value = "计划数量")
 	@Column()
 	private Date warningTime;
@@ -101,21 +113,21 @@ public class StockStreamEntity extends BaseEntity {
 	private String warningType="0";//0不需预警 1：要预警 2:以用完不需预警
 	
 
-	@MetaData(value = "实际数量")
-	@Column()
-	private Long actualAmount;
-	
 	@MetaData(value = "总数量")
 	@Column()
 	private Long totalAmount;
 	
-	@MetaData(value = "预占数量")
-	@Column()
-	private Long occupyAmount;
-	
 	@MetaData(value = "剩余数量")
 	@Column()
 	private Long surplusAmount;
+	
+	@MetaData(value = "预占数量")
+	@Column()
+	private Long occupyAmount;
+
+	@MetaData(value = "实际数量/可用数量")
+	@Column()
+	private Long actualAmount;
 	
 	
 	public StockBaseEntity getStock() {
@@ -288,6 +300,26 @@ public class StockStreamEntity extends BaseEntity {
 
 	public void setOccupyAmount(Long occupyAmount) {
 		this.occupyAmount = occupyAmount;
+	}
+
+
+	public String getBillType() {
+		return billType;
+	}
+
+
+	public void setBillType(String billType) {
+		this.billType = billType;
+	}
+
+
+	public String getProjectSubId() {
+		return projectSubId;
+	}
+
+
+	public void setProjectSubId(String projectSubId) {
+		this.projectSubId = projectSubId;
 	}
 	
 

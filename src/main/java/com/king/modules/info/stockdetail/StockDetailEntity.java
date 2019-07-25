@@ -46,13 +46,17 @@ public class StockDetailEntity extends BaseEntity {
 	@Column()
 	private Long totalAmount;
 
+	@MetaData(value = "剩余数量")
+	@Column()
+	private Long surplusAmount;
+
 	@MetaData(value = "预占数量")
 	@Column()
 	private Long occupyAmount;
 
-	@MetaData(value = "剩余数量")
+	@MetaData(value = "实际数量/可用数量")
 	@Column()
-	private Long surplusAmount;
+	private Long actualAmount;
 
 	
 	public MaterialBaseEntity getMaterial() {
@@ -93,6 +97,14 @@ public class StockDetailEntity extends BaseEntity {
 
 	public void setSurplusAmount(Long surplusAmount) {
 		this.surplusAmount = surplusAmount;
+	}
+
+	public Long getActualAmount() {
+		return actualAmount;
+	}
+
+	public void setActualAmount(Long actualAmount) {
+		this.actualAmount = actualAmount;
 	}
 
 }

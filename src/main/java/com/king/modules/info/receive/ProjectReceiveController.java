@@ -62,7 +62,13 @@ public class ProjectReceiveController extends BaseController<ProjectReceiveEntit
 		return "modules/info/receive/project_receive_addlog";
 	}
 
-	
+	/**
+	 * 
+	 * @param model
+	 * @param request
+	 * @param entity
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/saveReceiveLog")
 	public ActionResultModel<ProjectReceiveEntity> saveReceiveLog(Model model, ServletRequest request,ProjectReceiveEntity entity) {
