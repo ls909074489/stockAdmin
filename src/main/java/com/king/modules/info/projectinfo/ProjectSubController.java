@@ -127,6 +127,7 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		List<ProjectSubEntity> resultList = new ArrayList<>();
 		List<String> subBarcodelist = null;
 		ProjectSubEntity desSub = null;
+		List<EnumDataSubEntity> enumList = EnumDataUtils.getEnumSubList("barCodeExtract");
 		for(ProjectSubEntity sub : subList){
 			if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
 				if(StringUtils.isNotEmpty(sub.getBarcodejson())){
@@ -151,11 +152,11 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 					}else{
 						desSub.setBarcode("");
 					}
-					checkStyle(desSub);
+					checkStyle(desSub,enumList);
 					resultList.add(desSub);
 				}
 			}else{
-				checkStyle(sub);
+				checkStyle(sub,enumList);
 				sub.setNewUuid("0_"+sub.getUuid());
 				resultList.add(sub);
 			}
@@ -164,13 +165,23 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		return arm;
 	}
 	
-	private ProjectSubEntity checkStyle(ProjectSubEntity sub){
+	private ProjectSubEntity checkStyle(ProjectSubEntity sub,List<EnumDataSubEntity> enumList){
 		if(StringUtils.isEmpty(sub.getBarcode())){
 			sub.setCheckStatus(ProjectSubEntity.checkStatus_init);
 		}else if(sub.getBarcode().contains(sub.getMaterial().getHwcode())){
 			sub.setCheckStatus(ProjectSubEntity.checkStatus_pass);
 		}else{
 			sub.setCheckStatus(ProjectSubEntity.checkStatus_error);
+		}
+		for(EnumDataSubEntity enumSub:enumList){
+			String t_pre = enumSub.getEnumdatakey();
+			if(sub.getBarcode()!=null&&sub.getBarcode().indexOf(t_pre)==0){//以19,39...开头的
+				String limitLength = enumSub.getDescription();//限制长度
+				if(limitLength!=null&&limitLength!=""&&Integer.parseInt(limitLength)!=sub.getBarcode().length()){
+					sub.setBarcodeStatus(ProjectSubEntity.BARCODE_STATUS_LENGTH_WRONG);
+					break;
+				}
+			}
 		}
 		return sub;
 	}

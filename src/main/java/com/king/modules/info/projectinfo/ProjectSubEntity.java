@@ -38,6 +38,9 @@ public class ProjectSubEntity extends BaseEntity {
 	public static final String checkStatus_pass="20";
 	public static final String checkStatus_error="30";
 	
+	public static final String BARCODE_STATUS_INIT="10";
+	public static final String BARCODE_STATUS_LENGTH_WRONG="30";
+	
 	private static final long serialVersionUID = 1L;
 
 	@ManyToOne(optional = false)
@@ -99,6 +102,8 @@ public class ProjectSubEntity extends BaseEntity {
 	private String newUuid="";
 	@Transient
 	private String receiveLog="";
+	@Transient
+	private String barcodeStatus="10";
 	
 	@Transient
 	@JsonIgnore
@@ -293,5 +298,14 @@ public class ProjectSubEntity extends BaseEntity {
 	public void setReceiveMemo(String receiveMemo) {
 		this.receiveMemo = receiveMemo;
 	}
+
+	public String getBarcodeStatus() {
+		return barcodeStatus;
+	}
+
+	public void setBarcodeStatus(String barcodeStatus) {
+		this.barcodeStatus = barcodeStatus;
+	}
+	
 	
 }

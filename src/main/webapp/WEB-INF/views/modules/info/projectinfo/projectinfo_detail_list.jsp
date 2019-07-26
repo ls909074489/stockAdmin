@@ -111,8 +111,8 @@
 					<label for="search_LIKE_material.name" class="control-label">物料名称</label>
 					<input type="text" autocomplete="on" name="search_LIKE_material.name" id="search_LIKE_material.name" class="form-control input-sm">			 
 							
-					<label for="search_LIKE_barcode" class="control-label">条码&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-					<input type="text" autocomplete="on" name="search_LIKE_barcode" id="search_LIKE_barcode" class="form-control input-sm">	  
+					<!-- <label for="search_LIKE_barcode" class="control-label">条码&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+					<input type="text" autocomplete="on" name="search_LIKE_barcode" id="search_LIKE_barcode" class="form-control input-sm">	   -->
 
 					<button id="yy-btn-search" type="button" class="btn btn-sm btn-info">
 						<i class="fa fa-search"></i>查询
@@ -174,9 +174,20 @@
 				className : "center",
 				orderable : false,
 				render : function(data, type, full) {
-					return "<div class='yy-btn-actiongroup'>"
-					+ "<button  onclick='saveNewBarcode(this);' rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info' data-rel='tooltip' title='保存'><i class='fa yy-btn-save'></i>保存</button>"
-					+ "</div>";
+					 var btnAble ='';
+					if(full.main.billstatus==5){//“已审核”项变为深灰色底色
+						btnAble ='disabled="disabled"';
+					}
+					if(full.barcode!=null&&full.barcode!=''){
+						return "<div class='yy-btn-actiongroup'>"
+						+ "<button  onclick='saveNewBarcode(this);' "+btnAble+" rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info' data-rel='tooltip' title='修改'><i class='fa yy-btn-save'></i>修改</button>"
+						+ "<button  onclick='saveNewBarcode(this);' "+btnAble+" rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info saveBcBtn' data-rel='tooltip' title='保存'><i class='fa yy-btn-save'></i>保存</button>"
+						+ "</div>";
+					}else{
+						return "<div class='yy-btn-actiongroup'>"
+						+ "<button  onclick='saveNewBarcode(this);' "+btnAble+" rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info saveBcBtn' data-rel='tooltip' title='保存'><i class='fa yy-btn-save'></i>保存</button>"
+						+ "</div>";
+					}
 				},
 				width : "30"
 			}, {
@@ -188,7 +199,11 @@
 					if(data==null){
 						data="";
 					}
-					return '<input class="form-control" value="'+ data + '" name="newBarcode">';
+					if(full.barcode!=null&&full.barcode!=''){
+						return '<input class="form-control newBarcodeInput" value="'+ data + '" name="newBarcode"  readonly="readonly">';
+					}else{
+						return '<input class="form-control newBarcodeInput" value="'+ data + '" name="newBarcode">';
+					}
 				}
 			}, {
 				data : 'barcode',
@@ -198,9 +213,17 @@
 					if(full.checkStatus=='30'){
 						return '<span style="color:#e02222;">'+data+'</span>';
 					} else if(full.checkStatus=='20'){
-						return '<span style="color:#319430;">'+data+'</span>';
+						if(full.barcodeStatus=='30'){
+							return '<span style="color:#e92810;">'+data+'</span>';
+						}else{
+							return '<span style="color:#319430;">'+data+'</span>';
+						}
 					}else{
-						return data;
+						if(full.barcodeStatus=='30'){
+							return '<span style="color:#e92810;">'+data+'</span>';
+						}else{
+							return data;
+						}
 					}
 				},
 				orderable : false
@@ -209,10 +232,14 @@
 				width : "50",
 				className : "center",
 				render : function(data, type, full) {
+					var billStatusStyle="";
+					if(data==5){//“已审核”项变为深灰色底色
+						billStatusStyle=" background-color:#a19797;";
+					}
 					if(full.checkStatus=='30'){
-						return '<span style="color:#e02222;">'+YYDataUtils.getEnumName("BillStatus", data)+'</span>';
+						return '<span style="color:#e02222;'+billStatusStyle+'">'+YYDataUtils.getEnumName("BillStatus", data)+'</span>';
 					} else if(full.checkStatus=='20'){
-						return '<span style="color:#319430;">'+YYDataUtils.getEnumName("BillStatus", data)+'</span>';
+						return '<span style="color:#319430;'+billStatusStyle+'">'+YYDataUtils.getEnumName("BillStatus", data)+'</span>';
 					}else{
 						return YYDataUtils.getEnumName("BillStatus", data);
 					}
@@ -527,6 +554,14 @@
 					});
 				}
 			}
+		}
+		
+		//编辑变保存按钮
+		function changeToSave(t){
+			$(t).closest("tr").find(".saveBcBtn").show();
+			$(t).closest("tr").find(".newBarcodeInput").removeAttr("readonly");
+			$(t).closest("tr").find(".newBarcodeInput").attr("readonly",false);
+			$(t).hide();
 		}
 		
 		
