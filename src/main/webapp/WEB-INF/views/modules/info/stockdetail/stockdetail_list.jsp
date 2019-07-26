@@ -55,6 +55,7 @@
 							<th>操作</th>
 							<th>仓库名称</th>
 							<th>物料编码</th>
+							<th>华为物料编码</th>
 							<th>物料名称</th>
 							<th>总数量</th>
 							<th>剩余数量</th>
@@ -95,6 +96,11 @@
 				orderable : true
 			},{
 				data : "material.code",
+				width : "100",
+				className : "center",
+				orderable : true
+			},{
+				data : "material.hwcode",
 				width : "100",
 				className : "center",
 				orderable : true

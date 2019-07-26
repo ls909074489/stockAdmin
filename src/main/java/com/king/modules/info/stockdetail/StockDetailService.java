@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +39,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 	private StockDetailDao dao;
 //	@Autowired
 //	private OrderSubService orderSubService;
+	@Lazy
 	@Autowired
 	private StockStreamService stockStreamService;
 	@Autowired
@@ -172,7 +174,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 		StockStreamEntity stream = null;
 		
 		//减少流水
-		List<StockStreamEntity> streamList = stockStreamService.findsurplusBySourceId(projectInfo.getUuid());
+		List<StockStreamEntity> streamList = stockStreamService.findSurplusBySourceIdIn(projectInfo.getUuid());
 		Map<String,List<StockStreamEntity>> streamMap = changeToMap(streamList);
 		List<StockStreamEntity> subStreamList = null;
 		List<StreamLogEntity> logList = new ArrayList<>();
@@ -225,18 +227,20 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 							ss.setWarningType(StockStreamEntity.WARNINGTYPE_HAS_USE);
 						}
 						log.setActualAmount(subAmount);
+						logList.add(log);
+						subAmount = 0l;
 						break;
 					}else{
 						if(ss.getWarningType().equals(StockStreamEntity.WARNINGTYPE_BE_NEED)){
 							ss.setWarningType(StockStreamEntity.WARNINGTYPE_HAS_USE);
 						}
+						subAmount =subAmount - ss.getSurplusAmount();
+						log.setActualAmount(ss.getSurplusAmount());
+						logList.add(log);
 						ss.setSurplusAmount(0l);
 						ss.setOccupyAmount(0l);
 						ss.setActualAmount(0l);
-						subAmount =subAmount - ss.getSurplusAmount();
-						log.setActualAmount(ss.getSurplusAmount());
 					}
-					logList.add(log);
 				}
 				if(subAmount>0){
 					throw new ServiceException("物料"+sub.getMaterial().getCode()+"流水不足");
@@ -340,6 +344,38 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			}
 			stream.setOperType(StockStreamEntity.OUT_STOCK);
 			stockStreamService.doAdd(stream);//添加库存流水
+		}
+	}
+	
+	@Transactional
+	public void unApproveStockDetail(ProjectInfoEntity entity, List<ProjectSubEntity> subList) {
+		List<StreamLogEntity> logList = streamLogService.findByProjectId(entity.getUuid());
+		if(CollectionUtils.isNotEmpty(logList)){
+			List<StockStreamEntity> streamList = stockStreamService.findBySourceIdAndOperType(entity.getUuid(),StockStreamEntity.IN_STOCK);
+			boolean hasStream =false;
+			for(StreamLogEntity log:logList){
+				hasStream =false;
+				for(StockStreamEntity stream:streamList){
+					if(stream.getUuid().equals(log.getStreamId())){
+						StockDetailEntity detail  = findByStockAndMaterial(stream.getStock().getUuid(),stream.getMaterial().getUuid());
+						detail.setSurplusAmount(detail.getSurplusAmount()+log.getActualAmount());
+ 						detail.setOccupyAmount(detail.getOccupyAmount()+log.getActualAmount());
+						
+ 						stream.setTotalAmount(stream.getTotalAmount()+log.getActualAmount());
+						stream.setSurplusAmount(stream.getSurplusAmount()+log.getActualAmount());
+						stream.setOccupyAmount(stream.getOccupyAmount()+log.getActualAmount());
+						stream.setActualAmount(stream.getSurplusAmount()-stream.getOccupyAmount());
+						
+//						stockStreamService.delete(stream);
+						hasStream =true;
+						break;
+					}
+				}
+				if(hasStream){
+					log.setStatus(0);//标志删除
+				}
+			}
+			stockStreamService.delBySourceIdAndOperType(entity.getUuid(),StockStreamEntity.OUT_STOCK);
 		}
 	}
 

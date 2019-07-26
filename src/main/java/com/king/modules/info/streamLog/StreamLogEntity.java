@@ -16,7 +16,7 @@ import org.hibernate.annotations.DynamicUpdate;
  * @date 2019-07-25 17:48:29
  */
 @Entity
-@Table(name = "yy_streamlog")
+@Table(name = "yy_stream_log")
 @DynamicInsert
 @DynamicUpdate
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)

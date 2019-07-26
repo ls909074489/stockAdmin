@@ -35,8 +35,28 @@ public class StockStreamService extends BaseServiceImpl<StockStreamEntity,String
 		return dao.findsurplusByProjectSubIdAndMaterial(sourceSubId, materialId);
 	}
 
-	public List<StockStreamEntity> findsurplusBySourceId(String sourceId) {
-		return dao.findsurplusBySourceId(sourceId);
+	/**
+	 * 入库的流水-剩余数量大于0的
+	 * @param sourceId
+	 * @return
+	 */
+	public List<StockStreamEntity> findSurplusBySourceIdIn(String sourceId) {
+		return dao.findSurplusBySourceIdAndOperType(sourceId,StockStreamEntity.IN_STOCK);
 	}
+	
+	/**
+	 * 入库的流水
+	 * @param sourceId
+	 * @return
+	 */
+	public List<StockStreamEntity> findBySourceIdAndOperType(String sourceId,String operType) {
+		return dao.findBySourceIdAndOperType(sourceId,operType);//StockStreamEntity.IN_STOCK
+	}
+
+	@Transactional
+	public void delBySourceIdAndOperType(String sourceId, String operType) {
+		dao.delBySourceIdAndOperType(sourceId,operType);
+	}
+	
 
 }

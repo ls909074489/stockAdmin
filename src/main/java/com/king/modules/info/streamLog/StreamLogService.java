@@ -4,6 +4,9 @@ import com.king.frame.dao.IBaseDAO;
 import com.king.frame.service.BaseServiceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -22,6 +25,10 @@ public class StreamLogService extends BaseServiceImpl<StreamLogEntity,String> {
 
 	protected IBaseDAO<StreamLogEntity, String> getDAO() {
 		return dao;
+	}
+
+	public List<StreamLogEntity> findByProjectId(String projectId) {
+		return dao.findByProjectId(projectId);
 	}
 
 }

@@ -52,6 +52,9 @@
 				 <button id="yy-btn-approve-project" class="btn yellow btn-sm btn-info" type="button">
 					<i class="fa fa-check"></i> 审核
 				</button>
+				<button id="yy-btn-unapprove-project" class="btn yellow btn-sm btn-info">
+					<i class="fa fa-reply"></i> 取消审核
+				</button>
 			</div>
 			<div class="row yy-searchbar form-inline">
 				<form id="yy-form-query">
@@ -299,6 +302,7 @@
 			
 			$("#yy-btn-match").bind('click', matchMaterial);//
 			$("#yy-btn-approve-project").bind('click', approveProject);//
+			$("#yy-btn-unapprove-project").bind('click', unApproveProject);//
 			
 			//选择角色
 			$('#yy-project-select').on('click', function() {
@@ -585,7 +589,35 @@
 				dataType : "json",
 				success : function(data) {
 					if(data.success){
-						YYUI.succMsg(data.msg);
+						YYUI.succMsg("审核成功");
+						onQuery();
+					}else{
+						YYUI.promMsg(data.msg);
+					}
+				},
+				error : function(data) {
+					YYUI.promMsg("操作失败，请联系管理员");
+				}
+			});
+		}
+		
+		function unApproveProject(){
+			var t_projectId = $("#search_LIKE_mainId").val();
+			console.info(">>>>>>>>>>>>"+t_projectId);
+			if(t_projectId==null||t_projectId==''){
+				YYUI.promMsg("请选择项目");
+				return false;
+			}
+			
+			$.ajax({
+				type : "POST",
+				data :{"pks": t_projectId},
+				url : "${ctx}/info/projectinfo/batchUnApprove",
+				async : true,
+				dataType : "json",
+				success : function(data) {
+					if(data.success){
+						YYUI.succMsg("取消审核成功");
 						onQuery();
 					}else{
 						YYUI.promMsg(data.msg);

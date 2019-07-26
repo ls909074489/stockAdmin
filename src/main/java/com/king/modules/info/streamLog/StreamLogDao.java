@@ -1,6 +1,10 @@
 package com.king.modules.info.streamLog;
 
 import com.king.frame.dao.IBaseDAO;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -10,5 +14,8 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface StreamLogDao extends IBaseDAO<StreamLogEntity,String> {
+
+	@Query("from StreamLogEntity where projectId=? and status=1")
+	List<StreamLogEntity> findByProjectId(String projectId);
 
 }

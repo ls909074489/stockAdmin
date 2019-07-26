@@ -73,7 +73,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 				throw new ServiceException("仓库"+stock.getName()+"不存在物料"+sub.getMaterial().getCode());
 			}else{
 				if(detail.getSurplusAmount()<sub.getPlanAmount()){
-					throw new ServiceException("物料"+sub.getMaterial().getCode()+"库存不足");
+					throw new ServiceException("仓库"+stock.getName()+"物料"+sub.getMaterial().getCode()+"库存不足");
 				}
 			}
 		}
@@ -120,6 +120,13 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 	}
 
 
+
+	@Override
+	public void afterUnApprove(ProjectInfoEntity entity) throws ServiceException {
+		List<ProjectSubEntity> subList = projectSubService.findByMain(entity.getUuid());
+		stockDetailService.unApproveStockDetail(entity, subList);
+		super.afterUnApprove(entity);
+	}
 
 	public ActionResultModel<ProjectInfoVo> select2Query(String codeOrName) {
 		ActionResultModel<ProjectInfoVo> arm = new ActionResultModel<ProjectInfoVo>();

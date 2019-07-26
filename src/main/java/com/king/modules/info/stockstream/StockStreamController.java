@@ -29,6 +29,13 @@ public class StockStreamController extends BaseController<StockStreamEntity> {
 	private StockStreamService service;
 
 	
+	@Override
+	public Map<String, Object> addSearchParam(ServletRequest request) {
+		Map<String, Object> addParam = new HashMap<String, Object>();
+		addParam.put("EQ_status", "1");
+		return addParam;
+	}
+
 	@RequestMapping("/toRecord")
 	public String toRecord(Model model,String stockId,String materialId) {
 		model.addAttribute("stockId", stockId);
@@ -41,6 +48,7 @@ public class StockStreamController extends BaseController<StockStreamEntity> {
 	public ActionResultModel<StockStreamEntity> dataRecord(ServletRequest request) {
 		Map<String, Object> addParam = new HashMap<String, Object>();
 		addParam.put("EQ_stock.uuid", request.getParameter("stockId"));
+		addParam.put("EQ_status", "1");
 		addParam.put("EQ_material.uuid", request.getParameter("materialId"));
 		QueryRequest<StockStreamEntity> qr = getQueryRequest(request, addParam);
 		return execQuery(qr, baseService);
@@ -66,6 +74,7 @@ public class StockStreamController extends BaseController<StockStreamEntity> {
 		addParam.put("EQ_material.uuid", request.getParameter("materialId"));
 		addParam.put("EQ_operType", StockStreamEntity.IN_STOCK);//增加库存
 		addParam.put("EQ_warningType", StockStreamEntity.WARNINGTYPE_BE_NEED);//要预警 
+		addParam.put("EQ_status", "1");
 		addParam.put("LTE_warningTime", DateUtil.getDateTime());//要预警 
 		QueryRequest<StockStreamEntity> qr = getQueryRequest(request, addParam);
 		return execQuery(qr, baseService);
