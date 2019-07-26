@@ -29,7 +29,7 @@
 				<div class="row">
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4 required" >项目号</label>
+							<label class="control-label col-md-4" >项目号</label>
 							<div class="col-md-8" >
 								<input name="code" id="code" type="text" value="${entity.code}" class="form-control">
 							</div>
@@ -37,7 +37,7 @@
 					</div>
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4 required" >项目名称</label>
+							<label class="control-label col-md-4" >项目名称</label>
 							<div class="col-md-8" >
 								<input name="name" id="name" type="text" value="${entity.name}" class="form-control">
 							</div>
@@ -45,7 +45,7 @@
 					</div>
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4 required">仓库</label>
+							<label class="control-label col-md-4">仓库</label>
 							<div class="col-md-8">
 								<div class="input-group input-icon right">
 										<input id="stockUuid" name="stockId" type="hidden" value="${entity.stock.uuid}"> 
@@ -96,9 +96,10 @@
 								<input type="text" autocomplete="on" name="search_LIKE_boxNum" id="search_LIKE_boxNum" 
 								 class="form-control input-sm">							
 
+								<!-- 
 								<label for="search_LIKE_material.code" class="control-label">物料编码</label>
 								<input type="text" autocomplete="on" name="search_LIKE_material.code" id="search_LIKE_material.code" class="form-control input-sm">
-								
+								 -->
 								<label for="search_LIKE_material.hwcode" class="control-label">华为物料编码</label>
 								<input type="text" autocomplete="on" name="search_LIKE_material.hwcode" id="search_LIKE_material.hwcode" class="form-control input-sm">
 								
@@ -120,12 +121,14 @@
 								<th>序号</th>	
 								<th>操作</th>	
 								<th>箱号</th>	
-								<th>物料编码</th>	
+								<!-- <th>物料编码</th> -->	
 								<th>华为物料编码</th>
 								<th>条码类型</th>
 								<th>计划数量</th>	
 								<th>备注</th>	
 								<th>已收数量</th>	
+								<th>收货时间</th>
+								<th>收货备注</th>	
 								<th>收货记录</th>	
 							</tr>
 						</thead>
@@ -167,8 +170,17 @@
 			data : 'boxNum',
 			width : "20",
 			className : "center",
-			orderable : false
-		}, {
+			orderable : false,
+			render : function(data, type, full) {
+				var tUuid=full.uuid;
+				if (typeof(tUuid) == "undefined"){
+					tUuid="";
+				}
+				var str ='<input type="hidden" name="uuid" value="'+tUuid+'">'+data
+				 '<input class="form-control"  value="'+ data.uuid + '" type="hidden" reallyname="materialId" name="materialId"> ';
+				return str;
+			}
+		}/* , {
 			data : 'material',
 			width : "80",
 			className : "center",
@@ -184,7 +196,7 @@
 				 '</div> ';
 				return str;
 			}
-		}, {
+		} */, {
 			data : 'material.hwcode',
 			width : "80",
 			className : "center",
@@ -209,6 +221,16 @@
 			orderable : false
 		}, {
 			data : 'actualAmount',
+			width : "80",
+			className : "center",
+			orderable : false
+		}, {
+			data : 'receiveTime',
+			width : "80",
+			className : "center",
+			orderable : false
+		}, {
+			data : 'receiveMemo',
 			width : "80",
 			className : "center",
 			orderable : false

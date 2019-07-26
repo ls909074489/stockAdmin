@@ -20,12 +20,12 @@
 				<button id="yy-btn-refresh" class="btn blue btn-sm">
 					<i class="fa fa-refresh"></i> 刷新
 				</button>
-				<button id="yy-btn-submit" class="btn yellow btn-sm btn-info">
+				<!-- <button id="yy-btn-submit" class="btn yellow btn-sm btn-info">
 					<i class="fa fa-send"></i> 提交
 				</button>
 				<button id="yy-btn-unsubmit" class="btn yellow btn-sm btn-info">
 					<i class="fa fa-undo"></i> 撤销提交
-				</button>
+				</button> -->
 				<!-- <button id="yy-btn-approve-x" class="btn yellow btn-sm btn-info">
 					<i class="fa fa-check"></i> 审核
 				</button> -->

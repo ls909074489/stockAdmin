@@ -14,6 +14,12 @@
 				<button id="yy-btn-refresh" class="btn blue btn-sm">
 					<i class="fa fa-refresh"></i> 刷新
 				</button>
+				<button id="yy-btn-submit" class="btn yellow btn-sm btn-info">
+					<i class="fa fa-send"></i> 提交
+				</button>
+				<button id="yy-btn-unsubmit" class="btn yellow btn-sm btn-info">
+					<i class="fa fa-undo"></i> 撤销提交
+				</button>
 			</div>
 			<div class="row yy-searchbar form-inline">
 				<form id="yy-form-query">
@@ -138,7 +144,7 @@
 				return;
 			}
 			if (aData.billstatus > 0 && aData.billstatus != '1'
-					&& aData.billstatus != '4') {
+				&& aData.billstatus != '4') {
 				YYUI.promMsg(YYMsg.alertMsg('sys-edit-no'));//已经提交或者审核的数据不能修改。
 				return;
 			}

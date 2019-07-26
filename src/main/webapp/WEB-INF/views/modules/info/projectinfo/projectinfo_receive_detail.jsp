@@ -75,8 +75,11 @@
 								<input type="text" autocomplete="on" name="search_LIKE_boxNum" id="search_LIKE_boxNum" 
 								 class="form-control input-sm">
 								 
-								<label for="search_LIKE_material.code" class="control-label">物料编码</label>
-								<input type="text" autocomplete="on" name="search_LIKE_material.code" id="search_LIKE_material.code" class="form-control input-sm">
+							<!-- 	<label for="search_LIKE_material.code" class="control-label">物料编码</label>
+								<input type="text" autocomplete="on" name="search_LIKE_material.code" id="search_LIKE_material.code" class="form-control input-sm"> -->
+								
+								<label for="search_LIKE_material.hwcode" class="control-label">华为物料编码</label>
+								<input type="text" autocomplete="on" name="search_LIKE_material.hwcode" id="search_LIKE_material.hwcode" class="form-control input-sm">
 								
 								<label for="search_LIKE_material.name" class="control-label">物料名称</label>
 								<input type="text" autocomplete="on" name="search_LIKE_material.name" id="search_LIKE_material.name" class="form-control input-sm">
@@ -95,12 +98,14 @@
 							<tr>
 								<th>序号</th>	
 								<th>箱号</th>	
-								<th>物料编码</th>	
+								<!-- <th>物料编码</th> -->	
 								<th>华为物料编码</th>
 								<th>条码类型</th>
 								<th>计划数量</th>	
 								<th>备注</th>	
 								<th>已收数量</th>	
+								<th>收货时间</th>
+								<th>收货备注</th>	
 								<th>收货记录</th>	
 							</tr>
 						</thead>
@@ -132,12 +137,12 @@
 			width : "20",
 			className : "center",
 			orderable : false,
-		}, {
+		}/* , {
 			data : 'material.code',
 			width : "80",
 			className : "center",
 			orderable : false
-		}, {
+		} */, {
 			data : 'material.hwcode',
 			width : "80",
 			className : "center",
@@ -162,6 +167,16 @@
 			orderable : false
 		}, {
 			data : 'actualAmount',
+			width : "80",
+			className : "center",
+			orderable : false
+		}, {
+			data : 'receiveTime',
+			width : "80",
+			className : "center",
+			orderable : false
+		}, {
+			data : 'receiveMemo',
 			width : "80",
 			className : "center",
 			orderable : false

@@ -180,8 +180,8 @@
 					}
 					if(full.barcode!=null&&full.barcode!=''){
 						return "<div class='yy-btn-actiongroup'>"
-						+ "<button  onclick='saveNewBarcode(this);' "+btnAble+" rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info' data-rel='tooltip' title='修改'><i class='fa yy-btn-save'></i>修改</button>"
-						+ "<button  onclick='saveNewBarcode(this);' "+btnAble+" rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info saveBcBtn' data-rel='tooltip' title='保存'><i class='fa yy-btn-save'></i>保存</button>"
+						+ "<button  onclick='changeToSave(this);' "+btnAble+" rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info' data-rel='tooltip' title='修改'><i class='fa yy-btn-save'></i>修改</button>"
+						+ "<button  onclick='saveNewBarcode(this);' "+btnAble+"  style='display: none;' rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info saveBcBtn' data-rel='tooltip' title='保存'><i class='fa yy-btn-save'></i>保存</button>"
 						+ "</div>";
 					}else{
 						return "<div class='yy-btn-actiongroup'>"
@@ -198,6 +198,9 @@
 				render : function(data, type, full) {
 					if(data==null){
 						data="";
+					}
+					if(full.main.billstatus==5){//“已审核”项变为深灰色底色
+						return '<input class="form-control newBarcodeInput" value="'+ data + '" name="newBarcode"  readonly="readonly">';
 					}
 					if(full.barcode!=null&&full.barcode!=''){
 						return '<input class="form-control newBarcodeInput" value="'+ data + '" name="newBarcode"  readonly="readonly">';
@@ -237,9 +240,9 @@
 						billStatusStyle=" background-color:#a19797;";
 					}
 					if(full.checkStatus=='30'){
-						return '<span style="color:#e02222;'+billStatusStyle+'">'+YYDataUtils.getEnumName("BillStatus", data)+'</span>';
+						return '<div style="color:#e02222;'+billStatusStyle+'">'+YYDataUtils.getEnumName("BillStatus", data)+'</div>';
 					} else if(full.checkStatus=='20'){
-						return '<span style="color:#319430;'+billStatusStyle+'">'+YYDataUtils.getEnumName("BillStatus", data)+'</span>';
+						return '<div style="color:#319430;'+billStatusStyle+'">'+YYDataUtils.getEnumName("BillStatus", data)+'</div>';
 					}else{
 						return YYDataUtils.getEnumName("BillStatus", data);
 					}

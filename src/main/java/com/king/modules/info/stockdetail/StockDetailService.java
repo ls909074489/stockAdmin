@@ -358,10 +358,11 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 				for(StockStreamEntity stream:streamList){
 					if(stream.getUuid().equals(log.getStreamId())){
 						StockDetailEntity detail  = findByStockAndMaterial(stream.getStock().getUuid(),stream.getMaterial().getUuid());
+						detail.setTotalAmount(detail.getTotalAmount()+log.getActualAmount());
 						detail.setSurplusAmount(detail.getSurplusAmount()+log.getActualAmount());
  						detail.setOccupyAmount(detail.getOccupyAmount()+log.getActualAmount());
 						
- 						stream.setTotalAmount(stream.getTotalAmount()+log.getActualAmount());
+// 						stream.setTotalAmount(stream.getTotalAmount()+log.getActualAmount());
 						stream.setSurplusAmount(stream.getSurplusAmount()+log.getActualAmount());
 						stream.setOccupyAmount(stream.getOccupyAmount()+log.getActualAmount());
 						stream.setActualAmount(stream.getSurplusAmount()-stream.getOccupyAmount());
