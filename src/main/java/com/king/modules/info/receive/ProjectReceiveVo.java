@@ -2,6 +2,11 @@ package com.king.modules.info.receive;
 
 import java.util.Date;
 
+import javax.persistence.Column;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.king.common.annotation.MetaData;
+
 public class ProjectReceiveVo {
 	
 	private String uuid;
@@ -12,6 +17,10 @@ public class ProjectReceiveVo {
 	
 	private String memo;
 
+	@MetaData(value = "预警时间")
+	@Column()
+	private Date warningTime; 
+	
 	public String getUuid() {
 		return uuid;
 	}
@@ -43,6 +52,13 @@ public class ProjectReceiveVo {
 	public void setMemo(String memo) {
 		this.memo = memo;
 	}
-	
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+08:00")
+	public Date getWarningTime() {
+		return warningTime;
+	}
+
+	public void setWarningTime(Date warningTime) {
+		this.warningTime = warningTime;
+	}
 	
 }

@@ -91,6 +91,10 @@ public class ProjectSubEntity extends BaseEntity {
 	
 	@Column(length = 250)
 	private String receiveMemo;
+	
+	@MetaData(value = "预警时间")
+	@Column()
+	private Date warningTime;
 
 	
 	@Transient
@@ -306,6 +310,13 @@ public class ProjectSubEntity extends BaseEntity {
 	public void setBarcodeStatus(String barcodeStatus) {
 		this.barcodeStatus = barcodeStatus;
 	}
-	
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+08:00")
+	public Date getWarningTime() {
+		return warningTime;
+	}
+
+	public void setWarningTime(Date warningTime) {
+		this.warningTime = warningTime;
+	}
 	
 }

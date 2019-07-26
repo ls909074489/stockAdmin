@@ -128,6 +128,7 @@ public class ProjectReceiveService extends BaseServiceImpl<ProjectReceiveEntity,
 			subEntity.setActualAmount(sub.getActualAmount());
 			subEntity.setReceiveTime(sub.getReceiveTime());
 			subEntity.setReceiveMemo(sub.getMemo());
+			subEntity.setWarningTime(sub.getWarningTime());
 		
 			receive = new ProjectReceiveEntity();
 			receive.setMain(obj);
@@ -139,6 +140,7 @@ public class ProjectReceiveService extends BaseServiceImpl<ProjectReceiveEntity,
 			receive.setReceiveType(ProjectReceiveEntity.receiveType_add);
 			receive.setReceiveTime(sub.getReceiveTime());
 			receive.setMemo(sub.getMemo());
+			receive.setWarningTime(sub.getWarningTime());
 			receiveList.add(doAdd(receive));
 		}
 		stockDetailService.incrStockDetail(obj, receiveList);

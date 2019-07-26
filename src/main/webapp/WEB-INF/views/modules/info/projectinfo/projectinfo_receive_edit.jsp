@@ -232,7 +232,7 @@
 				return '<input class="form-control Wdate" value="'+ data + '" name="receiveTime" onClick="WdatePicker()">';
 			}
 		}, {
-			data : 'receiveTime',
+			data : 'warningTime',
 			width : "80",
 			className : "center",
 			orderable : false,
@@ -240,7 +240,7 @@
 				if(data==null){
 					data="";
 				}
-				return '<input class="form-control Wdate" value="'+ data + '" name="receiveTime" onClick="WdatePicker()">';
+				return '<input class="form-control Wdate" value="'+ data + '" name="warningTime" onClick="WdatePicker()">';
 			}
 		}, {
 			data : 'receiveMemo',

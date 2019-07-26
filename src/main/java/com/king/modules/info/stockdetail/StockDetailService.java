@@ -137,7 +137,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			material.setUuid(sub.getMaterial().getUuid());
 			stream.setMaterial(material);
 			stream.setWarningTime(sub.getWarningTime());
-			stream.setWarningType(StockStreamEntity.WARNINGTYPE_NO_NEED);
+//			stream.setWarningType(StockStreamEntity.WARNINGTYPE_NO_NEED);
 			stream.setSurplusAmount(sub.getReceiveAmount());
 			
 			if(detail==null){

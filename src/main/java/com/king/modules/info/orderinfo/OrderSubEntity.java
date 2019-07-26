@@ -44,7 +44,7 @@ public class OrderSubEntity extends BaseEntity {
 	@Column()
 	private Long planAmount;
 	
-	@MetaData(value = "计划数量")
+	@MetaData(value = "预警时间")
 	@Column()
 	private Date warningTime;
 	

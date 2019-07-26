@@ -25,7 +25,6 @@
 						<div style="height: 20px;"></div>
 						<table>
 							<tr>
-								
 								<td style="color: #e02222;">&nbsp;&nbsp;&nbsp;&nbsp;收货类型&nbsp;&nbsp;&nbsp;&nbsp;</td>
 								<td>
 									<select name="receiveType" id="receiveType" data-enum-group="ReceiveType" class="yy-input-enumdata form-control"></select>
@@ -34,9 +33,15 @@
 								<td>
 									<input name="receiveAmount" id="receiveAmount" type="text" value="" class="form-control">
 								</td>
+							</tr>
+							<tr style="height: 50px;">
 								<td style="color: #e02222;">&nbsp;&nbsp;&nbsp;&nbsp;收货时间&nbsp;&nbsp;&nbsp;&nbsp;</td>
 								<td>
 									<input class="Wdate" type="text" name="receiveTime" onClick="WdatePicker()" value="${curDate}">
+								</td>
+								<td style="color: #e02222;">&nbsp;&nbsp;&nbsp;&nbsp;预警时间&nbsp;&nbsp;&nbsp;&nbsp;</td>
+								<td>
+									<input class="Wdate" type="text" name="warningTime" onClick="WdatePicker()" value="${curDate}">
 								</td>
 							</tr>
 							<tr style="height: 50px;">

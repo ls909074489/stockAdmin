@@ -73,8 +73,9 @@ public class StockStreamController extends BaseController<StockStreamEntity> {
 		addParam.put("EQ_stock.uuid", request.getParameter("stockId"));
 		addParam.put("EQ_material.uuid", request.getParameter("materialId"));
 		addParam.put("EQ_operType", StockStreamEntity.IN_STOCK);//增加库存
-		addParam.put("EQ_warningType", StockStreamEntity.WARNINGTYPE_BE_NEED);//要预警 
+//		addParam.put("EQ_warningType", StockStreamEntity.WARNINGTYPE_BE_NEED);//要预警 
 		addParam.put("EQ_status", "1");
+		addParam.put("GT_surplusAmount", "0");
 		addParam.put("LTE_warningTime", DateUtil.getDateTime());//要预警 
 		QueryRequest<StockStreamEntity> qr = getQueryRequest(request, addParam);
 		return execQuery(qr, baseService);
