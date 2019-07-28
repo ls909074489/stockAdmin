@@ -112,7 +112,7 @@
 				render : function(data, type, full) {
 					   return '<a onclick="onApproveLook(\'orderInfo\',\''+full.uuid+'\');">'+YYDataUtils.getEnumName("BillStatus", data)+'</a>';
 				},
-				orderable : true
+				orderable : false
 			},{
 				data : "orderType",
 				width : "80",
@@ -120,37 +120,37 @@
 				render : function(data, type, full) {
 					return YYDataUtils.getEnumName("OrderType", data);
 				},
-				orderable : true
+				orderable : false
 			},{
 				data : "code",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			}/* ,{
 				data : "name",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			} */,{
 				data : "stock.name",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			}/* ,{
 				data : "planArriveTime",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			} */,{
 				data : "creatorname",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "createtime",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			}];
 
 

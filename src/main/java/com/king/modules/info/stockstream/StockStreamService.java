@@ -57,6 +57,10 @@ public class StockStreamService extends BaseServiceImpl<StockStreamEntity,String
 	public void delBySourceIdAndOperType(String sourceId, String operType) {
 		dao.delBySourceIdAndOperType(sourceId,operType);
 	}
+
+	public List<StockStreamEntity> findOrderByStockAndMaterial(String stockId, String materialId) {
+		return dao.findOrderByStockAndMaterial(stockId, materialId,StockStreamEntity.BILLTYPE_ORDER);
+	}
 	
 
 }

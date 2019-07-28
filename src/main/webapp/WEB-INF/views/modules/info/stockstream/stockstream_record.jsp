@@ -53,7 +53,7 @@
 							<th>预占数量</th>
 							<th>可用数量</th>
 							<th>预警时间</th>
-							<th>预警状态</th>
+							<!-- <th>预警状态</th> -->
 						</tr>
 					</thead>
 					<tbody></tbody>
@@ -120,7 +120,7 @@
 				width : "60",
 				className : "center",
 				orderable : true
-			},{
+			}/* ,{
 				data : "warningType",
 				width : "60",
 				className : "center",
@@ -128,7 +128,7 @@
 					   return YYDataUtils.getEnumName("StockStreamWarningType", data);
 				},
 				orderable : true
-			}];
+			} */];
 		
 		//var _setOrder = [[5,'desc']];
 		$(document).ready(function() {
@@ -158,6 +158,11 @@
 					}
 				}
 			});
+		}
+		
+		function onEditRow(aData, iDataIndex, nRow) {
+			//console.info(11111111);
+			return false;
 		}
 	</script>
 </body>

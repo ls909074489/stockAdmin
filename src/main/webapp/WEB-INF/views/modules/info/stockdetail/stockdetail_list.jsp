@@ -108,6 +108,9 @@
 				data : "material.name",
 				width : "100",
 				className : "center",
+				render : function(data, type, full) {
+					return '<a onclick="showMaterial(\''+full.material.uuid+'\');">'+data+'</a>';
+				},
 				orderable : true
 			},{
 				data : "totalAmount",
@@ -156,6 +159,18 @@
 		//重写防止双击
 		function onEditRow(aData, iDataIndex, nRow){
 			return false;
+		}
+		
+		//查看物料明细
+		function showMaterial(uuid){
+			layer.open({
+				type : 2,
+				title : '物料信息',
+				shadeClose : false,
+				shade : 0.8,
+				area : [ '90%', '90%' ],
+				content : '${ctx}/info/material/onDetail?isShowBtn=0&uuid='+uuid//iframe的url
+			});
 		}
 	</script>
 </body>

@@ -12,9 +12,9 @@
 		<div class="page-content" id="yy-page-list">
 			<div class="row yy-searchbar form-inline">
 				<form id="yy-form-query">
-					<label for="search_EQ_operType" class="control-label">单据类型</label>
+					<!-- <label for="search_EQ_operType" class="control-label">单据类型</label>
 					<select class="yy-input-enumdata form-control" id="search_EQ_operType" name="search_EQ_operType"
-					 data-enum-group="StockStreamOperType"></select>	
+					 data-enum-group="StockStreamOperType"></select> -->	
 					
 					<label for="search_LIKE_sourceBillCode" class="control-label">源单号</label>
 					<input type="text" autocomplete="on" name="search_LIKE_sourceBillCode"

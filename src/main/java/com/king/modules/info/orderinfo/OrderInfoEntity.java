@@ -35,6 +35,9 @@ public class OrderInfoEntity extends SuperEntity {
 
 	private static final long serialVersionUID = 1L;
 	
+	public static final String ORDERTYPE_IN="01";//入库单
+	public static final String ORDERTYPE_OUT="02";//出库单
+	
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "stockid")
 	private StockBaseEntity stock;
