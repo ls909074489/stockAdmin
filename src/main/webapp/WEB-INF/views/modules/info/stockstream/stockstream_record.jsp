@@ -76,17 +76,17 @@
 				data : "sourceBillCode",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "creatorname",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "createtime",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "operType",
 				width : "100",
@@ -94,32 +94,32 @@
 				render : function(data, type, full) {
 				       return YYDataUtils.getEnumName("StockStreamOperType", data);
 				},
-				orderable : true
+				orderable : false
 			},{
 				data : "totalAmount",
 				width : "60",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "surplusAmount",
 				width : "60",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "occupyAmount",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "actualAmount",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "warningTime",
 				width : "60",
 				className : "center",
-				orderable : true
+				orderable : false
 			}/* ,{
 				data : "warningType",
 				width : "60",
@@ -127,7 +127,7 @@
 				render : function(data, type, full) {
 					   return YYDataUtils.getEnumName("StockStreamWarningType", data);
 				},
-				orderable : true
+				orderable : false
 			} */];
 		
 		//var _setOrder = [[5,'desc']];

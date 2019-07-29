@@ -124,6 +124,7 @@
 								<th>序号</th>	
 								<th>操作</th>	
 								<th>物料编码</th>	
+								<th>华为物料编码</th>	
 								<th>物料名称</th>	
 								<th>计划数量</th>
 								<th>预警时间</th>	
@@ -174,6 +175,14 @@
 					 '</span> '+
 					 '</div> ';
 					return str;
+				}
+			}, {
+				data : 'material.hwcode',
+				width : "80",
+				className : "center",
+				orderable : true,
+				render : function(data, type, full) {
+					return '<span class="materialHwcodeInputCls">'+data+'</span>';
 				}
 			}, {
 				data : 'material.name',
@@ -325,6 +334,7 @@
 				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='materialCode']").val(selNode.code);
 				$(t_refMaterialEle).closest(".materialRefDiv").find("input[name='materialId']").val(selNode.uuid);
 				$(t_refMaterialEle).closest("tr").find(".materialNameInputCls").html(selNode.name);
+				$(t_refMaterialEle).closest("tr").find(".materialHwcodeInputCls").html(selNode.hwcode);
 			}
 		}
 		
@@ -341,7 +351,7 @@
 			if(canAdd){
 				var subNewData = [ {
 					'uuid' : '',
-					'material' : {"uuid":selNode.uuid,"code":selNode.code,"name":selNode.name},
+					'material' : {"uuid":selNode.uuid,"code":selNode.code,"hwcode":selNode.hwcode,"name":selNode.name},
 					'planAmount':'',
 					'memo':''
 				} ];

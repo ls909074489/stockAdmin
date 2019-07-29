@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.util.StringUtils;
@@ -437,4 +438,52 @@ public class ExcelDataUtil {
 //	            e.printStackTrace();  
 //	        } 
 //	}
+	
+	
+	/**
+     * 分多种格式解析单元格的值
+     *
+     * @param cell  单元格
+     * @return  单元格的值
+     */
+    public static String convertCellToString(Cell cell){
+        //如果为null会抛出异常，应当返回空字符串
+        if (cell == null)
+            return "";
+
+        //POI对单元格日期处理很弱，没有针对的类型，日期类型取出来的也是一个double值，所以同样作为数值类型
+        //解决日期2006/11/02格式读入后出错的问题，POI读取后变成“02-十一月-2006”格式
+        if(cell.toString().contains("-") && checkDate(cell.toString())){
+            String ans = "";
+            try {
+                ans = new SimpleDateFormat("yyyy-MM-dd").format(cell.getDateCellValue());
+            } catch (Exception e) {
+                ans = cell.toString();
+            }
+            return ans;
+        }
+
+        cell.setCellType(XSSFCell.CELL_TYPE_STRING);
+        return cell.getStringCellValue();
+    }
+
+    /**
+     * 判断是否是“02-十一月-2006”格式的日期类型
+     */
+    private static boolean checkDate(String str){
+        String[] dataArr =str.split("-");
+        try {
+            if(dataArr.length == 3){
+                int x = Integer.parseInt(dataArr[0]);
+                String y =  dataArr[1];
+                int z = Integer.parseInt(dataArr[2]);
+                if(x>0 && x<32 && z>0 && z< 10000 && y.endsWith("月")){
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return false;
+    }
 }

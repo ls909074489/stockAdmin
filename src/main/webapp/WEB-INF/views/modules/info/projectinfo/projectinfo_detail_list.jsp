@@ -174,9 +174,9 @@
 				className : "center",
 				orderable : false,
 				render : function(data, type, full) {
-					 var btnAble ='';
+					var btnAble ='';
 					if(full.main.billstatus==5){//“已审核”项变为深灰色底色
-						btnAble ='disabled="disabled"';
+						btnAble ='disabled="disabled" title="已审核不能操作" ';
 					}
 					if(full.barcode!=null&&full.barcode!=''){
 						return "<div class='yy-btn-actiongroup'>"
@@ -289,7 +289,12 @@
 				width : "60",
 				className : "center",
 				render : function(data, type, full) {
-					return '<a onclick="toUpdateLimitCount(\''+full.uuid+'\');">【'+YYDataUtils.getEnumName("MaterialLimitCount", data)+'】</a>';
+					if(full.main.billstatus==5){//“已审核”项变为深灰色底色
+						return '<span title="已审核不能操作">【'+YYDataUtils.getEnumName("MaterialLimitCount", data)+'】</span>';
+					}else{
+						return '<a onclick="toUpdateLimitCount(\''+full.uuid+'\');">【'+YYDataUtils.getEnumName("MaterialLimitCount", data)+'】</a>';
+					}
+					
 				},
 				orderable : false
 			},{

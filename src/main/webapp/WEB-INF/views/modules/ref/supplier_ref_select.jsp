@@ -10,13 +10,6 @@
 		<div role="form" class="row yy-toolbar">
 			<form id="yy-form-query">
 				<div class="col-sm-4 form-inline" style="">
-					<div id="div_col6_filter" data-column="6">
-						企业类型
-						<select class="yy-input-enumdata form-control" id="search_EQ_enterpriseType" 
-						name="search_EQ_enterpriseType" data-enum-group="EnterpriseType"></select>
-					</div>
-				</div>
-				<div class="col-sm-4 form-inline" style="">
 					<div id="div_col3_filter" data-column="3">
 						名称
 						<input type="text" autocomplete="on" name="search_LIKE_name"

@@ -36,6 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.alibaba.fastjson.JSON;
 import com.google.protobuf.ServiceException;
+import com.king.common.enums.BillStatus;
 import com.king.common.utils.ExcelDataUtil;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.dao.IBaseDAO;
@@ -636,6 +637,11 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 	public ActionResultModel<ProjectSubEntity> updateLimitCount(int limitCount, String subId) {
 		ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity>();
 		ProjectSubEntity sub = getOne(subId);
+		if(sub.getMain().getBillstatus()==BillStatus.APPROVAL.toStatusValue()){
+			arm.setSuccess(false);
+			arm.setMsg("已审核不能修改");
+			return arm;
+		}
 		sub.setLimitCount(limitCount);
 		arm.setSuccess(true);
 		arm.setMsg("操作成功");

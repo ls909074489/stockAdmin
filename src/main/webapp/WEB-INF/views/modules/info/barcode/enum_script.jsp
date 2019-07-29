@@ -243,7 +243,7 @@
 			url : '${subserviceurl}/query',
 			data : {
 				"search_EQ_enumdata.uuid" : mainTableId,
-				"orderby" : "createtime@asc"
+				"orderby" : "showorder@asc"
 			},
 			dataType : 'json',
 			type : 'post',

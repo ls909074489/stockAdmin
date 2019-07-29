@@ -247,7 +247,7 @@ public class OrderSubService extends BaseServiceImpl<OrderSubEntity, String> {
 										throw new ServiceException("第"+(rowNum+1)+"行计划数量不为有效数字");
 									}
 								}
-								warningTimeStr = ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("warningTime")));
+								warningTimeStr = ExcelDataUtil.convertCellToString(xssfRow.getCell(imexMap.get("warningTime")));
 								if(!StringUtils.isEmpty(warningTimeStr)){
 									try {
 										SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");

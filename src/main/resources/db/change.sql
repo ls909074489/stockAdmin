@@ -275,5 +275,6 @@ UPDATE `yy_enumdata_sub` SET `uuid`='4dc3b110-a6fc-4330-9a83-1f6e34834a96', `sho
 UPDATE `yy_enumdata_sub` SET `uuid`='c6a08bd0-2439-4b32-9e68-7566f2ce7171', `showorder`='7' WHERE (`uuid`='c6a08bd0-2439-4b32-9e68-7566f2ce7171');
 UPDATE `yy_enumdata_sub` SET `uuid`='d489fc80-743f-47d6-95b0-6e1b8045bca4', `showorder`='8' WHERE (`uuid`='d489fc80-743f-47d6-95b0-6e1b8045bca4');
 
+INSERT INTO `yy_func` (`uuid`, `status`, `create_ts`, `creator`, `modifier`, `modify_ts`, `nodepath`, `auth_type`, `description`, `fun_css`, `func_code`, `func_name`, `func_type`, `func_url`, `help_code`, `hint`, `iconcls`, `islast`, `parentid`, `permission_code`, `showorder`, `sys`, `create_time`, `modify_time`, `createtime`, `creatorname`, `modifiername`, `modifytime`, `usestatus`, `ts`) VALUES ('6b1497b2-10e1-4616-bfcd-afc7b4755b72', '1', NULL, '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, 'root,79f79877-5599-4b52-9e3c-e22307630fb8,6b1497b2-10e1-4616-bfcd-afc7b4755b72', NULL, '', NULL, '1096', '条码解析规则', 'func', '@ctx@/info/projectinfo/toBarcodeConfig', NULL, NULL, '', '', '79f79877-5599-4b52-9e3c-e22307630fb8', NULL, NULL, '\0', NULL, NULL, '2019-07-29 20:53:26', '超级系统管理员', NULL, NULL, '1', '2019-07-29 20:53:26');
 
 
