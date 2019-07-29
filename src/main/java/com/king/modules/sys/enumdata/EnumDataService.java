@@ -192,4 +192,9 @@ public class EnumDataService extends BaseServiceImpl<EnumDataEntity, String> {
 
 		return map;
 	}
+
+	
+	public EnumDataEntity getByGroupcode(String groupCode) {
+		return dao.getByGroupcode(groupCode);
+	}
 }

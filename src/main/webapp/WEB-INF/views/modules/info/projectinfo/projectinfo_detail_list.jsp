@@ -214,18 +214,18 @@
 				className : "center",
 				render : function(data, type, full) {
 					if(full.checkStatus=='30'){
-						return '<span style="color:#e02222;">'+data+'</span>';
+						return '<a onclick="showBarcodeLog(\''+full.uuid+'\');"><span style="color:#e02222;">'+data+'</span></a>';
 					} else if(full.checkStatus=='20'){
 						if(full.barcodeStatus=='30'){
-							return '<span style="color:#e92810;">'+data+'</span>';
+							return '<a onclick="showBarcodeLog(\''+full.uuid+'\');"><span style="color:#e92810;">'+data+'</span></a>';
 						}else{
-							return '<span style="color:#319430;">'+data+'</span>';
+							return '<a onclick="showBarcodeLog(\''+full.uuid+'\');"><span style="color:#319430;">'+data+'</span></a>';
 						}
 					}else{
 						if(full.barcodeStatus=='30'){
-							return '<span style="color:#e92810;">'+data+'</span>';
+							return '<a onclick="showBarcodeLog(\''+full.uuid+'\');"><span style="color:#e92810;">'+data+'</span></a>';
 						}else{
-							return data;
+							return '<a onclick="showBarcodeLog(\''+full.uuid+'\');">'+data+"</a>";
 						}
 					}
 				},
@@ -479,7 +479,7 @@
 				if(jsonResp!=null&&jsonResp.length>0){
 					for (i = 0; i < jsonResp.length; i++) {
 						var t_pre = jsonResp[i].enumdatakey;
-						var materialLength = parseInt(jsonResp[i].showorder);
+						var materialLength = parseInt(jsonResp[i].keyLength);
 						console.info(t_pre+"======"+t_sweepCode.indexOf(t_pre)+">>>"+(t_pre.length+materialLength));
 						if(t_sweepCode.indexOf(t_pre)==0){//以19,39...开头的
 							searchCode = t_sweepCode.substring(t_pre.length,t_pre.length+materialLength);//截取位数
@@ -524,7 +524,7 @@
 			if(jsonResp!=null&&jsonResp.length>0&&newBarcodeVal!=null){
 				for (i = 0; i < jsonResp.length; i++) {
 					var t_pre = jsonResp[i].enumdatakey;
-					var materialLength = parseInt(jsonResp[i].showorder);
+					var materialLength = parseInt(jsonResp[i].keyLength);
 					console.info(t_pre+"======"+newBarcodeVal.indexOf(t_pre)+">>>"+(t_pre.length+materialLength));
 					if(newBarcodeVal.indexOf(t_pre)==0){//以19,39...开头的
 						searchCode = newBarcodeVal.substring(t_pre.length,t_pre.length+materialLength);//截取位数
@@ -619,7 +619,32 @@
 				return false;
 			}
 			
-			$.ajax({
+			layer.confirm('确实要审核吗？', function() {
+				var listview = layer.load(2);
+				$.ajax({
+					"dataType" : "json",
+					"type" : "POST",
+					"url" : "${ctx}/info/projectinfo/batchApprove",
+					"data" : {"pks" : t_projectId},
+					"success" : function(data) {
+						if (data.success) {
+							layer.close(listview);
+							YYUI.succMsg("审核成功");
+							onQuery();
+						} else {
+							layer.close(listview);
+							YYUI.failMsg("审核失败，原因：" + data.msg);
+						}
+					},
+					"error" : function(XMLHttpRequest, textStatus, errorThrown) {
+						layer.close(listview);
+						YYUI.failMsg("审核失败，HTTP错误。");
+					}
+				});
+			});
+			
+			
+			/* $.ajax({
 				type : "POST",
 				data :{"pks": t_projectId},
 				url : "${ctx}/info/projectinfo/batchApprove",
@@ -636,7 +661,7 @@
 				error : function(data) {
 					YYUI.promMsg("操作失败，请联系管理员");
 				}
-			});
+			}); */
 		}
 		
 		function unApproveProject(){
@@ -688,6 +713,18 @@
 				shade : 0.8,
 				area : [ '500px', '250px;' ],
 				content : '${ctx}/info/projectinfoSub/toUpdateLimitCount?subId='+subId//iframe的url
+			});
+		}
+		
+		//查看条码记录
+		function showBarcodeLog(subId){
+			layer.open({
+				type : 2,
+				title : '条码记录',
+				shadeClose : false,
+				shade : 0.8,
+				area : [ '90%', '90%' ],
+				content : '${ctx}/info/barcode/toLog?subId='+subId
 			});
 		}
 	</script>

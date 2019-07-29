@@ -41,6 +41,8 @@ import com.king.frame.controller.ActionResultModel;
 import com.king.frame.dao.IBaseDAO;
 import com.king.frame.security.ShiroUser;
 import com.king.frame.service.BaseServiceImpl;
+import com.king.modules.info.barcode.ProjectBarcodeLogEntity;
+import com.king.modules.info.barcode.ProjectBarcodeLogService;
 import com.king.modules.info.material.MaterialBaseEntity;
 import com.king.modules.info.material.MaterialEntity;
 import com.king.modules.info.material.MaterialService;
@@ -67,7 +69,8 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 	private ImexlateSubService imexlateSubService;
 	@Autowired
 	private MaterialService materialService;
-
+	@Autowired
+	private ProjectBarcodeLogService projectBarcodeLogService;
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
@@ -237,6 +240,14 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 			sub.setBarcode(newBarcode);
 		}
 		sub.setBarcodejson(JSON.toJSONString(blist));
+		
+		//保存条码日志
+		ProjectBarcodeLogEntity barcodeLog = new ProjectBarcodeLogEntity();
+		barcodeLog.setProjectId(sub.getMain().getUuid());
+		barcodeLog.setProjectSubId(sub.getUuid());
+		barcodeLog.setBarcode(newBarcode);
+		projectBarcodeLogService.doAdd(barcodeLog);
+		
 		arm.setSuccess(true);
 		arm.setMsg("操作成功");
 		return arm;

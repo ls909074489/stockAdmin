@@ -34,6 +34,8 @@ public class EnumDataSubEntity extends BaseEntity {
 	@Column(length=50)
 	private String icon;	//显示图标
 	
+	private Integer keyLength=0;	//
+	
 	private Short showorder;	//显示顺序
 	
 	private Boolean isdefault = false;	//是否为默认值
@@ -101,9 +103,12 @@ public class EnumDataSubEntity extends BaseEntity {
 		this.enumdata = enumdata;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public Integer getKeyLength() {
+		return keyLength;
 	}
-	
+
+	public void setKeyLength(Integer keyLength) {
+		this.keyLength = keyLength;
+	}
 	
 }

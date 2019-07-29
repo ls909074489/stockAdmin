@@ -35,6 +35,8 @@ import com.king.modules.info.material.MaterialBaseEntity;
 import com.king.modules.info.receive.ProjectReceiveService;
 import com.king.modules.info.receive.ProjectReceiveVo;
 import com.king.modules.info.stockinfo.StockBaseEntity;
+import com.king.modules.sys.enumdata.EnumDataEntity;
+import com.king.modules.sys.enumdata.EnumDataService;
 import com.king.modules.sys.org.OrgEntity;
 import com.king.modules.sys.param.ParameterUtil;
 import com.king.modules.sys.user.UserEntity;
@@ -56,6 +58,9 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 	private ProjectSubService subService;
 	@Autowired
 	private ProjectReceiveService receiveService;
+	@Autowired
+	private EnumDataService enumDataService;
+	
 	/**
 	 * 
 	 * @Title: listView
@@ -253,6 +258,21 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 		}
 		return arm;
 	}
+	
+	
+	/**
+	 * 条码解析配置页面
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/toBarcodeConfig", method = RequestMethod.GET)
+	public String toBarcodeConfig(Model model, ServletRequest request) {
+		EnumDataEntity enumData = enumDataService.getByGroupcode("barCodeExtract");
+		model.addAttribute(ENTITY, enumData);
+		return "modules/info/barcode/projectinfo_barcode_config";
+	}
+	
 
 	private List<ProjectSubEntity> convertToEntities(String[] paramArr) {
 		List<ProjectSubEntity> returnList = new ArrayList<ProjectSubEntity>();

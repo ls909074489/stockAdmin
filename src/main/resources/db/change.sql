@@ -259,5 +259,21 @@ INSERT INTO `yy_enumdata_sub` (`uuid`, `status`, `description`, `enumdatakey`, `
 INSERT INTO `yy_enumdata_sub` (`uuid`, `status`, `description`, `enumdatakey`, `enumdataname`, `icon`, `isdefault`, `showorder`, `enumdataid`, `creator`, `modifier`, `create_time`, `modify_time`, `creatorname`, `modifiername`, `createtime`, `modifytime`, `ts`) VALUES ('a74cd9b7-16d3-432e-ac82-e99c5d105690', '1', NULL, '1', '已收货', NULL, '\0', '1', '60f3b220-bac7-4357-aa74-867295e71beb', '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, NULL, '超级系统管理员', NULL, '2019-07-24 12:23:51', NULL, '2019-07-24 12:23:51');
 
 ###2019/7/27
-UPDATE `stock_admin`.`yy_enumdata_sub` SET `uuid`='012a7d1c-155d-46c8-b710-4b26caa3018b', `status`='1', `description`=NULL, `enumdatakey`='02', `enumdataname`='出库单', `icon`=NULL, `isdefault`='\0', `showorder`='2', `enumdataid`='8aeb9098-d8bb-4474-bdfb-e31dc8f89f42', `creator`=NULL, `modifier`=NULL, `create_time`=NULL, `modify_time`=NULL, `creatorname`=NULL, `modifiername`=NULL, `createtime`=NULL, `modifytime`=NULL, `ts`='2019-07-27 22:44:57' WHERE (`uuid`='012a7d1c-155d-46c8-b710-4b26caa3018b');
-UPDATE `stock_admin`.`yy_enumdata_sub` SET `uuid`='30550487-7cdb-4ee8-bcc1-46cb0f311dab', `status`='1', `description`=NULL, `enumdatakey`='01', `enumdataname`='入库单', `icon`=NULL, `isdefault`='\0', `showorder`='1', `enumdataid`='8aeb9098-d8bb-4474-bdfb-e31dc8f89f42', `creator`=NULL, `modifier`=NULL, `create_time`=NULL, `modify_time`=NULL, `creatorname`=NULL, `modifiername`=NULL, `createtime`=NULL, `modifytime`=NULL, `ts`='2019-07-27 22:44:57' WHERE (`uuid`='30550487-7cdb-4ee8-bcc1-46cb0f311dab');
+UPDATE `yy_enumdata_sub` SET `uuid`='012a7d1c-155d-46c8-b710-4b26caa3018b', `status`='1', `description`=NULL, `enumdatakey`='02', `enumdataname`='出库单', `icon`=NULL, `isdefault`='\0', `showorder`='2', `enumdataid`='8aeb9098-d8bb-4474-bdfb-e31dc8f89f42', `creator`=NULL, `modifier`=NULL, `create_time`=NULL, `modify_time`=NULL, `creatorname`=NULL, `modifiername`=NULL, `createtime`=NULL, `modifytime`=NULL, `ts`='2019-07-27 22:44:57' WHERE (`uuid`='012a7d1c-155d-46c8-b710-4b26caa3018b');
+UPDATE `yy_enumdata_sub` SET `uuid`='30550487-7cdb-4ee8-bcc1-46cb0f311dab', `status`='1', `description`=NULL, `enumdatakey`='01', `enumdataname`='入库单', `icon`=NULL, `isdefault`='\0', `showorder`='1', `enumdataid`='8aeb9098-d8bb-4474-bdfb-e31dc8f89f42', `creator`=NULL, `modifier`=NULL, `create_time`=NULL, `modify_time`=NULL, `creatorname`=NULL, `modifiername`=NULL, `createtime`=NULL, `modifytime`=NULL, `ts`='2019-07-27 22:44:57' WHERE (`uuid`='30550487-7cdb-4ee8-bcc1-46cb0f311dab');
+
+
+
+###2019/7/29
+update yy_enumdata_sub set key_length=8 where enumdataid='b1796507-2099-4392-9ddc-2b9502244466'
+UPDATE `yy_enumdata_sub` SET `uuid`='043c8125-e59b-48f1-bb22-47ccd91fc489', `showorder`='1' WHERE (`uuid`='043c8125-e59b-48f1-bb22-47ccd91fc489');
+UPDATE `yy_enumdata_sub` SET `uuid`='18493d9f-e7ab-4645-b5f0-6580e8859cd2', `showorder`='2' WHERE (`uuid`='18493d9f-e7ab-4645-b5f0-6580e8859cd2');
+UPDATE `yy_enumdata_sub` SET `uuid`='1c880230-d93e-429d-b13d-4d2da8309df5', `showorder`='3' WHERE (`uuid`='1c880230-d93e-429d-b13d-4d2da8309df5');
+UPDATE `yy_enumdata_sub` SET `uuid`='2ec35203-88b4-4bc9-816a-93d849774de2', `showorder`='4' WHERE (`uuid`='2ec35203-88b4-4bc9-816a-93d849774de2');
+UPDATE `yy_enumdata_sub` SET `uuid`='332061ae-12f0-4fe0-b270-6a699ec434b3', `showorder`='5' WHERE (`uuid`='332061ae-12f0-4fe0-b270-6a699ec434b3');
+UPDATE `yy_enumdata_sub` SET `uuid`='4dc3b110-a6fc-4330-9a83-1f6e34834a96', `showorder`='6' WHERE (`uuid`='4dc3b110-a6fc-4330-9a83-1f6e34834a96');
+UPDATE `yy_enumdata_sub` SET `uuid`='c6a08bd0-2439-4b32-9e68-7566f2ce7171', `showorder`='7' WHERE (`uuid`='c6a08bd0-2439-4b32-9e68-7566f2ce7171');
+UPDATE `yy_enumdata_sub` SET `uuid`='d489fc80-743f-47d6-95b0-6e1b8045bca4', `showorder`='8' WHERE (`uuid`='d489fc80-743f-47d6-95b0-6e1b8045bca4');
+
+
+
