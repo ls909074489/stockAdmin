@@ -94,6 +94,7 @@ public class ProjectReceiveService extends BaseServiceImpl<ProjectReceiveEntity,
 			subEntity = subService.getOne(sub.getUuid());
 			subEntity.setActualAmount(sub.getActualAmount());
 			subEntity.setReceiveTime(sub.getReceiveTime());
+			subEntity.setWarningTime(sub.getWarningTime());
 			subEntity.setReceiveMemo(sub.getMemo());
 		}
 		arm.setSuccess(true);

@@ -41,7 +41,9 @@ import com.king.modules.sys.org.OrgEntity;
 import com.king.modules.sys.param.ParameterUtil;
 import com.king.modules.sys.user.UserEntity;
 
+import net.sf.ezmorph.object.DateMorpher;
 import net.sf.json.JSONObject;
+import net.sf.json.util.JSONUtils;
 
 /**
  * 项目
@@ -323,6 +325,9 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 					jsonObject.put(nameAndValue[0], nameAndValue[1]);
 				}
 			}
+			String[] dateFormats = new String[] {"yyyy/MM/dd"};
+			JSONUtils.getMorpherRegistry().registerMorpher(new DateMorpher(dateFormats));
+			
 			ProjectReceiveVo obj = (ProjectReceiveVo) JSONObject.toBean(jsonObject,
 					ProjectReceiveVo.class);
 			returnList.add(obj);

@@ -29,7 +29,7 @@ public class StreamBorrowService extends BaseServiceImpl<StreamBorrowEntity,Stri
 	
 
 	public List<StreamBorrowEntity> findBorrowByToProject(String projectToId) {
-		return dao.findBorrowByToProject(projectToId,StreamBorrowEntity.BILLSTATE_0);
+		return dao.findBorrowByToProject(projectToId,StreamBorrowEntity.BILLSTATE_NOT_RETURN);
 	}
 
 }

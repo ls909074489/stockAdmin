@@ -278,3 +278,11 @@ UPDATE `yy_enumdata_sub` SET `uuid`='d489fc80-743f-47d6-95b0-6e1b8045bca4', `sho
 INSERT INTO `yy_func` (`uuid`, `status`, `create_ts`, `creator`, `modifier`, `modify_ts`, `nodepath`, `auth_type`, `description`, `fun_css`, `func_code`, `func_name`, `func_type`, `func_url`, `help_code`, `hint`, `iconcls`, `islast`, `parentid`, `permission_code`, `showorder`, `sys`, `create_time`, `modify_time`, `createtime`, `creatorname`, `modifiername`, `modifytime`, `usestatus`, `ts`) VALUES ('6b1497b2-10e1-4616-bfcd-afc7b4755b72', '1', NULL, '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, 'root,79f79877-5599-4b52-9e3c-e22307630fb8,6b1497b2-10e1-4616-bfcd-afc7b4755b72', NULL, '', NULL, '1096', '条码解析规则', 'func', '@ctx@/info/projectinfo/toBarcodeConfig', NULL, NULL, '', '', '79f79877-5599-4b52-9e3c-e22307630fb8', NULL, NULL, '\0', NULL, NULL, '2019-07-29 20:53:26', '超级系统管理员', NULL, NULL, '1', '2019-07-29 20:53:26');
 
 
+###2019/7/30
+alter table yy_stock_stream modify bill_type varchar(2);
+update yy_stock_stream set bill_type='10' where bill_type=1;
+update yy_stock_stream set bill_type='20' where bill_type=2;
+update yy_stock_stream set bill_type='30' where bill_type=3;
+
+
+

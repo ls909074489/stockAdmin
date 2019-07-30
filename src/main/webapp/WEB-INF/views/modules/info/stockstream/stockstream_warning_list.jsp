@@ -28,10 +28,6 @@
 					<input type="text" autocomplete="on" name="search_LIKE_material.name"
 						id="search_LIKE_material.name" class="form-control input-sm">
 											
-					<label for="search_LIKE_sourceBillCode" class="control-label">源单号</label>
-					<input type="text" autocomplete="on" name="search_LIKE_sourceBillCode"
-						id="search_LIKE_sourceBillCode" class="form-control input-sm">
-					
 					<button id="yy-btn-search" type="button" class="btn btn-sm btn-info">
 						<i class="fa fa-search"></i>查询
 					</button>
@@ -39,6 +35,11 @@
 						<i class="fa fa-undo"></i> 清空
 					</button>	
 					<div style="height: 5px;"></div>	
+					
+					<label for="search_LIKE_sourceBillCode" class="control-label">源单号</label>
+					<input type="text" autocomplete="on" name="search_LIKE_sourceBillCode"
+						id="search_LIKE_sourceBillCode" class="form-control input-sm">
+						
 					<label for="search_LIKE_creatorname" class="control-label">操作人&nbsp;&nbsp;&nbsp;&nbsp;</label>	
 					<input type="text" autocomplete="on" name="search_LIKE_creatorname"
 						id="search_LIKE_creatorname" class="form-control input-sm">
@@ -68,6 +69,7 @@
 							<th style="width: 30px;">序号</th>
 							<th>仓库名称</th>
 							<th>物料编码</th>
+							<th>华为物料编码</th>
 							<th>物料名称</th>
 							<th>源单号</th>
 							<th>操作人</th>
@@ -109,6 +111,11 @@
 				className : "center",
 				orderable : false
 			},{
+				data : "material.hwcode",
+				width : "100",
+				className : "center",
+				orderable : false
+			},{
 				data : "material.name",
 				width : "100",
 				className : "center",
@@ -138,7 +145,7 @@
 				orderable : false
 			} */,{
 				data : "totalAmount",
-				width : "60",
+				width : "50",
 				className : "center",
 				orderable : false
 			},{
@@ -158,12 +165,12 @@
 				orderable : false
 			},{
 				data : "warningTime",
-				width : "60",
+				width : "100",
 				className : "center",
 				orderable : false
 			} ,{
 				data : "surplusAmount",
-				width : "100",
+				width : "50",
 				className : "center",
 				render : function(data, type, full) {
 				     if(data>0){

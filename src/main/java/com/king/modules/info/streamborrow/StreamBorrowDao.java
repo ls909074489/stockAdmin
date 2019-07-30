@@ -16,7 +16,7 @@ import org.springframework.stereotype.Repository;
 public interface StreamBorrowDao extends IBaseDAO<StreamBorrowEntity,String> {
 
 	
-	@Query("from StreamBorrowEntity where projectTo.uid=? and billState =? and status=1 order by createtime")
+	@Query("from StreamBorrowEntity where projectTo.uuid=? and billState =? and status=1 order by createtime")
 	List<StreamBorrowEntity> findBorrowByToProject(String projectToId,String billState);
 
 }

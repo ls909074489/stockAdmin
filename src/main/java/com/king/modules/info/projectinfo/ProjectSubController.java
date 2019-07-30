@@ -169,7 +169,7 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		}
 		List<StockStreamEntity> streamList = streamService.findSurplusBySourceIdIn(subList.get(0).getMain().getUuid());
 		Map<String,List<StockStreamEntity>> streamMap = changeToStreamMap(streamList);
-		for(ProjectSubEntity sub : subList){
+		for(ProjectSubEntity sub : resultList){
 			sub.setSurplusAmount(calcSurplusAmount(sub,streamMap.get(sub.getUuid())));
 		}
 		arm.setRecords(resultList);
