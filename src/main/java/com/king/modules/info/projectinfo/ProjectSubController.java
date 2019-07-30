@@ -31,6 +31,8 @@ import com.king.modules.info.approve.ApproveUserService;
 import com.king.modules.info.material.MaterialBaseEntity;
 import com.king.modules.info.receive.ProjectReceiveEntity;
 import com.king.modules.info.receive.ProjectReceiveService;
+import com.king.modules.info.stockstream.StockStreamEntity;
+import com.king.modules.info.stockstream.StockStreamService;
 import com.king.modules.sys.enumdata.EnumDataSubEntity;
 import com.king.modules.sys.enumdata.EnumDataUtils;
 
@@ -50,6 +52,8 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 	private ApproveUserService approveUserService;
 	@Autowired
 	private ProjectReceiveService receiveService;
+	@Autowired
+	private StockStreamService streamService;
 	
 	
 	@RequestMapping(value = "/query")
@@ -114,7 +118,7 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 	
 	@RequestMapping(value = "/dataDetail")
 	@ResponseBody
-	public ActionResultModel<ProjectSubEntity> dataWarning(ServletRequest request) {
+	public ActionResultModel<ProjectSubEntity> dataDetail(ServletRequest request) {
 		Map<String, Object> addParam = new HashMap<String, Object>();
 		addParam.put("EQ_stock.uuid", request.getParameter("stockId"));
 		addParam.put("EQ_material.uuid", request.getParameter("materialId"));
@@ -127,8 +131,10 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		List<ProjectSubEntity> resultList = new ArrayList<>();
 		List<String> subBarcodelist = null;
 		ProjectSubEntity desSub = null;
+		List<String> subIdList = new ArrayList<String>();
 		List<EnumDataSubEntity> enumList = EnumDataUtils.getEnumSubList("barCodeExtract");
 		for(ProjectSubEntity sub : subList){
+			subIdList.add(sub.getUuid());
 			if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
 				if(StringUtils.isNotEmpty(sub.getBarcodejson())){
 					subBarcodelist = JSON.parseArray(sub.getBarcodejson(), String.class);
@@ -161,9 +167,54 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 				resultList.add(sub);
 			}
 		}
+		List<StockStreamEntity> streamList = streamService.findSurplusBySourceIdIn(subList.get(0).getMain().getUuid());
+		Map<String,List<StockStreamEntity>> streamMap = changeToStreamMap(streamList);
+		for(ProjectSubEntity sub : subList){
+			sub.setSurplusAmount(calcSurplusAmount(sub,streamMap.get(sub.getUuid())));
+		}
 		arm.setRecords(resultList);
 		return arm;
 	}
+	
+	/**
+	 * 计算剩余 的流水
+	 * @param sub
+	 * @param list
+	 * @return
+	 */
+	private Long calcSurplusAmount(ProjectSubEntity sub, List<StockStreamEntity> list) {
+		if(CollectionUtils.isEmpty(list)){
+			return 0l;
+		}
+		Long suplusAmount = 0l;
+		for(StockStreamEntity stream : list){
+			suplusAmount += stream.getSurplusAmount();
+		}
+		return suplusAmount;
+	}
+
+	/**
+	 * 转成流水map
+	 * @param streamList
+	 * @return
+	 */
+	private Map<String, List<StockStreamEntity>> changeToStreamMap(List<StockStreamEntity> streamList) {
+		Map<String,List<StockStreamEntity>> map = new HashMap<String, List<StockStreamEntity>>();
+		if(CollectionUtils.isEmpty(streamList)){
+			return map;
+		}
+		List<StockStreamEntity> list = null;
+		for(StockStreamEntity s:streamList){
+			list = map.get(s.getProjectSubId());
+			if(list==null){
+				list = new ArrayList<StockStreamEntity>();
+			}
+			list.add(s);
+			map.put(s.getProjectSubId(), list);
+		}
+		return map;
+	}
+	
 	
 	private ProjectSubEntity checkStyle(ProjectSubEntity sub,List<EnumDataSubEntity> enumList){
 		if(StringUtils.isEmpty(sub.getBarcode())){

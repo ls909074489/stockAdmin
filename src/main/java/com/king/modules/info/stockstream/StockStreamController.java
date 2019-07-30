@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.servlet.ServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -76,7 +77,20 @@ public class StockStreamController extends BaseController<StockStreamEntity> {
 //		addParam.put("EQ_warningType", StockStreamEntity.WARNINGTYPE_BE_NEED);//要预警 
 		addParam.put("EQ_status", "1");
 		addParam.put("GT_surplusAmount", "0");
-		addParam.put("LTE_warningTime", DateUtil.getDateTime());//要预警 
+		
+		String search_GTE_createtime = request.getParameter("search_GTE_createtime");
+		if(StringUtils.isNotEmpty(search_GTE_createtime)){
+			addParam.put("LTE_createtime", search_GTE_createtime+" 59:59:59");//要预警 
+			addParam.put("GTE_createtime", search_GTE_createtime+" 00:00:00");//要预警 
+		}
+		
+		String search_LTE_warningTime = request.getParameter("search_LTE_warningTime");
+		if(StringUtils.isEmpty(search_LTE_warningTime)){
+			addParam.put("LTE_warningTime", DateUtil.getDate()+" 59:59:59");//要预警 
+		}else{
+			addParam.put("LTE_warningTime", search_LTE_warningTime+" 59:59:59");//要预警 
+			addParam.put("GTE_warningTime", search_LTE_warningTime+" 00:00:00");//要预警 
+		}
 		QueryRequest<StockStreamEntity> qr = getQueryRequest(request, addParam);
 		return execQuery(qr, baseService);
 	}
@@ -97,6 +111,11 @@ public class StockStreamController extends BaseController<StockStreamEntity> {
 	}
 	
 	
+	/**
+	 * 查询挪料的
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/dataStockMaterialIn")
 	@ResponseBody
 	public ActionResultModel<StockStreamEntity> dataStockMaterialIn(ServletRequest request) {
@@ -104,6 +123,7 @@ public class StockStreamController extends BaseController<StockStreamEntity> {
 		addParam.put("EQ_stock.uuid", request.getParameter("stockId"));
 		addParam.put("EQ_material.uuid", request.getParameter("materialId"));
 		addParam.put("EQ_operType", StockStreamEntity.IN_STOCK);//增加库存
+		addParam.put("EQ_billType", StockStreamEntity.BILLTYPE_RECEIVE);//收货的
 		addParam.put("GT_surplusAmount", "0");
 //		addParam.put("EQ_warningType", StockStreamEntity.WARNINGTYPE_BE_NEED);//要预警 
 //		addParam.put("LTE_warningTime", DateUtil.getDateTime());//要预警 

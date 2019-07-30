@@ -3,6 +3,7 @@
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags"%>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <c:set var="serviceurl" value="${ctx}/info/projectinfoSub"/>
+<c:set var="servicemainurl" value="${ctx}/info/projectinfo"/>
 <html>
 <head>
 <title>项目明细</title>
@@ -48,6 +49,12 @@
 					<i class="fa fa-search"></i> 匹配
 				</button>
 				
+				<button id="yy-btn-submit" class="btn yellow btn-sm btn-info">
+					<i class="fa fa-send"></i> 提交
+				</button>
+				<button id="yy-btn-unsubmit" class="btn yellow btn-sm btn-info">
+					<i class="fa fa-undo"></i> 撤销提交
+				</button>
 				
 				 <button id="yy-btn-approve-project" class="btn yellow btn-sm btn-info" type="button">
 					<i class="fa fa-check"></i> 审核
@@ -102,8 +109,8 @@
 								 data-enum-group="BoxNum"></select>	 -->
 					<input type="text" autocomplete="on" name="search_EQ_boxNum" id="search_EQ_boxNum" class="form-control input-sm">
 								 
-					<label for="search_LIKE_materialCode" class="control-label">物料编码</label>
-					<input type="text" autocomplete="on" name="search_LIKE_material.code" id="search_LIKE_materialCode" class="form-control input-sm">
+					<!-- <label for="search_LIKE_materialCode" class="control-label">物料编码</label>
+					<input type="text" autocomplete="on" name="search_LIKE_material.code" id="search_LIKE_materialCode" class="form-control input-sm"> -->
 					
 					<label for="search_LIKE_materialHwCode" class="control-label">华为物料编码</label>
 					<input type="text" autocomplete="on" name="search_LIKE_material.hwcode" id="search_LIKE_materialHwCode" class="form-control input-sm">
@@ -111,8 +118,8 @@
 					<label for="search_LIKE_material.name" class="control-label">物料名称</label>
 					<input type="text" autocomplete="on" name="search_LIKE_material.name" id="search_LIKE_material.name" class="form-control input-sm">			 
 							
-					<!-- <label for="search_LIKE_barcode" class="control-label">条码&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-					<input type="text" autocomplete="on" name="search_LIKE_barcode" id="search_LIKE_barcode" class="form-control input-sm">	   -->
+					<label for="search_LIKE_barcode" class="control-label">条码&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+					<input type="text" autocomplete="on" name="search_LIKE_barcode" id="search_LIKE_barcode" class="form-control input-sm">
 
 					<button id="yy-btn-search" type="button" class="btn btn-sm btn-info">
 						<i class="fa fa-search"></i>查询
@@ -141,6 +148,8 @@
 							<th>华为物料编码</th>
 							<th>物料名称</th>
 							<th>计划数量</th>	
+							<th>到货数量</th>	
+							<th>剩余数量</th>	
 							<!-- <th>备注</th> -->
 						</tr>
 					</thead>
@@ -315,6 +324,16 @@
 				orderable : false
 			}, {
 				data : 'planAmount',
+				width : "30",
+				className : "center",
+				orderable : false
+			}, {
+				data : 'actualAmount',
+				width : "30",
+				className : "center",
+				orderable : false
+			}, {
+				data : 'surplusAmount',
 				width : "30",
 				className : "center",
 				orderable : false
@@ -695,6 +714,40 @@
 					YYUI.promMsg("操作失败，请联系管理员");
 				}
 			});
+		}
+		
+		//提交
+		function onSubmit() {
+			var pks = $("#search_LIKE_mainId").val();
+			if(pks==null||pks==''){
+				YYUI.promMsg("请选择项目");
+				return false;
+			}
+			
+			if (doBeforeSubmit(pks)) {
+				submitRecord('${servicemainurl}/batchSubmit', pks, onRefresh);
+			}
+		}
+		
+		//提交前检查
+		function checkSubmit(pks) {
+			return true;
+		}
+		
+		//撤销提交
+		function onUnSubmit() {
+			var pks = $("#search_LIKE_mainId").val();
+			if(pks==null||pks==''){
+				YYUI.promMsg("请选择项目");
+				return false;
+			}
+			if (doBeforeUnSubmit(pks)) {
+				unSubmitRecord('${servicemainurl}/batchUnSubmit', pks, onRefresh);
+			}
+		}
+		//撤销提交前检查
+		function checkUnSubmit(pks) {
+			return true;
 		}
 		
 		//查看物料明细

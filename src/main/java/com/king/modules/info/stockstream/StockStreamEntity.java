@@ -42,9 +42,10 @@ public class StockStreamEntity extends BaseEntity {
 	public static String WARNINGTYPE_BE_NEED="1";
 	public static String WARNINGTYPE_HAS_USE="2";
 	
-	public static String BILLTYPE_ORDER="1";
-	public static String BILLTYPE_RECEIVE="2";
-	public static String BILLTYPE_PROJECT="3";
+	public static String BILLTYPE_ORDER="10";
+	public static String BILLTYPE_RECEIVE="20";
+	public static String BILLTYPE_PROJECT="30";
+	public static String BILLTYPE_BORROW="40";
 	
 	@MetaData(value = "仓库")
 	@ManyToOne(cascade=CascadeType.REFRESH,optional = true)
@@ -102,8 +103,8 @@ public class StockStreamEntity extends BaseEntity {
 	@Column(length = 1)
 	private String operType;
 	
-	@MetaData(value = "操作类型1：订单  1：收货")
-	@Column(length = 1)
+	@MetaData(value = "单据类型 StockStreamEntity.BILLTYPE_XXX")
+	@Column(length = 2)
 	private String billType;
 	
 	@MetaData(value = "计划数量")

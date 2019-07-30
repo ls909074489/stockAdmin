@@ -59,13 +59,13 @@ public class BeanUtils {
 	
 	public static void main(String[] args) throws Exception{
 		MappingTableEntity info=new MappingTableEntity();
-		info.setEntityName("StockStreamEntity");
+		info.setEntityName("StreamBorrowEntity");
 		info.setExtendsEntity("BaseEntity");
-		info.setPackageName("com.king.modules.info.stockstream");
-		info.setEntityChinese("测试111");
+		info.setPackageName("com.king.modules.info.streamborrow");
+		info.setEntityChinese("挪料");
 		info.setAuthor("ls2008");
-		info.setControllerPath("/info/stockstream");
-		info.setJspPath("modules/info/stockstream");//jsp路径
+		info.setControllerPath("/info/streamborrow");
+		info.setJspPath("modules/info/streamborrow");//jsp路径
 		info.setTemplateType(MappingTableEntity.GENTYPE_SERVERPAGE);
 		
 //		ffff
@@ -73,57 +73,15 @@ public class BeanUtils {
 		//生成实体==================================================================================
 		List<MappingTableSubEntity> list=new ArrayList<MappingTableSubEntity>();
 		MappingTableSubEntity col=new MappingTableSubEntity();
-		col.setColName("sourceId");
-		col.setColType("String");
-		col.setColLength(50);
-		col.setColDesc("源id");
-		col.setRequired(true);
-		col.setEleType(MappingTableSubEntity.EleType.TEXT);
-		list.add(col);
 		col=new MappingTableSubEntity();
-		col.setColName("sourceBillCode");
-		col.setColType("String");
-		col.setColLength(50);
-		col.setColDesc("源单号");
-		col.setRequired(true);
-		col.setEleType(MappingTableSubEntity.EleType.TEXT);
-		list.add(col);
-		
-		col=new MappingTableSubEntity();
-		col.setColName("totalAmount");
+		col.setColName("actualAmount");
 		col.setColType("Long");
 		col.setColLength(50);
-		col.setColDesc("总数量");
+		col.setColDesc("数量");
 		col.setRequired(true);
 		col.setEleType(MappingTableSubEntity.EleType.TEXT);
 		list.add(col);
 		
-		col=new MappingTableSubEntity();
-		col.setColName("occupyAmount");
-		col.setColType("Long");
-		col.setColLength(50);
-		col.setColDesc("预占数量");
-		col.setRequired(true);
-		col.setEleType(MappingTableSubEntity.EleType.TEXT);
-		list.add(col);
-		
-		col=new MappingTableSubEntity();
-		col.setColName("surplusAmount");
-		col.setColType("Long");
-		col.setColLength(50);
-		col.setColDesc("剩余数量");
-		col.setRequired(true);
-		col.setEleType(MappingTableSubEntity.EleType.TEXT);
-		list.add(col);
-		
-		col=new MappingTableSubEntity();
-		col.setColName("operType");
-		col.setColType("String");
-		col.setColLength(1);
-		col.setColDesc("操作类型0：增加库存  1：减少库存");
-		col.setRequired(true);
-		col.setEleType(MappingTableSubEntity.EleType.TEXT);
-		list.add(col);
 		
 		//子表=======================
 //		col=new MappingTableSubEntity();

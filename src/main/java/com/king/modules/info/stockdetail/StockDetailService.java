@@ -17,14 +17,18 @@ import com.king.frame.service.BaseServiceImpl;
 import com.king.modules.info.material.MaterialBaseEntity;
 import com.king.modules.info.orderinfo.OrderInfoEntity;
 import com.king.modules.info.orderinfo.OrderSubEntity;
+import com.king.modules.info.projectinfo.ProjectInfoBaseEntity;
 import com.king.modules.info.projectinfo.ProjectInfoEntity;
 import com.king.modules.info.projectinfo.ProjectSubEntity;
+import com.king.modules.info.projectinfo.ProjectSubService;
 import com.king.modules.info.receive.ProjectReceiveEntity;
 import com.king.modules.info.stockinfo.StockBaseEntity;
 import com.king.modules.info.stockstream.StockStreamEntity;
 import com.king.modules.info.stockstream.StockStreamService;
 import com.king.modules.info.streamLog.StreamLogEntity;
 import com.king.modules.info.streamLog.StreamLogService;
+import com.king.modules.info.streamborrow.StreamBorrowEntity;
+import com.king.modules.info.streamborrow.StreamBorrowService;
 
 /**
  * 库存明细
@@ -44,6 +48,10 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 	private StockStreamService stockStreamService;
 	@Autowired
 	private StreamLogService streamLogService;
+	@Autowired
+	private StreamBorrowService borrowService;
+	@Autowired
+	private ProjectSubService projectSubService;
 	
 	protected IBaseDAO<StockDetailEntity, String> getDAO() {
 		return dao;
@@ -214,10 +222,71 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			stream.setActualAmount(0l);
 			stream.setOperType(StockStreamEntity.IN_STOCK);
 			stockStreamService.doAdd(stream);//添加库存流水
+			
+			
+			if(projectInfo.getReceiveType().equals(ProjectInfoEntity.receiveType_yes)){//已收货
+				changeHasBorrw(projectInfo.getUuid(),sub);
+			}
 		}
 	}
 	
 	
+	private boolean changeHasBorrw(String projectId,ProjectReceiveEntity sub) {
+		List<StreamBorrowEntity> borrowList =  borrowService.findBorrowByToProject(projectId);
+		if(CollectionUtils.isEmpty(borrowList)){
+			return false;
+		}
+		Long receiveAmount = sub.getReceiveAmount();
+		Long actualAmount = 0l;
+		for(StreamBorrowEntity borrow:borrowList){
+			if(borrow.getToSubId().equals(sub.getSub().getUuid())){
+				if(receiveAmount<=borrow.getOweAmount()){
+					borrow.setOweAmount(borrow.getOweAmount()-receiveAmount);
+					borrow.setBillState(StreamBorrowEntity.BILLSTATE_NOT_RETURN);
+					actualAmount = receiveAmount;
+					break;
+				}else{
+					actualAmount = borrow.getOweAmount();
+					receiveAmount = receiveAmount - borrow.getOweAmount();
+					borrow.setOweAmount(0l);
+					borrow.setBillState(StreamBorrowEntity.BILLSTATE_HAS_RETURN);
+				}
+				//生成借还的出入库
+				ProjectSubEntity fromSub = projectSubService.getOne(borrow.getFromSubId());
+				StockStreamEntity streamIn = new StockStreamEntity();
+				streamIn.setBillType(StockStreamEntity.BILLTYPE_BORROW);
+				streamIn.setSourceId(fromSub.getMain().getUuid());
+				streamIn.setSourceBillCode(fromSub.getMain().getCode());
+				streamIn.setSourceSubId(fromSub.getUuid());
+				streamIn.setProjectSubId(fromSub.getUuid());
+				streamIn.setStock(fromSub.getMain().getStock());
+				streamIn.setMaterial(fromSub.getMaterial());
+				streamIn.setTotalAmount(actualAmount);
+				streamIn.setSurplusAmount(actualAmount);
+				streamIn.setOccupyAmount(actualAmount);
+				streamIn.setActualAmount(0l);
+				streamIn.setOperType(StockStreamEntity.IN_STOCK);
+				stockStreamService.doAdd(streamIn);//添加库存流水
+				
+				ProjectSubEntity toSub = projectSubService.getOne(borrow.getToSubId());
+				StockStreamEntity streamOut = new StockStreamEntity();
+				streamOut.setBillType(StockStreamEntity.BILLTYPE_BORROW);
+				streamOut.setSourceId(toSub.getMain().getUuid());
+				streamOut.setSourceBillCode(toSub.getMain().getCode());
+				streamOut.setSourceSubId(toSub.getUuid());
+				streamOut.setProjectSubId(toSub.getUuid());
+				streamOut.setStock(toSub.getMain().getStock());
+				streamOut.setMaterial(toSub.getMaterial());
+				streamOut.setTotalAmount(actualAmount*-1);
+				streamOut.setSurplusAmount(actualAmount*-1);
+				streamOut.setOccupyAmount(actualAmount*-1);
+				streamOut.setActualAmount(0l);
+				streamOut.setOperType(StockStreamEntity.OUT_STOCK);
+				stockStreamService.doAdd(streamOut);//添加库存流水
+			}
+		}
+		return true;
+	}
 
 	@Transactional
 	public void descStockDetail(ProjectInfoEntity projectInfo,List<ProjectSubEntity> subList){
@@ -472,6 +541,72 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 				}
 			}
 			stockStreamService.delBySourceIdAndOperType(entity.getUuid(),StockStreamEntity.OUT_STOCK);
+		}
+	}
+	
+	@Transactional
+	private void borrowProjectMaterial(String fromStreamId,String toSubId,Long actualAmount){
+		actualAmount = Math.abs(actualAmount);
+		StockStreamEntity fromStream = stockStreamService.getOne(fromStreamId);
+		if(fromStream!=null&&fromStream.getSurplusAmount()>actualAmount){
+			//更新源流水
+			fromStream.setSurplusAmount(fromStream.getSurplusAmount()-actualAmount);
+			fromStream.setOccupyAmount(fromStream.getOccupyAmount()-actualAmount);
+			fromStream.setActualAmount(fromStream.getSurplusAmount()-fromStream.getOccupyAmount());
+			//添加源出库记录
+			StockStreamEntity streamOut = new StockStreamEntity();
+			streamOut.setBillType(StockStreamEntity.BILLTYPE_BORROW);
+			streamOut.setSourceId(fromStream.getSourceId());
+			streamOut.setSourceBillCode(fromStream.getSourceBillCode());
+			streamOut.setSourceSubId(fromStream.getSourceSubId());
+			streamOut.setProjectSubId(fromStream.getProjectSubId());
+			streamOut.setStock(fromStream.getStock());
+			streamOut.setMaterial(fromStream.getMaterial());
+			streamOut.setTotalAmount(actualAmount*-1);
+			streamOut.setSurplusAmount(actualAmount*-1);
+			streamOut.setOccupyAmount(actualAmount*-1);
+			streamOut.setActualAmount(0l);
+			streamOut.setOperType(StockStreamEntity.OUT_STOCK);
+			stockStreamService.doAdd(streamOut);//添加库存流水
+			
+			//添加入库记录
+			ProjectSubEntity toSub = projectSubService.getOne(toSubId);
+			StockStreamEntity streamIn = new StockStreamEntity();
+			streamIn.setBillType(StockStreamEntity.BILLTYPE_BORROW);
+			streamIn.setSourceId(toSub.getMain().getUuid());
+			streamIn.setSourceBillCode(toSub.getMain().getCode());
+			streamIn.setSourceSubId(toSub.getUuid());
+			streamIn.setProjectSubId(toSub.getUuid());
+			streamIn.setStock(fromStream.getStock());
+			streamIn.setMaterial(fromStream.getMaterial());
+			streamIn.setTotalAmount(actualAmount);
+			streamIn.setSurplusAmount(actualAmount);
+			streamIn.setOccupyAmount(actualAmount);
+			streamIn.setActualAmount(0l);
+			streamIn.setOperType(StockStreamEntity.IN_STOCK);
+			stockStreamService.doAdd(streamIn);//添加库存流水
+			
+			//添加借记录
+			StreamBorrowEntity log = new StreamBorrowEntity();
+			log.setMaterial(fromStream.getMaterial());
+			
+			ProjectInfoBaseEntity projectFrom = new ProjectInfoBaseEntity();
+			projectFrom.setUuid(streamOut.getSourceId());
+			log.setProjectFrom(projectFrom);
+			
+			ProjectInfoBaseEntity projectTo = new ProjectInfoBaseEntity();
+			projectTo.setUuid(streamIn.getSourceId());
+			log.setProjectTo(projectTo);
+			
+			log.setFromSubId(fromStream.getProjectSubId());
+			log.setToSubId(streamIn.getUuid());
+			log.setActualAmount(actualAmount);
+			log.setOweAmount(actualAmount);
+			log.setBillState(StreamBorrowEntity.BILLSTATE_NOT_RETURN);
+			
+			borrowService.doAdd(log);
+		}else{
+			throw new ServiceException("流水不足，不能挪料"); 
 		}
 	}
 
