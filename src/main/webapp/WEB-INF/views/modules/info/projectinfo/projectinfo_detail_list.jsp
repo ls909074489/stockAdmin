@@ -8,7 +8,7 @@
 <head>
 <title>项目明细</title>
 <style type="text/css">
-#yy-table-list{
+/* #yy-table-list{
 	width: 100% !important;
 }
 //如果遇到设有横向滚动条时，就固定设置Table宽度
@@ -16,7 +16,12 @@
 #yy-table-listxxxxx{
 	width: ***px !important;
 }
-
+th,td{
+     white-space:nowrap;
+ }
+.dataTables_scrollHead { 
+        		height: 39px;
+ } */
 </style>
 </head>
 <body>
@@ -52,7 +57,7 @@
 					<i class="fa fa-save"></i> 暂存收货
 				</button>
 				<button id="yy-btn-confrim-receive" class="btn blue btn-sm">
-					<i class="fa fa-save"></i> 确认收货
+					<i class="fa fa-check"></i> 确认收货
 				</button>
 				<button id="yy-btn-submit" class="btn yellow btn-sm btn-info">
 					<i class="fa fa-send"></i> 提交
@@ -109,10 +114,10 @@
 						</c:otherwise>
 					</c:choose>
 												
-					<label for="search_EQ_boxNum" class="control-label">箱号&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+					<label for="search_EQ_boxNum" class="control-label">箱号</label>
 					<!-- <select class="yy-input-enumdata form-control" id="search_EQ_boxNum" name="search_EQ_boxNum"
 								 data-enum-group="BoxNum"></select>	 -->
-					<input type="text" autocomplete="on" name="search_EQ_boxNum" id="search_EQ_boxNum" class="form-control input-sm">
+					<input type="text" autocomplete="on" name="search_EQ_boxNum" id="search_EQ_boxNum" style="width:120px;" class="form-control input-sm">
 								 
 					<!-- <label for="search_LIKE_materialCode" class="control-label">物料编码</label>
 					<input type="text" autocomplete="on" name="search_LIKE_material.code" id="search_LIKE_materialCode" class="form-control input-sm"> -->
@@ -137,9 +142,9 @@
 			<div class="row">
 				<form id="yy-form-edit" class="form-horizontal yy-form-edit">
 					<!-- 提交收货form -->
-					<input name="uuid" id="projectInfoId" type="text" value=""/>
+					<input name="uuid" id="projectInfoId" type="hidden" value=""/>
 				</form>
-				<table id="yy-table-list" class="yy-table">
+				<table id="yy-table-list" class="yy-table-x">
 					<thead>
 						<tr>
 							<th style="width: 30px;">序号</th>
@@ -150,6 +155,7 @@
 							<th>新条码</th>
 							<th>条码</th>
 							<th>单据状态</th>
+							<th>收货状态</th>
 							<th>项目号</th>
 							<!-- <th>项目名称</th> -->
 							<th>箱号</th>
@@ -200,13 +206,14 @@
 					if(full.main.billstatus==5){//“已审核”项变为深灰色底色
 						btnAble ='disabled="disabled" title="已审核不能操作" ';
 					}
+					var uuidInput = '<input type="hidden" name="uuid" value="'+data+'">';
 					if(full.barcode!=null&&full.barcode!=''){
-						return "<div class='yy-btn-actiongroup'>"
+						return uuidInput+"<div class='yy-btn-actiongroup'>"
 						+ "<button  onclick='changeToSave(this);' "+btnAble+" rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info' data-rel='tooltip' title='修改'><i class='fa yy-btn-save'></i>修改</button>"
 						+ "<button  onclick='saveNewBarcode(this);' "+btnAble+"  style='display: none;' rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info saveBcBtn' data-rel='tooltip' title='保存'><i class='fa yy-btn-save'></i>保存</button>"
 						+ "</div>";
 					}else{
-						return "<div class='yy-btn-actiongroup'>"
+						return uuidInput+"<div class='yy-btn-actiongroup'>"
 						+ "<button  onclick='saveNewBarcode(this);' "+btnAble+" rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info saveBcBtn' data-rel='tooltip' title='保存'><i class='fa yy-btn-save'></i>保存</button>"
 						+ "</div>";
 					}
@@ -214,7 +221,7 @@
 				width : "30"
 			}, {
 				data : 'newBarcode',
-				width : "80",
+				width : "200",
 				className : "center",
 				orderable : true,
 				render : function(data, type, full) {
@@ -254,7 +261,7 @@
 				orderable : false
 			},{
 				data : "main.billstatus",
-				width : "50",
+				width : "70",
 				className : "center",
 				render : function(data, type, full) {
 					var billStatusStyle="";
@@ -270,6 +277,14 @@
 					}
 				},
 				orderable : false
+			},{
+				data : "main.receiveType",
+				width : "60",
+				className : "center",
+				render : function(data, type, full) {
+					return YYDataUtils.getEnumName("ReceiveStatus", data);
+				},
+				orderable : true
 			},{
 				data : "main.code",
 				width : "80",
@@ -308,7 +323,7 @@
 				}
 			},{
 				data : "limitCount",
-				width : "60",
+				width : "80",
 				className : "center",
 				render : function(data, type, full) {
 					if(full.main.billstatus==5){//“已审核”项变为深灰色底色
@@ -370,7 +385,7 @@
 				}
 			}, {
 				data : 'receiveTime',
-				width : "80",
+				width : "110",
 				className : "center",
 				orderable : false,
 				render : function(data, type, full) {
@@ -385,7 +400,7 @@
 				}
 			}, {
 				data : 'warningTime',
-				width : "80",
+				width : "110",
 				className : "center",
 				orderable : false,
 				render : function(data, type, full) {
@@ -415,7 +430,7 @@
 				}
 			},{
 				data : "uuid",
-				width : "100",
+				width : "160",
 				className : "center",
 				render : function(data, type, full) {
 					if(full.firstRow=="1"){
@@ -459,12 +474,10 @@
 			$("#yy-btn-approve-project").bind('click', approveProject);//
 			$("#yy-btn-unapprove-project").bind('click', unApproveProject);//
 			$("#yy-btn-temp-receive").bind("click", function() {
-				tempReceive(isClose);
+				tempReceive();
 			});
 			$("#yy-btn-confrim-receive").bind("click", function() {
-				layer.confirm("确认收货将生成入库单，确定要保存吗", function() {
-					confirmReceive(isClose);
-				});
+				confirmReceive();
 			});
 			
 			
@@ -525,10 +538,6 @@
 			return false;
 		}
 		
-		function doBeforeQuery() {
-			$("#projectInfoId").val($("#search_LIKE_mainId").val());
-			return true;
-		}
 		//服务器分页
 		function serverPage(url) {
 			var serverPageWaitLoad=layer.load(2);//加载等待ceng edit by liusheng		
@@ -541,6 +550,7 @@
 				"createdRow" : YYDataTableUtils.setActions,
 				"order" : _setOrder,
 				"scrollX" : true,
+				//"autoWidth":true,
 				"processing" : false,
 				"searching" : false,
 				"serverSide" : true,
@@ -640,6 +650,8 @@
 		
 		function doBeforeQuery() {
 			_ismatchSearch=false;
+			console.info($("#search_LIKE_mainId").val()+">>>>>>>>>>>.");
+			$("#projectInfoId").val($("#search_LIKE_mainId").val());
 			return true;
 		}
 		
@@ -845,7 +857,7 @@
 		}
 		
 		//主子表保存
-		function confirmReceive(isClose) {
+		function confirmReceive() {
 			var t_projectId = $("#search_LIKE_mainId").val();
 			console.info(">>>>>>>>>>>>"+t_projectId);
 			if(t_projectId==null||t_projectId==''){
@@ -860,44 +872,40 @@
 			if(!subValidate){
 				return false;
 			}
-			//保存新增的子表记录 
-	        var _subTable = $("#yy-table-list").dataTable();
-	        var subList = new Array();
-	        var rows = _subTable.fnGetNodes();
-	        for(var i = 0; i < rows.length; i++){
-	            subList.push(getRowData(rows[i]));
-	        }
-	        if(subList.length==0){
-	        	YYUI.promAlert("请添加明细");
-	        	return false;
-	        }
-			
-			var saveWaitLoad=layer.load(2);
-			var opt = {
-				url : "${servicemainurl}/confirmReceive",
-				type : "post",
-				data : {"subList" : subList,"deletePKs" : _deletePKs},
-				success : function(data) {
-					layer.close(saveWaitLoad);
-					if (data.success == true) {
-						_deletePKs = new Array();
-						if (isClose) {
-							window.parent.YYUI.succMsg('保存成功!');
-							window.parent.onRefresh(true);
-							closeEditView();
-						} else {
+			layer.confirm("确认收货将生成入库单，确定要保存吗", function() {
+				//保存新增的子表记录 
+		        var _subTable = $("#yy-table-list").dataTable();
+		        var subList = new Array();
+		        var rows = _subTable.fnGetNodes();
+		        for(var i = 0; i < rows.length; i++){
+		            subList.push(getRowData(rows[i]));
+		        }
+		        if(subList.length==0){
+		        	YYUI.promAlert("请添加明细");
+		        	return false;
+		        }
+				
+				var saveWaitLoad=layer.load(2);
+				var opt = {
+					url : "${servicemainurl}/confirmReceive",
+					type : "post",
+					data : {"subList" : subList},
+					success : function(data) {
+						layer.close(saveWaitLoad);
+						if (data.success == true) {
 							YYUI.succMsg('保存成功!');
+							onQuery();
+						} else {
+							YYUI.promAlert("保存失败：" + data.msg);
 						}
-					} else {
-						YYUI.promAlert("保存失败：" + data.msg);
 					}
 				}
-			}
-			$("#yy-form-edit").ajaxSubmit(opt);
+				$("#yy-form-edit").ajaxSubmit(opt);
+			});
 		}
 		
 		
-		function tempReceive(isClose) {
+		function tempReceive() {
 			var t_projectId = $("#search_LIKE_mainId").val();
 			console.info(">>>>>>>>>>>>"+t_projectId);
 			if(t_projectId==null||t_projectId==''){
@@ -928,18 +936,12 @@
 			var opt = { 
 				url : "${servicemainurl}/tempReceive",
 				type : "post",
-				data : {"subList" : subList,"deletePKs" : _deletePKs},
+				data : {"subList" : subList},
 				success : function(data) {
 					layer.close(saveWaitLoad);
 					if (data.success == true) {
-						_deletePKs = new Array();
-						if (isClose) {
-							window.parent.YYUI.succMsg('保存成功!');
-							window.parent.onRefresh(true);
-							closeEditView();
-						} else {
-							YYUI.succMsg('保存成功!');
-						}
+						YYUI.succMsg('保存成功!');
+						onQuery();
 					} else {
 						YYUI.promAlert("保存失败：" + data.msg);
 					}
@@ -1089,6 +1091,10 @@
 				area : [ '90%', '90%' ],
 				content : '${ctx}/info/stockstream/toStockMaterialIn?subId='+subId
 			});
+		}
+		
+		function onRefreshSub(){
+			onQuery();
 		}
 	</script>
 </body>

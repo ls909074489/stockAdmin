@@ -53,6 +53,7 @@
 							<th>预占数量</th>
 							<th>可用数量</th>
 							<th>预警时间</th>
+							<th>备注</th>
 							<!-- <th>预警状态</th> -->
 						</tr>
 					</thead>
@@ -118,6 +119,11 @@
 			},{
 				data : "warningTime",
 				width : "60",
+				className : "center",
+				orderable : false
+			},{
+				data : "memo",
+				width : "100",
 				className : "center",
 				orderable : false
 			}/* ,{

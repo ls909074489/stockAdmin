@@ -19,6 +19,7 @@
 					
 					<input name="stockId" id="stockId" type="hidden" value="${stockId}"/>
 					<input name="materialId" id="materialId" type="hidden" value="${materialId}"/>
+					<input name="projectId" id="projectId" type="hidden" value="${projectId}"/>
 					
 					<label for="search_LIKE_sourceBillCode" class="control-label">源单号</label>
 					<input type="text" autocomplete="on" name="search_LIKE_sourceBillCode"

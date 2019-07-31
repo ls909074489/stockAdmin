@@ -47,7 +47,7 @@ public class StockStreamService extends BaseServiceImpl<StockStreamEntity,String
 	}
 	
 	public List<StockStreamEntity> findSurplusAllBySourceIdsIn(List<String> sourceIdList) {
-		return dao.findSurplusAllBySourceIdsIn(sourceIdList);
+		return dao.findSurplusAllBySourceIdsIn(sourceIdList,StockStreamEntity.IN_STOCK);
 	}
 	
 	/**

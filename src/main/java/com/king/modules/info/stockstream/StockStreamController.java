@@ -134,6 +134,7 @@ public class StockStreamController extends BaseController<StockStreamEntity> {
 		model.addAttribute("stockId", sub.getMain().getStock().getUuid());
 		model.addAttribute("materialId", sub.getMaterial().getUuid());
 		model.addAttribute("subId", subId);
+		model.addAttribute("projectId", sub.getMain().getUuid());
 		return "modules/info/stockstream/stockstream_stock_material_in";
 	}
 	
@@ -151,6 +152,7 @@ public class StockStreamController extends BaseController<StockStreamEntity> {
 		addParam.put("EQ_material.uuid", request.getParameter("materialId"));
 		addParam.put("EQ_operType", StockStreamEntity.IN_STOCK);//增加库存
 		addParam.put("EQ_billType", StockStreamEntity.BILLTYPE_RECEIVE);//收货的
+		addParam.put("NE_sourceId", request.getParameter("projectId")); 
 		addParam.put("GT_surplusAmount", "0");
 //		addParam.put("EQ_warningType", StockStreamEntity.WARNINGTYPE_BE_NEED);//要预警 
 //		addParam.put("LTE_warningTime", DateUtil.getDateTime());//要预警 

@@ -555,7 +555,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 	public void borrowProjectMaterial(String fromStreamId,String toSubId,Long actualAmount){
 		actualAmount = Math.abs(actualAmount);
 		StockStreamEntity fromStream = stockStreamService.getOne(fromStreamId);
-		if(fromStream!=null&&fromStream.getSurplusAmount()>actualAmount){
+		if(fromStream!=null&&fromStream.getSurplusAmount()>=actualAmount){
 			//更新源流水
 			fromStream.setSurplusAmount(fromStream.getSurplusAmount()-actualAmount);
 			fromStream.setOccupyAmount(fromStream.getOccupyAmount()-actualAmount);

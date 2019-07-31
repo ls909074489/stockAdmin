@@ -1,3 +1,10 @@
+delete from yy_stock_detail;
+delete from yy_stock_stream;
+delete from yy_project_receive;
+delete from yy_stream_log;
+delete from yy_stream_borrow;
+update yy_project_info set billstatus=1,receive_type=0;
+update yy_project_sub set actual_amount=plan_amount;
 
 
 alter table yy_device drop index barcode;  
