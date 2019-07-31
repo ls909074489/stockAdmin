@@ -190,9 +190,9 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 						e.printStackTrace();
 					}
 					if(i==0){
-						sub.setFirstRow("1");
+						desSub.setFirstRow("1");
 					}else{
-						sub.setFirstRow("0");
+						desSub.setFirstRow("0");
 					}
 					desSub.setNewUuid(i+"_"+sub.getUuid());
 					if(i<subBarcodelist.size()){

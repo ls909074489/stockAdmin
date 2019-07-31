@@ -436,13 +436,13 @@ th,td{
 					if(full.firstRow=="1"){
 						var btnAble ='';
 						if(full.main.billstatus==5){//“已审核”项变为深灰色底色
-							btnAble ='disabled="disabled" title="已审核不能操作" ';
+							//btnAble ='disabled="disabled" title="已审核不能操作" ';
 						}
 						var appendReceiveStr = "";
 						if(full.main.receiveType=="1"){
-							appendReceiveStr = '<button class="btn btn-xs btn-info" '+btnAble+' onclick="appendLog(\''+data+'\');" data-rel="tooltip" title="添加收货记录"><i class="fa fa-edit"></i>添加收货记录</button>';
+							appendReceiveStr = '<button class="btn btn-xs btn-info" onclick="appendLog(\''+data+'\');" data-rel="tooltip" title="添加收货记录"><i class="fa fa-edit"></i>添加收货记录</button>';
 						}else{
-							appendReceiveStr = '<button class="btn btn-xs btn-info" '+btnAble+' disabled="disabled"  data-rel="tooltip" title="已收货才能追加收货记录"><i class="fa fa-edit"></i>追加收货记录</button>';
+							appendReceiveStr = '<button class="btn btn-xs btn-info" disabled="disabled"  data-rel="tooltip" title="已收货才能追加收货记录"><i class="fa fa-edit"></i>追加收货记录</button>';
 						}
 						return "<div class='yy-btn-actiongroup'>"
 						+ appendReceiveStr
