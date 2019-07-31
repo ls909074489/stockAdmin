@@ -29,7 +29,9 @@ import com.king.modules.info.stockinfo.StockBaseEntity;
 import com.king.modules.info.supplier.SupplierEntity;
 import com.king.modules.sys.param.ParameterUtil;
 
+import net.sf.ezmorph.object.DateMorpher;
 import net.sf.json.JSONObject;
+import net.sf.json.util.JSONUtils;
 
 /**
  * 订单
@@ -163,21 +165,12 @@ public class OrderInfoController extends SuperController<OrderInfoEntity> {
 					jsonObject.put(nameAndValue[0], nameAndValue[1]);
 				}
 			}
+			JSONUtils.getMorpherRegistry().registerMorpher(new DateMorpher(new String[] {"yyyy-MM-dd", "yyyy-MM-dd HH:mm:ss"}));
 			OrderSubEntity obj = (OrderSubEntity) JSONObject.toBean(jsonObject,
 					OrderSubEntity.class);
 			MaterialBaseEntity material = new MaterialBaseEntity();
 			material.setUuid(obj.getMaterialId());
 			obj.setMaterial(material);
-//			if(StringUtils.isEmpty(obj.getUuid())){
-//				for(int i=0;i<500;i++){
-//					OrderSubEntity bbb = (OrderSubEntity) JSONObject.toBean(jsonObject,
-//							OrderSubEntity.class);
-//					MaterialEntity material2 = new MaterialEntity();
-//					material2.setUuid(obj.getMaterialId());
-//					bbb.setMaterial(material2);
-//					returnList.add(bbb);
-//				}	
-//			}
 			returnList.add(obj);
 		}
 		return returnList;

@@ -123,6 +123,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			super.doUpdate(detail);
 		}
 		stream.setOperType(StockStreamEntity.IN_STOCK);
+		stream.setMemo("订购单入库");
 		stockStreamService.doAdd(stream);//添加库存流水
 	}
 	
@@ -173,6 +174,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			}
 		}
 		stream.setOperType(StockStreamEntity.OUT_STOCK);
+		stream.setMemo("订购单出库");
 		stockStreamService.doAdd(stream);//添加库存流水
 	}
 	
@@ -221,6 +223,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			stream.setOccupyAmount(sub.getReceiveAmount());
 			stream.setActualAmount(0l);
 			stream.setOperType(StockStreamEntity.IN_STOCK);
+			stream.setMemo("收货入库");
 			stockStreamService.doAdd(stream);//添加库存流水
 			
 			
@@ -266,6 +269,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 				streamIn.setOccupyAmount(actualAmount);
 				streamIn.setActualAmount(0l);
 				streamIn.setOperType(StockStreamEntity.IN_STOCK);
+				streamIn.setMemo("收货还料入库");
 				stockStreamService.doAdd(streamIn);//添加库存流水
 				
 				ProjectSubEntity toSub = projectSubService.getOne(borrow.getToSubId());
@@ -282,6 +286,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 				streamOut.setOccupyAmount(actualAmount*-1);
 				streamOut.setActualAmount(0l);
 				streamOut.setOperType(StockStreamEntity.OUT_STOCK);
+				streamOut.setMemo("收货还料出库");
 				stockStreamService.doAdd(streamOut);//添加库存流水
 			}
 		}
@@ -362,6 +367,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			stream.setOccupyAmount(subAmountOut);
 			stream.setActualAmount(0l);
 			stream.setOperType(StockStreamEntity.OUT_STOCK);
+			stream.setMemo("项目单审核出库");
 			stockStreamService.doAdd(stream);//添加库存流水
 		}
 		streamLogService.doAdd(logList);
@@ -507,6 +513,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 				}
 			}
 			stream.setOperType(StockStreamEntity.OUT_STOCK);
+			stream.setMemo("收货出库");
 			stockStreamService.doAdd(stream);//添加库存流水
 		}
 	}
@@ -545,7 +552,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 	}
 	
 	@Transactional
-	private void borrowProjectMaterial(String fromStreamId,String toSubId,Long actualAmount){
+	public void borrowProjectMaterial(String fromStreamId,String toSubId,Long actualAmount){
 		actualAmount = Math.abs(actualAmount);
 		StockStreamEntity fromStream = stockStreamService.getOne(fromStreamId);
 		if(fromStream!=null&&fromStream.getSurplusAmount()>actualAmount){
@@ -567,10 +574,16 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			streamOut.setOccupyAmount(actualAmount*-1);
 			streamOut.setActualAmount(0l);
 			streamOut.setOperType(StockStreamEntity.OUT_STOCK);
+			streamOut.setMemo("挪料出库");
 			stockStreamService.doAdd(streamOut);//添加库存流水
 			
 			//添加入库记录
 			ProjectSubEntity toSub = projectSubService.getOne(toSubId);
+			
+			if(fromStream.getSourceId().equals(toSub.getMain().getUuid())){
+				throw new ServiceException("挪料不能选择当前项目的物料"); 
+			}
+			
 			StockStreamEntity streamIn = new StockStreamEntity();
 			streamIn.setBillType(StockStreamEntity.BILLTYPE_BORROW);
 			streamIn.setSourceId(toSub.getMain().getUuid());
@@ -584,6 +597,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			streamIn.setOccupyAmount(actualAmount);
 			streamIn.setActualAmount(0l);
 			streamIn.setOperType(StockStreamEntity.IN_STOCK);
+			streamIn.setMemo("挪料入库");
 			stockStreamService.doAdd(streamIn);//添加库存流水
 			
 			//添加借记录
@@ -599,7 +613,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			log.setProjectTo(projectTo);
 			
 			log.setFromSubId(fromStream.getProjectSubId());
-			log.setToSubId(streamIn.getUuid());
+			log.setToSubId(toSub.getUuid());
 			log.setActualAmount(actualAmount);
 			log.setOweAmount(actualAmount);
 			log.setBillState(StreamBorrowEntity.BILLSTATE_NOT_RETURN);

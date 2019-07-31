@@ -4,8 +4,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletRequest;
 
@@ -131,10 +133,10 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		List<ProjectSubEntity> resultList = new ArrayList<>();
 		List<String> subBarcodelist = null;
 		ProjectSubEntity desSub = null;
-		List<String> subIdList = new ArrayList<String>();
+		Set<String> projectIdSet = new HashSet<>();
 		List<EnumDataSubEntity> enumList = EnumDataUtils.getEnumSubList("barCodeExtract");
 		for(ProjectSubEntity sub : subList){
-			subIdList.add(sub.getUuid());
+			projectIdSet.add(sub.getMain().getUuid());
 			if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
 				if(StringUtils.isNotEmpty(sub.getBarcodejson())){
 					subBarcodelist = JSON.parseArray(sub.getBarcodejson(), String.class);
@@ -152,6 +154,11 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 					} catch (InvocationTargetException e) {
 						e.printStackTrace();
 					}
+					if(i==0){
+						sub.setFirstRow("1");
+					}else{
+						sub.setFirstRow("0");
+					}
 					desSub.setNewUuid(i+"_"+sub.getUuid());
 					if(i<subBarcodelist.size()){
 						desSub.setBarcode(subBarcodelist.get(i));
@@ -164,10 +171,11 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 			}else{
 				checkStyle(sub,enumList);
 				sub.setNewUuid("0_"+sub.getUuid());
+				sub.setFirstRow("1");
 				resultList.add(sub);
 			}
 		}
-		List<StockStreamEntity> streamList = streamService.findSurplusBySourceIdIn(subList.get(0).getMain().getUuid());
+		List<StockStreamEntity> streamList = streamService.findSurplusAllBySourceIdsIn(new ArrayList<String>(projectIdSet));
 		Map<String,List<StockStreamEntity>> streamMap = changeToStreamMap(streamList);
 		for(ProjectSubEntity sub : resultList){
 			sub.setSurplusAmount(calcSurplusAmount(sub,streamMap.get(sub.getUuid())));

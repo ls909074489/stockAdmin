@@ -1,8 +1,6 @@
 package com.king.modules.info.projectinfo;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -112,6 +110,8 @@ public class ProjectSubEntity extends BaseEntity {
 	private String barcodeStatus="10";
 	@Transient
 	private Long surplusAmount;//剩余数量
+	@Transient
+	private String firstRow="0";//唯一条码多行，是否第一行
 	
 	
 	@Transient
@@ -331,5 +331,14 @@ public class ProjectSubEntity extends BaseEntity {
 	public void setSurplusAmount(Long surplusAmount) {
 		this.surplusAmount = surplusAmount;
 	}
+
+	public String getFirstRow() {
+		return firstRow;
+	}
+
+	public void setFirstRow(String firstRow) {
+		this.firstRow = firstRow;
+	}
+	
 	
 }

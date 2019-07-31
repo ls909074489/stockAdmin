@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.ServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +17,8 @@ import com.king.common.utils.DateUtil;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.BaseController;
 import com.king.frame.controller.QueryRequest;
+import com.king.modules.info.projectinfo.ProjectSubEntity;
+import com.king.modules.info.projectinfo.ProjectSubService;
 
 /**
  * 测试111
@@ -28,6 +31,8 @@ public class StockStreamController extends BaseController<StockStreamEntity> {
 
 	@Autowired
 	private StockStreamService service;
+	@Autowired
+	private ProjectSubService projectSubService;
 
 	
 	@Override
@@ -55,6 +60,26 @@ public class StockStreamController extends BaseController<StockStreamEntity> {
 		return execQuery(qr, baseService);
 	}
 	
+	
+	@RequestMapping("/toSubRecord")
+	public String toSubRecord(Model model,String subId) {
+		model.addAttribute("subId", subId);
+		return "modules/info/stockstream/stockstream_record_sub";
+	}
+	
+	@RequestMapping(value = "/dataSubRecord")
+	@ResponseBody
+	public ActionResultModel<StockStreamEntity> dataSubRecord(ServletRequest request) {
+		Map<String, Object> addParam = new HashMap<String, Object>();
+		addParam.put("EQ_status", "1");
+		String subId = request.getParameter("subId");
+		ProjectSubEntity sub = projectSubService.getOne(subId);
+		addParam.put("EQ_sourceId", sub.getMain().getUuid());
+		addParam.put("EQ_material.uuid", sub.getMaterial().getUuid());
+		addParam.put("EQ_projectSubId", sub.getUuid());
+		QueryRequest<StockStreamEntity> qr = getQueryRequest(request, addParam);
+		return execQuery(qr, baseService);
+	}
 	
 	/**
 	 * 预警列表
@@ -104,9 +129,11 @@ public class StockStreamController extends BaseController<StockStreamEntity> {
 	 * @return
 	 */
 	@RequestMapping("/toStockMaterialIn")
-	public String toStockMaterial(Model model,String stockId,String materialId) {
-		model.addAttribute("stockId", stockId);
-		model.addAttribute("materialId", materialId);
+	public String toStockMaterial(Model model,String subId) {
+		ProjectSubEntity sub = projectSubService.getOne(subId);
+		model.addAttribute("stockId", sub.getMain().getStock().getUuid());
+		model.addAttribute("materialId", sub.getMaterial().getUuid());
+		model.addAttribute("subId", subId);
 		return "modules/info/stockstream/stockstream_stock_material_in";
 	}
 	
@@ -130,6 +157,23 @@ public class StockStreamController extends BaseController<StockStreamEntity> {
 		QueryRequest<StockStreamEntity> qr = getQueryRequest(request, addParam);
 		return execQuery(qr, baseService);
 	}
+	
+	
+	
+	@RequestMapping(value = "/saveProjectBorrow")
+	@ResponseBody
+	public ActionResultModel<StockStreamEntity> saveProjectBorrow(String fromStreamId,String toSubId,Long actualAmount) {
+		try {
+			return service.saveProjectBorrow(fromStreamId,toSubId,actualAmount);
+		}catch (ServiceException e){
+			e.printStackTrace();
+			return new ActionResultModel<>(false, e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ActionResultModel<>(false, "挪料失败:"+e.getMessage());
+		}
+	}
+
 	
 	/**
 	 * 

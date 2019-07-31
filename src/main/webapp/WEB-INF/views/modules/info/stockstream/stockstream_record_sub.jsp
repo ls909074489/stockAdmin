@@ -12,13 +12,9 @@
 		<div class="page-content" id="yy-page-list">
 			<div class="row yy-searchbar form-inline">
 				<form id="yy-form-query">
-					<!-- <label for="search_EQ_operType" class="control-label">单据类型</label>
+					<label for="search_EQ_operType" class="control-label">单据类型</label>
 					<select class="yy-input-enumdata form-control" id="search_EQ_operType" name="search_EQ_operType"
-					 data-enum-group="StockStreamOperType"></select> -->	
-					
-					
-					<input name="stockId" id="stockId" type="hidden" value="${stockId}"/>
-					<input name="materialId" id="materialId" type="hidden" value="${materialId}"/>
+					 data-enum-group="StockStreamOperType"></select>	
 					
 					<label for="search_LIKE_sourceBillCode" class="control-label">源单号</label>
 					<input type="text" autocomplete="on" name="search_LIKE_sourceBillCode"
@@ -29,11 +25,11 @@
 						id="search_LIKE_creatorname" class="form-control input-sm">
 						
 					<label class="control-label">操作时间</label> 
-					<input type="text" autocomplete="on" name="search_GTE_createtime" style="width: 150px;" id="search_GTE_createtime" class="form-control input-sm Wdate"
-				onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:00',maxDate:'#F{$dp.$D(\'search_LTE_createtime\')}'});">
+					<input type="text" autocomplete="on" name="search_GTE_createtime" style="width: 150px;" id="search_GTE_createtime" 
+						class="form-control input-sm Wdate" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:00',maxDate:'#F{$dp.$D(\'search_LTE_createtime\')}'});">
 					 到 
 					 <input type="text" autocomplete="on" name="search_LTE_createtime" style="width: 150px;" id="search_LTE_createtime"
-				class="form-control input-sm Wdate" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:00',minDate:'#F{$dp.$D(\'search_GTE_createtime\')}'});">	
+					class="form-control input-sm Wdate" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:00',minDate:'#F{$dp.$D(\'search_GTE_createtime\')}'});">	
 
 					<button id="yy-btn-search" type="button" class="btn btn-sm btn-info">
 						<i class="fa fa-search"></i>查询
@@ -48,8 +44,6 @@
 					<thead>
 						<tr>
 							<th style="width: 30px;">序号</th>
-							<th>操作</th>
-							<th>挪用数量</th>
 							<th>源单号</th>
 							<th>操作人</th>
 							<th>操作时间</th>
@@ -59,6 +53,7 @@
 							<th>预占数量</th>
 							<th>可用数量</th>
 							<th>预警时间</th>
+							<!-- <th>预警状态</th> -->
 						</tr>
 					</thead>
 					<tbody></tbody>
@@ -78,24 +73,6 @@
 				className : "center",
 				width : "50"
 			},{
-				data : "uuid",
-				orderable : false,
-				className : "center",
-				width : "20",
-				render : function(data, type, full) {
-					return "<div class='yy-btn-actiongroup'>"
-					+ "<button  onclick=\"saveBorrow(this);\" rowUuid=\'"+data+"\' class='btn btn-xs btn-info saveBcBtn' data-rel='tooltip' title='挪料'><i class='fa yy-btn-save'></i>挪料</button>"
-					+ "</div>";
-				}
-			}, {
-				data : 'uuid',
-				width : "60",
-				className : "center",
-				orderable : false,
-				render : function(data, type, full) {
-					return '<input class="form-control" value="" name="actualAmount">';
-				}
-			},{
 				data : "sourceBillCode",
 				width : "100",
 				className : "center",
@@ -112,7 +89,7 @@
 				orderable : false
 			},{
 				data : "operType",
-				width : "60",
+				width : "100",
 				className : "center",
 				render : function(data, type, full) {
 				       return YYDataUtils.getEnumName("StockStreamOperType", data);
@@ -130,12 +107,12 @@
 				orderable : false
 			},{
 				data : "occupyAmount",
-				width : "60",
+				width : "100",
 				className : "center",
 				orderable : false
 			},{
 				data : "actualAmount",
-				width : "60",
+				width : "100",
 				className : "center",
 				orderable : false
 			},{
@@ -143,49 +120,48 @@
 				width : "60",
 				className : "center",
 				orderable : false
-			}];
+			}/* ,{
+				data : "warningType",
+				width : "60",
+				className : "center",
+				render : function(data, type, full) {
+					   return YYDataUtils.getEnumName("StockStreamWarningType", data);
+				},
+				orderable : false
+			} */];
 		
 		//var _setOrder = [[5,'desc']];
 		$(document).ready(function() {
+			loadEnumData();
+			
 			_queryData = $("#yy-form-query").serializeArray();
 			bindListActions();
-			serverPage('${serviceurl}/dataStockMaterialIn?orderby=createtime@desc');
+			serverPage('${serviceurl}/dataSubRecord?subId=${subId}&orderby=createtime@desc');
 		});
 		
 		
-		function saveBorrow(t){
-			var actualAmount = $(t).closest("tr").find("input[name='actualAmount']").val();
-			if(actualAmount!=null&&actualAmount!=''){
-				if ((/(^[1-9]\d*$)/.test(actualAmount))) { 
-					$.ajax({
-						type : "POST",
-						data :{"fromStreamId": $(t).attr("rowUuid"),"toSubId":'${subId}',"actualAmount":actualAmount},
-						url : "${serviceurl}/saveProjectBorrow",
-						async : true,
-						dataType : "json",
-						success : function(data) {
-							if(data.success){
-								YYUI.succMsg(data.msg);
-								window.parent.onQuery();
-								var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-								parent.layer.close(index); //再执行关闭 
-							}else{
-								YYUI.promMsg(data.msg);
-							}
-						},
-						error : function(data) {
-							YYUI.promMsg("操作失败，请联系管理员");
-						}
-					});
-				}else{
-					YYUI.promMsg("请填写正整数");
+		/**
+		 * 加载枚举数据到本地缓存中 xuechen
+		 */
+		function loadEnumData() {
+			var url = '${ctx}/sys/enumdata/getEnumDataMap';
+			$.ajax({
+				"dataType" : "json",
+				"url" : url,
+				"success" : function(data) {
+					if (data.success) {
+						var map = data.records[0];
+						localStorage.setItem("yy-enum-map", JSON.stringify(map));
+						YYUI.setEnumField();
+					} else {
+						//YYUI.failMsg("加载枚举数据失败" + data.msg);
+					}
 				}
-			}else{
-				YYUI.promMsg("请填写挪用数量");
-			}
+			});
 		}
 		
 		function onEditRow(aData, iDataIndex, nRow) {
+			//console.info(11111111);
 			return false;
 		}
 	</script>

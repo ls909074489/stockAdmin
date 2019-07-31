@@ -131,6 +131,11 @@ public class StockStreamEntity extends BaseEntity {
 	private Long actualAmount;
 	
 	
+	@MetaData(value = "备注")
+	@Column(length = 250)
+	private String memo;
+	
+	
 	public StockBaseEntity getStock() {
 		return stock;
 	}
@@ -260,6 +265,16 @@ public class StockStreamEntity extends BaseEntity {
 
 	public void setProjectSubId(String projectSubId) {
 		this.projectSubId = projectSubId;
+	}
+
+
+	public String getMemo() {
+		return memo;
+	}
+
+
+	public void setMemo(String memo) {
+		this.memo = memo;
 	}
 	
 

@@ -1,13 +1,15 @@
 package com.king.modules.info.stockstream;
 
-import com.king.frame.dao.IBaseDAO;
-import com.king.frame.service.BaseServiceImpl;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.king.frame.controller.ActionResultModel;
+import com.king.frame.dao.IBaseDAO;
+import com.king.frame.service.BaseServiceImpl;
+import com.king.modules.info.stockdetail.StockDetailService;
 
 /**
  * 测试111
@@ -20,8 +22,8 @@ public class StockStreamService extends BaseServiceImpl<StockStreamEntity,String
 
 	@Autowired
 	private StockStreamDao dao;
-	//@Autowired
-	//private DbUtilsDAO dbDao;
+	@Autowired
+	private StockDetailService stockDetailService;
 
 	protected IBaseDAO<StockStreamEntity, String> getDAO() {
 		return dao;
@@ -44,6 +46,10 @@ public class StockStreamService extends BaseServiceImpl<StockStreamEntity,String
 		return dao.findSurplusBySourceIdAndOperType(sourceId,StockStreamEntity.IN_STOCK);
 	}
 	
+	public List<StockStreamEntity> findSurplusAllBySourceIdsIn(List<String> sourceIdList) {
+		return dao.findSurplusAllBySourceIdsIn(sourceIdList);
+	}
+	
 	/**
 	 * 入库的流水
 	 * @param sourceId
@@ -61,6 +67,16 @@ public class StockStreamService extends BaseServiceImpl<StockStreamEntity,String
 	public List<StockStreamEntity> findOrderByStockAndMaterial(String stockId, String materialId) {
 		return dao.findOrderByStockAndMaterial(stockId, materialId,StockStreamEntity.BILLTYPE_ORDER);
 	}
+	
+	
+	@Transactional
+	public ActionResultModel<StockStreamEntity> saveProjectBorrow(String fromStreamId, String toSubId,
+			Long actualAmount) {
+		stockDetailService.borrowProjectMaterial(fromStreamId, toSubId, actualAmount);
+		return new ActionResultModel<>(true, "操作成功");
+	}
+
+	
 	
 
 }

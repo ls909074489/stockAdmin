@@ -143,7 +143,8 @@
 			if (!onEditRowBefore(aData, iDataIndex, nRow)) {
 				return;
 			}
-			if (aData.billstatus > 0 && aData.billstatus != '1'
+			//	FREE(1, "自由态"), SUBMIT(2, "提交态"), INAPPROVED(3, "审批态"), REJECT(4, "退回态"), APPROVAL(5, "通过态");
+			if (aData.billstatus > 0 && aData.billstatus != '1'&& aData.billstatus != '2'
 				&& aData.billstatus != '4') {
 				YYUI.promMsg(YYMsg.alertMsg('sys-edit-no'));//已经提交或者审核的数据不能修改。
 				return;

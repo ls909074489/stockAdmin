@@ -25,6 +25,9 @@ public interface StockStreamDao extends IBaseDAO<StockStreamEntity,String> {
 	@Query("from StockStreamEntity where sourceId=? and operType=? and status=1 and surplusAmount>0 order by createtime")
 	List<StockStreamEntity> findSurplusBySourceIdAndOperType(String sourceId,String operType);
 	
+	@Query("from StockStreamEntity where sourceId in ?1  and status=1 order by createtime")
+	List<StockStreamEntity> findSurplusAllBySourceIdsIn(List<String> sourceIdList);
+	
 	@Query("from StockStreamEntity where sourceId=? and operType=? and status=1 order by createtime")
 	List<StockStreamEntity> findBySourceIdAndOperType(String sourceId,String operType);
 
@@ -35,4 +38,5 @@ public interface StockStreamDao extends IBaseDAO<StockStreamEntity,String> {
 	
 	@Query("from StockStreamEntity where stock.uuid=? and material.uuid=? and status=1 and billType=? and surplusAmount>0 order by createtime")
 	List<StockStreamEntity> findOrderByStockAndMaterial(String stockId, String materialId,String billType);
+
 }

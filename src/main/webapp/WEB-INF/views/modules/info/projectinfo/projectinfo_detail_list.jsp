@@ -150,7 +150,7 @@
 							<th>计划数量</th>	
 							<th>到货数量</th>	
 							<th>剩余数量</th>	
-							<!-- <th>备注</th> -->
+							<th>挪料</th>
 						</tr>
 					</thead>
 					<tbody></tbody>
@@ -336,13 +336,29 @@
 				data : 'surplusAmount',
 				width : "30",
 				className : "center",
+				render : function(data, type, full) {
+					return '<a onclick="showSubStream(\''+full.uuid+'\');">'+data+'</a>';
+				},
 				orderable : false
-			}/* ,{
-				data : "memo",
+			},{
+				data : "uuid",
 				width : "100",
 				className : "center",
+				render : function(data, type, full) {
+					if(full.firstRow=="1"){
+						var btnAble ='';
+						if(full.main.billstatus==5){//“已审核”项变为深灰色底色
+							btnAble ='disabled="disabled" title="已审核不能操作" ';
+						}
+						return "<div class='yy-btn-actiongroup'>"
+						+ "<button  onclick=\"toBorrowMaterital(\'"+data+"\');\" "+btnAble+" class='btn btn-xs btn-info' data-rel='tooltip' title='挪料'><i class='fa yy-btn-edit'></i>挪料</button>"
+						+ "</div>";
+					}else{
+						return "";
+					}
+				},
 				orderable : false
-			} */];
+			}];
 
 
 		//var _setOrder = [[5,'desc']];
@@ -762,6 +778,18 @@
 			});
 		}
 		
+		//查看流水
+		function showSubStream(subId){
+			layer.open({
+				type : 2,
+				title : '库存流水',
+				shadeClose : false,
+				shade : 0.8,
+				area : [ '90%', '90%' ],
+				content : '${ctx}/info/stockstream/toSubRecord?subId='+subId//iframe的url
+			});
+		}
+		
 		//修改批次数量
 		function toUpdateLimitCount(subId){
 			layer.open({
@@ -783,6 +811,17 @@
 				shade : 0.8,
 				area : [ '90%', '90%' ],
 				content : '${ctx}/info/barcode/toLog?subId='+subId
+			});
+		}
+		
+		function toBorrowMaterital(subId){
+			layer.open({
+				type : 2,
+				title : '项目库存',
+				shadeClose : false,
+				shade : 0.8,
+				area : [ '90%', '90%' ],
+				content : '${ctx}/info/stockstream/toStockMaterialIn?subId='+subId
 			});
 		}
 	</script>

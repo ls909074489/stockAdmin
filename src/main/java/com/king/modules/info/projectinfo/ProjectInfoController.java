@@ -295,8 +295,8 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 					jsonObject.put(nameAndValue[0], nameAndValue[1]);
 				}
 			}
-			ProjectSubEntity obj = (ProjectSubEntity) JSONObject.toBean(jsonObject,
-					ProjectSubEntity.class);
+			JSONUtils.getMorpherRegistry().registerMorpher(new DateMorpher(new String[] {"yyyy-MM-dd", "yyyy-MM-dd HH:mm:ss"}));
+			ProjectSubEntity obj = (ProjectSubEntity) JSONObject.toBean(jsonObject,	ProjectSubEntity.class);
 			MaterialBaseEntity material = new MaterialBaseEntity();
 			material.setUuid(obj.getMaterialId());
 			obj.setMaterial(material);
@@ -325,11 +325,9 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 					jsonObject.put(nameAndValue[0], nameAndValue[1]);
 				}
 			}
-			String[] dateFormats = new String[] {"yyyy/MM/dd"};
-			JSONUtils.getMorpherRegistry().registerMorpher(new DateMorpher(dateFormats));
-			
-			ProjectReceiveVo obj = (ProjectReceiveVo) JSONObject.toBean(jsonObject,
-					ProjectReceiveVo.class);
+			//需要注册日期，否则日期不准确
+			JSONUtils.getMorpherRegistry().registerMorpher(new DateMorpher(new String[] {"yyyy-MM-dd", "yyyy-MM-dd HH:mm:ss"}));
+			ProjectReceiveVo obj = (ProjectReceiveVo) JSONObject.toBean(jsonObject,	ProjectReceiveVo.class);
 			returnList.add(obj);
 		}
 		return returnList;
