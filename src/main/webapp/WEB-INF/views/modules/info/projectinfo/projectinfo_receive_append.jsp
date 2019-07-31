@@ -163,7 +163,7 @@
 			className : "center",
 			orderable : false,
 			render : function(data, type, full) {
-				return '<button class="btn btn-xs btn-info" onclick="appendLog(\''+data+'\');" data-rel="tooltip" title="添加收货记录"><i class="fa fa-edit"></i>添加收货记录</button>';
+				return '<button class="btn btn-xs btn-info" onclick="appendLog(\''+data+'\');" data-rel="tooltip" title="追加收货记录"><i class="fa fa-edit"></i>追加收货记录</button>';
 			},
 			width : "20"
 		}, {

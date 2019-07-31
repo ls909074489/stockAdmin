@@ -16,7 +16,9 @@ import org.apache.commons.beanutils.ConvertUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +30,7 @@ import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.BaseController;
 import com.king.frame.controller.QueryRequest;
 import com.king.frame.security.ShiroUser;
+import com.king.frame.service.IService;
 import com.king.modules.info.approve.ApproveUserEntity;
 import com.king.modules.info.approve.ApproveUserService;
 import com.king.modules.info.material.MaterialBaseEntity;
@@ -117,6 +120,38 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		return "modules/info/projectinfo/projectinfo_detail_list";
 	}
 	
+	protected ActionResultModel<ProjectSubEntity> execDetailQuery(ServletRequest request,QueryRequest<ProjectSubEntity> qr, IService service) {
+		ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity>();
+		try {
+			String mainId = request.getParameter("search_LIKE_main.uuid");
+			if(StringUtils.isNotEmpty(mainId)){//按照项目查询不做分页
+				List<ProjectSubEntity> list = service.findAll(qr.getSpecification(), qr.getSort());
+				arm.setRecords(list);
+				arm.setTotal(list.size());
+				arm.setTotalPages(1);
+			}else{
+				if (qr.getPageRequest() != null) {
+					Page<ProjectSubEntity> data = service.findAll(qr.getSpecification(), qr.getPageRequest());
+					arm.setRecords(data.getContent());
+					arm.setTotal(data.getTotalElements());
+					arm.setTotalPages(data.getTotalPages());
+					arm.setPageNumber(data.getNumber());
+				} else {
+					List<ProjectSubEntity> list = service.findAll(qr.getSpecification(), qr.getSort());
+					arm.setRecords(list);
+					arm.setTotal(list.size());
+					arm.setTotalPages(1);
+				}
+			}
+			arm.setSuccess(true);
+		} catch (ServiceException e) {
+			arm.setSuccess(false);
+			arm.setMsg(e.getMessage());
+			e.printStackTrace();
+		}
+
+		return arm;
+	}
 	
 	@RequestMapping(value = "/dataDetail")
 	@ResponseBody
@@ -125,7 +160,7 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		addParam.put("EQ_stock.uuid", request.getParameter("stockId"));
 		addParam.put("EQ_material.uuid", request.getParameter("materialId"));
 		QueryRequest<ProjectSubEntity> qr = getQueryRequest(request, addParam);
-		ActionResultModel<ProjectSubEntity> arm =  execQuery(qr, baseService);
+		ActionResultModel<ProjectSubEntity> arm =  execDetailQuery(request,qr, baseService);
 		List<ProjectSubEntity> subList = arm.getRecords();
 		if(CollectionUtils.isEmpty(subList)){
 			return arm;

@@ -48,7 +48,12 @@
 				<button id="yy-btn-match" type="button" class="btn btn-sm btn-info">
 					<i class="fa fa-search"></i> 匹配
 				</button>
-				
+				<button id="yy-btn-temp-receive" class="btn blue btn-sm">
+					<i class="fa fa-save"></i> 暂存收货
+				</button>
+				<button id="yy-btn-confrim-receive" class="btn blue btn-sm">
+					<i class="fa fa-save"></i> 确认收货
+				</button>
 				<button id="yy-btn-submit" class="btn yellow btn-sm btn-info">
 					<i class="fa fa-send"></i> 提交
 				</button>
@@ -89,7 +94,7 @@
 						<c:when test="${empty sourceBillId}">
 							<label class="control-label">项目</label>
 							<div class="input-group">
-								<select class="combox form-control projectSelectCls" id="search_LIKE_mainId" name="search_LIKE_main.uuid" style="float: left;width: 200px;">
+								<select class="combox form-control projectSelectCls" id="search_LIKE_mainId" onchange="changeProjectSel();" name="search_LIKE_main.uuid" style="float: left;width: 200px;">
 									<option value=""></option>
 								</select>
 							</div>
@@ -130,6 +135,10 @@
 				</form>
 			</div>
 			<div class="row">
+				<form id="yy-form-edit" class="form-horizontal yy-form-edit">
+					<!-- 提交收货form -->
+					<input name="uuid" id="projectInfoId" type="text" value=""/>
+				</form>
 				<table id="yy-table-list" class="yy-table">
 					<thead>
 						<tr>
@@ -149,7 +158,11 @@
 							<th>物料名称</th>
 							<th>计划数量</th>	
 							<th>到货数量</th>	
-							<th>剩余数量</th>	
+							<th>剩余数量</th>
+							<th>收货数量</th>
+							<th>收货时间</th>
+							<th>预警时间</th>
+							<th>收货备注</th>	
 							<th>挪料</th>
 						</tr>
 					</thead>
@@ -340,6 +353,66 @@
 					return '<a onclick="showSubStream(\''+full.uuid+'\');">'+data+'</a>';
 				},
 				orderable : false
+			}, {
+				data : 'actualAmount',
+				width : "80",
+				className : "center",
+				orderable : false,
+				render : function(data, type, full) {
+					if(data==null){
+						data="";
+					}
+					if(full.main.receiveType=="1"){
+						return data;
+					}else{
+						return '<input class="form-control" value="'+ data + '" name="actualAmount">';
+					}
+				}
+			}, {
+				data : 'receiveTime',
+				width : "80",
+				className : "center",
+				orderable : false,
+				render : function(data, type, full) {
+					if(data==null){
+						data="";
+					}
+					if(full.main.receiveType=="1"){
+						return data;
+					}else{
+						return '<input class="form-control Wdate" value="'+ data + '" name="receiveTime" onClick="WdatePicker()">';
+					}
+				}
+			}, {
+				data : 'warningTime',
+				width : "80",
+				className : "center",
+				orderable : false,
+				render : function(data, type, full) {
+					if(data==null){
+						data="";
+					}
+					if(full.main.receiveType=="1"){
+						return data;
+					}else{
+						return '<input class="form-control Wdate" value="'+ data + '" name="warningTime" onClick="WdatePicker()">';
+					}
+				}
+			}, {
+				data : 'receiveMemo',
+				width : "80",
+				className : "center",
+				orderable : false,
+				render : function(data, type, full) {
+					if(data==null){
+						data="";
+					}
+					if(full.main.receiveType=="1"){
+						return data;
+					}else{
+						return '<input class="form-control" value="'+data+'" name="memo">';
+					}
+				}
 			},{
 				data : "uuid",
 				width : "100",
@@ -350,7 +423,14 @@
 						if(full.main.billstatus==5){//“已审核”项变为深灰色底色
 							btnAble ='disabled="disabled" title="已审核不能操作" ';
 						}
+						var appendReceiveStr = "";
+						if(full.main.receiveType=="1"){
+							appendReceiveStr = '<button class="btn btn-xs btn-info" '+btnAble+' onclick="appendLog(\''+data+'\');" data-rel="tooltip" title="添加收货记录"><i class="fa fa-edit"></i>添加收货记录</button>';
+						}else{
+							appendReceiveStr = '<button class="btn btn-xs btn-info" '+btnAble+' disabled="disabled"  data-rel="tooltip" title="已收货才能追加收货记录"><i class="fa fa-edit"></i>追加收货记录</button>';
+						}
 						return "<div class='yy-btn-actiongroup'>"
+						+ appendReceiveStr
 						+ "<button  onclick=\"toBorrowMaterital(\'"+data+"\');\" "+btnAble+" class='btn btn-xs btn-info' data-rel='tooltip' title='挪料'><i class='fa yy-btn-edit'></i>挪料</button>"
 						+ "</div>";
 					}else{
@@ -361,6 +441,11 @@
 			}];
 
 
+		//改变当前项目
+		function changeProjectSel(){
+			onQuery();
+		}
+		
 		//var _setOrder = [[5,'desc']];
 			//分页页码
 		$.fn.dataTable.defaults.aLengthMenu = [ [10, 50, 100, 200, 500 ],
@@ -373,6 +458,15 @@
 			$("#yy-btn-match").bind('click', matchMaterial);//
 			$("#yy-btn-approve-project").bind('click', approveProject);//
 			$("#yy-btn-unapprove-project").bind('click', unApproveProject);//
+			$("#yy-btn-temp-receive").bind("click", function() {
+				tempReceive(isClose);
+			});
+			$("#yy-btn-confrim-receive").bind("click", function() {
+				layer.confirm("确认收货将生成入库单，确定要保存吗", function() {
+					confirmReceive(isClose);
+				});
+			});
+			
 			
 			//选择角色
 			$('#yy-project-select').on('click', function() {
@@ -431,6 +525,10 @@
 			return false;
 		}
 		
+		function doBeforeQuery() {
+			$("#projectInfoId").val($("#search_LIKE_mainId").val());
+			return true;
+		}
 		//服务器分页
 		function serverPage(url) {
 			var serverPageWaitLoad=layer.load(2);//加载等待ceng edit by liusheng		
@@ -682,26 +780,6 @@
 					}
 				});
 			});
-			
-			
-			/* $.ajax({
-				type : "POST",
-				data :{"pks": t_projectId},
-				url : "${ctx}/info/projectinfo/batchApprove",
-				async : true,
-				dataType : "json",
-				success : function(data) {
-					if(data.success){
-						YYUI.succMsg("审核成功");
-						onQuery();
-					}else{
-						YYUI.promMsg(data.msg);
-					}
-				},
-				error : function(data) {
-					YYUI.promMsg("操作失败，请联系管理员");
-				}
-			}); */
 		}
 		
 		function unApproveProject(){
@@ -766,6 +844,181 @@
 			return true;
 		}
 		
+		//主子表保存
+		function confirmReceive(isClose) {
+			var t_projectId = $("#search_LIKE_mainId").val();
+			console.info(">>>>>>>>>>>>"+t_projectId);
+			if(t_projectId==null||t_projectId==''){
+				YYUI.promMsg("请选择项目");
+				return false;
+			}
+			if($("#projectInfoId").val()!=$("#search_LIKE_mainId").val()){
+				YYUI.promMsg("请选择项目进行查询");
+				return false;
+			}
+			var subValidate=validConfirm();
+			if(!subValidate){
+				return false;
+			}
+			//保存新增的子表记录 
+	        var _subTable = $("#yy-table-list").dataTable();
+	        var subList = new Array();
+	        var rows = _subTable.fnGetNodes();
+	        for(var i = 0; i < rows.length; i++){
+	            subList.push(getRowData(rows[i]));
+	        }
+	        if(subList.length==0){
+	        	YYUI.promAlert("请添加明细");
+	        	return false;
+	        }
+			
+			var saveWaitLoad=layer.load(2);
+			var opt = {
+				url : "${servicemainurl}/confirmReceive",
+				type : "post",
+				data : {"subList" : subList,"deletePKs" : _deletePKs},
+				success : function(data) {
+					layer.close(saveWaitLoad);
+					if (data.success == true) {
+						_deletePKs = new Array();
+						if (isClose) {
+							window.parent.YYUI.succMsg('保存成功!');
+							window.parent.onRefresh(true);
+							closeEditView();
+						} else {
+							YYUI.succMsg('保存成功!');
+						}
+					} else {
+						YYUI.promAlert("保存失败：" + data.msg);
+					}
+				}
+			}
+			$("#yy-form-edit").ajaxSubmit(opt);
+		}
+		
+		
+		function tempReceive(isClose) {
+			var t_projectId = $("#search_LIKE_mainId").val();
+			console.info(">>>>>>>>>>>>"+t_projectId);
+			if(t_projectId==null||t_projectId==''){
+				YYUI.promMsg("请选择项目");
+				return false;
+			}
+			if($("#projectInfoId").val()!=$("#search_LIKE_mainId").val()){
+				YYUI.promMsg("请选择项目进行查询");
+				return false;
+			}
+			var subValidate=validTemp();
+			if(!subValidate){
+				return false;
+			}
+			//保存新增的子表记录 
+	        var _subTable = $("#yy-table-list").dataTable();
+	        var subList = new Array();
+	        var rows = _subTable.fnGetNodes();
+	        for(var i = 0; i < rows.length; i++){
+	            subList.push(getRowData(rows[i]));
+	        }
+	        if(subList.length==0){
+	        	YYUI.promAlert("请添加明细");
+	        	return false;
+	        }
+			
+			var saveWaitLoad=layer.load(2);
+			var opt = { 
+				url : "${servicemainurl}/tempReceive",
+				type : "post",
+				data : {"subList" : subList,"deletePKs" : _deletePKs},
+				success : function(data) {
+					layer.close(saveWaitLoad);
+					if (data.success == true) {
+						_deletePKs = new Array();
+						if (isClose) {
+							window.parent.YYUI.succMsg('保存成功!');
+							window.parent.onRefresh(true);
+							closeEditView();
+						} else {
+							YYUI.succMsg('保存成功!');
+						}
+					} else {
+						YYUI.promAlert("保存失败：" + data.msg);
+					}
+				}
+			}
+			$("#yy-form-edit").ajaxSubmit(opt);
+		}
+		
+		//校验子表
+		function validTemp(){
+			if(validateRowsData($("#yy-table-list tbody tr:visible[role=row]"),getRowValidatorTemp())==false){
+				return false;
+			}else{
+				return true;
+			} 
+		}
+		
+		function validConfirm(){
+			if(validateRowsData($("#yy-table-list tbody tr:visible[role=row]"),getRowValidatorConfirm())==false){
+				return false;
+			}else{
+				return true;
+			} 
+		}
+		
+		//表体校验
+		function getRowValidatorTemp() {
+			return [ {
+				name : "actualAmount",
+				rules : {
+					//required : true,
+					//number :true,
+					digits :true,
+					maxlength:8
+				},
+				message : {
+					//required : "必输",
+					//number :"请输入合法的数字",
+					digits :"只能输入整数",
+					maxlength : "最大长度为8"
+				}
+			}];
+		}
+		
+		function getRowValidatorConfirm() {
+			return [ {
+				name : "actualAmount",
+				rules : {
+					required : true,
+					//number :true,
+					digits :true,
+					maxlength:8
+				},
+				message : {
+					required : "必输",
+					//number :"请输入合法的数字",
+					digits :"只能输入整数",
+					maxlength : "最大长度为8"
+				}
+			}];
+		}
+		
+		//提交数据时需要特殊处理checkbox的值
+		function getRowData(nRow){
+			var data = $('input, select', nRow).not('input[type="checkbox"]').serialize();
+			//处理checkbox的值
+			$('input[type="checkbox"]',nRow).each(function(){
+				var checkboxName = $(this).attr("name");
+				var checkboxValue = "false";
+				if(this.checked){
+					checkboxValue = "true";
+				}
+				data = data+"&"+checkboxName+"="+checkboxValue;
+			});
+			return data;
+		}
+		
+		
+		
 		//查看物料明细
 		function showMaterial(uuid){
 			layer.open({
@@ -813,7 +1066,20 @@
 				content : '${ctx}/info/barcode/toLog?subId='+subId
 			});
 		}
+
+		//增加收货记录
+		function appendLog(subId){
+			layer.open({
+				type : 2,
+				title : '收货记录',
+				shadeClose : false,
+				shade : 0.8,
+				area : [ '800px', '250px' ],
+				content : '${ctx}/info/receive/toAppendLog?subId='+subId
+			});
+		}
 		
+		//挪料
 		function toBorrowMaterital(subId){
 			layer.open({
 				type : 2,
