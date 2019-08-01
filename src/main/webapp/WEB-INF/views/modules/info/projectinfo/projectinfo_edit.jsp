@@ -196,7 +196,7 @@
 				var str =''+//'<div class="input-group materialRefDiv"> '+
 				 '<input type="hidden" name="uuid" value="'+tUuid+'">'+
 				 '<input class="form-control materialCodeInputCls"  value="'+ data.code + '" reallyname="materialCode" name="materialCode" readonly="readonly"> '+
-				 '<input class="form-control"  value="'+ data.uuid + '" type="hidden" reallyname="materialId" name="materialId"> '+
+				 '<input class="form-control"  value="'+ data.uuid + '" type="hidden" reallyname="materialId" name="materialId"> ';
 				 //'<span class="input-group-btn"> '+
 				 //'<button id="" class="btn btn-default btn-ref materialcode" type="button" data-select2-open="single-append-text"> '+
 				 //'<span class="glyphicon glyphicon-search"></span> '+

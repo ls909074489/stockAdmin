@@ -112,6 +112,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 						sub.setCreatorname(user.getUsername());
 						sub.setCreatetime(new Date());
 						sub.setLimitCount(sub.getMaterial().getLimitCount());
+						sub.setActualAmount(sub.getPlanAmount());
 						addList.add(sub);
 					}else{
 						updateList.add(sub);
@@ -121,7 +122,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 					sub.setModifier(user.getUuid());
 					sub.setModifiername(user.getUsername());
 					sub.setModifytime(new Date());
-					sub.setActualAmount(sub.getPlanAmount());
+					
 					
 					if(codeMap.containsKey(sub.getBoxNum()+"_"+sub.getMaterialHwCode())){
 						throw new ServiceException("第"+sub.getBoxNum()+"箱华为料号"+sub.getMaterialHwCode()+"不能重复");
@@ -143,7 +144,9 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 						subEntity.setMaterial(sub.getMaterial());
 						subEntity.setLimitCount(sub.getLimitCount());
 						subEntity.setPlanAmount(sub.getPlanAmount());
-						subEntity.setActualAmount(subEntity.getPlanAmount());
+						if(entity.getReceiveType().equals(ProjectInfoEntity.receiveType_no)){
+							subEntity.setActualAmount(subEntity.getPlanAmount());
+						}
 						subEntity.setMemo(sub.getMemo());
 						subEntity.setWarningTime(sub.getWarningTime());
 					}
