@@ -57,10 +57,14 @@ public class StockStreamEntity extends BaseEntity {
 	@JoinColumn(name = "material_id",nullable=true)
 	private MaterialBaseEntity material;
 	
+//	@MetaData(value = "项目")
+//	@ManyToOne(cascade=CascadeType.REFRESH,optional = true)
+//	@JoinColumn(name = "project_id",nullable=true)
+//	private ProjectInfoBaseEntity project;
 	
 	@MetaData(value = "源id")
 	@Column(length = 50)
-	private String sourceId;
+	private String sourceId;//项目单id
 
 	@MetaData(value = "源单号")
 	@Column(length = 50)
@@ -74,31 +78,6 @@ public class StockStreamEntity extends BaseEntity {
 	@Column(length = 36)
 	private String projectSubId;
 
-//	@MetaData(value = "总数量")
-//	@Column()
-//	private Long totalBefore;
-//
-//	@MetaData(value = "预占数量")
-//	@Column()
-//	private Long occupyBefore;
-//
-//	@MetaData(value = "剩余数量")
-//	@Column()
-//	private Long surplusBefore;
-//	
-//	@MetaData(value = "总数量")
-//	@Column()
-//	private Long totalAfter;
-//
-//	@MetaData(value = "预占数量")
-//	@Column()
-//	private Long occupyAfter;
-//
-//	@MetaData(value = "剩余数量")
-//	@Column()
-//	private Long surplusAfter;
-	
-	
 	@MetaData(value = "操作类型0：增加库存  1：减少库存")
 	@Column(length = 1)
 	private String operType;
@@ -136,6 +115,30 @@ public class StockStreamEntity extends BaseEntity {
 	private String memo;
 	
 	
+//	@MetaData(value = "总数量")
+//	@Column()
+//	private Long totalBefore;
+//
+//	@MetaData(value = "预占数量")
+//	@Column()
+//	private Long occupyBefore;
+//
+//	@MetaData(value = "剩余数量")
+//	@Column()
+//	private Long surplusBefore;
+//	
+//	@MetaData(value = "总数量")
+//	@Column()
+//	private Long totalAfter;
+//
+//	@MetaData(value = "预占数量")
+//	@Column()
+//	private Long occupyAfter;
+//
+//	@MetaData(value = "剩余数量")
+//	@Column()
+//	private Long surplusAfter;
+	
 	public StockBaseEntity getStock() {
 		return stock;
 	}
@@ -154,7 +157,6 @@ public class StockStreamEntity extends BaseEntity {
 	public void setMaterial(MaterialBaseEntity material) {
 		this.material = material;
 	}
-
 
 	public String getSourceId() {
 		return sourceId;

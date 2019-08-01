@@ -120,6 +120,7 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		return "modules/info/projectinfo/projectinfo_detail_list";
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected ActionResultModel<ProjectSubEntity> execDetailQuery(ServletRequest request,QueryRequest<ProjectSubEntity> qr, IService service) {
 		ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity>();
 		try {

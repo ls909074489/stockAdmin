@@ -359,6 +359,9 @@ th,td{
 				data : 'actualAmount',
 				width : "30",
 				className : "center",
+				render : function(data, type, full) {
+				       return "<a onclick=\"showReceiveLog(\'"+full.uuid+"\');\">"+data+"</a>";
+				}
 				orderable : false
 			}, {
 				data : 'surplusAmount',
@@ -1069,6 +1072,18 @@ th,td{
 			});
 		}
 
+		//查看记录
+		function showReceiveLog(subId){
+			layer.open({
+				type : 2,
+				title : '收货记录',
+				shadeClose : false,
+				shade : 0.8,
+				area : [ '90%', '90%' ],
+				content : '${ctx}/info/receive/toViewLog?subId='+subId
+			});
+		}
+		
 		//增加收货记录
 		function appendLog(subId){
 			layer.open({

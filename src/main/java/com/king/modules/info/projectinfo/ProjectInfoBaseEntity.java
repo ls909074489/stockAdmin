@@ -1,16 +1,20 @@
 package com.king.modules.info.projectinfo;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.GenericGenerator;
 
 import com.king.common.annotation.MetaData;
-import com.king.frame.entity.SuperEntity;
 
 /**
  * 项目
@@ -22,15 +26,38 @@ import com.king.frame.entity.SuperEntity;
 @DynamicInsert
 @DynamicUpdate
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class ProjectInfoBaseEntity extends SuperEntity {
+public class ProjectInfoBaseEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;
+	
+	@MetaData(value = "ID")
+	@Id
+	@GeneratedValue(generator = "uuid")
+	@GenericGenerator(name = "uuid", strategy = "org.hibernate.id.UUIDGenerator")
+	@Column(length = 36, nullable = false)
+	protected String uuid;
+	
 	@Column(length = 50)
 	private String code;
 	
 	@MetaData(value = "项目名称")
 	@Column(length = 100)
 	private String name;
+
+	
+	public ProjectInfoBaseEntity() {
+	}
+	public ProjectInfoBaseEntity(String uuid) {
+		this.uuid = uuid;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
 
 	public String getCode() {
 		return code;
@@ -47,4 +74,5 @@ public class ProjectInfoBaseEntity extends SuperEntity {
 	public void setName(String name) {
 		this.name = name;
 	}
+
 }

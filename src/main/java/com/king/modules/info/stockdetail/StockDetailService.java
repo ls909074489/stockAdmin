@@ -612,13 +612,8 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			StreamBorrowEntity log = new StreamBorrowEntity();
 			log.setMaterial(fromStream.getMaterial());
 			
-			ProjectInfoBaseEntity projectFrom = new ProjectInfoBaseEntity();
-			projectFrom.setUuid(streamOut.getSourceId());
-			log.setProjectFrom(projectFrom);
-			
-			ProjectInfoBaseEntity projectTo = new ProjectInfoBaseEntity();
-			projectTo.setUuid(streamIn.getSourceId());
-			log.setProjectTo(projectTo);
+			log.setProjectFrom(new ProjectInfoBaseEntity(streamOut.getSourceId()));
+			log.setProjectTo(new ProjectInfoBaseEntity(streamIn.getSourceId()));
 			
 			log.setFromSubId(fromStream.getProjectSubId());
 			log.setToSubId(toSub.getUuid());
@@ -638,6 +633,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 //		throw new ServiceException("不允许操作");
 		return super.save(entity);
 	}
+	
 	@Override
 	public Iterable<StockDetailEntity> save(Iterable<StockDetailEntity> entities) throws ServiceException {
 		throw new ServiceException("不允许操作");
