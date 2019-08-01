@@ -43,8 +43,6 @@ import net.sf.json.util.JSONUtils;
 public class OrderInfoController extends SuperController<OrderInfoEntity> {
 
 	@Autowired
-	private OrderInfoService service;
-	@Autowired
 	private OrderSubService subService;
 
 	/**

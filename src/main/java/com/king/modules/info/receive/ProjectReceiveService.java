@@ -144,7 +144,7 @@ public class ProjectReceiveService extends BaseServiceImpl<ProjectReceiveEntity,
 			receive.setWarningTime(sub.getWarningTime());
 			receiveList.add(doAdd(receive));
 		}
-		stockDetailService.incrStockDetail(obj, receiveList);
+		stockDetailService.incrStockDetail(obj, receiveList,true);
 		arm.setSuccess(true);
 		arm.setMsg("操作成功");
 		return arm;
@@ -153,6 +153,13 @@ public class ProjectReceiveService extends BaseServiceImpl<ProjectReceiveEntity,
 	
 	@Transactional
 	public ActionResultModel<ProjectReceiveEntity> saveReceiveLog(ProjectReceiveEntity entity) {
+		ActionResultModel<ProjectReceiveEntity> arm = new ActionResultModel<ProjectReceiveEntity>();
+		ProjectInfoEntity obj = mainService.getOne(entity.getUuid());
+		if(obj.getReceiveType()!=null&&!obj.getReceiveType().equals(ProjectInfoEntity.receiveType_yes)){
+			arm.setSuccess(false);
+			arm.setMsg("未确认收货，不能追加收货记录");
+			return arm;
+		}
 		ProjectSubEntity sub = subService.getOne(entity.getSubId());
 		ProjectSubBaseEntity subBase = new ProjectSubBaseEntity();
 		subBase.setUuid(sub.getUuid());
@@ -168,7 +175,7 @@ public class ProjectReceiveService extends BaseServiceImpl<ProjectReceiveEntity,
 			sub.setActualAmount(sub.getActualAmount()+entity.getReceiveAmount());
 			entity.setReceiveAmount(Math.abs(entity.getReceiveAmount()));
 			receiveList.add(entity);
-			stockDetailService.incrStockDetail(sub.getMain(), receiveList);
+			stockDetailService.incrStockDetail(sub.getMain(), receiveList,false);
 		}else{
 			sub.setActualAmount(sub.getActualAmount()-Math.abs(entity.getReceiveAmount()));
 			entity.setReceiveAmount(Math.abs(entity.getReceiveAmount())*-1);

@@ -2,7 +2,6 @@ package com.king.modules.sys.codegen;
 
 import javax.servlet.ServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,9 +19,6 @@ import com.king.modules.sys.param.ParameterUtil;
 @Controller
 @RequestMapping(value = "/sys/codeTemplate")
 public class CodeTemplateController extends BaseController<CodeTemplateEntity> {
-
-	@Autowired
-	private CodeTemplateService codetemplateService;
 
 	/**
 	 * 

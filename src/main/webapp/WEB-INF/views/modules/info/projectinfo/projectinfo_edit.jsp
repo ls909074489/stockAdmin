@@ -193,17 +193,16 @@
 				if (typeof(tUuid) == "undefined"){
 					tUuid="";
 				}
-				var str ='<div class="input-group materialRefDiv"> '+
+				var str =''+//'<div class="input-group materialRefDiv"> '+
 				 '<input type="hidden" name="uuid" value="'+tUuid+'">'+
 				 '<input class="form-control materialCodeInputCls"  value="'+ data.code + '" reallyname="materialCode" name="materialCode" readonly="readonly"> '+
 				 '<input class="form-control"  value="'+ data.uuid + '" type="hidden" reallyname="materialId" name="materialId"> '+
-				 //'<input class="form-control"  value="'+ data.limitCount + '" type="hidden" reallyname="limitCount" name="limitCount"> '+
-				 '<span class="input-group-btn"> '+
-				 '<button id="" class="btn btn-default btn-ref materialcode" type="button" data-select2-open="single-append-text"> '+
-				 '<span class="glyphicon glyphicon-search"></span> '+
-				 '</button> '+
-				 '</span> '+
-				 '</div> ';
+				 //'<span class="input-group-btn"> '+
+				 //'<button id="" class="btn btn-default btn-ref materialcode" type="button" data-select2-open="single-append-text"> '+
+				 //'<span class="glyphicon glyphicon-search"></span> '+
+				 //'</button> '+
+				 //'</span> '+
+				 //'</div> ';
 				return str;
 			}
 		}, {

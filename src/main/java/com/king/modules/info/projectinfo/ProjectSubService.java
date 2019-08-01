@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,20 +26,18 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.alibaba.fastjson.JSON;
-import com.google.protobuf.ServiceException;
 import com.king.common.enums.BillStatus;
 import com.king.common.utils.ExcelDataUtil;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.dao.IBaseDAO;
-import com.king.frame.security.ShiroUser;
 import com.king.frame.service.BaseServiceImpl;
 import com.king.modules.info.barcode.ProjectBarcodeLogEntity;
 import com.king.modules.info.barcode.ProjectBarcodeLogService;
@@ -49,7 +46,6 @@ import com.king.modules.info.material.MaterialEntity;
 import com.king.modules.info.material.MaterialService;
 import com.king.modules.sys.imexlate.ImexlateSubEntity;
 import com.king.modules.sys.imexlate.ImexlateSubService;
-import com.king.modules.sys.user.UserEntity;
 
 /**
  * OrderSubService
@@ -73,133 +69,13 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 	@Autowired
 	private ProjectBarcodeLogService projectBarcodeLogService;
 
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	protected IBaseDAO getDAO() {
 		return dao;
 	}
-
 	
-	
-	/**
-	 * 保存
-	 * @param entity
-	 * @param subList
-	 * @param deletePKs
-	 * @return
-	 */
-	@Transactional
-	public ActionResultModel<ProjectInfoEntity> saveSelfAndSubList(ProjectInfoEntity entity,
-			List<ProjectSubEntity> subList, String[] deletePKs) {
-		ActionResultModel<ProjectInfoEntity> arm = new ActionResultModel<ProjectInfoEntity>();
-		try {
-			// 删除子表一数据
-			if (deletePKs != null && deletePKs.length > 0) {
-				delete(deletePKs);
-			}
-			ProjectInfoEntity savedEntity = null;
-			// 保存自身数据
-			savedEntity = mainService.save(entity);
-
-			UserEntity user = ShiroUser.getCurrentUserEntity();	
-			
-			List<ProjectSubEntity> addList = new ArrayList<>();
-			List<ProjectSubEntity> updateList = new ArrayList<>();
-			// 保存子表数据
-			if (subList != null && subList.size() > 0) {
-				Map<String,String> codeMap = new HashMap<>();
-				for (ProjectSubEntity sub : subList) {
-					if (StringUtils.isEmpty(sub.getUuid())) {
-						sub.setCreator(user.getUuid());
-						sub.setCreatorname(user.getUsername());
-						sub.setCreatetime(new Date());
-						sub.setLimitCount(sub.getMaterial().getLimitCount());
-						addList.add(sub);
-					}else{
-						updateList.add(sub);
-					}
-					sub.setMain(savedEntity);
-					sub.setMid(savedEntity.getUuid());
-					sub.setModifier(user.getUuid());
-					sub.setModifiername(user.getUsername());
-					sub.setModifytime(new Date());
-					sub.setActualAmount(sub.getPlanAmount());
-					
-					if(codeMap.containsKey(sub.getBoxNum()+"_"+sub.getMaterialHwCode())){
-						throw new ServiceException("第"+sub.getBoxNum()+"箱华为料号"+sub.getMaterialHwCode()+"不能重复");
-					}
-					codeMap.put(sub.getBoxNum()+"_"+sub.getMaterialHwCode(), "第"+sub.getBoxNum()+"箱料号"+sub.getMaterialHwCode());
-					
-					//设置条形码
-					setBarcodeJson(sub);
-				}
-//				save(subList);
-				if(CollectionUtils.isNotEmpty(addList)){
-					doAdd(addList);
-				}
-				if(CollectionUtils.isNotEmpty(updateList)){
-					ProjectSubEntity subEntity = null;
-					for(ProjectSubEntity sub :updateList){
-						subEntity = getOne(sub.getUuid());
-						subEntity.setBoxNum(sub.getBoxNum());
-						subEntity.setMaterial(sub.getMaterial());
-						subEntity.setLimitCount(sub.getLimitCount());
-						subEntity.setPlanAmount(sub.getPlanAmount());
-						subEntity.setActualAmount(subEntity.getPlanAmount());
-						subEntity.setMemo(sub.getMemo());
-						subEntity.setWarningTime(sub.getWarningTime());
-					}
-				}
-			}
-			arm.setRecords(savedEntity);
-			arm.setSuccess(true);
-		} catch (Exception e) {
-			arm.setSuccess(false);
-			arm.setMsg(e.getMessage());
-			e.printStackTrace();
-		}
-		return arm;
-	}
-	
-	private ProjectSubEntity setBarcodeJson(ProjectSubEntity sub){
-		if (StringUtils.isEmpty(sub.getUuid())) {
-			if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
-//				List<String> list = new ArrayList<>();
-//				for(int i=0;i<sub.getPlanAmount();i++){
-//					list.add("");
-//				}
-//				sub.setBarcodejson(JSON.toJSONString(list));
-				sub.setBarcodejson(JSON.toJSONString(new String[sub.getPlanAmount().intValue()]));
-			}else{
-				sub.setBarcodejson("[]");
-			}
-		}else{
-			if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
-				String barcodeJson = sub.getBarcodejson();
-				if(StringUtils.isEmpty(barcodeJson)){
-//					List<String> list = new ArrayList<>();
-//					for(int i=0;i<sub.getPlanAmount();i++){
-//						list.add("");
-//					}
-//					sub.setBarcodejson(JSON.toJSONString(list));
-					sub.setBarcodejson(JSON.toJSONString(new String[sub.getPlanAmount().intValue()]));
-				}else{
-					List<String> blist = JSON.parseArray(barcodeJson, String.class);
-					if(sub.getPlanAmount()>blist.size()){//增加了数量
-						for(int i=0;i<(sub.getPlanAmount()-blist.size());i++){
-							blist.add("");
-						}
-					}else if(blist.size()>sub.getPlanAmount()){//减少了数量
-						blist = blist.subList(0, sub.getPlanAmount().intValue());
-					}
-					sub.setBarcodejson(JSON.toJSONString(blist));
-				}
-			}else{
-				sub.setBarcodejson("[]");
-			}
-		}
-		return sub;
-	}
 
 	@Transactional(readOnly = true)
 	public List<ProjectSubEntity> findByMain(String mainId) {
@@ -442,7 +318,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 			}
 			if (repeatCode.size() > 0) {
 				arm.setSuccess(false);
-				arm.setMsg(org.apache.commons.lang3.StringUtils.join(repeatCode) + "存在相同的物料编码");
+				arm.setMsg(org.apache.commons.lang.StringUtils.join(repeatCode,",") + "存在相同的物料编码");
 			} else {
 				List<MaterialEntity> materialList = materialService.findByCodes(codeList);
 				List<MaterialEntity> hwmaterialList = materialService.findByHwCodes(hwcodeList);
@@ -489,7 +365,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 						projectSub.setMaterial(materialBase);
 					}
 				}
-				saveSelfAndSubList(projectInfo, list, null);
+				mainService.saveSelfAndSubList(projectInfo, list, null);
 				arm.setSuccess(true);
 				arm.setMsg("导入成功.");
 			}
@@ -569,7 +445,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 		
 		cell = row.createCell(4);
 		cell.setCellStyle(style);
-		cell.setCellValue("实际数量");
+		cell.setCellValue("到货数量");
 		
 		cell = row.createCell(5);
 		cell.setCellStyle(style);

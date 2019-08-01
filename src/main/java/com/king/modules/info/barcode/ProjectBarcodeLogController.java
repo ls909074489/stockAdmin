@@ -1,6 +1,5 @@
 package com.king.modules.info.barcode;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,9 +14,6 @@ import com.king.frame.controller.BaseController;
 @Controller
 @RequestMapping(value = "/info/barcode")
 public class ProjectBarcodeLogController extends BaseController<ProjectBarcodeLogEntity> {
-
-	@Autowired
-	private ProjectBarcodeLogService service;
 
 	/**
 	 * 

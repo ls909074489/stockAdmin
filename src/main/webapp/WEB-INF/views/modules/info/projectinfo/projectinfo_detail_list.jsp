@@ -163,7 +163,6 @@ th,td{
 							<th>华为物料编码</th>
 							<th>物料名称</th>
 							<th>计划数量</th>	
-							<th>到货数量</th>	
 							<th>剩余数量</th>
 							<th>收货数量</th>
 							<th>收货时间</th>
@@ -356,14 +355,6 @@ th,td{
 				className : "center",
 				orderable : false
 			}, {
-				data : 'actualAmount',
-				width : "30",
-				className : "center",
-				render : function(data, type, full) {
-				       return "<a onclick=\"showReceiveLog(\'"+full.uuid+"\');\">"+data+"</a>";
-				}
-				orderable : false
-			}, {
 				data : 'surplusAmount',
 				width : "30",
 				className : "center",
@@ -381,7 +372,7 @@ th,td{
 						data="";
 					}
 					if(full.main.receiveType=="1"){
-						return data;
+						return "<a onclick=\"showReceiveLog(\'"+full.uuid+"\');\">"+data+"</a>";
 					}else{
 						return '<input class="form-control" value="'+ data + '" name="actualAmount">';
 					}

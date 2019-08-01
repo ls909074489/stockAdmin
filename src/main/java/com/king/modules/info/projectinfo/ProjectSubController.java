@@ -171,7 +171,9 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		ProjectSubEntity desSub = null;
 		Set<String> projectIdSet = new HashSet<>();
 		List<EnumDataSubEntity> enumList = EnumDataUtils.getEnumSubList("barCodeExtract");
+		Map<String,Long> subActualMap = new HashMap<String,Long>();
 		for(ProjectSubEntity sub : subList){
+			subActualMap.put(sub.getUuid(), sub.getSurplusAmount());
 			projectIdSet.add(sub.getMain().getUuid());
 			if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
 				if(StringUtils.isNotEmpty(sub.getBarcodejson())){
@@ -215,6 +217,7 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		Map<String,List<StockStreamEntity>> streamMap = changeToStreamMap(streamList);
 		for(ProjectSubEntity sub : resultList){
 			sub.setSurplusAmount(calcSurplusAmount(sub,streamMap.get(sub.getUuid())));
+			System.out.println(sub.getSurplusAmount()+">>>>>>>>>>>>"+subActualMap.get(sub.getUuid()));
 		}
 		arm.setRecords(resultList);
 		return arm;

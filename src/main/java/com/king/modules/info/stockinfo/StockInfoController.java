@@ -1,11 +1,12 @@
 package com.king.modules.info.stockinfo;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.beans.factory.annotation.Autowired;
 import javax.servlet.ServletRequest;
+
 import org.springframework.stereotype.Controller;
-import com.king.frame.controller.BaseController;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.king.frame.controller.BaseController;
 
 /**
  * 仓库
@@ -16,8 +17,6 @@ import org.springframework.ui.Model;
 @RequestMapping(value = "/info/stockinfo")
 public class StockInfoController extends BaseController<StockInfoEntity> {
 
-	@Autowired
-	private StockInfoService service;
 
 	/**
 	 * 

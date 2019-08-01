@@ -114,7 +114,6 @@ public class MaterialService extends BaseServiceImpl<MaterialEntity,String> {
 			String code="";
 			String hwcode="";
 			String purchaseType = "";
-			List<String> repeatCode = new ArrayList<>();
 			List<MaterialEntity> list = new ArrayList<>();
 			List<String> codeList = new ArrayList<>();
 			List<String> hwcodeList = new ArrayList<>();

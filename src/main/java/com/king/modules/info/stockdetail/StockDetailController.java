@@ -2,7 +2,6 @@ package com.king.modules.info.stockdetail;
 
 import javax.servlet.ServletRequest;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,9 +20,6 @@ import com.king.frame.controller.QueryRequest;
 @RequestMapping(value = "/info/stockdetail")
 public class StockDetailController extends BaseController<StockDetailEntity> {
 
-	@Autowired
-	private StockDetailService service;
-	
 	
 	@RequestMapping("/search")
 	public String search(Model model) {

@@ -162,7 +162,7 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 		arm.setSuccess(true);
 		List<ProjectSubEntity> subList = this.convertToEntities(subArrs);
 		try {
-			arm = subService.saveSelfAndSubList(entity, subList, deletePKs);
+			arm = service.saveSelfAndSubList(entity, subList, deletePKs);
 		} catch (DataIntegrityViolationException e) {
 			e.printStackTrace();
 			arm.setSuccess(false);
@@ -188,7 +188,7 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 			StockBaseEntity stock = new StockBaseEntity();
 			stock.setUuid(entity.getStockId());
 			entity.setStock(stock);
-			arm = subService.saveSelfAndSubList(entity, subList, deletePKs);
+			arm = service.saveSelfAndSubList(entity, subList, deletePKs);
 		} catch (DataIntegrityViolationException e) {
 			e.printStackTrace();
 			arm.setSuccess(false);

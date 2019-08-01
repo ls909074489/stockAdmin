@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -149,7 +148,7 @@ public class SupplierService extends BaseServiceImpl<SupplierEntity,String> {
 			}
 			if(repeatCode.size()>0){
 				arm.setSuccess(false);
-				arm.setMsg(StringUtils.join(repeatCode)+"存在相同的供应商编码");
+				arm.setMsg(org.apache.commons.lang.StringUtils.join(repeatCode,",")+"存在相同的供应商编码");
 			}else{
 				doAdd(list);
 				arm.setSuccess(true);

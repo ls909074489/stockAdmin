@@ -60,9 +60,12 @@ public class ProjectSubEntity extends BaseEntity {
 	@Column()
 	private Long planAmount;
 	
-	@MetaData(value = "实际数量")
+	@MetaData(value = "收货数量")
 	@Column()
-	private Long actualAmount;
+	private Long actualAmount;//只是收货的数量
+	@MetaData(value = "剩余数量")
+	@Column()
+	private Long surplusAmount=0l;//项目单剩下的数量，包括收货和挪料的数量
 
 	@MetaData(value = "备注")
 	@Column()
@@ -108,8 +111,6 @@ public class ProjectSubEntity extends BaseEntity {
 	private String receiveLog="";
 	@Transient
 	private String barcodeStatus="10";
-	@Transient
-	private Long surplusAmount;//剩余数量
 	@Transient
 	private String firstRow="0";//唯一条码多行，是否第一行
 	
