@@ -263,9 +263,14 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 		Long actualAmount = 0l;
 		for(StreamBorrowEntity borrow:borrowList){
 			if(borrow.getToSubId().equals(sub.getSub().getUuid())){
-				if(receiveAmount<=borrow.getOweAmount()){
+				if(receiveAmount<borrow.getOweAmount()){
 					borrow.setOweAmount(borrow.getOweAmount()-receiveAmount);
 					borrow.setBillState(StreamBorrowEntity.BILLSTATE_NOT_RETURN);
+					actualAmount = receiveAmount;
+					receiveAmount=0l;
+				}else if(receiveAmount==borrow.getOweAmount()){
+					borrow.setOweAmount(0l);
+					borrow.setBillState(StreamBorrowEntity.BILLSTATE_HAS_RETURN);
 					actualAmount = receiveAmount;
 					receiveAmount=0l;
 				}else{
@@ -369,13 +374,16 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 				detail.setSurplusAmount(detail.getSurplusAmount()-subAmount);
 				detail.setOccupyAmount(detail.getOccupyAmount()-subAmount);
 				detail.setActualAmount(detail.getSurplusAmount()-detail.getOccupyAmount());
+				//预占变负数
+				ffffffffffffffffffffff
 				super.doUpdate(detail);
 				for(StockStreamEntity ss:subStreamList){
+					System.out.println(ss.getSurplusAmount()+">>>>>>>>>"+subAmount);
 					if(ss.getSurplusAmount()>=subAmount){//计算流水剩余的数量
 						subAmount = enoughStream(projectInfo,sub,ss, subAmount, log, logList);
 						break;
 					}else{
-						lackStream(projectInfo,sub,ss, subAmount, log, logList);
+						subAmount = lackStream(projectInfo,sub,ss, subAmount, log, logList);
 					}
 				}
 				sub.setSurplusAmount(sub.getSurplusAmount()-sub.getPlanAmount());
@@ -425,7 +433,9 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 		log.setStreamId(ss.getUuid());
 		//计算流水剩余的数量
 		ss.setSurplusAmount(ss.getSurplusAmount()-subAmount);
-		ss.setOccupyAmount(ss.getOccupyAmount()-subAmount);
+		if(!ss.getBillType().equals(StockStreamEntity.BILLTYPE_ORDER)){
+			ss.setOccupyAmount(ss.getOccupyAmount()-subAmount);
+		}
 		ss.setActualAmount(ss.getSurplusAmount()-ss.getOccupyAmount());
 		if(ss.getWarningType().equals(StockStreamEntity.WARNINGTYPE_BE_NEED)
 				&&ss.getSurplusAmount()==0){

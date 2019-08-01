@@ -154,12 +154,6 @@ public class ProjectReceiveService extends BaseServiceImpl<ProjectReceiveEntity,
 	@Transactional
 	public ActionResultModel<ProjectReceiveEntity> saveReceiveLog(ProjectReceiveEntity entity) {
 		ActionResultModel<ProjectReceiveEntity> arm = new ActionResultModel<ProjectReceiveEntity>();
-		ProjectInfoEntity obj = mainService.getOne(entity.getUuid());
-		if(obj.getReceiveType()!=null&&!obj.getReceiveType().equals(ProjectInfoEntity.receiveType_yes)){
-			arm.setSuccess(false);
-			arm.setMsg("未确认收货，不能追加收货记录");
-			return arm;
-		}
 		ProjectSubEntity sub = subService.getOne(entity.getSubId());
 		ProjectSubBaseEntity subBase = new ProjectSubBaseEntity();
 		subBase.setUuid(sub.getUuid());
@@ -168,6 +162,12 @@ public class ProjectReceiveService extends BaseServiceImpl<ProjectReceiveEntity,
 		entity.setMaterial(sub.getMaterial());
 		if(entity.getReceiveTime()==null){
 			entity.setReceiveTime(new Date());
+		}
+		ProjectInfoEntity obj = sub.getMain();
+		if(obj.getReceiveType()!=null&&!obj.getReceiveType().equals(ProjectInfoEntity.receiveType_yes)){
+			arm.setSuccess(false);
+			arm.setMsg("未确认收货，不能追加收货记录");
+			return arm;
 		}
 		entity = doAdd(entity);
 		List<ProjectReceiveEntity> receiveList = new ArrayList<>();

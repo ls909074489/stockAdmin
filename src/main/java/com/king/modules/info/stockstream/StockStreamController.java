@@ -151,7 +151,7 @@ public class StockStreamController extends BaseController<StockStreamEntity> {
 		addParam.put("EQ_stock.uuid", request.getParameter("stockId"));
 		addParam.put("EQ_material.uuid", request.getParameter("materialId"));
 		addParam.put("EQ_operType", StockStreamEntity.IN_STOCK);//增加库存
-		addParam.put("EQ_billType", StockStreamEntity.BILLTYPE_RECEIVE);//收货的
+		addParam.put("IN_billType", StockStreamEntity.BILLTYPE_RECEIVE+","+StockStreamEntity.BILLTYPE_BORROW);//收货的
 		addParam.put("NE_sourceId", request.getParameter("projectId")); 
 		addParam.put("GT_surplusAmount", "0");
 //		addParam.put("EQ_warningType", StockStreamEntity.WARNINGTYPE_BE_NEED);//要预警 

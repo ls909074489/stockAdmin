@@ -12,8 +12,7 @@
 		<div class="page-content" id="yy-page-list">
 			<div class="row yy-searchbar form-inline hide" style="display: none;">
 				<form id="yy-form-query">
-					<input name="sub" id="uuid" type="hidden" value="${entity.uuid}"/>
-					<input type="text" name="search_EQ_sub.uuid" id="search_EQ_sub.uuid" class="form-control input-sm">
+					<input type="hidden" name="search_EQ_sub.uuid" id="search_EQ_sub.uuid" value="${subId}" class="form-control input-sm">
 				</form>
 			</div>
 			<div class="row">
