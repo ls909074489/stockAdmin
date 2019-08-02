@@ -24,6 +24,9 @@ public class StreamLogEntity extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 
+	public static final String BILLTYPE_SUBMIT="10";
+	public static final String BILLTYPE_APPROVE="20";
+	
 	@MetaData(value = "源id")
 	@Column(length = 36)
 	private String projectId;
@@ -39,6 +42,11 @@ public class StreamLogEntity extends BaseEntity {
 	@MetaData(value = "实际数量")
 	@Column()
 	private Long actualAmount;
+	
+	
+	@MetaData(value = "单据类型 StreamLogEntity.BILLTYPE_XXX")
+	@Column(length = 2)
+	private String billType;
 
 	public String getProjectId() {
 		return projectId;
@@ -71,5 +79,14 @@ public class StreamLogEntity extends BaseEntity {
 	public void setActualAmount(Long actualAmount) {
 		this.actualAmount = actualAmount;
 	}
+
+	public String getBillType() {
+		return billType;
+	}
+
+	public void setBillType(String billType) {
+		this.billType = billType;
+	}
+	
 
 }

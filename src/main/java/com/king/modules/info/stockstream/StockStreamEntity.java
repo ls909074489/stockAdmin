@@ -34,18 +34,18 @@ public class StockStreamEntity extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 	
-	public static String IN_STOCK="0";//增加库存
-	public static String OUT_STOCK="1";//减少库存
+	public static final String IN_STOCK="0";//增加库存
+	public static final String OUT_STOCK="1";//减少库存
 
 	//0不需预警 1：要预警 2:以用完不需预警
-	public static String WARNINGTYPE_NO_NEED="0";
-	public static String WARNINGTYPE_BE_NEED="1";
-	public static String WARNINGTYPE_HAS_USE="2";
+	public static final String WARNINGTYPE_NO_NEED="0";
+	public static final String WARNINGTYPE_BE_NEED="1";
+	public static final String WARNINGTYPE_HAS_USE="2";
 	
-	public static String BILLTYPE_ORDER="10";
-	public static String BILLTYPE_RECEIVE="20";
-	public static String BILLTYPE_PROJECT="30";
-	public static String BILLTYPE_BORROW="40";
+	public static final String BILLTYPE_ORDER="10";
+	public static final String BILLTYPE_RECEIVE="20";
+	public static final String BILLTYPE_PROJECT="30";
+	public static final String BILLTYPE_BORROW="40";
 	
 	@MetaData(value = "仓库")
 	@ManyToOne(cascade=CascadeType.REFRESH,optional = true)

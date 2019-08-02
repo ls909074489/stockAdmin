@@ -15,7 +15,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface StreamLogDao extends IBaseDAO<StreamLogEntity,String> {
 
-	@Query("from StreamLogEntity where projectId=? and status=1")
-	List<StreamLogEntity> findByProjectId(String projectId);
+	@Query("from StreamLogEntity where projectId=? and billType=? and status=1")
+	List<StreamLogEntity> findByProjectId(String projectId,String billType);
 
 }
