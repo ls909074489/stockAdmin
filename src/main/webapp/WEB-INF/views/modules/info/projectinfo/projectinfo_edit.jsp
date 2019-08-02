@@ -582,6 +582,7 @@
 			return false;
 		}
 		
+
 		//加载从表数据 mainTableId主表Id
 		function loadSubList() {
 			var loadSubWaitLoad=layer.load(2);
