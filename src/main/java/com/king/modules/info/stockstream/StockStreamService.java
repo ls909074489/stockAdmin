@@ -81,6 +81,11 @@ public class StockStreamService extends BaseServiceImpl<StockStreamEntity,String
 		return dao.findByProjectSubIds(deletePKs);
 	}
 
+	@Transactional
+	public void updateSourceBillCode(String sourceBillCode,String sourceBillId) {
+		dao.updateSourceBillCode(sourceBillCode,sourceBillId);
+	}
+
 	
 	
 

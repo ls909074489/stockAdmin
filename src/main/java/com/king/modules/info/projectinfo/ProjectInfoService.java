@@ -1,23 +1,35 @@
 package com.king.modules.info.projectinfo;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.socket.TextMessage;
 
 import com.alibaba.fastjson.JSON;
 import com.king.common.dao.DbUtilsDAO;
 import com.king.common.exception.DAOException;
+import com.king.common.utils.ExcelDataUtil;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.dao.IBaseDAO;
 import com.king.frame.security.ShiroUser;
@@ -28,11 +40,15 @@ import com.king.modules.info.apply.ProjectApplyService;
 import com.king.modules.info.approve.ApproveUserEntity;
 import com.king.modules.info.approve.ApproveUserService;
 import com.king.modules.info.material.MaterialBaseEntity;
+import com.king.modules.info.material.MaterialEntity;
+import com.king.modules.info.material.MaterialService;
 import com.king.modules.info.stockdetail.StockDetailEntity;
 import com.king.modules.info.stockdetail.StockDetailService;
 import com.king.modules.info.stockinfo.StockBaseEntity;
 import com.king.modules.info.stockstream.StockStreamEntity;
 import com.king.modules.info.stockstream.StockStreamService;
+import com.king.modules.sys.imexlate.ImexlateSubEntity;
+import com.king.modules.sys.imexlate.ImexlateSubService;
 import com.king.modules.sys.user.UserEntity;
 
 /**
@@ -61,7 +77,10 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 	private ApproveUserService approveUserService;
 	@Autowired
 	private StockStreamService streamService;
-	
+	@Autowired
+	private ImexlateSubService imexlateSubService;
+	@Autowired
+	private MaterialService materialService;
 	
 	
 	protected IBaseDAO<ProjectInfoEntity, String> getDAO() {
@@ -85,7 +104,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 	public ActionResultModel<ProjectInfoEntity> saveSelfAndSubList(ProjectInfoEntity entity,
 			List<ProjectSubEntity> subList, String[] deletePKs) {
 		ActionResultModel<ProjectInfoEntity> arm = new ActionResultModel<ProjectInfoEntity>();
-		try {
+//		try {
 			// 删除子表一数据
 			if (deletePKs != null && deletePKs.length > 0) {
 				projectSubService.delete(deletePKs);
@@ -96,6 +115,9 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 				}
 			}
 			ProjectInfoEntity savedEntity = null;
+			if(!StringUtils.isEmpty(entity.getUuid())){
+				streamService.updateSourceBillCode(entity.getCode(),entity.getUuid());
+			}
 			// 保存自身数据
 			savedEntity = save(entity);
 
@@ -124,10 +146,11 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 					sub.setModifytime(new Date());
 					
 					
-					if(codeMap.containsKey(sub.getBoxNum()+"_"+sub.getMaterialHwCode())){
-						throw new ServiceException("第"+sub.getBoxNum()+"箱华为料号"+sub.getMaterialHwCode()+"不能重复");
+					if(codeMap.containsKey(sub.getBoxNum()+"_"+sub.getMaterial().getUuid())){
+						MaterialEntity material = materialService.getOne(sub.getMaterial().getUuid());
+						throw new ServiceException("第"+sub.getBoxNum()+"箱华为料号"+material.getHwcode()+"不能重复");
 					}
-					codeMap.put(sub.getBoxNum()+"_"+sub.getMaterialHwCode(), "第"+sub.getBoxNum()+"箱料号"+sub.getMaterialHwCode());
+					codeMap.put(sub.getBoxNum()+"_"+sub.getMaterial().getUuid(), "第"+sub.getBoxNum()+"箱料号"+sub.getMaterial().getUuid());
 					
 					//设置条形码
 					setBarcodeJson(sub);
@@ -152,12 +175,333 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 					}
 				}
 			}
-			arm.setRecords(savedEntity);
+//			arm.setRecords(savedEntity);
 			arm.setSuccess(true);
-		} catch (Exception e) {
+//		} catch (Exception e) {
+//			arm.setSuccess(false);
+//			arm.setMsg(e.getMessage());
+//			e.printStackTrace();
+//		}
+		return arm;
+	}
+	
+	
+	@Transactional
+	public ActionResultModel<ProjectInfoEntity> importExcel(MultipartFile file, ProjectInfoEntity projectInfo) {
+		List<ImexlateSubEntity> implateSubList = imexlateSubService.findByTemCoding("projectInfoImport");
+		Map<String, Integer> imexMap = new HashMap<String, Integer>();
+		String exportCellNum = "";
+		for (ImexlateSubEntity implateSub : implateSubList) {
+			exportCellNum = implateSub.getExportCellNum();
+			imexMap.put(implateSub.getFieldName(),
+					ExcelDataUtil.excelColtoNum(exportCellNum, exportCellNum.length() - 1));
+		}
+
+		ActionResultModel<ProjectInfoEntity> arm = new ActionResultModel<ProjectInfoEntity>();
+		HSSFWorkbook hssfWorkbook = null;
+		XSSFWorkbook xssfWorkbook = null;
+		InputStream is = null;
+		try {
+			ProjectSubEntity entity = null;
+
+			String postfix = ExcelDataUtil.getPostfix(file.getOriginalFilename());
+			String code = "";
+			String planCount = "";
+			String boxNumStr = "";
+			String materialPurchaseType = "";
+			List<ProjectSubEntity> list = new ArrayList<>();
+			Set<String> materialCodeSet = new HashSet<>();
+			List<String> codeList = new ArrayList<>();
+			List<String> hwcodeList = new ArrayList<>();
+			List<String> repeatCode = new ArrayList<>();
+			String distinctCode = "";
+			if (!ExcelDataUtil.EMPTY.equals(postfix)) {
+				is = file.getInputStream();
+				if (ExcelDataUtil.OFFICE_EXCEL_2003_POSTFIX.equals(postfix)) {
+					hssfWorkbook = new HSSFWorkbook(is);
+					int sheetCount = 1;// hssfWorkbook.getNumberOfSheets();只读取第一个sheet
+					for (int numSheet = 0; numSheet < sheetCount; numSheet++) {
+						HSSFSheet hssfSheet = hssfWorkbook.getSheetAt(numSheet);
+						if (hssfSheet == null) {
+							continue;
+						}
+						// i=hssfSheet.getFirstRowNum();
+						// i <= hssfSheet.getPhysicalNumberOfRows()
+						for (int rowNum = 1; rowNum <= hssfSheet.getLastRowNum(); rowNum++) {
+							HSSFRow hssfRow = hssfSheet.getRow(rowNum);
+							if (hssfRow != null) {
+								entity = new ProjectSubEntity();
+								
+								boxNumStr = ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("boxNum")));
+								if (StringUtils.isEmpty(boxNumStr)) {
+									throw new ServiceException("第" + (rowNum + 1) + "箱号不能为空");
+								} else {
+									entity.setBoxNum(boxNumStr);
+								}
+								
+								materialPurchaseType = ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("materialPurchaseType")));
+								if (StringUtils.isEmpty(materialPurchaseType)) {
+									throw new ServiceException("第" + (rowNum + 1) + "行采购模式不能为空");
+								} else {
+									if((materialPurchaseType.equals("CS")||materialPurchaseType.equals("C/S"))){
+										entity.setMaterialPurchaseType(MaterialEntity.PURCHASETYPE_CS);
+									}else if(materialPurchaseType.equals("TK")){
+										entity.setMaterialPurchaseType(MaterialEntity.PURCHASETYPE_TK);
+									}else{
+										throw new ServiceException("第"+(rowNum+1)+"行采购模式必须为TK或CS");
+									}
+								}
+								
+								code = ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("materialCode")));
+								if (StringUtils.isEmpty(code)) {
+									throw new ServiceException("第" + (rowNum + 1) + "行物料不能为空");
+								}
+								code = code.trim();
+								distinctCode = "第" + boxNumStr + "箱料号" + code;
+								if (materialCodeSet.contains(distinctCode)) {
+									repeatCode.add(distinctCode);
+								}
+								if(entity.getMaterialPurchaseType().equals(MaterialEntity.PURCHASETYPE_CS)){
+									entity.setMaterialHwCode(code);//华为物料编码
+									hwcodeList.add(code);
+								}else{
+									entity.setMaterialCode(code);//物料编码
+									codeList.add(code);
+								}
+								
+								entity.setMaterialDesc(ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("materialDesc"))));
+								
+								planCount = ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("planAmount")));
+								if (StringUtils.isEmpty(planCount)) {
+									throw new ServiceException("第" + (rowNum + 1) + "计划数量不能为空");
+								} else {
+									try {
+										planCount = planCount.replace(".0", "");
+										entity.setPlanAmount(Long.parseLong(planCount));
+									} catch (Exception e) {
+										e.printStackTrace();
+										throw new ServiceException("第" + (rowNum + 1) + "行计划数量不为有效数字");
+									}
+								}
+								entity.setActualAmount(entity.getPlanAmount());
+								
+								entity.setMaterialUnit(ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("materialUnit"))));
+								entity.setMemo(ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("memo"))));
+								
+								materialCodeSet.add(distinctCode);
+								list.add(entity);
+							}
+						}
+					}
+				} else if (ExcelDataUtil.OFFICE_EXCEL_2010_POSTFIX.equals(postfix)) {
+					xssfWorkbook = new XSSFWorkbook(is);
+					int sheetCount = 1;// xssfWorkbook.getNumberOfSheets()
+										// 只读取第一个sheet
+					for (int numSheet = 0; numSheet < sheetCount; numSheet++) {
+						XSSFSheet xssfSheet = xssfWorkbook.getSheetAt(numSheet);
+						if (xssfSheet == null) {
+							continue;
+						}
+						// i=hssfSheet.getFirstRowNum();
+						// i <= hssfSheet.getPhysicalNumberOfRows()
+						for (int rowNum = 1; rowNum <= xssfSheet.getLastRowNum(); rowNum++) {
+							XSSFRow xssfRow = xssfSheet.getRow(rowNum);
+							if (xssfRow != null) {
+								entity = new ProjectSubEntity();
+								boxNumStr = ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("boxNum")));
+								if (StringUtils.isEmpty(boxNumStr)) {
+									throw new ServiceException("第" + (rowNum + 1) + "箱号不能为空");
+								} else {
+									entity.setBoxNum(boxNumStr);
+								}
+								
+								materialPurchaseType = ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("materialPurchaseType")));
+								if (StringUtils.isEmpty(materialPurchaseType)) {
+									throw new ServiceException("第" + (rowNum + 1) + "行采购模式不能为空");
+								} else {
+									if((materialPurchaseType.equals("CS")||materialPurchaseType.equals("C/S"))){
+										entity.setMaterialPurchaseType(MaterialEntity.PURCHASETYPE_CS);
+									}else if(materialPurchaseType.equals("TK")){
+										entity.setMaterialPurchaseType(MaterialEntity.PURCHASETYPE_TK);
+									}else{
+										throw new ServiceException("第"+(rowNum+1)+"行采购模式必须为TK或CS");
+									}
+								}
+								
+								code = ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("materialCode")));
+								if (StringUtils.isEmpty(code)) {
+									throw new ServiceException("第" + (rowNum + 1) + "行物料不能为空");
+								}
+								code = code.trim();
+								distinctCode = "第" + boxNumStr + "箱料号" + code;
+								if (materialCodeSet.contains(distinctCode)) {
+									repeatCode.add(distinctCode);
+								}
+								if(entity.getMaterialPurchaseType().equals(MaterialEntity.PURCHASETYPE_CS)){
+									entity.setMaterialHwCode(code);//华为物料编码
+									hwcodeList.add(code);
+								}else{
+									entity.setMaterialCode(code);//物料编码
+									codeList.add(code);
+								}
+								entity.setMaterialDesc(ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("materialDesc"))));
+								
+								planCount = ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("planAmount")));
+								if (StringUtils.isEmpty(planCount)) {
+									throw new ServiceException("第" + (rowNum + 1) + "计划数量不能为空");
+								} else {
+									try {
+										planCount = planCount.replace(".0", "");
+										entity.setPlanAmount(Long.parseLong(planCount));
+									} catch (Exception e) {
+										e.printStackTrace();
+										throw new ServiceException("第" + (rowNum + 1) + "行计划数量不为有效数字");
+									}
+								}
+								entity.setActualAmount(entity.getPlanAmount());
+								
+								entity.setMaterialUnit(ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("materialUnit"))));
+								entity.setMemo(ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("memo"))));
+								
+								materialCodeSet.add(distinctCode);
+								list.add(entity);
+							}
+						}
+					}
+				}
+			}
+			if (repeatCode.size() > 0) {
+				arm.setSuccess(false);
+				arm.setMsg(org.apache.commons.lang.StringUtils.join(repeatCode,",") + "存在相同的物料编码");
+			} else {
+				List<MaterialEntity> materialList = materialService.findByCodes(codeList);
+				List<MaterialEntity> hwmaterialList = materialService.findByHwCodes(hwcodeList);
+				materialList.addAll(hwmaterialList);
+				boolean hasMaterial = false;// 是否存在料号
+				MaterialBaseEntity materialBase = null;
+				Map<String,MaterialEntity> materialMap = new HashMap<>();
+				Map<String,MaterialEntity> hwmaterialMap = new HashMap<>();
+				for (ProjectSubEntity projectSub : list) {
+					hasMaterial = false;
+					if(projectSub.getMaterialHwCode().equals("02310NBS")){
+						System.out.println("==========");
+					}
+					for (MaterialEntity material : materialList) {
+						if (projectSub.getMaterialPurchaseType().equals(MaterialEntity.PURCHASETYPE_CS)&&
+								projectSub.getMaterialHwCode().equals(material.getHwcode())) {
+							hasMaterial = true;
+							materialBase = new MaterialBaseEntity();
+							materialBase.setUuid(material.getUuid());
+							projectSub.setMaterial(materialBase);
+							break;
+						}
+						if (projectSub.getMaterialPurchaseType().equals(MaterialEntity.PURCHASETYPE_TK)&&
+								projectSub.getMaterialCode().equals(material.getCode())) {
+							hasMaterial = true;
+							materialBase = new MaterialBaseEntity();
+							materialBase.setUuid(material.getUuid());
+							projectSub.setMaterial(materialBase);
+							break;
+						}
+					}
+					if (!hasMaterial) {//物料不存在 先添加
+						MaterialEntity material = new MaterialEntity();
+						material.setPurchaseType(projectSub.getMaterialPurchaseType());
+						material.setName(projectSub.getMaterialDesc());
+						material.setClassDesc(projectSub.getMaterialDesc());
+						material.setMemo(projectSub.getMaterialDesc());
+						material.setUnit(projectSub.getMaterialUnit());
+						material.setLimitCount(-1);
+						if (projectSub.getMaterialPurchaseType().equals(MaterialEntity.PURCHASETYPE_CS)){
+							material.setHwcode(projectSub.getMaterialHwCode());
+							if(hwmaterialMap.get(material.getHwcode())!=null){
+								material = hwmaterialMap.get(material.getHwcode());
+							}else{
+								materialService.doAdd(material);
+								hwmaterialMap.put(material.getHwcode(), material);
+							}
+						}else{
+							material.setCode(projectSub.getMaterialCode());
+							if(materialMap.get(material.getCode())!=null){
+								material = materialMap.get(material.getCode());
+							}else{
+								materialService.doAdd(material);
+								materialMap.put(material.getCode(), material);
+							}
+						}
+						materialBase = new MaterialBaseEntity();
+						materialBase.setUuid(material.getUuid());
+						projectSub.setMaterial(materialBase);
+					}
+				}
+//				mainService.saveSelfAndSubList(projectInfo, list, null);
+				// 保存自身数据
+				ProjectInfoEntity savedEntity = save(projectInfo);
+
+				UserEntity user = ShiroUser.getCurrentUserEntity();	
+				
+				List<ProjectSubEntity> addList = new ArrayList<>();
+				// 保存子表数据
+				if (list != null && list.size() > 0) {
+					Map<String,String> codeMap = new HashMap<>();
+					for (ProjectSubEntity sub : list) {
+						sub.setCreator(user.getUuid());
+						sub.setCreatorname(user.getUsername());
+						sub.setCreatetime(new Date());
+						sub.setLimitCount(sub.getMaterial().getLimitCount());
+						sub.setActualAmount(sub.getPlanAmount());
+						addList.add(sub);
+						sub.setMain(savedEntity);
+						sub.setMid(savedEntity.getUuid());
+						sub.setModifier(user.getUuid());
+						sub.setModifiername(user.getUsername());
+						sub.setModifytime(new Date());
+						
+						
+						if (sub.getMaterialPurchaseType().equals(MaterialEntity.PURCHASETYPE_CS)) {
+							if(codeMap.containsKey(sub.getBoxNum()+"_"+sub.getMaterialHwCode())){
+								throw new ServiceException("第"+sub.getBoxNum()+"箱华为CS料号"+sub.getMaterialHwCode()+"不能重复");
+							}
+							codeMap.put(sub.getBoxNum()+"_"+sub.getMaterialHwCode(), "第"+sub.getBoxNum()+"箱料号"+sub.getMaterialHwCode());
+						}else{
+							if(codeMap.containsKey(sub.getBoxNum()+"_"+sub.getMaterialCode())){
+								throw new ServiceException("第"+sub.getBoxNum()+"箱TK料号"+sub.getMaterialCode()+"不能重复");
+							}
+							codeMap.put(sub.getBoxNum()+"_"+sub.getMaterialCode(), "第"+sub.getBoxNum()+"箱料号"+sub.getMaterialCode());
+						}
+						
+						//设置条形码
+						setBarcodeJson(sub);
+					}
+					projectSubService.doAdd(addList);
+				}
+				
+				
+				arm.setSuccess(true);
+				arm.setMsg("导入成功.");
+			}
+		}catch (ServiceException e) {
+			e.printStackTrace();
 			arm.setSuccess(false);
 			arm.setMsg(e.getMessage());
+		} catch (Exception e) {
 			e.printStackTrace();
+			arm.setSuccess(false);
+			arm.setMsg(e.getMessage());
+		} finally {
+			try {
+				if (is != null) {
+					is.close();
+				}
+				if (hssfWorkbook != null) {
+					hssfWorkbook.close();
+				}
+				if (xssfWorkbook != null) {
+					xssfWorkbook.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		return arm;
 	}

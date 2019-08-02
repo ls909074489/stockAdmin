@@ -32,15 +32,15 @@ public class MaterialEntity extends BaseEntity {
 	
 	@MetaData(value = "物料编码")
 	@Column(length = 50)
-	private String code;
+	private String code="";
 	
 	@MetaData(value = "华为物料编码")
 	@Column(length = 50)
-	private String hwcode;
+	private String hwcode="";
 
 	@MetaData(value = "华为物料编码")
 	@Column(length = 50)
-	private String codeAndHw;
+	private String codeAndHw="";
 	
 	@MetaData(value = "名称")
 	@Column(length = 250)

@@ -399,9 +399,9 @@ public class MaterialService extends BaseServiceImpl<MaterialEntity,String> {
 			double pageCount=Math.ceil(Double.valueOf(hwCodeList.size()+"")/pageSize);
 			for(int i=0;i<pageCount;i++){
 				if((i+1)*pageSize<hwCodeList.size()){
-					list.addAll(dao.findByCodes(hwCodeList.subList(i*pageSize, (i+1)*pageSize)));
+					list.addAll(dao.findByHwCodes(hwCodeList.subList(i*pageSize, (i+1)*pageSize)));
 				}else{
-					list.addAll(dao.findByCodes(hwCodeList.subList(i*pageSize, hwCodeList.size())));
+					list.addAll(dao.findByHwCodes(hwCodeList.subList(i*pageSize, hwCodeList.size())));
 				}
 			}
 		}

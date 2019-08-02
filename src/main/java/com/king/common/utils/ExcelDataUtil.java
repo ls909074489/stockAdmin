@@ -254,7 +254,10 @@ public class ExcelDataUtil {
 //			.getNumericCellValue()));
 //			}
 //			break;
-			value = xssfCell.toString();
+			
+//			value = xssfCell.toString();
+			DecimalFormat df = new DecimalFormat("0");  
+			value = df.format(xssfCell.getNumericCellValue());  
 			break;
 		case XSSFCell.CELL_TYPE_BOOLEAN:
 			if(xssfCell.getBooleanCellValue()){

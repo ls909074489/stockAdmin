@@ -372,10 +372,13 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 				
 				detail.setTotalAmount(detail.getTotalAmount()-subAmount);
 				detail.setSurplusAmount(detail.getSurplusAmount()-subAmount);
-				detail.setOccupyAmount(detail.getOccupyAmount()-subAmount);
+				if((detail.getOccupyAmount()-subAmount)<0){
+					detail.setOccupyAmount(0l);
+				}else{
+					detail.setOccupyAmount(detail.getOccupyAmount()-subAmount);
+				}
 				detail.setActualAmount(detail.getSurplusAmount()-detail.getOccupyAmount());
 				//预占变负数
-				ffffffffffffffffffffff
 				super.doUpdate(detail);
 				for(StockStreamEntity ss:subStreamList){
 					System.out.println(ss.getSurplusAmount()+">>>>>>>>>"+subAmount);
@@ -398,7 +401,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 							subAmount = enoughStream(projectInfo,sub,ss, subAmount, log, logList);
 							break;
 						}else{
-							lackStream(projectInfo,sub,ss, subAmount, log, logList);
+							subAmount =lackStream(projectInfo,sub,ss, subAmount, log, logList);
 						}
 					}
 				}
@@ -442,6 +445,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			ss.setWarningType(StockStreamEntity.WARNINGTYPE_HAS_USE);
 		}
 		log.setActualAmount(subAmount);
+		log.setBillType(StreamLogEntity.BILLTYPE_APPROVE);
 		logList.add(log);
 		subAmount = 0l;
 		return subAmount;
@@ -465,6 +469,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 		}
 		subAmount =subAmount - ss.getSurplusAmount();
 		log.setActualAmount(ss.getSurplusAmount());
+		log.setBillType(StreamLogEntity.BILLTYPE_APPROVE);
 		logList.add(log);
 		ss.setSurplusAmount(0l);
 		ss.setOccupyAmount(0l);
@@ -570,7 +575,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 	
 	@Transactional
 	public void unApproveStockDetail(ProjectInfoEntity entity, List<ProjectSubEntity> subList) {
-		List<StreamLogEntity> logList = streamLogService.findByProjectId(entity.getUuid());
+		List<StreamLogEntity> logList = streamLogService.findByProjectIdAndBillType(entity.getUuid(),StreamLogEntity.BILLTYPE_APPROVE);
 		if(CollectionUtils.isNotEmpty(logList)){
 			List<StockStreamEntity> streamList = stockStreamService.findBySourceIdAndOperType(entity.getUuid(),StockStreamEntity.IN_STOCK);
 			boolean hasStream =false;

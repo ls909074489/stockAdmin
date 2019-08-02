@@ -291,5 +291,5 @@ update yy_stock_stream set bill_type='10' where bill_type=1;
 update yy_stock_stream set bill_type='20' where bill_type=2;
 update yy_stock_stream set bill_type='30' where bill_type=3;
 
-
-
+##2019/8/2
+alter table yy_material add UNIQUE index idx_uni_material_bothcode(code_and_hw);

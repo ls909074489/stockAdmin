@@ -13,6 +13,7 @@ import javax.validation.Valid;
 
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
+import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
@@ -359,14 +360,19 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 		try {
 			response.setCharacterEncoding("UTF-8");
 			MultipartFile file = request.getFile("attachment");
-			arm = subService.importExcel(file, projectInfo);
+			arm = service.importExcel(file, projectInfo);
 		} catch (DataIntegrityViolationException e) {
 			e.printStackTrace();
 			arm.setSuccess(false);
 			arm.setMsg(Constants.getConstraintMsg(e.getMessage()));
+		}  catch (ServiceException e) {
+			e.printStackTrace();
+			arm.setSuccess(false);
+			arm.setMsg(e.getMessage());
 		} catch (Exception e) {
 			arm.setSuccess(false);
 			arm.setMsg(e.getMessage());
+			e.printStackTrace();
 		}
 		return arm;
 	}

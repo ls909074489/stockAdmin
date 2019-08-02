@@ -101,7 +101,7 @@ public class StockStreamController extends BaseController<StockStreamEntity> {
 		addParam.put("EQ_operType", StockStreamEntity.IN_STOCK);//增加库存
 //		addParam.put("EQ_warningType", StockStreamEntity.WARNINGTYPE_BE_NEED);//要预警 
 		addParam.put("EQ_status", "1");
-		addParam.put("GT_surplusAmount", "0");
+//		addParam.put("GT_surplusAmount", "0");
 		
 		String search_GTE_createtime = request.getParameter("search_GTE_createtime");
 		if(StringUtils.isNotEmpty(search_GTE_createtime)){

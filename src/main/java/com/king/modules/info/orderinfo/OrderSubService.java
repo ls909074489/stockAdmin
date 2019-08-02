@@ -36,6 +36,7 @@ import com.king.modules.info.material.MaterialBaseEntity;
 import com.king.modules.info.material.MaterialEntity;
 import com.king.modules.info.material.MaterialService;
 import com.king.modules.info.stockstream.StockStreamEntity;
+import com.king.modules.info.stockstream.StockStreamService;
 import com.king.modules.sys.documents.BillCodeService;
 import com.king.modules.sys.imexlate.ImexlateSubEntity;
 import com.king.modules.sys.imexlate.ImexlateSubService;
@@ -61,6 +62,8 @@ public class OrderSubService extends BaseServiceImpl<OrderSubEntity, String> {
 	private MaterialService materialService;
 	@Autowired
 	private BillCodeService billCodeService;
+	@Autowired
+	private StockStreamService streamService;
 
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -91,8 +94,11 @@ public class OrderSubService extends BaseServiceImpl<OrderSubEntity, String> {
 			entity.setBillstatus(BillStatus.FREE.toStatusValue());
 			//后台生成订单编号
 			entity.setCode(billCodeService.createBillCode("orderInfoBillCode", ""));
+		}else{
+			streamService.updateSourceBillCode(entity.getCode(),entity.getUuid());
 		}
   		savedEntity = mainService.save(entity);
+  		
   		
   		UserEntity user = ShiroUser.getCurrentUserEntity();
   		// 保存子表数据
