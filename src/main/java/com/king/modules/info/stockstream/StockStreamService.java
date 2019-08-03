@@ -77,8 +77,8 @@ public class StockStreamService extends BaseServiceImpl<StockStreamEntity,String
 	}
 
 	
-	public List<StockStreamEntity> findByProjectSubIds(String[] deletePKs) {
-		return dao.findByProjectSubIds(deletePKs);
+	public List<StockStreamEntity> findByProjectSubIds(List<String> subIdList) {
+		return dao.findByProjectSubIds(subIdList);
 	}
 
 	@Transactional

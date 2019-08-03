@@ -3,6 +3,7 @@ package com.king.modules.info.projectinfo;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -93,6 +94,37 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 		super.beforeSave(entity);
 	}
 	
+	
+	
+	@Override
+	public void doDelete(String pk) throws ServiceException {
+		List<ProjectSubEntity> subList = projectSubService.findByMain(pk);
+		if (CollectionUtils.isNotEmpty(subList)) {
+//			projectSubService.delete(subList);
+			List<String> subIdList = new ArrayList<>();
+			for(ProjectSubEntity sub:subList){
+				subIdList.add(sub.getUuid());
+				sub.setStatus(0);
+			}
+			List<StockStreamEntity> streamList = streamService.findByProjectSubIds(subIdList);
+			if(CollectionUtils.isNotEmpty(streamList)){
+				stockDetailService.delStockDetail(streamList);
+				streamService.delete(streamList);
+			}
+		}
+		try {
+			ProjectInfoEntity entity = this.getOne(pk);
+			beforeDelete(entity);
+			entity.setStatus(0);
+			entity.setCode("Del_");
+			save(entity);
+			afterDelete(entity);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ServiceException(e.getMessage());
+		}
+	}
+
 	/**
 	 * 保存
 	 * @param entity
@@ -108,7 +140,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 			// 删除子表一数据
 			if (deletePKs != null && deletePKs.length > 0) {
 				projectSubService.delete(deletePKs);
-				List<StockStreamEntity> streamList = streamService.findByProjectSubIds(deletePKs);
+				List<StockStreamEntity> streamList = streamService.findByProjectSubIds(Arrays.asList(deletePKs));
 				if(CollectionUtils.isNotEmpty(streamList)){
 					stockDetailService.delStockDetail(streamList);
 					streamService.delete(streamList);
@@ -243,7 +275,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 								if (StringUtils.isEmpty(materialPurchaseType)) {
 									throw new ServiceException("第" + (rowNum + 1) + "行采购模式不能为空");
 								} else {
-									if((materialPurchaseType.equals("CS")||materialPurchaseType.equals("C/S"))){
+									if((materialPurchaseType.equals(MaterialEntity.PURCHASETYPE_CS)||materialPurchaseType.equals("C/S"))){
 										entity.setMaterialPurchaseType(MaterialEntity.PURCHASETYPE_CS);
 									}else if(materialPurchaseType.equals("TK")){
 										entity.setMaterialPurchaseType(MaterialEntity.PURCHASETYPE_TK);

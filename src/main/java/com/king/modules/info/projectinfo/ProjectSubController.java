@@ -130,6 +130,7 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 				arm.setRecords(list);
 				arm.setTotal(list.size());
 				arm.setTotalPages(1);
+				arm.setPageNumber(0);
 			}else{
 				if (qr.getPageRequest() != null) {
 					Page<ProjectSubEntity> data = service.findAll(qr.getSpecification(), qr.getPageRequest());
@@ -160,6 +161,7 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		Map<String, Object> addParam = new HashMap<String, Object>();
 		addParam.put("EQ_stock.uuid", request.getParameter("stockId"));
 		addParam.put("EQ_material.uuid", request.getParameter("materialId"));
+		addParam.put("EQ_status", "1");
 		QueryRequest<ProjectSubEntity> qr = getQueryRequest(request, addParam);
 		ActionResultModel<ProjectSubEntity> arm =  execDetailQuery(request,qr, baseService);
 		List<ProjectSubEntity> subList = arm.getRecords();
@@ -220,6 +222,10 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 			System.out.println(sub.getUuid()+">>"+sub.getSurplusAmount()+">>>>>>>>>>>>"+subActualMap.get(sub.getUuid()));
 		}
 		arm.setRecords(resultList);
+		String mainId = request.getParameter("search_LIKE_main.uuid");
+		if(StringUtils.isNotEmpty(mainId)){
+			arm.setTotal(resultList.size());
+		}
 		return arm;
 	}
 	

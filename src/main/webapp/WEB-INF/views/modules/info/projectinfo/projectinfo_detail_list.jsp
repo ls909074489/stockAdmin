@@ -462,7 +462,7 @@ th,td{
 		$(document).ready(function() {
 			_queryData = $("#yy-form-query").serializeArray();
 			bindListActions();
-			serverPage('${serviceurl}/dataDetail?orderby=createtime@desc;mid@desc');
+			serverPage('${serviceurl}/dataDetail?orderby=mid@desc;boxNum@asc');
 			
 			$("#yy-btn-match").bind('click', matchMaterial);//
 			$("#yy-btn-approve-project").bind('click', approveProject);//
@@ -758,12 +758,16 @@ th,td{
 		function approveProject(){
 			var t_projectId = $("#search_LIKE_mainId").val();
 			console.info(">>>>>>>>>>>>"+t_projectId);
+			console.info(111);
 			if(t_projectId==null||t_projectId==''){
 				YYUI.promMsg("请选择项目");
 				return false;
 			}
+			console.info(111);
 			
-			layer.confirm('确实要审核吗？', function() {
+			approveRecordx("${ctx}/info/projectinfo/batchApprove", t_projectId, onQuery);
+			
+/* 			layer.confirm('确实要审核吗？', function() {
 				var listview = layer.load(2);
 				$.ajax({
 					"dataType" : "json",
@@ -785,7 +789,24 @@ th,td{
 						YYUI.failMsg("审核失败，HTTP错误。");
 					}
 				});
-			});
+			}); */
+		}
+		
+		//审核前检查
+		function checkApprove(pks) {
+			/* if (pks.length < 1) {
+				YYUI.promMsg("请选择需要审核的记录");
+				return;
+			}
+			for (var i = 0; i < pks.length; i++) {
+				var row = $("input[value='" + pks[i] + "']").closest("tr");
+				var billstatus = _tableList.row(row).data().billstatus;
+				if (billstatus != 2) {
+					YYUI.failMsg("存在不能审核的记录！");
+					return false;
+				}
+			} */
+			return true;
 		}
 		
 		function unApproveProject(){

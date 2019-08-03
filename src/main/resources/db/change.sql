@@ -293,3 +293,5 @@ update yy_stock_stream set bill_type='30' where bill_type=3;
 
 ##2019/8/2
 alter table yy_material add UNIQUE index idx_uni_material_bothcode(code_and_hw);
+
+alter table yy_project_info add UNIQUE index idx_uni_projectcode(code);

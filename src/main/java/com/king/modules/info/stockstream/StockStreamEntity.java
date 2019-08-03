@@ -62,6 +62,10 @@ public class StockStreamEntity extends BaseEntity {
 //	@JoinColumn(name = "project_id",nullable=true)
 //	private ProjectInfoBaseEntity project;
 	
+	@MetaData(value = "库存明细id")
+	@Column(length = 36)
+	private String stockDetailId;//项目单id
+	
 	@MetaData(value = "源id")
 	@Column(length = 50)
 	private String sourceId;//项目单id

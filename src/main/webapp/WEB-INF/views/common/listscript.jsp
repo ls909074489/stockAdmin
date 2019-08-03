@@ -540,6 +540,9 @@
 		if (isShowSuccess == null) {
 			isShowSuccess = true;
 		}
+		if(url==null||url==''){
+			url = '${serviceurl}/batchApprove';
+		}
 		var modal = $("#approveRemark");
 		modal.find('#content').val("");
 		modal.find('.modal-title').text(title);
@@ -547,7 +550,7 @@
 		modal.find('#approvepass').bind(
 				"click",
 				function() {
-					url = '${serviceurl}/batchApprove';
+					url = url;
 					modal.find('.error').text('');
 					var content = modal.find('#content').val();
 					if(content!=null && content.length>200){

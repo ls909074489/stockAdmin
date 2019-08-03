@@ -587,7 +587,7 @@
 		function loadSubList() {
 			var loadSubWaitLoad=layer.load(2);
 			$.ajax({
-				url : '${servicesuburl}/query',
+				url : '${servicesuburl}/query?orderby=boxNum',
 				data : $("#yy-form-subquery").serializeArray(),//{"search_EQ_main.uuid" : "${entity.uuid}"},
 				dataType : 'json',
 				type : 'post',

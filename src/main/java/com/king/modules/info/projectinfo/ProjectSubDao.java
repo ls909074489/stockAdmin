@@ -15,7 +15,7 @@ import com.king.frame.dao.IBaseDAO;
 public interface ProjectSubDao extends IBaseDAO<ProjectSubEntity, String> {
 
 	
-	@Query("from ProjectSubEntity ur where ur.main.uuid = ?1")
+	@Query("from ProjectSubEntity ur where ur.main.uuid = ?1 order by boxNum")
 	List<ProjectSubEntity> findByMain(String mainId);
 
 	

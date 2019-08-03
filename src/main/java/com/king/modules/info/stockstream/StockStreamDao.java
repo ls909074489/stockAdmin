@@ -41,10 +41,10 @@ public interface StockStreamDao extends IBaseDAO<StockStreamEntity,String> {
 
 	
 	@Query("from StockStreamEntity where projectSubId in ?1")
-	List<StockStreamEntity> findByProjectSubIds(String[] deletePKs);
+	List<StockStreamEntity> findByProjectSubIds(List<String> subIdList);
 
 	@Modifying
-	@Query("update StockStreamEntity u set u.sourceBillCode=？ where u.sourceId=?")
+	@Query("update StockStreamEntity u set u.sourceBillCode=?1 where u.sourceId=?2")
 	void updateSourceBillCode(String sourceBillCode,String sourceBillId);
 
 }

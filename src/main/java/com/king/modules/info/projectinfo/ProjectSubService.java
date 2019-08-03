@@ -1,9 +1,13 @@
 package com.king.modules.info.projectinfo;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.ConvertUtils;
+import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -28,6 +32,9 @@ import com.king.frame.service.BaseServiceImpl;
 import com.king.modules.info.barcode.ProjectBarcodeLogEntity;
 import com.king.modules.info.barcode.ProjectBarcodeLogService;
 import com.king.modules.info.material.MaterialBaseEntity;
+import com.king.modules.info.material.MaterialEntity;
+import com.king.modules.sys.enumdata.EnumDataSubEntity;
+import com.king.modules.sys.enumdata.EnumDataUtils;
 
 /**
  * OrderSubService
@@ -135,8 +142,12 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 //        style.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);  //填充单元格
 //        style.setFillForegroundColor(HSSFColor.BLUE_GREY.index);//设置背景颜色
         style.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);// 垂直      
-        style.setAlignment(HSSFCellStyle.ALIGN_CENTER);// 水平      
-		
+        style.setAlignment(HSSFCellStyle.ALIGN_CENTER);// 水平   
+        
+        CellStyle  redStyle = wb.createCellStyle();// 样式对象    
+        Font redFont = wb.createFont();
+	    redFont.setColor(Font.COLOR_RED);//颜色
+	    redStyle.setFont(redFont);
 		
 		sh.setColumnWidth(1, 10 * 256);//设置宽度
 		sh.setColumnWidth(2, 10 * 256);//设置宽度
@@ -150,6 +161,10 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 		cell = row.createCell(0);
 		cell.setCellStyle(style);
 		cell.setCellValue("箱号");
+//		
+//		cell = row.createCell(1);
+//		cell.setCellStyle(style);
+//		cell.setCellValue("物料编码");
 		
 		cell = row.createCell(1);
 		cell.setCellStyle(style);
@@ -157,7 +172,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 		
 		cell = row.createCell(2);
 		cell.setCellStyle(style);
-		cell.setCellValue("华为物料编码");
+		cell.setCellValue("物料描述");
 		
 		cell = row.createCell(3);
 		cell.setCellStyle(style);
@@ -165,44 +180,158 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 		
 		cell = row.createCell(4);
 		cell.setCellStyle(style);
-		cell.setCellValue("到货数量");
+		cell.setCellValue("单位");
 		
 		cell = row.createCell(5);
 		cell.setCellStyle(style);
-		cell.setCellValue("条形码");
+		cell.setCellValue("采购模式");
 		
 		cell = row.createCell(6);
 		cell.setCellStyle(style);
+		cell.setCellValue("条形码");
+		
+		cell = row.createCell(7);
+		cell.setCellStyle(style);
+		cell.setCellValue("到货数量");
+		
+		cell = row.createCell(8);
+		cell.setCellStyle(style);
 		cell.setCellValue("备注");
 		
-		int rownum=0;
+		List<ProjectSubEntity> resultList = new ArrayList<>();
+		List<String> subBarcodelist = null;
+		ProjectSubEntity desSub = null;
+		List<EnumDataSubEntity> enumList = EnumDataUtils.getEnumSubList("barCodeExtract");
 		for(ProjectSubEntity sub:subList){
+			if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
+				if(org.apache.commons.lang3.StringUtils.isNotEmpty(sub.getBarcodejson())){
+					subBarcodelist = JSON.parseArray(sub.getBarcodejson(), String.class);
+				}
+				if(subBarcodelist==null){
+					subBarcodelist = new ArrayList<String>();
+				}
+				for(int i=0;i<sub.getPlanAmount();i++){
+					desSub = new ProjectSubEntity();
+					try {
+						ConvertUtils.register(new DateConverter(null), java.util.Date.class);
+						BeanUtils.copyProperties(desSub, sub);
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					} catch (InvocationTargetException e) {
+						e.printStackTrace();
+					}
+					if(i==0){
+						desSub.setFirstRow("1");
+					}else{
+						desSub.setFirstRow("0");
+					}
+					desSub.setNewUuid(i+"_"+sub.getUuid());
+					if(i<subBarcodelist.size()){
+						desSub.setBarcode(subBarcodelist.get(i));
+					}else{
+						desSub.setBarcode("");
+					}
+//					checkStyle(desSub,enumList);
+					resultList.add(desSub);
+				}
+			}else{
+//				checkStyle(sub,enumList);
+				sub.setNewUuid("0_"+sub.getUuid());
+				sub.setFirstRow("1");
+				resultList.add(sub);
+			}
+		}
+		int rownum=0;
+		for(ProjectSubEntity sub:resultList){
 			rownum++;
 			row = sh.createRow(rownum);
 			
 			cell = row.createCell(0);//
 			cell.setCellValue((sub.getBoxNum()));
 			
-			cell = row.createCell(1);//
-			cell.setCellValue(sub.getMaterial().getCode());
+			if(sub.getMaterial().getPurchaseType().equals(MaterialEntity.PURCHASETYPE_CS)){
+				cell = row.createCell(1);//
+				cell.setCellValue(sub.getMaterial().getHwcode());
+				
+			}else{
+				cell = row.createCell(1);//
+				cell.setCellValue(sub.getMaterial().getCode());
+			}
 			
 			cell = row.createCell(2);//
-			cell.setCellValue(sub.getMaterial().getHwcode());
+			if(sub.getFirstRow().equals("1")){
+				cell.setCellValue(sub.getMaterial().getMemo());
+			}else{
+				cell.setCellValue("");
+			}	
 			
 			cell = row.createCell(3);//
-			cell.setCellValue(sub.getPlanAmount());
+			if(sub.getFirstRow().equals("1")){
+				cell.setCellValue(sub.getPlanAmount());
+			}else{
+				cell.setCellValue("");
+			}
 			
 			cell = row.createCell(4);//
-			cell.setCellValue(sub.getActualAmount());
+			if(sub.getFirstRow().equals("1")){
+				cell.setCellValue(sub.getMaterial().getUnit());
+			}else{
+				cell.setCellValue("");
+			}
 			
 			cell = row.createCell(5);//
-			cell.setCellValue(sub.getBarcode());
+			if(sub.getFirstRow().equals("1")){
+				cell.setCellValue(sub.getMaterial().getPurchaseType());
+			}else{
+				cell.setCellValue("");
+			}
 			
 			cell = row.createCell(6);//
-			cell.setCellValue(sub.getMemo());
-		}
+			cell.setCellValue(sub.getBarcode());
+			if(checkStyle(sub, enumList)){
+				cell.setCellStyle(redStyle);
+			}
+			
+			cell = row.createCell(7);//
+			if(sub.getFirstRow().equals("1")){
+				cell.setCellValue(sub.getActualAmount());
+			}else{
+				cell.setCellValue("");
+			}
+			
+			cell = row.createCell(8);//
+			if(sub.getFirstRow().equals("1")){
+				cell.setCellValue(sub.getMemo());
+			}else{
+				cell.setCellValue("");
+			}
+		}	
 	}
 
+	
+	private boolean checkStyle(ProjectSubEntity sub,List<EnumDataSubEntity> enumList){
+		if(StringUtils.isEmpty(sub.getBarcode())){
+//			sub.setCheckStatus(ProjectSubEntity.checkStatus_init);
+		}else if(sub.getBarcode().contains(sub.getMaterial().getHwcode())){
+//			sub.setCheckStatus(ProjectSubEntity.checkStatus_pass);
+			return true;
+		}else{
+//			sub.setCheckStatus(ProjectSubEntity.checkStatus_error);
+			return true;
+		}
+		for(EnumDataSubEntity enumSub:enumList){
+			String t_pre = enumSub.getEnumdatakey();
+			if(sub.getBarcode()!=null&&sub.getBarcode().indexOf(t_pre)==0){//以19,39...开头的
+				String limitLength = enumSub.getDescription();//限制长度
+				if(limitLength!=null&&limitLength!=""&&Integer.parseInt(limitLength)!=sub.getBarcode().length()){
+//					sub.setBarcodeStatus(ProjectSubEntity.BARCODE_STATUS_LENGTH_WRONG);
+//					break;
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 	
 	public ActionResultModel<ProjectSubEntity> checkBarcode(String newBarcode, String subId) {
 		ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity> ();

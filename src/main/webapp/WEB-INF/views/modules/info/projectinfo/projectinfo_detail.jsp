@@ -77,6 +77,9 @@
 								<label for="search_LIKE_material.code" class="control-label">物料编码</label>
 								<input type="text" autocomplete="on" name="search_LIKE_material.code" id="search_LIKE_material.code" class="form-control input-sm">
 								
+								<label for="search_LIKE_material.hwcode" class="control-label">华为物料编码</label>
+								<input type="text" autocomplete="on" name="search_LIKE_material.hwcode" id="search_LIKE_material.hwcode" class="form-control input-sm">
+								
 								<label for="search_LIKE_material.name" class="control-label">物料名称</label>
 								<input type="text" autocomplete="on" name="search_LIKE_material.name" id="search_LIKE_material.name" class="form-control input-sm">
 								
@@ -201,7 +204,7 @@
 		function loadSubList() {
 			var loadSubWaitLoad=layer.load(2);
 			$.ajax({
-				url : '${servicesuburl}/query',
+				url : '${servicesuburl}/query?orderby=boxNum',
 				data : $("#yy-form-subquery").serializeArray(),//{"search_EQ_main.uuid" : "${entity.uuid}"},
 				dataType : 'json',
 				type : 'post',
