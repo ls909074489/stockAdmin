@@ -109,7 +109,7 @@
 				className : "center",
 				orderable : false,
 				render : YYDataTableUtils.renderActionCol,
-				width : "60"
+				width : "80"
 			},{
 				data : "code",
 				width : "60",

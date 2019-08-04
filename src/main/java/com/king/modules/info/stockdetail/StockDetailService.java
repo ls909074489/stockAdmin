@@ -76,20 +76,6 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 		return detail;
 	}
 	
-	@Transactional
-	public void delStockDetail(List<StockStreamEntity> streamList){
-		for(StockStreamEntity stream : streamList){
-			if(stream.getOperType().equals(StockStreamEntity.IN_STOCK)&&stream.getSurplusAmount()>0){
-				StockDetailEntity detail  = findByStockAndMaterial(stream.getStock().getUuid(),stream.getMaterial().getUuid());
-				if(detail!=null){
-					detail.setTotalAmount(detail.getTotalAmount()-stream.getSurplusAmount());
-					detail.setSurplusAmount(detail.getSurplusAmount()-stream.getSurplusAmount());
-					detail.setOccupyAmount(detail.getOccupyAmount()-stream.getSurplusAmount());
-					detail.setActualAmount(detail.getSurplusAmount()-detail.getOccupyAmount());
-				}
-			}
-		}
-	}
 	
 	@Transactional
 	public void incrStockDetail(OrderInfoEntity orderInfo,List<OrderSubEntity> subList){
@@ -148,9 +134,9 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 		if(CollectionUtils.isEmpty(streamList)){
 			throw new ServiceException("库存流水不存在物料"+sub.getMaterial().getCode());
 		}		
-		if((detail.getSurplusAmount()-subAmount)<0){
-			throw new ServiceException("库存物料"+sub.getMaterial().getCode()+"不足，不能出库");
-		}
+//		if((detail.getSurplusAmount()-subAmount)<0){
+//			throw new ServiceException("库存物料"+sub.getMaterial().getCode()+"不足，不能出库");
+//		}
 
 		detail.setTotalAmount(detail.getTotalAmount()-subAmount);
 		detail.setSurplusAmount(detail.getSurplusAmount()-subAmount);

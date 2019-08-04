@@ -281,7 +281,7 @@ th,td{
 				width : "60",
 				className : "center",
 				render : function(data, type, full) {
-					return YYDataUtils.getEnumName("ReceiveStatus", data);
+					return "<a onclick=\"showReceiveLog(\'"+full.uuid+"\');\">"+YYDataUtils.getEnumName("ReceiveStatus", data)+"</a>";
 				},
 				orderable : true
 			},{
@@ -353,13 +353,26 @@ th,td{
 				data : 'planAmount',
 				width : "30",
 				className : "center",
+				render : function(data, type, full) {
+					if(full.firstRow=="1"){
+						return data;
+					}else{
+						return '';
+					}
+					
+				},
 				orderable : false
 			}, {
 				data : 'surplusAmount',
 				width : "30",
 				className : "center",
 				render : function(data, type, full) {
-					return '<a onclick="showSubStream(\''+full.uuid+'\');">'+data+'</a>';
+					if(full.firstRow=="1"){
+						return '<a onclick="showSubStream(\''+full.uuid+'\');">'+data+'</a>';
+					}else{
+						return '';
+					}
+					
 				},
 				orderable : false
 			}, {
@@ -371,10 +384,14 @@ th,td{
 					if(data==null){
 						data="";
 					}
-					if(full.main.receiveType=="1"){
-						return "<a onclick=\"showReceiveLog(\'"+full.uuid+"\');\">"+data+"</a>";
+					if(full.firstRow=="1"){
+						if(full.main.receiveType=="1"){
+							return "<a onclick=\"showReceiveLog(\'"+full.uuid+"\');\">"+data+"</a>";
+						}else{
+							return '<input class="form-control" value="'+ data + '" name="actualAmount">';
+						}
 					}else{
-						return '<input class="form-control" value="'+ data + '" name="actualAmount">';
+						return '';
 					}
 				}
 			}, {

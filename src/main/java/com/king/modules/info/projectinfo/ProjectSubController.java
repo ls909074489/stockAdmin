@@ -61,6 +61,14 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 	private StockStreamService streamService;
 	
 	
+	
+	@Override
+	public Map<String, Object> addSearchParam(ServletRequest request) {
+		Map<String, Object> addParam = new HashMap<String, Object>();
+		addParam.put("EQ_status", "1");
+		return addParam;
+	}
+
 	@RequestMapping(value = "/query")
 	@ResponseBody
 	public ActionResultModel<ProjectSubEntity> query(ServletRequest request, Model model) {

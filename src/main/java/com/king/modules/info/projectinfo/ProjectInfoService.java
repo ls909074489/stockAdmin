@@ -43,9 +43,7 @@ import com.king.modules.info.approve.ApproveUserService;
 import com.king.modules.info.material.MaterialBaseEntity;
 import com.king.modules.info.material.MaterialEntity;
 import com.king.modules.info.material.MaterialService;
-import com.king.modules.info.stockdetail.StockDetailEntity;
 import com.king.modules.info.stockdetail.StockDetailService;
-import com.king.modules.info.stockinfo.StockBaseEntity;
 import com.king.modules.info.stockstream.StockStreamEntity;
 import com.king.modules.info.stockstream.StockStreamService;
 import com.king.modules.sys.imexlate.ImexlateSubEntity;
@@ -108,7 +106,12 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 			}
 			List<StockStreamEntity> streamList = streamService.findByProjectSubIds(subIdList);
 			if(CollectionUtils.isNotEmpty(streamList)){
-				stockDetailService.delStockDetail(streamList);
+				for(StockStreamEntity stream:streamList){
+					if(stream.getSurplusAmount()<stream.getTotalAmount()){
+						throw new ServiceException("物料编码："+stream.getMaterial().getCode()+
+								",华为编码："+stream.getMaterial().getHwcode()+" 已使用(剩余数量小于总数量)，不能删除");
+					}
+				}
 				streamService.delete(streamList);
 			}
 		}
@@ -142,7 +145,12 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 				projectSubService.delete(deletePKs);
 				List<StockStreamEntity> streamList = streamService.findByProjectSubIds(Arrays.asList(deletePKs));
 				if(CollectionUtils.isNotEmpty(streamList)){
-					stockDetailService.delStockDetail(streamList);
+					for(StockStreamEntity stream:streamList){
+						if(stream.getSurplusAmount()<stream.getTotalAmount()){
+							throw new ServiceException("物料编码："+stream.getMaterial().getCode()+
+									",华为编码："+stream.getMaterial().getHwcode()+" 已使用(剩余数量小于总数量)，不能删除");
+						}
+					}
 					streamService.delete(streamList);
 				}
 			}
@@ -165,7 +173,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 						sub.setCreator(user.getUuid());
 						sub.setCreatorname(user.getUsername());
 						sub.setCreatetime(new Date());
-						sub.setLimitCount(sub.getMaterial().getLimitCount());
+//						sub.setLimitCount(sub.getMaterial().getLimitCount());
 						sub.setActualAmount(sub.getPlanAmount());
 						addList.add(sub);
 					}else{

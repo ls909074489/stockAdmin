@@ -18,6 +18,7 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -61,6 +62,21 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 		return dao;
 	}
 	
+	
+
+	@Override
+	public void delete(String pk) throws ServiceException {
+		try {
+			ProjectSubEntity entity = this.getOne(pk);
+			entity.setStatus(0);
+//			this.delete(entity);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ServiceException(e.getMessage());
+		}
+	}
+
+
 
 	@Transactional(readOnly = true)
 	public List<ProjectSubEntity> findByMain(String mainId) {
