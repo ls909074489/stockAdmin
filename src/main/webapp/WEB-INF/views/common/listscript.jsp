@@ -540,8 +540,14 @@
 		if (isShowSuccess == null) {
 			isShowSuccess = true;
 		}
+		var batchApproveUrl = "";
+		var batchRevokeUrl = "";
 		if(url==null||url==''){
-			url = '${serviceurl}/batchApprove';
+			batchApproveUrl = '${serviceurl}/batchApprove';
+			batchRevokeUrl = '${serviceurl}/batchRevoke';
+		}else{
+			batchApproveUrl = url+'/batchApprove';
+			batchRevokeUrl = url+'/batchRevoke';
 		}
 		var modal = $("#approveRemark");
 		modal.find('#content').val("");
@@ -550,7 +556,7 @@
 		modal.find('#approvepass').bind(
 				"click",
 				function() {
-					url = url;
+					url = batchApproveUrl;
 					modal.find('.error').text('');
 					var content = modal.find('#content').val();
 					if(content!=null && content.length>200){
@@ -596,7 +602,7 @@
 		modal.find('#approvenopass').bind(
 				"click",
 				function() {
-					url = '${serviceurl}/batchRevoke';
+					url = batchRevokeUrl;
 					modal.find('.error').text('');
 					var content = modal.find('#content').val();
 					if(content==null||content.length==0){

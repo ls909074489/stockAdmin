@@ -57,7 +57,7 @@
 							<th>物料编码</th>
 							<th>华为物料编码</th>
 							<th>物料名称</th>
-							<th>总数量</th>
+							<!-- <th>总数量</th> -->
 							<th>剩余数量</th>
 							<th>预占数量</th>
 							<th>可用数量</th>
@@ -106,30 +106,30 @@
 				orderable : true
 			},{
 				data : "material.name",
-				width : "100",
+				width : "200",
 				className : "center",
 				render : function(data, type, full) {
 					return '<a onclick="showMaterial(\''+full.material.uuid+'\');">'+data+'</a>';
 				},
 				orderable : true
-			},{
+			}/* ,{
 				data : "totalAmount",
 				width : "100",
 				className : "center",
 				orderable : true
-			},{
+			} */,{
 				data : "surplusAmount",
-				width : "100",
+				width : "60",
 				className : "center",
 				orderable : true
 			},{
 				data : "occupyAmount",
-				width : "100",
+				width : "60",
 				className : "center",
 				orderable : true
 			},{
 				data : "actualAmount",
-				width : "100",
+				width : "60",
 				className : "center",
 				orderable : true
 			}];

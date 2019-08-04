@@ -581,18 +581,18 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 
 	@Override
 	public void beforeSubmit(ProjectInfoEntity entity) throws ServiceException {
-		List<ProjectSubEntity> subList = projectSubService.findByMain(entity.getUuid());
-		StockBaseEntity stock = entity.getStock();
-		for(ProjectSubEntity sub:subList){
-			StockDetailEntity detail  = stockDetailService.findByStockAndMaterial(stock.getUuid(),sub.getMaterial().getUuid());
-			if(detail==null){
-				throw new ServiceException("仓库"+stock.getName()+"不存在物料"+sub.getMaterial().getCode());
-			}else{
-				if(detail.getSurplusAmount()<sub.getPlanAmount()){
-					throw new ServiceException("仓库"+stock.getName()+"物料"+sub.getMaterial().getCode()+"库存不足");
-				}
-			}
-		}
+//		List<ProjectSubEntity> subList = projectSubService.findByMain(entity.getUuid());
+//		StockBaseEntity stock = entity.getStock();
+//		for(ProjectSubEntity sub:subList){
+//			StockDetailEntity detail  = stockDetailService.findByStockAndMaterial(stock.getUuid(),sub.getMaterial().getUuid());
+//			if(detail==null){
+//				throw new ServiceException("仓库"+stock.getName()+"不存在物料"+sub.getMaterial().getCode());
+//			}else{
+//				if(detail.getSurplusAmount()<sub.getPlanAmount()){
+//					throw new ServiceException("仓库"+stock.getName()+"物料"+sub.getMaterial().getCode()+"库存不足");
+//				}
+//			}
+//		}
 		super.beforeSubmit(entity);
 	}
 
@@ -649,7 +649,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 		List<ProjectInfoVo> voList = new ArrayList<ProjectInfoVo>();
 		if(StringUtils.isEmpty(codeOrName)){
 			try {
-				voList =  dbDao.find(ProjectInfoVo.class, "select uuid,name,code from yy_project_info order by createtime desc");
+				voList =  dbDao.find(ProjectInfoVo.class, "select uuid,name,code from yy_project_info where status=1 order by createtime desc");
 				arm.setSuccess(true);
 			} catch (DAOException e) {
 				arm.setSuccess(false);
@@ -658,7 +658,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 		}else{
 			Object [] params  = {"%"+codeOrName+"%","%"+codeOrName+"%"};
 			try {
-				voList =  dbDao.find(ProjectInfoVo.class, "select uuid,name,code from yy_project_info where code like ? or name like ? order by createtime desc", params);
+				voList =  dbDao.find(ProjectInfoVo.class, "select uuid,name,code from yy_project_info where status=1 and( code like ? or name like ? ) order by createtime desc", params);
 				arm.setSuccess(true);
 			} catch (DAOException e) {
 				arm.setSuccess(false);

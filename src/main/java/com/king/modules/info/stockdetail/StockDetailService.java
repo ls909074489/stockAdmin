@@ -58,7 +58,22 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 	}
 	
 	public StockDetailEntity findByStockAndMaterial(String stockId, String materialId) {
-		return dao.findByStockAndMaterial(stockId, materialId);
+		StockDetailEntity detail =  dao.findByStockAndMaterial(stockId, materialId);
+		if(detail == null){
+			detail = new StockDetailEntity();
+			StockBaseEntity stockBase = new StockBaseEntity();
+			stockBase.setUuid(stockId);
+			detail.setStock(stockBase);
+			MaterialBaseEntity material = new MaterialBaseEntity();
+			material.setUuid(materialId);
+			detail.setMaterial(material);
+			detail.setTotalAmount(0l);
+			detail.setSurplusAmount(0l);
+			detail.setOccupyAmount(0l);
+			detail.setActualAmount(detail.getSurplusAmount()-detail.getOccupyAmount());
+			detail =  super.doAdd(detail);
+		}
+		return detail;
 	}
 	
 	@Transactional
@@ -106,89 +121,69 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 	}
 	
 	private void orderIn(OrderInfoEntity orderInfo,OrderSubEntity sub,StockBaseEntity stockBase,
-			StockStreamEntity stream,StockDetailEntity detail){
-		if(detail==null){
-			detail = new StockDetailEntity();
-			detail.setStock(stockBase);
-			detail.setMaterial(sub.getMaterial());
-			detail.setTotalAmount(sub.getActualAmount());
-			detail.setSurplusAmount(sub.getActualAmount());
-			detail.setOccupyAmount(0l);
-			detail.setActualAmount(detail.getSurplusAmount()-detail.getOccupyAmount());
-			
-			stream.setTotalAmount(sub.getActualAmount());
-			stream.setSurplusAmount(sub.getActualAmount());
-			stream.setOccupyAmount(0l);//sub.getActualAmount()
-			stream.setActualAmount(sub.getActualAmount());
-			
-			super.doAdd(detail);
-		}else{
-			
-			detail.setTotalAmount(detail.getTotalAmount()+sub.getActualAmount());
-			detail.setSurplusAmount(detail.getSurplusAmount()+sub.getActualAmount());
-			detail.setOccupyAmount(detail.getOccupyAmount());
-			detail.setActualAmount(detail.getSurplusAmount()-detail.getOccupyAmount());
+		StockStreamEntity stream,StockDetailEntity detail){
+		detail.setTotalAmount(detail.getTotalAmount()+sub.getActualAmount());
+		detail.setSurplusAmount(detail.getSurplusAmount()+sub.getActualAmount());
+		detail.setOccupyAmount(detail.getOccupyAmount());
+		detail.setActualAmount(detail.getSurplusAmount()-detail.getOccupyAmount());
+		super.doUpdate(detail);
 
-			stream.setTotalAmount(sub.getActualAmount());
-			stream.setSurplusAmount(sub.getActualAmount());
-			stream.setOccupyAmount(0l);//sub.getActualAmount()
-			stream.setActualAmount(sub.getActualAmount());
+		stream.setTotalAmount(sub.getActualAmount());
+		stream.setSurplusAmount(sub.getActualAmount());
+		stream.setOccupyAmount(0l);//sub.getActualAmount()
+		stream.setActualAmount(sub.getActualAmount());
 			
-			super.doUpdate(detail);
-		}
 		stream.setOperType(StockStreamEntity.IN_STOCK);
 		stream.setMemo("订购单入库");
+		stream.setStockDetailId(detail.getUuid());
 		stockStreamService.doAdd(stream);//添加库存流水
 	}
 	
 	private void orderOut(OrderInfoEntity orderInfo,OrderSubEntity sub,StockBaseEntity stockBase,
 			StockStreamEntity stream,StockDetailEntity detail){
 		Long subAmount = Math.abs(sub.getActualAmount());
-		if(detail==null){
-			throw new ServiceException("库存不存在物料"+sub.getMaterial().getCode());
-		}else{
-			List<StockStreamEntity> streamList = stockStreamService.findOrderByStockAndMaterial(
-					orderInfo.getStock().getUuid(), sub.getMaterial().getUuid());
-					
-			if(CollectionUtils.isEmpty(streamList)){
-				throw new ServiceException("库存流水不存在物料"+sub.getMaterial().getCode());
-			}		
-			if((detail.getSurplusAmount()-subAmount)<0){
-				throw new ServiceException("库存物料"+sub.getMaterial().getCode()+"不足，不能出库");
-			}
+		List<StockStreamEntity> streamList = stockStreamService.findOrderByStockAndMaterial(
+				orderInfo.getStock().getUuid(), sub.getMaterial().getUuid());
+				
+		if(CollectionUtils.isEmpty(streamList)){
+			throw new ServiceException("库存流水不存在物料"+sub.getMaterial().getCode());
+		}		
+		if((detail.getSurplusAmount()-subAmount)<0){
+			throw new ServiceException("库存物料"+sub.getMaterial().getCode()+"不足，不能出库");
+		}
 
-			detail.setTotalAmount(detail.getTotalAmount()-subAmount);
-			detail.setSurplusAmount(detail.getSurplusAmount()-subAmount);
-			detail.setOccupyAmount(detail.getOccupyAmount());
-			detail.setActualAmount(detail.getSurplusAmount()-detail.getOccupyAmount());
+		detail.setTotalAmount(detail.getTotalAmount()-subAmount);
+		detail.setSurplusAmount(detail.getSurplusAmount()-subAmount);
+		detail.setOccupyAmount(detail.getOccupyAmount());
+		detail.setActualAmount(detail.getSurplusAmount()-detail.getOccupyAmount());
 
-			stream.setTotalAmount(subAmount*-1);
-			stream.setSurplusAmount(subAmount*-1);
-			stream.setOccupyAmount(0l);//sub.getActualAmount()
-			stream.setActualAmount(subAmount*-1);
-			
-			super.doUpdate(detail);
-			for(StockStreamEntity ss:streamList){
-				if(ss.getSurplusAmount()>=subAmount){
-					//计算流水剩余的数量
-					ss.setSurplusAmount(ss.getSurplusAmount()-subAmount);
-					ss.setOccupyAmount(ss.getOccupyAmount());
-					ss.setActualAmount(ss.getSurplusAmount()-ss.getOccupyAmount());
-					subAmount = 0l;
-					break;
-				}else{
-					subAmount =subAmount - ss.getSurplusAmount();
-					ss.setSurplusAmount(0l);
-					ss.setOccupyAmount(0l);
-					ss.setActualAmount(0l);
-				}
+		stream.setTotalAmount(subAmount*-1);
+		stream.setSurplusAmount(subAmount*-1);
+		stream.setOccupyAmount(0l);//sub.getActualAmount()
+		stream.setActualAmount(subAmount*-1);
+		
+		super.doUpdate(detail);
+		for(StockStreamEntity ss:streamList){
+			if(ss.getSurplusAmount()>=subAmount){
+				//计算流水剩余的数量
+				ss.setSurplusAmount(ss.getSurplusAmount()-subAmount);
+				ss.setOccupyAmount(ss.getOccupyAmount());
+				ss.setActualAmount(ss.getSurplusAmount()-ss.getOccupyAmount());
+				subAmount = 0l;
+				break;
+			}else{
+				subAmount =subAmount - ss.getSurplusAmount();
+				ss.setSurplusAmount(0l);
+				ss.setOccupyAmount(0l);
+				ss.setActualAmount(0l);
 			}
-			if(subAmount>0){
-				throw new ServiceException("物料"+sub.getMaterial().getCode()+"流水不足");
-			}
+		}
+		if(subAmount>0){
+			throw new ServiceException("物料"+sub.getMaterial().getCode()+"流水不足");
 		}
 		stream.setOperType(StockStreamEntity.OUT_STOCK);
 		stream.setMemo("订购单出库");
+		stream.setStockDetailId(detail.getUuid());
 		stockStreamService.doAdd(stream);//添加库存流水
 	}
 	
@@ -215,29 +210,20 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 //			stream.setWarningType(StockStreamEntity.WARNINGTYPE_NO_NEED);
 			stream.setSurplusAmount(sub.getReceiveAmount());
 			
-			if(detail==null){
-				detail = new StockDetailEntity();
-				detail.setStock(stockBase);
-				detail.setMaterial(sub.getMaterial());
-				detail.setTotalAmount(sub.getReceiveAmount());
-				detail.setSurplusAmount(sub.getReceiveAmount());
-				detail.setOccupyAmount(sub.getReceiveAmount());
-				detail.setActualAmount(0l);//可用为0
-				
-				super.doAdd(detail);
-			}else{
-				detail.setTotalAmount(detail.getTotalAmount()+sub.getReceiveAmount());
-				detail.setSurplusAmount(detail.getSurplusAmount()+sub.getReceiveAmount());
-				detail.setOccupyAmount(detail.getOccupyAmount()+sub.getReceiveAmount());
-				detail.setActualAmount(detail.getSurplusAmount()-detail.getOccupyAmount());
-				super.doUpdate(detail);
-			}
+			detail.setTotalAmount(detail.getTotalAmount()+sub.getReceiveAmount());
+			detail.setSurplusAmount(detail.getSurplusAmount()+sub.getReceiveAmount());
+			detail.setOccupyAmount(detail.getOccupyAmount()+sub.getReceiveAmount());
+			detail.setActualAmount(detail.getSurplusAmount()-detail.getOccupyAmount());
+			super.doUpdate(detail);
+			
 			stream.setTotalAmount(sub.getReceiveAmount());
 			stream.setSurplusAmount(sub.getReceiveAmount());
 			stream.setOccupyAmount(sub.getReceiveAmount());
 			stream.setActualAmount(0l);
 			stream.setOperType(StockStreamEntity.IN_STOCK);
 			stream.setMemo("收货入库");
+			stream.setStockDetailId(detail.getUuid());
+			stream.setStockDetailId(detail.getUuid());
 			stockStreamService.doAdd(stream);//添加库存流水
 			
 //			if(projectInfo.getReceiveType().equals(ProjectInfoEntity.receiveType_yes)){//已收货
@@ -247,13 +233,13 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 				ProjectSubEntity projectSub = projectSubService.getOne(sub.getSub().getUuid());
 				projectSub.setSurplusAmount(projectSub.getSurplusAmount()+sub.getReceiveAmount());
 			}else{
-				changeHasBorrw(projectInfo.getUuid(),sub,stream);
+				changeHasBorrw(projectInfo.getUuid(),sub,stream,detail);
 			}
 		}
 	}
 	
 	
-	private boolean changeHasBorrw(String projectId,ProjectReceiveEntity sub,StockStreamEntity stream) {
+	private boolean changeHasBorrw(String projectId,ProjectReceiveEntity sub,StockStreamEntity stream,StockDetailEntity detail) {
 		List<StreamBorrowEntity> borrowList =  borrowService.findBorrowByToProject(projectId);
 		if(CollectionUtils.isEmpty(borrowList)){
 			return false;
@@ -295,6 +281,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 				streamIn.setActualAmount(0l);
 				streamIn.setOperType(StockStreamEntity.IN_STOCK);
 				streamIn.setMemo("收货还料入库");
+				streamIn.setStockDetailId(detail.getUuid());
 				stockStreamService.doAdd(streamIn);//添加库存流水
 				
 				ProjectSubEntity toSub = projectSubService.getOne(borrow.getToSubId());
@@ -312,6 +299,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 				streamOut.setActualAmount(0l);
 				streamOut.setOperType(StockStreamEntity.OUT_STOCK);
 				streamOut.setMemo("收货还料出库");
+				streamOut.setStockDetailId(detail.getUuid());
 				stockStreamService.doAdd(streamOut);//添加库存流水
 				//修改还料后的数量
 				stream.setSurplusAmount(sub.getReceiveAmount()-actualAmount);
@@ -366,9 +354,9 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 				if(CollectionUtils.isEmpty(subStreamList)){
 					throw new ServiceException("库存物料"+sub.getMaterial().getCode()+"流水不存在");
 				}
-				if(detail.getSurplusAmount()<sub.getPlanAmount()){
-					throw new ServiceException("物料"+sub.getMaterial().getCode()+"库存不足");
-				}
+//				if(detail.getSurplusAmount()<sub.getPlanAmount()){
+//					throw new ServiceException("物料"+sub.getMaterial().getCode()+"库存不足");
+//				}
 				
 				detail.setTotalAmount(detail.getTotalAmount()-subAmount);
 				detail.setSurplusAmount(detail.getSurplusAmount()-subAmount);
@@ -416,6 +404,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			stream.setActualAmount(0l);
 			stream.setOperType(StockStreamEntity.OUT_STOCK);
 			stream.setMemo("项目单审核出库");
+			stream.setStockDetailId(detail.getUuid());
 			stockStreamService.doAdd(stream);//添加库存流水
 		}
 		streamLogService.doAdd(logList);
@@ -569,6 +558,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			}
 			stream.setOperType(StockStreamEntity.OUT_STOCK);
 			stream.setMemo("收货出库");
+			stream.setStockDetailId(detail.getUuid());
 			stockStreamService.doAdd(stream);//添加库存流水
 		}
 	}
@@ -637,6 +627,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			streamOut.setActualAmount(0l);
 			streamOut.setOperType(StockStreamEntity.OUT_STOCK);
 			streamOut.setMemo("挪料出库");
+			streamOut.setStockDetailId(fromStream.getStockDetailId());
 			stockStreamService.doAdd(streamOut);//添加库存流水
 			
 			//添加入库记录
@@ -661,6 +652,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			streamIn.setActualAmount(0l);
 			streamIn.setOperType(StockStreamEntity.IN_STOCK);
 			streamIn.setMemo("挪料入库");
+			streamIn.setStockDetailId(fromStream.getStockDetailId());
 			stockStreamService.doAdd(streamIn);//添加库存流水
 			
 			//添加借记录

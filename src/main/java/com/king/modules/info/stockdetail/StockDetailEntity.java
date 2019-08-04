@@ -1,11 +1,11 @@
 package com.king.modules.info.stockdetail;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -43,20 +43,20 @@ public class StockDetailEntity extends BaseEntity {
 	
 
 	@MetaData(value = "总数量")
-	@Column()
-	private Long totalAmount;
+	@Transient
+	private Long totalAmount=0l;
 
 	@MetaData(value = "剩余数量")
-	@Column()
-	private Long surplusAmount;
+	@Transient
+	private Long surplusAmount=0l;
 
 	@MetaData(value = "预占数量")
-	@Column()
-	private Long occupyAmount;
+	@Transient
+	private Long occupyAmount=0l;
 
 	@MetaData(value = "实际数量/可用数量")
-	@Column()
-	private Long actualAmount;
+	@Transient
+	private Long actualAmount=0l;
 
 	
 	public MaterialBaseEntity getMaterial() {

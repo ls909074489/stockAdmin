@@ -1,7 +1,14 @@
 package com.king.modules.info.stockdetail;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.ServletRequest;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +17,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.BaseController;
 import com.king.frame.controller.QueryRequest;
+import com.king.frame.service.IService;
+import com.king.modules.info.stockstream.StockStreamEntity;
+import com.king.modules.info.stockstream.StockStreamService;
 
 /**
  * 库存明细
@@ -21,6 +31,9 @@ import com.king.frame.controller.QueryRequest;
 public class StockDetailController extends BaseController<StockDetailEntity> {
 
 	
+	@Autowired
+	private StockStreamService streamService;
+	
 	@RequestMapping("/search")
 	public String search(Model model) {
 		return "modules/info/stockdetail/stockdetail_search";
@@ -31,6 +44,57 @@ public class StockDetailController extends BaseController<StockDetailEntity> {
 	public ActionResultModel<StockDetailEntity> dataSearch(ServletRequest request, Model model) {
 		QueryRequest<StockDetailEntity> qr = getQueryRequest(request, addSearchParam(request));
 		return execQuery(qr, baseService);
+	}
+	
+	
+	
+	@Override
+	protected ActionResultModel<StockDetailEntity> execQuery(QueryRequest<StockDetailEntity> qr, IService service) {
+		ActionResultModel<StockDetailEntity>  arm = super.execQuery(qr, service);
+		List<StockDetailEntity> list = arm.getRecords();
+		if(CollectionUtils.isNotEmpty(list)){
+			List<String> detailIdList = new ArrayList<String>();
+			for(StockDetailEntity entity : list){
+				detailIdList.add(entity.getUuid());
+			}
+			List<StockStreamEntity> streamList = streamService.findSurplusByDetailIds(detailIdList);
+			Map<String,List<StockStreamEntity>> streamMap = changeToMap(streamList);
+			for(StockDetailEntity entity : list){
+				calcDetail(entity,streamMap.get(entity.getUuid()));
+			}
+		}
+		return arm;
+	}
+
+	
+	private void calcDetail(StockDetailEntity entity, List<StockStreamEntity> list) {
+		if(CollectionUtils.isEmpty(list)){
+			return;
+		}
+		for(StockStreamEntity s:list){
+//			totalAmount
+			entity.setSurplusAmount(entity.getSurplusAmount()+s.getSurplusAmount());
+			entity.setOccupyAmount(entity.getOccupyAmount()+s.getOccupyAmount());
+			entity.setActualAmount(entity.getSurplusAmount()-entity.getOccupyAmount());
+		}
+		
+	}
+
+	private Map<String, List<StockStreamEntity>> changeToMap(List<StockStreamEntity> streamList) {
+		Map<String,List<StockStreamEntity>> map = new HashMap<String, List<StockStreamEntity>>();
+		if(CollectionUtils.isEmpty(streamList)){
+			return map;
+		}
+		List<StockStreamEntity> list = null;
+		for(StockStreamEntity s:streamList){
+			list = map.get(s.getStockDetailId());
+			if(list==null){
+				list = new ArrayList<StockStreamEntity>();
+			}
+			list.add(s);
+			map.put(s.getStockDetailId(), list);
+		}
+		return map;
 	}
 	
 	/**

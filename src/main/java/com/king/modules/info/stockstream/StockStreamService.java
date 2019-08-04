@@ -86,6 +86,10 @@ public class StockStreamService extends BaseServiceImpl<StockStreamEntity,String
 		dao.updateSourceBillCode(sourceBillCode,sourceBillId);
 	}
 
+	public List<StockStreamEntity> findSurplusByDetailIds(List<String> detailIdList) {
+		return dao.findSurplusByDetailIds(detailIdList);
+	}
+
 	
 	
 

@@ -268,11 +268,11 @@ th,td{
 						billStatusStyle=" background-color:#a19797;";
 					}
 					if(full.checkStatus=='30'){
-						return '<div style="color:#e02222;'+billStatusStyle+'">'+YYDataUtils.getEnumName("BillStatus", data)+'</div>';
+						return '<a onclick="onApproveLook(\'projectInfo\',\''+full.main.uuid+'\');"><div style="color:#e02222;'+billStatusStyle+'">'+YYDataUtils.getEnumName("BillStatus", data)+'</div></a>';
 					} else if(full.checkStatus=='20'){
-						return '<div style="color:#319430;'+billStatusStyle+'">'+YYDataUtils.getEnumName("BillStatus", data)+'</div>';
+						return '<a onclick="onApproveLook(\'projectInfo\',\''+full.main.uuid+'\');"><div style="color:#319430;'+billStatusStyle+'">'+YYDataUtils.getEnumName("BillStatus", data)+'</div></a>';
 					}else{
-						return YYDataUtils.getEnumName("BillStatus", data);
+						return '<a onclick="onApproveLook(\'projectInfo\',\''+full.main.uuid+'\');">'+YYDataUtils.getEnumName("BillStatus", data)+'</a>';
 					}
 				},
 				orderable : false
@@ -765,7 +765,7 @@ th,td{
 			}
 			console.info(111);
 			
-			approveRecordx("${ctx}/info/projectinfo/batchApprove", t_projectId, onQuery);
+			approveRecordx("${ctx}/info/projectinfo", t_projectId, onQuery);
 			
 /* 			layer.confirm('确实要审核吗？', function() {
 				var listview = layer.load(2);
@@ -817,23 +817,25 @@ th,td{
 				return false;
 			}
 			
-			$.ajax({
-				type : "POST",
-				data :{"pks": t_projectId},
-				url : "${ctx}/info/projectinfo/batchUnApprove",
-				async : true,
-				dataType : "json",
-				success : function(data) {
-					if(data.success){
-						YYUI.succMsg("取消审核成功");
-						onQuery();
-					}else{
-						YYUI.promMsg(data.msg);
+			layer.confirm('确实要取消审核吗？', function() {
+				$.ajax({
+					type : "POST",
+					data :{"pks": t_projectId},
+					url : "${ctx}/info/projectinfo/batchUnApprove",
+					async : true,
+					dataType : "json",
+					success : function(data) {
+						if(data.success){
+							YYUI.succMsg("取消审核成功");
+							onQuery();
+						}else{
+							YYUI.promMsg(data.msg);
+						}
+					},
+					error : function(data) {
+						YYUI.promMsg("操作失败，请联系管理员");
 					}
-				},
-				error : function(data) {
-					YYUI.promMsg("操作失败，请联系管理员");
-				}
+				});
 			});
 		}
 		

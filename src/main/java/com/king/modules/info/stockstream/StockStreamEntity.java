@@ -282,6 +282,14 @@ public class StockStreamEntity extends BaseEntity {
 	public void setMemo(String memo) {
 		this.memo = memo;
 	}
+
+	public String getStockDetailId() {
+		return stockDetailId;
+	}
+
+	public void setStockDetailId(String stockDetailId) {
+		this.stockDetailId = stockDetailId;
+	}
 	
 
 }
