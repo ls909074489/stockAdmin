@@ -53,7 +53,7 @@
 						
 					<label for="search_EQ_purchaseType" class="control-label">采购模式</label>
 					<select class="yy-input-enumdata form-control" id="search_EQ_purchaseType" 
-						name="search_EQ_purchaseType" data-enum-group="PurchaselType"></select>
+						name="search_EQ_purchaseType" data-enum-group="PurchaseType"></select>
 
 					<button id="yy-btn-search" type="button" class="btn btn-sm btn-info">
 						<i class="fa fa-search"></i>查询
@@ -75,7 +75,7 @@
 							<th>物料编码</th>
 							<th>华为物料编码</th>
 							<th>名称</th>
-							<th>风险物料</th>
+							<th>采购模式</th>
 							<th>物料单位</th>
 							<th>分类描述</th>
 							<th>限制数量</th>

@@ -72,6 +72,10 @@ th,td{
 				<button id="yy-btn-unapprove-project" class="btn yellow btn-sm btn-info">
 					<i class="fa fa-reply"></i> 取消审核
 				</button>
+				
+				<button id="yy-btn-export-pks" queryformid="yy-form-query" class="btn green btn-sm btn-info">
+					<i class="fa fa-chevron-up"></i> 导出
+				</button>
 			</div>
 			<div class="row yy-searchbar form-inline">
 				<form id="yy-form-query">
@@ -403,10 +407,14 @@ th,td{
 					if(data==null){
 						data="";
 					}
-					if(full.main.receiveType=="1"){
-						return data;
+					if(full.firstRow=="1"){
+						if(full.main.receiveType=="1"){
+							return data;
+						}else{
+							return '<input class="form-control Wdate" value="'+ data + '" name="receiveTime" onClick="WdatePicker()">';
+						}
 					}else{
-						return '<input class="form-control Wdate" value="'+ data + '" name="receiveTime" onClick="WdatePicker()">';
+						return '';
 					}
 				}
 			}, {
@@ -418,10 +426,14 @@ th,td{
 					if(data==null){
 						data="";
 					}
-					if(full.main.receiveType=="1"){
-						return data;
+					if(full.firstRow=="1"){
+						if(full.main.receiveType=="1"){
+							return data;
+						}else{
+							return '<input class="form-control Wdate" value="'+ data + '" name="warningTime" onClick="WdatePicker()">';
+						}
 					}else{
-						return '<input class="form-control Wdate" value="'+ data + '" name="warningTime" onClick="WdatePicker()">';
+						return '';
 					}
 				}
 			}, {
@@ -433,11 +445,16 @@ th,td{
 					if(data==null){
 						data="";
 					}
-					if(full.main.receiveType=="1"){
-						return data;
+					if(full.firstRow=="1"){
+						if(full.main.receiveType=="1"){
+							return data;
+						}else{
+							return '<input class="form-control" value="'+data+'" name="memo">';
+						}
 					}else{
-						return '<input class="form-control" value="'+data+'" name="memo">';
+						return '';
 					}
+					
 				}
 			},{
 				data : "uuid",
@@ -490,7 +507,7 @@ th,td{
 			$("#yy-btn-confrim-receive").bind("click", function() {
 				confirmReceive();
 			});
-			
+			$("#yy-btn-export-pks").bind('click', exportPks);//选择导出
 			
 			//选择角色
 			$('#yy-project-select').on('click', function() {
@@ -903,6 +920,7 @@ th,td{
 				return false;
 			}
 			var subValidate=validConfirm();
+			console.info(subValidate+">>>>>>>>>..");
 			if(!subValidate){
 				return false;
 			}
@@ -912,7 +930,9 @@ th,td{
 		        var subList = new Array();
 		        var rows = _subTable.fnGetNodes();
 		        for(var i = 0; i < rows.length; i++){
-		            subList.push(getRowData(rows[i]));
+		            if(_tableList.row(rows[i]).data().firstRow=="1"){
+		        		 subList.push(getRowData(rows[i]));
+		        	}
 		        }
 		        if(subList.length==0){
 		        	YYUI.promAlert("请添加明细");
@@ -941,7 +961,6 @@ th,td{
 		
 		function tempReceive() {
 			var t_projectId = $("#search_LIKE_mainId").val();
-			console.info(">>>>>>>>>>>>"+t_projectId);
 			if(t_projectId==null||t_projectId==''){
 				YYUI.promMsg("请选择项目");
 				return false;
@@ -959,7 +978,9 @@ th,td{
 	        var subList = new Array();
 	        var rows = _subTable.fnGetNodes();
 	        for(var i = 0; i < rows.length; i++){
-	            subList.push(getRowData(rows[i]));
+	        	if(_tableList.row(rows[i]).data().firstRow=="1"){
+	        		 subList.push(getRowData(rows[i]));
+	        	}
 	        }
 	        if(subList.length==0){
 	        	YYUI.promAlert("请添加明细");
@@ -984,6 +1005,18 @@ th,td{
 			$("#yy-form-edit").ajaxSubmit(opt);
 		}
 		
+		
+		//选择导出
+		function exportPks(){
+			var t_projectId = $("#search_LIKE_mainId").val();
+			if(t_projectId==null||t_projectId==''){
+				YYUI.promMsg("请选择项目");
+				return false;
+			}
+			YYUI.promMsg('正在导出，请稍后.',3000);
+			window.open('${servicemainurl}/exportCsByIds?pks='+t_projectId,"_blank");
+		}
+		
 		//校验子表
 		function validTemp(){
 			if(validateRowsData($("#yy-table-list tbody tr:visible[role=row]"),getRowValidatorTemp())==false){
@@ -999,6 +1032,18 @@ th,td{
 			}else{
 				return true;
 			} 
+		}
+		
+		//校验多行数据 返回boolean类型
+		function validateRowsData(rowList,validator) {
+			console.info("ffffffffffffff");
+			var result = true;
+			for (var i = 0; i < rowList.length; i++) {
+				if (!validateRowData(rowList[i],validator)) {
+					result = false;
+				}
+			}
+			return result;
 		}
 		
 		//表体校验
