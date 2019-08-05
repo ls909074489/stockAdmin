@@ -227,7 +227,7 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		Map<String,List<StockStreamEntity>> streamMap = changeToStreamMap(streamList);
 		for(ProjectSubEntity sub : resultList){
 			sub.setSurplusAmount(calcSurplusAmount(sub,streamMap.get(sub.getUuid())));
-			System.out.println(sub.getUuid()+">>"+sub.getSurplusAmount()+">>>>>>>>>>>>"+subActualMap.get(sub.getUuid()));
+//			System.out.println(sub.getUuid()+">>"+sub.getSurplusAmount()+">>>>>>>>>>>>"+subActualMap.get(sub.getUuid()));
 		}
 		arm.setRecords(resultList);
 		String mainId = request.getParameter("search_LIKE_main.uuid");

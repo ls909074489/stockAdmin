@@ -1,6 +1,9 @@
 package com.king.modules.info.receive;
 
 import com.king.frame.dao.IBaseDAO;
+
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -10,5 +13,10 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface ProjectReceiveDao extends IBaseDAO<ProjectReceiveEntity,String> {
+
+	
+	@Modifying
+	@Query("delete from ProjectReceiveEntity where main.uuid = ?1")
+	void delByProjectId(String projectInfoId);
 
 }

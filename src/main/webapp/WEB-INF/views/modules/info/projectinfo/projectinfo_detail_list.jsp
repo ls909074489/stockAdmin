@@ -59,6 +59,9 @@ th,td{
 				<button id="yy-btn-confrim-receive" class="btn blue btn-sm">
 					<i class="fa fa-check"></i> 确认收货
 				</button>
+				<button id="yy-btn-cancel-receive" class="btn blue btn-sm">
+					<i class="fa fa-check"></i> 撤销收货
+				</button>
 				<button id="yy-btn-submit" class="btn yellow btn-sm btn-info">
 					<i class="fa fa-send"></i> 提交
 				</button>
@@ -507,6 +510,10 @@ th,td{
 			$("#yy-btn-confrim-receive").bind("click", function() {
 				confirmReceive();
 			});
+			$("#yy-btn-cancel-receive").bind("click", function() {
+				cancelReceive();
+			});
+			
 			$("#yy-btn-export-pks").bind('click', exportPks);//选择导出
 			
 			//选择角色
@@ -907,7 +914,55 @@ th,td{
 			return true;
 		}
 		
-		//主子表保存
+		
+
+		function tempReceive() {
+			var t_projectId = $("#search_LIKE_mainId").val();
+			if(t_projectId==null||t_projectId==''){
+				YYUI.promMsg("请选择项目");
+				return false;
+			}
+			if($("#projectInfoId").val()!=$("#search_LIKE_mainId").val()){
+				YYUI.promMsg("请选择项目进行查询");
+				return false;
+			}
+			var subValidate=validTemp();
+			if(!subValidate){
+				return false;
+			}
+			//保存新增的子表记录 
+	        var _subTable = $("#yy-table-list").dataTable();
+	        var subList = new Array();
+	        var rows = _subTable.fnGetNodes();
+	        for(var i = 0; i < rows.length; i++){
+	        	if(_tableList.row(rows[i]).data().firstRow=="1"){
+	        		 subList.push(getRowData(rows[i]));
+	        	}
+	        }
+	        if(subList.length==0){
+	        	YYUI.promAlert("请添加明细");
+	        	return false;
+	        }
+			
+			var saveWaitLoad=layer.load(2);
+			var opt = { 
+				url : "${servicemainurl}/tempReceive",
+				type : "post",
+				data : {"subList" : subList},
+				success : function(data) {
+					layer.close(saveWaitLoad);
+					if (data.success == true) {
+						YYUI.succMsg('保存成功!');
+						onQuery();
+					} else {
+						YYUI.promAlert("保存失败：" + data.msg);
+					}
+				}
+			}
+			$("#yy-form-edit").ajaxSubmit(opt);
+		}
+		
+		//确认收货
 		function confirmReceive() {
 			var t_projectId = $("#search_LIKE_mainId").val();
 			console.info(">>>>>>>>>>>>"+t_projectId);
@@ -959,8 +1014,10 @@ th,td{
 		}
 		
 		
-		function tempReceive() {
+		//取消收货
+		function cancelReceive() {
 			var t_projectId = $("#search_LIKE_mainId").val();
+			console.info(">>>>>>>>>>>>"+t_projectId);
 			if(t_projectId==null||t_projectId==''){
 				YYUI.promMsg("请选择项目");
 				return false;
@@ -969,40 +1026,24 @@ th,td{
 				YYUI.promMsg("请选择项目进行查询");
 				return false;
 			}
-			var subValidate=validTemp();
-			if(!subValidate){
-				return false;
-			}
-			//保存新增的子表记录 
-	        var _subTable = $("#yy-table-list").dataTable();
-	        var subList = new Array();
-	        var rows = _subTable.fnGetNodes();
-	        for(var i = 0; i < rows.length; i++){
-	        	if(_tableList.row(rows[i]).data().firstRow=="1"){
-	        		 subList.push(getRowData(rows[i]));
-	        	}
-	        }
-	        if(subList.length==0){
-	        	YYUI.promAlert("请添加明细");
-	        	return false;
-	        }
-			
-			var saveWaitLoad=layer.load(2);
-			var opt = { 
-				url : "${servicemainurl}/tempReceive",
-				type : "post",
-				data : {"subList" : subList},
-				success : function(data) {
-					layer.close(saveWaitLoad);
-					if (data.success == true) {
-						YYUI.succMsg('保存成功!');
-						onQuery();
-					} else {
-						YYUI.promAlert("保存失败：" + data.msg);
+			layer.confirm("撤销收货将减少对应的物料库存并清空收货流水，确定要撤销收货吗", function() {
+				var saveWaitLoad=layer.load(2);
+				var opt = {
+					url : "${servicemainurl}/cancelReceive",
+					type : "post",
+					data : {},
+					success : function(data) {
+						layer.close(saveWaitLoad);
+						if (data.success == true) {
+							YYUI.succMsg('操作成功!');
+							onQuery();
+						} else {
+							YYUI.promAlert("操作失败：" + data.msg);
+						}
 					}
 				}
-			}
-			$("#yy-form-edit").ajaxSubmit(opt);
+				$("#yy-form-edit").ajaxSubmit(opt);
+			});
 		}
 		
 		
@@ -1036,10 +1077,11 @@ th,td{
 		
 		//校验多行数据 返回boolean类型
 		function validateRowsData(rowList,validator) {
-			console.info("ffffffffffffff");
+			console.info("========================================");
 			var result = true;
 			for (var i = 0; i < rowList.length; i++) {
-				if (!validateRowData(rowList[i],validator)) {
+				if(_tableList.row(rowList[i]).data().firstRow=="1"&&!validateRowData(rowList[i],validator)){
+					console.info(rowList[i]);
 					result = false;
 				}
 			}

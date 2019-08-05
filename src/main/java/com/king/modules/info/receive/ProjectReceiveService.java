@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.king.common.dao.DbUtilsDAO;
+import com.king.common.enums.BillStatus;
 import com.king.common.exception.DAOException;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.dao.IBaseDAO;
@@ -20,6 +23,8 @@ import com.king.modules.info.projectinfo.ProjectSubBaseEntity;
 import com.king.modules.info.projectinfo.ProjectSubEntity;
 import com.king.modules.info.projectinfo.ProjectSubService;
 import com.king.modules.info.stockdetail.StockDetailService;
+import com.king.modules.info.stockstream.StockStreamEntity;
+import com.king.modules.info.stockstream.StockStreamService;
 
 /**
  * 收货
@@ -41,6 +46,8 @@ public class ProjectReceiveService extends BaseServiceImpl<ProjectReceiveEntity,
 	private ProjectInfoService mainService;
 	@Autowired
 	private StockDetailService stockDetailService;
+	@Autowired
+	private StockStreamService streamService;
 	
 
 	protected IBaseDAO<ProjectReceiveEntity, String> getDAO() {
@@ -152,6 +159,47 @@ public class ProjectReceiveService extends BaseServiceImpl<ProjectReceiveEntity,
 	
 	
 	@Transactional
+	public ActionResultModel<ProjectInfoEntity> cancelReceive(ProjectInfoEntity vo) {
+		ActionResultModel<ProjectInfoEntity> arm = new ActionResultModel<ProjectInfoEntity>();
+		ProjectInfoEntity entity = mainService.getOne(vo.getUuid());
+		if(entity.getBillstatus()==BillStatus.APPROVAL.toStatusValue()){
+			arm.setSuccess(false);
+			arm.setMsg("审核通过不能撤销收货");
+			return arm;
+		}
+		if(!entity.getReceiveType().equals(ProjectInfoEntity.receiveType_yes)){
+			arm.setSuccess(false);
+			arm.setMsg("未收货不能撤销收货");
+			return arm;
+		}
+		List<ProjectSubEntity> subList = subService.findByMain(entity.getUuid());
+		if(CollectionUtils.isEmpty(subList)){
+			arm.setSuccess(false);
+			arm.setMsg("项目明细为空，不能撤销收货");
+			return arm;
+		}
+		List<String> subIdList = new ArrayList<>();
+		for(ProjectSubEntity sub:subList){
+			subIdList.add(sub.getUuid());
+		}
+		List<StockStreamEntity> streamList = streamService.findByProjectSubIds(subIdList);
+		if(CollectionUtils.isNotEmpty(streamList)){
+			for(StockStreamEntity stream:streamList){
+				if(stream.getSurplusAmount()<stream.getTotalAmount()){
+					throw new ServiceException("物料编码："+stream.getMaterial().getCode()+
+							",华为编码："+stream.getMaterial().getHwcode()+" 已使用(剩余数量小于总数量)，不能撤销收货");
+				}
+			}
+			streamService.delete(streamList);
+		}
+		dao.delByProjectId(entity.getUuid());//删除收货记录
+		entity.setReceiveType(ProjectInfoEntity.receiveType_no);
+		arm.setSuccess(true);
+		arm.setMsg("操作成功");
+		return arm;
+	}
+	
+	@Transactional
 	public ActionResultModel<ProjectReceiveEntity> saveReceiveLog(ProjectReceiveEntity entity) {
 		ActionResultModel<ProjectReceiveEntity> arm = new ActionResultModel<ProjectReceiveEntity>();
 		ProjectSubEntity sub = subService.getOne(entity.getSubId());
@@ -184,5 +232,7 @@ public class ProjectReceiveService extends BaseServiceImpl<ProjectReceiveEntity,
 		}
 		return new ActionResultModel<>(true, "保存成功");
 	}
+
+
 	
 }

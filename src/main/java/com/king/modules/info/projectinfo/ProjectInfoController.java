@@ -256,7 +256,33 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 			arm.setMsg(Constants.getConstraintMsg(e.getMessage()));
 		} catch (Exception e) {
 			arm.setSuccess(false);
-			arm.setMsg("保存失败");
+			arm.setMsg(e.getMessage());
+			e.printStackTrace();
+		}
+		return arm;
+	}
+	
+	/**
+	 * 取消收货
+	 * @param request
+	 * @param model
+	 * @param entity
+	 * @return
+	 */
+	@RequestMapping(value = "/cancelReceive")
+	@ResponseBody
+	public ActionResultModel<ProjectInfoEntity> cancelReceive(ServletRequest request, Model model, ProjectInfoEntity entity) {
+		ActionResultModel<ProjectInfoEntity> arm = new ActionResultModel<ProjectInfoEntity>();
+		arm.setSuccess(true);
+		try {
+			arm = receiveService.cancelReceive(entity);
+		} catch (DataIntegrityViolationException e) {
+			e.printStackTrace();
+			arm.setSuccess(false);
+			arm.setMsg(Constants.getConstraintMsg(e.getMessage()));
+		} catch (Exception e) {
+			arm.setSuccess(false);
+			arm.setMsg(e.getMessage());
 			e.printStackTrace();
 		}
 		return arm;

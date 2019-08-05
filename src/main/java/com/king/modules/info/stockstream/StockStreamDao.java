@@ -40,7 +40,7 @@ public interface StockStreamDao extends IBaseDAO<StockStreamEntity,String> {
 	List<StockStreamEntity> findOrderByStockAndMaterial(String stockId, String materialId,String billType);
 
 	
-	@Query("from StockStreamEntity where projectSubId in ?1")
+	@Query("from StockStreamEntity where projectSubId in ?1 and status=1")
 	List<StockStreamEntity> findByProjectSubIds(List<String> subIdList);
 
 	@Modifying

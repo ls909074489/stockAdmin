@@ -29,6 +29,7 @@ import org.springframework.web.socket.TextMessage;
 
 import com.alibaba.fastjson.JSON;
 import com.king.common.dao.DbUtilsDAO;
+import com.king.common.enums.BillStatus;
 import com.king.common.exception.DAOException;
 import com.king.common.utils.ExcelDataUtil;
 import com.king.frame.controller.ActionResultModel;
@@ -86,7 +87,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 		return dao;
 	}
 	
-	@Override
+	@Override	
 	public void beforeSave(ProjectInfoEntity entity) throws ServiceException {
 		entity.setBillcode(entity.getCode());
 		super.beforeSave(entity);
@@ -140,6 +141,16 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 			List<ProjectSubEntity> subList, String[] deletePKs) {
 		ActionResultModel<ProjectInfoEntity> arm = new ActionResultModel<ProjectInfoEntity>();
 //		try {
+			if(entity.getBillstatus()==BillStatus.APPROVAL.toStatusValue()){
+				arm.setSuccess(false);
+				arm.setMsg("审核通过不能进行操作");
+				return arm;
+			}
+//			if(entity.getReceiveType()==ProjectInfoEntity.receiveType_yes){
+//				arm.setSuccess(false);
+//				arm.setMsg("已收货不能进行操作");
+//				return arm;
+//			}
 			// 删除子表一数据
 			if (deletePKs != null && deletePKs.length > 0) {
 				projectSubService.delete(deletePKs);
