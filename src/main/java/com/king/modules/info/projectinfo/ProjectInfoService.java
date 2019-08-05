@@ -561,12 +561,11 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 	private ProjectSubEntity setBarcodeJson(ProjectSubEntity sub){
 		if (StringUtils.isEmpty(sub.getUuid())) {
 			if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
-//				List<String> list = new ArrayList<>();
-//				for(int i=0;i<sub.getPlanAmount();i++){
-//					list.add("");
-//				}
-//				sub.setBarcodejson(JSON.toJSONString(list));
-				sub.setBarcodejson(JSON.toJSONString(new String[sub.getPlanAmount().intValue()]));
+				String []bArr = new String[6];
+				for(int i=0;i<6;i++){
+					bArr[i]="";
+				}
+				sub.setBarcodejson(JSON.toJSONString(bArr));
 			}else{
 				sub.setBarcodejson("[]");
 			}
@@ -574,12 +573,11 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 			if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
 				String barcodeJson = sub.getBarcodejson();
 				if(StringUtils.isEmpty(barcodeJson)){
-//					List<String> list = new ArrayList<>();
-//					for(int i=0;i<sub.getPlanAmount();i++){
-//						list.add("");
-//					}
-//					sub.setBarcodejson(JSON.toJSONString(list));
-					sub.setBarcodejson(JSON.toJSONString(new String[sub.getPlanAmount().intValue()]));
+					String []bArr = new String[6];
+					for(int i=0;i<6;i++){
+						bArr[i]="";
+					}
+					sub.setBarcodejson(JSON.toJSONString(bArr));
 				}else{
 					List<String> blist = JSON.parseArray(barcodeJson, String.class);
 					if(sub.getPlanAmount()>blist.size()){//增加了数量

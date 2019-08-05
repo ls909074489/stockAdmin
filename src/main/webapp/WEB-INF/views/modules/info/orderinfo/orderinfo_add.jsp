@@ -167,7 +167,7 @@
 				render : function(data, type, full) {
 					var str ='<div class="input-group materialRefDiv"> '+
 					 '<input class="form-control materialCodeInputCls"  value="'+ data.code + '" reallyname="materialCode" name="materialCode" readonly="readonly"> '+
-					 '<input class="form-control"  value="'+ data.uuid + '" type="hidden" reallyname="materialId" name="materialId"> '+
+					 '<input class="form-control materialIdInputCls"  value="'+ data.uuid + '" type="hidden" reallyname="materialId" name="materialId"> '+
 					 '<span class="input-group-btn"> '+
 					 '<button id="" class="btn btn-default btn-ref materialcode" type="button" data-select2-open="single-append-text"> '+
 					 '<span class="glyphicon glyphicon-search"></span> '+
@@ -290,7 +290,7 @@
 			    area: ['1000px', '95%'],
 			    shadeClose : false,
 				shade : 0.8,
-			    content: "${ctx}/sys/ref/refMaterial?callBackMethod=window.parent.callBackSelectMaterial"
+			    content: "${ctx}/sys/ref/refMaterial?callBackMethod=window.parent.callBackUpdateMaterial"
 			});
 		}
 		
@@ -321,11 +321,11 @@
 		}
 		
 		
-		function callBackSelectMaterial(selNode){
+		function callBackUpdateMaterial(selNode){
 			var canAdd=true;
-			$(".materialCodeInputCls").each(function(){
-				if(selNode.code==$(this).val()){
-					YYUI.promMsg("物料 "+selNode.code+" 不能重复添加");
+			$(".materialIdInputCls").each(function(){
+				if(selNode.uuid==$(this).val()){
+					YYUI.promMsg("物料 "+selNode.code+"["+selNode.hwcode+"] 不能重复添加");
 					canAdd = false;
 					return false;
 				}
@@ -341,9 +341,9 @@
 		
 		function callBackAddMaterial(selNode){
 			var canAdd=true;
-			$(".materialCodeInputCls").each(function(){
-				if(selNode.code==$(this).val()){
-					YYUI.promMsg("物料 "+selNode.code+" 不能重复添加");
+			$(".materialIdInputCls").each(function(){
+				if(selNode.uuid==$(this).val()){
+					YYUI.promMsg("物料 "+selNode.code+"["+selNode.hwcode+"] 不能重复添加");
 					canAdd = false;
 					return false;
 				}

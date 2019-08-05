@@ -103,7 +103,7 @@ public class OrderSubService extends BaseServiceImpl<OrderSubEntity, String> {
   		UserEntity user = ShiroUser.getCurrentUserEntity();
   		// 保存子表数据
   		if(subList!=null&&subList.size()>0){
-  			Map<String,String> codeMap = new HashMap<>();
+  			Set<String> codeSet = new HashSet<>();
   			for (OrderSubEntity sub : subList) {
   				if(StringUtils.isEmpty(sub.getUuid())){
   	  				sub.setCreator(user.getUuid());
@@ -120,10 +120,11 @@ public class OrderSubService extends BaseServiceImpl<OrderSubEntity, String> {
   				sub.setModifier(user.getUuid());
   				sub.setModifiername(user.getUsername());
   				sub.setModifytime(new Date());
-  				if(codeMap.containsKey(sub.getMaterialCode())){
-					throw new ServiceException("料号"+sub.getMaterialCode()+"不能重复");
+  				if(codeSet.contains(sub.getMaterial().getUuid())){
+  					MaterialEntity material = materialService.getOne(sub.getMaterial().getUuid());
+					throw new ServiceException("料号"+material.getCode()+"["+material.getHwcode()+"]不能重复");
 				}
-				codeMap.put(sub.getMaterialCode(), "料号"+sub.getMaterialCode());
+  				codeSet.add(sub.getMaterial().getUuid());
   			}
   			save(subList);
   		}

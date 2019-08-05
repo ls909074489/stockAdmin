@@ -574,7 +574,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 						
 //						stockStreamService.delete(stream);
 						hasStream =true;
-						break;
+//						break;
 					}
 				}
 				if(hasStream){

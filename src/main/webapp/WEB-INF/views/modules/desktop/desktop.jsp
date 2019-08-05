@@ -109,7 +109,7 @@
 													<th>操作人</th>
 													<th>操作时间</th>
 													<!-- <th>单据类型</th> -->
-													<th>总数量</th>
+													<!-- <th>总数量</th> -->
 													<th>剩余数量</th>
 													<th>预占数量</th>
 													<th>可用数量</th>
@@ -177,12 +177,12 @@
 			       return YYDataUtils.getEnumName("StockSteamOperType", data);
 			},
 			orderable : false
-		} */,{
+		} ,{
 			data : "totalAmount",
 			width : "60",
 			className : "center",
 			orderable : false
-		},{
+		}*/,{
 			data : "surplusAmount",
 			width : "60",
 			className : "center",

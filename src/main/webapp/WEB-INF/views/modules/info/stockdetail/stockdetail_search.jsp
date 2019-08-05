@@ -90,9 +90,10 @@
 													<th>仓库名称</th>
 													<th>物料编码</th>
 													<th>物料名称</th>
-													<th>总数量</th>
-													<th>预占数量</th>
+													<!-- <th>总数量</th> -->
 													<th>剩余数量</th>
+													<th>预占数量</th>
+													<th>可用数量</th>
 												</tr>
 											</thead>
 											<tbody></tbody>
@@ -142,8 +143,13 @@
 				width : "100",
 				className : "center",
 				orderable : true
-			},{
+			}/* ,{
 				data : "totalAmount",
+				width : "100",
+				className : "center",
+				orderable : true
+			} */,{
+				data : "surplusAmount",
 				width : "100",
 				className : "center",
 				orderable : true
@@ -153,10 +159,10 @@
 				className : "center",
 				orderable : true
 			},{
-				data : "surplusAmount",
-				width : "100",
+				data : "actualAmount",
+				width : "60",
 				className : "center",
-				orderable : true
+				orderable : false
 			}];
 
 
