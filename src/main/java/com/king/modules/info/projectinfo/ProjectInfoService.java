@@ -36,6 +36,7 @@ import com.king.frame.controller.ActionResultModel;
 import com.king.frame.dao.IBaseDAO;
 import com.king.frame.security.ShiroUser;
 import com.king.frame.service.SuperServiceImpl;
+import com.king.frame.utils.UUIDString;
 import com.king.frame.websocket.YyWebSocketHandler;
 import com.king.modules.info.apply.ProjectApplyEntity;
 import com.king.modules.info.apply.ProjectApplyService;
@@ -556,39 +557,41 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 	
 	
 	private ProjectSubEntity setBarcodeJson(ProjectSubEntity sub){
+		List<ProjectBarcodeVo> barcodeList = new ArrayList<>();
 		if (StringUtils.isEmpty(sub.getUuid())) {
 			if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
-				String []bArr = new String[6];
-				for(int i=0;i<6;i++){
-					bArr[i]="";
+				for(int i=0;i<sub.getPlanAmount();i++){
+					barcodeList.add(new ProjectBarcodeVo(UUIDString.getUUIDString(), ""));
 				}
-				sub.setBarcodejson(JSON.toJSONString(bArr));
+				sub.setBarcodejson(JSON.toJSONString(barcodeList));
 			}else{
-				sub.setBarcodejson("[]");
+				barcodeList.add(new ProjectBarcodeVo(UUIDString.getUUIDString(), ""));
+				sub.setBarcodejson(JSON.toJSONString(barcodeList));
 			}
 		}else{
-			if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
-				String barcodeJson = sub.getBarcodejson();
-				if(StringUtils.isEmpty(barcodeJson)){
-					String []bArr = new String[6];
-					for(int i=0;i<6;i++){
-						bArr[i]="";
-					}
-					sub.setBarcodejson(JSON.toJSONString(bArr));
-				}else{
-					List<String> blist = JSON.parseArray(barcodeJson, String.class);
-					if(sub.getPlanAmount()>blist.size()){//增加了数量
-						for(int i=0;i<(sub.getPlanAmount()-blist.size());i++){
-							blist.add("");
-						}
-					}else if(blist.size()>sub.getPlanAmount()){//减少了数量
-						blist = blist.subList(0, sub.getPlanAmount().intValue());
-					}
-					sub.setBarcodejson(JSON.toJSONString(blist));
-				}
-			}else{
-				sub.setBarcodejson("[]");
-			}
+			//TODO
+//			if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
+//				String barcodeJson = sub.getBarcodejson();
+//				if(StringUtils.isEmpty(barcodeJson)){
+//					String []bArr = new String[6];
+//					for(int i=0;i<6;i++){
+//						bArr[i]="";
+//					}
+//					sub.setBarcodejson(JSON.toJSONString(bArr));
+//				}else{
+//					List<String> blist = JSON.parseArray(barcodeJson, String.class);
+//					if(sub.getPlanAmount()>blist.size()){//增加了数量
+//						for(int i=0;i<(sub.getPlanAmount()-blist.size());i++){
+//							blist.add("");
+//						}
+//					}else if(blist.size()>sub.getPlanAmount()){//减少了数量
+//						blist = blist.subList(0, sub.getPlanAmount().intValue());
+//					}
+//					sub.setBarcodejson(JSON.toJSONString(blist));
+//				}
+//			}else{
+//				sub.setBarcodejson("[]");
+//			}
 		}
 		return sub;
 	}

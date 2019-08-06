@@ -79,7 +79,7 @@ public class ProjectSubEntity extends BaseEntity {
 	
 	@MetaData(value = "条码验证状态")
 	@Column(length=2000)
-	private String barcodejson="[]";//条码json
+	private String barcodejson="[]";//条码json ProjectBarcodeVo
 	
 	@MetaData(value = "条码验证状态")
 	@Column(length=2)
@@ -130,6 +130,9 @@ public class ProjectSubEntity extends BaseEntity {
 	@Transient
 	@JsonIgnore
 	private String materialPurchaseType="";//采购模式
+	@Transient
+	@JsonIgnore
+	private String barcodeUuid="";
 	
 	
 	public ProjectInfoEntity getMain() {
@@ -339,6 +342,14 @@ public class ProjectSubEntity extends BaseEntity {
 
 	public void setFirstRow(String firstRow) {
 		this.firstRow = firstRow;
+	}
+
+	public String getBarcodeUuid() {
+		return barcodeUuid;
+	}
+
+	public void setBarcodeUuid(String barcodeUuid) {
+		this.barcodeUuid = barcodeUuid;
 	}
 	
 	

@@ -100,6 +100,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 		ProjectSubEntity sub = getOne(idArr[1]);
 		String barcodeJson = sub.getBarcodejson();
 		List<String> blist = new ArrayList<>();
+		//TODO
 		if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
 			String [] barcodeArr = new String[sub.getPlanAmount().intValue()];
 			if(!StringUtils.isEmpty(barcodeJson)){

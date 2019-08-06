@@ -27,126 +27,128 @@ th,td{
 <body>
 	<div id="yy-page" class="container-fluid page-container">
 		<div class="page-content" id="yy-page-list">
-			<div class="row yy-toolbar">
-				<!-- <button id="yy-btn-add" class="btn blue btn-sm">
-					<i class="fa fa-plus"></i> 新增
-				</button>
-				<button id="yy-btn-remove" class="btn red btn-sm">
-					<i class="fa fa-trash-o"></i> 删除
-				</button>
-				<button id="yy-btn-refresh" class="btn blue btn-sm">
-					<i class="fa fa-refresh"></i> 刷新
-				</button>
-				<button id="yy-btn-submit" class="btn yellow btn-sm btn-info">
-					<i class="fa fa-send"></i> 提交
-				</button>
-				<button id="yy-btn-unsubmit" class="btn yellow btn-sm btn-info">
-					<i class="fa fa-undo"></i> 撤销提交
-				</button>
-				<button id="yy-btn-approve-x" class="btn yellow btn-sm btn-info">
-					<i class="fa fa-check"></i> 审核
-				</button> -->
-				
-				<label for="sweepCode" class="control-label">扫描条码</label>
-				<input type="text" autocomplete="on" name="sweepCode"
-					id="sweepCode" class="input-sm" style="width: 380px;">
-				<button id="yy-btn-match" type="button" class="btn btn-sm btn-info">
-					<i class="fa fa-search"></i> 匹配
-				</button>
-				<button id="yy-btn-temp-receive" class="btn blue btn-sm">
-					<i class="fa fa-save"></i> 暂存收货
-				</button>
-				<button id="yy-btn-confrim-receive" class="btn blue btn-sm">
-					<i class="fa fa-check"></i> 确认收货
-				</button>
-				<button id="yy-btn-cancel-receive" class="btn blue btn-sm">
-					<i class="fa fa-check"></i> 撤销收货
-				</button>
-				<button id="yy-btn-submit" class="btn yellow btn-sm btn-info">
-					<i class="fa fa-send"></i> 提交
-				</button>
-				<button id="yy-btn-unsubmit" class="btn yellow btn-sm btn-info">
-					<i class="fa fa-undo"></i> 撤销提交
-				</button>
-				
-				 <button id="yy-btn-approve-project" class="btn yellow btn-sm btn-info" type="button">
-					<i class="fa fa-check"></i> 审核
-				</button>
-				<button id="yy-btn-unapprove-project" class="btn yellow btn-sm btn-info">
-					<i class="fa fa-reply"></i> 取消审核
-				</button>
-				
-				<button id="yy-btn-export-pks" queryformid="yy-form-query" class="btn green btn-sm btn-info">
-					<i class="fa fa-chevron-up"></i> 导出
-				</button>
-			</div>
-			<div class="row yy-searchbar form-inline">
-				<form id="yy-form-query">
-					<!-- <label for="search_LIKE_main.code" class="control-label">项目号&nbsp;&nbsp;&nbsp;&nbsp;</label>
-					<input type="text" autocomplete="on" name="search_LIKE_main.code"
-						id="search_LIKE_main.code" class="form-control input-sm">
-						
-					<label for="search_LIKE_main.name" class="control-label">项目名称</label>
-					<input type="text" autocomplete="on" name="search_LIKE_main.name"
-						id="search_LIKE_main.name" class="form-control input-sm"> -->
+			<div class="navbar-fixed-top">
+				<div class="row yy-toolbar">
+					<!-- <button id="yy-btn-add" class="btn blue btn-sm">
+						<i class="fa fa-plus"></i> 新增
+					</button>
+					<button id="yy-btn-remove" class="btn red btn-sm">
+						<i class="fa fa-trash-o"></i> 删除
+					</button>
+					<button id="yy-btn-refresh" class="btn blue btn-sm">
+						<i class="fa fa-refresh"></i> 刷新
+					</button>
+					<button id="yy-btn-submit" class="btn yellow btn-sm btn-info">
+						<i class="fa fa-send"></i> 提交
+					</button>
+					<button id="yy-btn-unsubmit" class="btn yellow btn-sm btn-info">
+						<i class="fa fa-undo"></i> 撤销提交
+					</button>
+					<button id="yy-btn-approve-x" class="btn yellow btn-sm btn-info">
+						<i class="fa fa-check"></i> 审核
+					</button> -->
 					
-					<!-- <label class="control-label">项目</label>
-					<div class="input-group input-icon right">
-						<input id="search_LIKE_mainId" name="search_LIKE_main.uuid" type="hidden"> 
-						<i class="fa fa-remove" onclick="cleanDef('search_LIKE_mainId','search_LIKE_mainName');" title="清空"></i>
-						<input id="search_LIKE_mainName" name="search_LIKE_main.name" type="text" class="form-control" readonly="readonly">
-						<span class="input-group-btn">
-							<button id="yy-project-select" class="btn btn-default btn-ref" type="button">
-								<span class="glyphicon glyphicon-search"></span>
-							</button>
-						</span>
-					</div> -->
+					<label for="sweepCode" class="control-label">扫描条码</label>
+					<input type="text" autocomplete="on" name="sweepCode"
+						id="sweepCode" class="input-sm" style="width: 380px;">
+					<button id="yy-btn-match" type="button" class="btn btn-sm btn-info">
+						<i class="fa fa-search"></i> 匹配
+					</button>
+					<button id="yy-btn-temp-receive" class="btn blue btn-sm">
+						<i class="fa fa-save"></i> 暂存收货
+					</button>
+					<button id="yy-btn-confrim-receive" class="btn blue btn-sm">
+						<i class="fa fa-check"></i> 确认收货
+					</button>
+					<button id="yy-btn-cancel-receive" class="btn blue btn-sm">
+						<i class="fa fa-check"></i> 撤销收货
+					</button>
+					<button id="yy-btn-submit" class="btn yellow btn-sm btn-info">
+						<i class="fa fa-send"></i> 提交
+					</button>
+					<button id="yy-btn-unsubmit" class="btn yellow btn-sm btn-info">
+						<i class="fa fa-undo"></i> 撤销提交
+					</button>
 					
-					<c:choose>
-						<c:when test="${empty sourceBillId}">
-							<label class="control-label">项目</label>
-							<div class="input-group">
-								<select class="combox form-control projectSelectCls" id="search_LIKE_mainId" onchange="changeProjectSel();" name="search_LIKE_main.uuid" style="float: left;width: 200px;">
-									<option value=""></option>
-								</select>
-							</div>
-						</c:when>
-						<c:otherwise>
-							<input name="search_LIKE_main.uuid" id="search_LIKE_mainId" type="hidden" value="${sourceBillId}" class="yy-input"> 
-							<span style="display: none;">
-								<select class="combox form-control projectSelectCls"  name="" style="display: none;">
-										<option value="${sourceBillId}">${sourceBillId}</option>
-								</select>
-							</span>
-						</c:otherwise>
-					</c:choose>
-												
-					<label for="search_EQ_boxNum" class="control-label">箱号</label>
-					<!-- <select class="yy-input-enumdata form-control" id="search_EQ_boxNum" name="search_EQ_boxNum"
-								 data-enum-group="BoxNum"></select>	 -->
-					<input type="text" autocomplete="on" name="search_EQ_boxNum" id="search_EQ_boxNum" style="width:120px;" class="form-control input-sm">
-								 
-					<!-- <label for="search_LIKE_materialCode" class="control-label">物料编码</label>
-					<input type="text" autocomplete="on" name="search_LIKE_material.code" id="search_LIKE_materialCode" class="form-control input-sm"> -->
+					 <button id="yy-btn-approve-project" class="btn yellow btn-sm btn-info" type="button">
+						<i class="fa fa-check"></i> 审核
+					</button>
+					<button id="yy-btn-unapprove-project" class="btn yellow btn-sm btn-info">
+						<i class="fa fa-reply"></i> 取消审核
+					</button>
 					
-					<label for="search_LIKE_materialHwCode" class="control-label">华为物料编码</label>
-					<input type="text" autocomplete="on" name="search_LIKE_material.hwcode" id="search_LIKE_materialHwCode" class="form-control input-sm">
-					
-					<label for="search_LIKE_material.name" class="control-label">物料名称</label>
-					<input type="text" autocomplete="on" name="search_LIKE_material.name" id="search_LIKE_material.name" class="form-control input-sm">			 
+					<button id="yy-btn-export-pks" queryformid="yy-form-query" class="btn green btn-sm btn-info">
+						<i class="fa fa-chevron-up"></i> 导出
+					</button>
+				</div>
+				<div class="row yy-searchbar form-inline">
+					<form id="yy-form-query">
+						<!-- <label for="search_LIKE_main.code" class="control-label">项目号&nbsp;&nbsp;&nbsp;&nbsp;</label>
+						<input type="text" autocomplete="on" name="search_LIKE_main.code"
+							id="search_LIKE_main.code" class="form-control input-sm">
 							
-					<label for="search_LIKE_barcode" class="control-label">条码&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-					<input type="text" autocomplete="on" name="search_LIKE_barcode" id="search_LIKE_barcode" class="form-control input-sm">
-
-					<button id="yy-btn-search" type="button" class="btn btn-sm btn-info">
-						<i class="fa fa-search"></i>查询
-					</button>
-					<button id="yy-searchbar-reset" type="button" class="red">
-						<i class="fa fa-undo"></i> 清空
-					</button>
-				</form>
+						<label for="search_LIKE_main.name" class="control-label">项目名称</label>
+						<input type="text" autocomplete="on" name="search_LIKE_main.name"
+							id="search_LIKE_main.name" class="form-control input-sm"> -->
+						
+						<!-- <label class="control-label">项目</label>
+						<div class="input-group input-icon right">
+							<input id="search_LIKE_mainId" name="search_LIKE_main.uuid" type="hidden"> 
+							<i class="fa fa-remove" onclick="cleanDef('search_LIKE_mainId','search_LIKE_mainName');" title="清空"></i>
+							<input id="search_LIKE_mainName" name="search_LIKE_main.name" type="text" class="form-control" readonly="readonly">
+							<span class="input-group-btn">
+								<button id="yy-project-select" class="btn btn-default btn-ref" type="button">
+									<span class="glyphicon glyphicon-search"></span>
+								</button>
+							</span>
+						</div> -->
+						
+						<c:choose>
+							<c:when test="${empty sourceBillId}">
+								<label class="control-label">项目</label>
+								<div class="input-group">
+									<select class="combox form-control projectSelectCls" id="search_LIKE_mainId" onchange="changeProjectSel();" name="search_LIKE_main.uuid" style="float: left;width: 200px;">
+										<option value=""></option>
+									</select>
+								</div>
+							</c:when>
+							<c:otherwise>
+								<input name="search_LIKE_main.uuid" id="search_LIKE_mainId" type="hidden" value="${sourceBillId}" class="yy-input"> 
+								<span style="display: none;">
+									<select class="combox form-control projectSelectCls"  name="" style="display: none;">
+											<option value="${sourceBillId}">${sourceBillId}</option>
+									</select>
+								</span>
+							</c:otherwise>
+						</c:choose>
+													
+						<label for="search_EQ_boxNum" class="control-label">箱号</label>
+						<!-- <select class="yy-input-enumdata form-control" id="search_EQ_boxNum" name="search_EQ_boxNum"
+									 data-enum-group="BoxNum"></select>	 -->
+						<input type="text" autocomplete="on" name="search_EQ_boxNum" id="search_EQ_boxNum" style="width:120px;" class="form-control input-sm">
+									 
+						<!-- <label for="search_LIKE_materialCode" class="control-label">物料编码</label>
+						<input type="text" autocomplete="on" name="search_LIKE_material.code" id="search_LIKE_materialCode" class="form-control input-sm"> -->
+						
+						<label for="search_LIKE_materialHwCode" class="control-label">华为物料编码</label>
+						<input type="text" autocomplete="on" name="search_LIKE_material.hwcode" id="search_LIKE_materialHwCode" class="form-control input-sm">
+						
+						<label for="search_LIKE_material.name" class="control-label">物料名称</label>
+						<input type="text" autocomplete="on" name="search_LIKE_material.name" id="search_LIKE_material.name" class="form-control input-sm">			 
+								
+						<label for="search_LIKE_barcode" class="control-label">条码&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+						<input type="text" autocomplete="on" name="search_LIKE_barcode" id="search_LIKE_barcode" class="form-control input-sm">
+	
+						<button id="yy-btn-search" type="button" class="btn btn-sm btn-info">
+							<i class="fa fa-search"></i>查询
+						</button>
+						<button id="yy-searchbar-reset" type="button" class="red">
+							<i class="fa fa-undo"></i> 清空
+						</button>
+					</form>
+				</div>
 			</div>
-			<div class="row">
+			<div class="row" style="margin-top: 100px;">
 				<form id="yy-form-edit" class="form-horizontal yy-form-edit">
 					<!-- 提交收货form -->
 					<input name="uuid" id="projectInfoId" type="hidden" value=""/>
@@ -573,6 +575,11 @@ th,td{
 			return false;
 		}
 		
+		function getTableHeight(){
+			console.info(window.screen.availHeight);
+			return (window.screen.availHeight-425);
+		}
+		
 		//服务器分页
 		function serverPage(url) {
 			var serverPageWaitLoad=layer.load(2);//加载等待ceng edit by liusheng		
@@ -585,6 +592,7 @@ th,td{
 				"createdRow" : YYDataTableUtils.setActions,
 				"order" : _setOrder,
 				"scrollX" : true,
+				"scrollY": getTableHeight,
 				//"autoWidth":true,
 				"processing" : false,
 				"searching" : false,

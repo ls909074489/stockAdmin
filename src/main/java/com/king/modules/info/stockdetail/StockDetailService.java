@@ -399,7 +399,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 	
 
 	@Transactional
-	public void descStockDetail(ProjectSubEntity sub) {
+	public String descStockDetail(ProjectSubEntity sub) {
 		Long subAmount = 0l;
 		if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique){//唯一,每次只出一个
 			subAmount = 1l;
@@ -452,7 +452,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			throw new ServiceException("库存物料"+sub.getMaterial().getCode()+"流水不足");
 		}
 		StockDetailEntity detail  = findByStockAndMaterial(stock.getUuid(),sub.getMaterial().getUuid());
-		Long subAmountOut = Math.abs(sub.getPlanAmount())*-1;
+		Long subAmountOut = Math.abs(subAmount)*-1;
 		stream.setTotalAmount(subAmountOut);
 		stream.setSurplusAmount(subAmountOut);
 		stream.setOccupyAmount(subAmountOut);
@@ -460,8 +460,9 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 		stream.setOperType(StockStreamEntity.OUT_STOCK);
 		stream.setMemo("项目单审核出库");
 		stream.setStockDetailId(detail.getUuid());
-		stockStreamService.doAdd(stream);//添加库存流水
+		StockStreamEntity streamEntity = stockStreamService.doAdd(stream);//添加库存流水
 		streamLogService.doAdd(logList);
+		return streamEntity.getUuid();
 	}
 	
 	/**
