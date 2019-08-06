@@ -44,7 +44,6 @@ import com.king.modules.info.approve.ApproveUserService;
 import com.king.modules.info.material.MaterialBaseEntity;
 import com.king.modules.info.material.MaterialEntity;
 import com.king.modules.info.material.MaterialService;
-import com.king.modules.info.stockdetail.StockDetailService;
 import com.king.modules.info.stockstream.StockStreamEntity;
 import com.king.modules.info.stockstream.StockStreamService;
 import com.king.modules.sys.imexlate.ImexlateSubEntity;
@@ -65,8 +64,6 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 	@Lazy
 	@Autowired
 	private ProjectSubService projectSubService;
-	@Autowired
-	private StockDetailService stockDetailService;
 	@Autowired
 	private DbUtilsDAO dbDao;
 	@Autowired
@@ -645,8 +642,8 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 
 	@Override
 	public void afterApprove(ProjectInfoEntity entity) throws ServiceException {
-		List<ProjectSubEntity> subList = projectSubService.findByMain(entity.getUuid());
-		stockDetailService.descStockDetail(entity, subList);
+//		List<ProjectSubEntity> subList = projectSubService.findByMain(entity.getUuid());
+//		stockDetailService.descStockDetail(entity, subList);
 		//将申请标志为已处理
 		projectApplyService.handleApply(entity.getUuid());
 		super.afterApprove(entity);
@@ -656,8 +653,8 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 
 	@Override
 	public void afterUnApprove(ProjectInfoEntity entity) throws ServiceException {
-		List<ProjectSubEntity> subList = projectSubService.findByMain(entity.getUuid());
-		stockDetailService.unApproveStockDetail(entity, subList);
+//		List<ProjectSubEntity> subList = projectSubService.findByMain(entity.getUuid());
+//		stockDetailService.unApproveStockDetail(entity, subList);
 		super.afterUnApprove(entity);
 	}
 

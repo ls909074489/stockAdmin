@@ -46,6 +46,10 @@ public class StockStreamService extends BaseServiceImpl<StockStreamEntity,String
 		return dao.findSurplusBySourceIdAndOperType(sourceId,StockStreamEntity.IN_STOCK);
 	}
 	
+	public List<StockStreamEntity> findSurplusBySubIdIn(String subId) {
+		return dao.findSurplusBySubIdIn(subId,StockStreamEntity.IN_STOCK);
+	}
+	
 	public List<StockStreamEntity> findSurplusAllBySourceIdsIn(List<String> sourceIdList) {
 		return dao.findSurplusAllBySourceIdsIn(sourceIdList,StockStreamEntity.IN_STOCK);
 	}
@@ -55,9 +59,9 @@ public class StockStreamService extends BaseServiceImpl<StockStreamEntity,String
 	 * @param sourceId
 	 * @return
 	 */
-	public List<StockStreamEntity> findBySourceIdAndOperType(String sourceId,String operType) {
-		return dao.findBySourceIdAndOperType(sourceId,operType);//StockStreamEntity.IN_STOCK
-	}
+//	public List<StockStreamEntity> findBySourceIdAndOperType(String sourceId,String operType) {
+//		return dao.findBySourceIdAndOperType(sourceId,operType);//StockStreamEntity.IN_STOCK
+//	}
 
 	@Transactional
 	public void delBySourceIdAndOperType(String sourceId, String operType) {
@@ -90,7 +94,5 @@ public class StockStreamService extends BaseServiceImpl<StockStreamEntity,String
 		return dao.findSurplusByDetailIds(detailIdList);
 	}
 
-	
-	
 
 }

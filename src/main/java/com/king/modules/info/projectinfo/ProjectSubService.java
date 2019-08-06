@@ -34,6 +34,7 @@ import com.king.modules.info.barcode.ProjectBarcodeLogEntity;
 import com.king.modules.info.barcode.ProjectBarcodeLogService;
 import com.king.modules.info.material.MaterialBaseEntity;
 import com.king.modules.info.material.MaterialEntity;
+import com.king.modules.info.stockdetail.StockDetailService;
 import com.king.modules.sys.enumdata.EnumDataSubEntity;
 import com.king.modules.sys.enumdata.EnumDataUtils;
 
@@ -54,6 +55,8 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 	private ProjectInfoService mainService;
 	@Autowired
 	private ProjectBarcodeLogService projectBarcodeLogService;
+	@Autowired
+	private StockDetailService stockDetailService;
 
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -126,14 +129,15 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 		barcodeLog.setBarcode(newBarcode);
 		projectBarcodeLogService.doAdd(barcodeLog);
 		
+		//扫码时出库
+		stockDetailService.descStockDetail(sub);
+		
 		arm.setSuccess(true);
 		arm.setMsg("操作成功");
 		return arm;
 	}
 
 	
-	
-
 	public void changeToSheet(List<ProjectInfoEntity> mainList, Workbook wb) {
 		for(ProjectInfoEntity main:mainList){
 			List<ProjectSubEntity> subList = findByMain(main.getUuid());

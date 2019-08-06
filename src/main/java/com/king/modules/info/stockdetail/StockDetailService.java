@@ -305,6 +305,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 		return hasBorrow;
 	}
 
+	@Deprecated
 	@Transactional
 	public void descStockDetail(ProjectInfoEntity projectInfo,List<ProjectSubEntity> subList){
 		StockBaseEntity stock = projectInfo.getStock();//getStockByOrderType(projectInfo.getBilltype());
@@ -393,6 +394,73 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			stream.setStockDetailId(detail.getUuid());
 			stockStreamService.doAdd(stream);//添加库存流水
 		}
+		streamLogService.doAdd(logList);
+	}
+	
+
+	@Transactional
+	public void descStockDetail(ProjectSubEntity sub) {
+		Long subAmount = 0l;
+		if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique){//唯一,每次只出一个
+			subAmount = 1l;
+		}else{
+			subAmount = Math.abs(sub.getPlanAmount());
+		}
+		ProjectInfoEntity projectInfo = sub.getMain();
+		StockBaseEntity stock = projectInfo.getStock();
+		StockStreamEntity stream = new StockStreamEntity();
+		stream.setSourceId(projectInfo.getUuid());
+		stream.setSourceBillCode(projectInfo.getCode());
+		stream.setSourceSubId(sub.getUuid());
+		stream.setProjectSubId(sub.getUuid());
+		stream.setBillType(StockStreamEntity.BILLTYPE_PROJECT);
+		stream.setStock(stock);
+		MaterialBaseEntity material = new MaterialBaseEntity();
+		material.setUuid(sub.getMaterial().getUuid());
+		stream.setMaterial(material);
+		stream.setSourceSubId(sub.getUuid());
+		
+		List<StreamLogEntity> logList = new ArrayList<>();
+		StreamLogEntity log = null;
+		List<StockStreamEntity> subStreamList = stockStreamService.findSurplusBySubIdIn(sub.getUuid());
+		for(StockStreamEntity ss:subStreamList){
+			System.out.println(ss.getSurplusAmount()+">>>>>>>>>"+subAmount);
+			if(ss.getSurplusAmount()>=subAmount){//计算流水剩余的数量
+				subAmount = enoughStream(projectInfo,sub,ss, subAmount, log, logList);
+				break;
+			}else{
+				subAmount = lackStream(projectInfo,sub,ss, subAmount, log, logList);
+			}
+		}
+		sub.setSurplusAmount(sub.getSurplusAmount()-sub.getPlanAmount());
+		if(subAmount>0){
+			List<StockStreamEntity> orderStreams = stockStreamService.findOrderByStockAndMaterial(
+					stock.getUuid(),sub.getMaterial().getUuid());
+			if(CollectionUtils.isEmpty(orderStreams)){
+				throw new ServiceException("订单物料"+sub.getMaterial().getCode()+"流水不足");
+			}
+			for(StockStreamEntity ss:orderStreams){
+				if(ss.getSurplusAmount()>=subAmount){//计算流水剩余的数量
+					subAmount = enoughStream(projectInfo,sub,ss, subAmount, log, logList);
+					break;
+				}else{
+					subAmount =lackStream(projectInfo,sub,ss, subAmount, log, logList);
+				}
+			}
+		}
+		if(subAmount>0){
+			throw new ServiceException("库存物料"+sub.getMaterial().getCode()+"流水不足");
+		}
+		StockDetailEntity detail  = findByStockAndMaterial(stock.getUuid(),sub.getMaterial().getUuid());
+		Long subAmountOut = Math.abs(sub.getPlanAmount())*-1;
+		stream.setTotalAmount(subAmountOut);
+		stream.setSurplusAmount(subAmountOut);
+		stream.setOccupyAmount(subAmountOut);
+		stream.setActualAmount(0l);
+		stream.setOperType(StockStreamEntity.OUT_STOCK);
+		stream.setMemo("项目单审核出库");
+		stream.setStockDetailId(detail.getUuid());
+		stockStreamService.doAdd(stream);//添加库存流水
 		streamLogService.doAdd(logList);
 	}
 	
@@ -549,11 +617,17 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 		}
 	}
 	
+	@Deprecated
 	@Transactional
 	public void unApproveStockDetail(ProjectInfoEntity entity, List<ProjectSubEntity> subList) {
 		List<StreamLogEntity> logList = streamLogService.findByProjectIdAndBillType(entity.getUuid(),StreamLogEntity.BILLTYPE_APPROVE);
 		if(CollectionUtils.isNotEmpty(logList)){
-			List<StockStreamEntity> streamList = stockStreamService.findBySourceIdAndOperType(entity.getUuid(),StockStreamEntity.IN_STOCK);
+			List<String> streamIdList = new ArrayList<>();
+			for(StreamLogEntity log : logList){
+				streamIdList.add(log.getStreamId());
+			}
+//			List<StockStreamEntity> streamList = stockStreamService.findBySourceIdAndOperType(entity.getUuid(),StockStreamEntity.IN_STOCK);
+			List<StockStreamEntity> streamList = (List<StockStreamEntity>) stockStreamService.findAll(streamIdList);
 			boolean hasStream =false;
 			for(StreamLogEntity log:logList){
 				hasStream =false;
@@ -715,5 +789,6 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 	public void doDelete(String[] pks) throws ServiceException {
 		throw new ServiceException("不允许操作");
 	}
+
 	
 }

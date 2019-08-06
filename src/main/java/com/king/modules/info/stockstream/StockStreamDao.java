@@ -25,11 +25,14 @@ public interface StockStreamDao extends IBaseDAO<StockStreamEntity,String> {
 	@Query("from StockStreamEntity where sourceId=? and operType=? and status=1 and surplusAmount>0 order by createtime")
 	List<StockStreamEntity> findSurplusBySourceIdAndOperType(String sourceId,String operType);
 	
+	@Query("from StockStreamEntity where projectSubId=? and operType=? and status=1 and surplusAmount>0 order by createtime")
+	List<StockStreamEntity> findSurplusBySubIdIn(String subId,String operType);
+	
 	@Query("from StockStreamEntity where sourceId in ?1 and operType=?2 and status=1 and surplusAmount>0 order by createtime")
 	List<StockStreamEntity> findSurplusAllBySourceIdsIn(List<String> sourceIdList,String operType);
 	
-	@Query("from StockStreamEntity where sourceId=? and operType=? and status=1 order by createtime")
-	List<StockStreamEntity> findBySourceIdAndOperType(String sourceId,String operType);
+//	@Query("from StockStreamEntity where sourceId=? and operType=? and status=1 order by createtime")
+//	List<StockStreamEntity> findBySourceIdAndOperType(String sourceId,String operType);
 
 	@Modifying
 	@Query("update StockStreamEntity u set u.status=0 where u.sourceId=? and u.operType=?")
