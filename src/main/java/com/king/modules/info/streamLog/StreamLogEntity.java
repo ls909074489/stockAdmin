@@ -38,6 +38,10 @@ public class StreamLogEntity extends BaseEntity {
 	@MetaData(value = "流水id")
 	@Column(length = 50)
 	private String streamId;
+	
+	@MetaData(value = "目标的流水id")
+	@Column(length = 36)
+	private String destStreamId;
 
 	@MetaData(value = "实际数量")
 	@Column()
@@ -86,6 +90,14 @@ public class StreamLogEntity extends BaseEntity {
 
 	public void setBillType(String billType) {
 		this.billType = billType;
+	}
+
+	public String getDestStreamId() {
+		return destStreamId;
+	}
+
+	public void setDestStreamId(String destStreamId) {
+		this.destStreamId = destStreamId;
 	}
 	
 

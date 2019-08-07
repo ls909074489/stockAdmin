@@ -215,10 +215,16 @@ th,td{
 						btnAble ='disabled="disabled" title="已审核不能操作" ';
 					}
 					var uuidInput = '<input type="hidden" name="uuid" value="'+data+'">';
+					var newStreamId = full.newUuid.split("_");
+					var unOutBtn = "";
+					if(newStreamId[0].length>10){
+						unOutBtn = "<button  onclick=\"unOuntSub('"+full.newUuid+"');\" "+btnAble+" rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info unOuntSubBtn' data-rel='tooltip' title='撤销出库'><i class='fa fa-undo'></i>撤销出库</button>";
+					}
 					if(full.barcode!=null&&full.barcode!=''){
 						return uuidInput+"<div class='yy-btn-actiongroup'>"
 						+ "<button  onclick='changeToSave(this);' "+btnAble+" rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info' data-rel='tooltip' title='修改'><i class='fa yy-btn-save'></i>修改</button>"
 						+ "<button  onclick='saveNewBarcode(this);' "+btnAble+"  style='display: none;' rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info saveBcBtn' data-rel='tooltip' title='保存'><i class='fa yy-btn-save'></i>保存</button>"
+						+unOutBtn
 						+ "</div>";
 					}else{
 						return uuidInput+"<div class='yy-btn-actiongroup'>"
@@ -750,6 +756,29 @@ th,td{
 					});
 				}
 			}
+		}
+		
+		function unOuntSub(newUuid){
+			layer.confirm("撤销出库将恢复原出库记录，确定要撤销出库吗?", function() {
+				$.ajax({
+					type : "POST",
+					data :{"newUuid": newUuid},
+					url : "${serviceurl}/unOutBySub",
+					async : true,
+					dataType : "json",
+					success : function(data) {
+						if(data.success){
+							YYUI.succMsg(data.msg);
+							onQuery();
+						}else{
+							YYUI.promAlert(data.msg);
+						}
+					},
+					error : function(data) {
+						YYUI.promMsg("操作失败，请联系管理员");
+					}
+				});
+			});
 		}
 		
 		//编辑变保存按钮

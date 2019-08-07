@@ -1,17 +1,23 @@
 package com.king.modules.info.receive;
 
+import java.util.List;
+
 import javax.servlet.ServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.king.common.utils.Constants;
 import com.king.common.utils.DateUtil;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.BaseController;
+import com.king.modules.info.projectinfo.ProjectInfoEntity;
+import com.king.modules.info.projectinfo.ProjectSubEntity;
 
 /**
  * 收货
@@ -72,7 +78,20 @@ public class ProjectReceiveController extends BaseController<ProjectReceiveEntit
 	@ResponseBody
 	@RequestMapping(value = "/saveReceiveLog")
 	public ActionResultModel<ProjectReceiveEntity> saveReceiveLog(Model model, ServletRequest request,ProjectReceiveEntity entity) {
-		return service.saveReceiveLog(entity);
+		ActionResultModel<ProjectReceiveEntity> arm = new ActionResultModel<ProjectReceiveEntity>();
+		arm.setSuccess(true);
+		try {
+			arm =  service.saveReceiveLog(entity);
+		} catch (DataIntegrityViolationException e) {
+			e.printStackTrace();
+			arm.setSuccess(false);
+			arm.setMsg(Constants.getConstraintMsg(e.getMessage()));
+		}catch (Exception e) {
+			arm.setSuccess(false);
+			arm.setMsg(e.getMessage());
+			e.printStackTrace();
+		}
+		return arm;
 	}
 	
 	

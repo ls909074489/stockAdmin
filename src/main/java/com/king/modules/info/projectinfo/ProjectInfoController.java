@@ -170,7 +170,7 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 			arm.setMsg(Constants.getConstraintMsg(e.getMessage()));
 		}catch (Exception e) {
 			arm.setSuccess(false);
-			arm.setMsg("保存失败");
+			arm.setMsg(e.getMessage());
 			e.printStackTrace();
 		}
 		return arm;

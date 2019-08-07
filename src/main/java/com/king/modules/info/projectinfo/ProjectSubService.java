@@ -111,11 +111,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 		if(!StringUtils.isEmpty(barcodeJson)){
 			blist = JSON.parseArray(barcodeJson, ProjectBarcodeVo.class);
 		}
-		if(checkHasStream(idArr[0])){//没有流水的
-			//扫码时出库
-			String streamId = stockDetailService.descStockDetail(sub);
-			blist.add(new ProjectBarcodeVo(streamId, newBarcode));
-		}else{
+		if(checkHasStream(idArr[0])){
 			boolean hasFound = false;
 			for(ProjectBarcodeVo vo:blist){
 				if(vo.getUuid().equals(idArr[0])){
@@ -127,6 +123,10 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 			if(!hasFound){
 				throw new ServiceException("没有对应的条码明细");
 			}
+		}else{//没有流水的
+			//扫码时出库
+			String streamId = stockDetailService.descStockDetail(sub);
+			blist.add(new ProjectBarcodeVo(streamId, newBarcode));
 		}
 		sub.setBarcode(blist.get(0).getBc());
 		sub.setBarcodejson(JSON.toJSONString(blist));
@@ -138,11 +138,26 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 
 	
 	@Transactional
-	public ActionResultModel<ProjectSubEntity> unBySub(String newUuid) {
+	public ActionResultModel<ProjectSubEntity> unOutBySub(String newUuid) {
 		ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity>();
 		String []idArr = newUuid.split("_");
-		
-		
+		if(checkHasStream(idArr[0])){
+			stockDetailService.unOutBySub(idArr[0]);
+		}else{
+			throw new ServiceException("未扫码出库不能撤销");
+		}
+		ProjectSubEntity sub = getOne(idArr[1]);
+		String barcodeJson = sub.getBarcodejson();
+		List<ProjectBarcodeVo> blist = new ArrayList<>();
+		if(!StringUtils.isEmpty(barcodeJson)){
+			blist = JSON.parseArray(barcodeJson, ProjectBarcodeVo.class);
+		}
+		for(int i=0;i<blist.size();i++){
+			if(blist.get(i).getUuid().equals(idArr[0])){
+				blist.remove(i);
+			}
+		}
+		sub.setBarcodejson(JSON.toJSONString(blist));
 		arm.setSuccess(true);
 		arm.setMsg("操作成功");
 		return arm;

@@ -334,6 +334,28 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 	
 	
 	@ResponseBody
+	@RequestMapping(value = "/unOutBySub")
+	public ActionResultModel<ProjectSubEntity> unOutBySub(ServletRequest request,String newUuid) {
+		ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity>();
+		boolean hasPri = approveUserService.checkIsApproveUser(ShiroUser.getCurrentUserEntity(), ApproveUserEntity.PROJECTINFO_TYPE);
+		if(!hasPri){
+			arm.setSuccess(false);
+			arm.setMsg("您不是审核用户，不能进行操作.");
+			return arm;
+		}
+		try {
+			arm = projectSubService.unOutBySub(newUuid);
+		} catch (Exception e) {
+			e.printStackTrace();
+			arm.setSuccess(false);
+			arm.setMsg("操作失败："+e.getMessage());
+			return arm;
+		}
+		return arm;
+	}
+	
+	
+	@ResponseBody
 	@RequestMapping(value = "/checkBarcode")
 	public ActionResultModel<ProjectSubEntity> checkBarcode(ServletRequest request,String subId,String newBarcode) {
 		return projectSubService.checkBarcode(newBarcode,subId);

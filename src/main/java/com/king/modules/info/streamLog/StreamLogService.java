@@ -31,4 +31,8 @@ public class StreamLogService extends BaseServiceImpl<StreamLogEntity,String> {
 		return dao.findByProjectId(projectId,billType);
 	}
 
+	public List<StreamLogEntity> findByDestStreamId(String destStreamId) {
+		return dao.findByDestStreamId(destStreamId);
+	}
+
 }

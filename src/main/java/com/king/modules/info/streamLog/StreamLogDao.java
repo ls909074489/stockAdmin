@@ -18,4 +18,7 @@ public interface StreamLogDao extends IBaseDAO<StreamLogEntity,String> {
 	@Query("from StreamLogEntity where projectId=? and billType=? and status=1")
 	List<StreamLogEntity> findByProjectId(String projectId,String billType);
 
+	@Query("from StreamLogEntity where destStreamId=? and status=1")
+	List<StreamLogEntity> findByDestStreamId(String destStreamId);
+
 }
