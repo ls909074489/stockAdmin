@@ -437,7 +437,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			List<StockStreamEntity> orderStreams = stockStreamService.findOrderByStockAndMaterial(
 					stock.getUuid(),sub.getMaterial().getUuid());
 			if(CollectionUtils.isEmpty(orderStreams)){
-				throw new ServiceException("订单物料"+sub.getMaterial().getCode()+"流水不足");
+				throw new ServiceException("库存物料"+sub.getMaterial().getCode()+"流水不足");
 			}
 			for(StockStreamEntity ss:orderStreams){
 				if(ss.getSurplusAmount()>=subAmount){//计算流水剩余的数量
@@ -452,7 +452,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			throw new ServiceException("库存物料"+sub.getMaterial().getCode()+"流水不足");
 		}
 		StockDetailEntity detail  = findByStockAndMaterial(stock.getUuid(),sub.getMaterial().getUuid());
-		Long subAmountOut = Math.abs(subAmount)*-1;
+		Long subAmountOut = Math.abs(sub.getPlanAmount())*-1;
 		stream.setTotalAmount(subAmountOut);
 		stream.setSurplusAmount(subAmountOut);
 		stream.setOccupyAmount(subAmountOut);

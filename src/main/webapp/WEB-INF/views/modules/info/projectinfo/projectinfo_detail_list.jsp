@@ -795,7 +795,7 @@ th,td{
 						YYUI.succMsg(data.msg);
 						onQuery();
 					}else{
-						YYUI.promMsg(data.msg);
+						YYUI.promAlert(data.msg);
 					}
 				},
 				error : function(data) {

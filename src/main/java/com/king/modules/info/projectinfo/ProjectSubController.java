@@ -314,14 +314,22 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 	@ResponseBody
 	@RequestMapping(value = "/updateBarcode")
 	public ActionResultModel<ProjectSubEntity> updateBarcode(ServletRequest request,String newUuid,String newBarcode) {
+		ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity>();
 		boolean hasPri = approveUserService.checkIsApproveUser(ShiroUser.getCurrentUserEntity(), ApproveUserEntity.PROJECTINFO_TYPE);
 		if(!hasPri){
-			ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity>();
 			arm.setSuccess(false);
 			arm.setMsg("您不是审核用户，不能进行操作.");
 			return arm;
 		}
-		return projectSubService.updateBarcode(newBarcode,newUuid);
+		try {
+			arm = projectSubService.updateBarcode(newBarcode,newUuid);
+		} catch (Exception e) {
+			e.printStackTrace();
+			arm.setSuccess(false);
+			arm.setMsg("操作失败："+e.getMessage());
+			return arm;
+		}
+		return arm;
 	}
 	
 	
