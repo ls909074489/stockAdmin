@@ -27,7 +27,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.socket.TextMessage;
 
-import com.alibaba.fastjson.JSON;
 import com.king.common.dao.DbUtilsDAO;
 import com.king.common.enums.BillStatus;
 import com.king.common.exception.DAOException;
@@ -36,7 +35,6 @@ import com.king.frame.controller.ActionResultModel;
 import com.king.frame.dao.IBaseDAO;
 import com.king.frame.security.ShiroUser;
 import com.king.frame.service.SuperServiceImpl;
-import com.king.frame.utils.UUIDString;
 import com.king.frame.websocket.YyWebSocketHandler;
 import com.king.modules.info.apply.ProjectApplyEntity;
 import com.king.modules.info.apply.ProjectApplyService;
@@ -557,18 +555,18 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 	
 	
 	private ProjectSubEntity setBarcodeJson(ProjectSubEntity sub){
-		List<ProjectBarcodeVo> barcodeList = new ArrayList<>();
-		if (StringUtils.isEmpty(sub.getUuid())) {
-			if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
-				for(int i=0;i<sub.getPlanAmount();i++){
-					barcodeList.add(new ProjectBarcodeVo(UUIDString.getUUIDString(), ""));
-				}
-				sub.setBarcodejson(JSON.toJSONString(barcodeList));
-			}else{
-				barcodeList.add(new ProjectBarcodeVo(UUIDString.getUUIDString(), ""));
-				sub.setBarcodejson(JSON.toJSONString(barcodeList));
-			}
-		}else{
+//		List<ProjectBarcodeVo> barcodeList = new ArrayList<>();
+//		if (StringUtils.isEmpty(sub.getUuid())) {
+//			if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
+//				for(int i=0;i<sub.getPlanAmount();i++){
+//					barcodeList.add(new ProjectBarcodeVo(UUIDString.getUUIDString(), "",0));
+//				}
+//				sub.setBarcodejson(JSON.toJSONString(barcodeList));
+//			}else{
+//				barcodeList.add(new ProjectBarcodeVo(UUIDString.getUUIDString(), "",0));
+//				sub.setBarcodejson(JSON.toJSONString(barcodeList));
+//			}
+//		}else{
 			//TODO
 //			if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
 //				String barcodeJson = sub.getBarcodejson();
@@ -592,7 +590,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 //			}else{
 //				sub.setBarcodejson("[]");
 //			}
-		}
+//		}
 		return sub;
 	}
 

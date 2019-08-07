@@ -2,7 +2,6 @@ package com.king.modules.info.projectinfo;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -55,6 +54,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 	private ProjectInfoService mainService;
 	@Autowired
 	private ProjectBarcodeLogService projectBarcodeLogService;
+	@Lazy
 	@Autowired
 	private StockDetailService stockDetailService;
 
@@ -99,29 +99,49 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 		String []idArr = newUuid.split("_");
 		ProjectSubEntity sub = getOne(idArr[1]);
 		String barcodeJson = sub.getBarcodejson();
-		List<String> blist = new ArrayList<>();
-		//TODO
-		if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
-			String [] barcodeArr = new String[sub.getPlanAmount().intValue()];
-			if(!StringUtils.isEmpty(barcodeJson)){
-				blist = JSON.parseArray(barcodeJson, String.class);
-			}
-			for(int i=0;i<barcodeArr.length;i++){
-				if(blist.size()>i){
-					barcodeArr[i] = blist.get(i);
-				}else{
-					barcodeArr[i] = "";
-				}
-			}
-			barcodeArr[Integer.parseInt(idArr[0])] = newBarcode;
-			blist = Arrays.asList(barcodeArr);
-		}else{
-			blist.add(newBarcode);
-		}
-		if(Integer.parseInt(idArr[0])==0){
-			sub.setBarcode(newBarcode);
-		}
-		sub.setBarcodejson(JSON.toJSONString(blist));
+		List<ProjectBarcodeVo> blist = new ArrayList<>();
+//		boolean hasStream = false;
+//		boolean hasFound = false;
+//		if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
+//			if(!StringUtils.isEmpty(barcodeJson)){
+//				blist = JSON.parseArray(barcodeJson, ProjectBarcodeVo.class);
+//				for(ProjectBarcodeVo vo:blist){
+//					if(vo.getUuid().equals(idArr[0])){
+//						vo.setBc(newBarcode);
+//						hasStream = true;
+//						hasFound =true;
+//						break;
+//					}
+//				}
+//			}else{
+//				hasFound =true;
+//				for(int i=0;i<sub.getPlanAmount();i++){
+//					if(i==0){
+//						blist.add(new ProjectBarcodeVo(UUIDString.getUUIDString(), newBarcode,1));
+//					}else{
+//						blist.add(new ProjectBarcodeVo(UUIDString.getUUIDString(), "",0));
+//					}
+//				}
+//			}
+//		}else{
+//			if(!StringUtils.isEmpty(barcodeJson)){
+//				blist = JSON.parseArray(barcodeJson, ProjectBarcodeVo.class);
+//				for(ProjectBarcodeVo vo:blist){
+//					if(vo.getUuid().equals(idArr[0])){
+//						vo.setBc(newBarcode);
+//						hasStream = true;
+//						hasFound =true;
+//						break;
+//					}
+//				}
+//			}else{
+//				hasFound =true;
+//				blist.add(new ProjectBarcodeVo(UUIDString.getUUIDString(), newBarcode,1));
+//			}	
+//		}
+//		if(!hasFound){
+//			throw new ServiceException("没有对应的条码明细");
+//		}
 		
 		//保存条码日志
 		ProjectBarcodeLogEntity barcodeLog = new ProjectBarcodeLogEntity();
@@ -130,8 +150,28 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 		barcodeLog.setBarcode(newBarcode);
 		projectBarcodeLogService.doAdd(barcodeLog);
 		
-		//扫码时出库
-		stockDetailService.descStockDetail(sub);
+		if(!StringUtils.isEmpty(barcodeJson)){
+			blist = JSON.parseArray(barcodeJson, ProjectBarcodeVo.class);
+		}
+		if(idArr[0].length()<10){//没有流水的
+			//扫码时出库
+			String streamId = stockDetailService.descStockDetail(sub);
+			blist.add(new ProjectBarcodeVo(streamId, newBarcode));
+		}else{
+			boolean hasFound = false;
+			for(ProjectBarcodeVo vo:blist){
+				if(vo.getUuid().equals(idArr[0])){
+					vo.setBc(newBarcode);
+					hasFound =true;
+					break;
+				}
+			}
+			if(!hasFound){
+				throw new ServiceException("没有对应的条码明细");
+			}
+		}
+		sub.setBarcode(blist.get(0).getBc());
+		sub.setBarcodejson(JSON.toJSONString(blist));
 		
 		arm.setSuccess(true);
 		arm.setMsg("操作成功");
@@ -220,16 +260,16 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 		cell.setCellValue("备注");
 		
 		List<ProjectSubEntity> resultList = new ArrayList<>();
-		List<String> subBarcodelist = null;
+		List<ProjectBarcodeVo> subBarcodelist = null;
 		ProjectSubEntity desSub = null;
 		List<EnumDataSubEntity> enumList = EnumDataUtils.getEnumSubList("barCodeExtract");
 		for(ProjectSubEntity sub:subList){
 			if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
 				if(org.apache.commons.lang3.StringUtils.isNotEmpty(sub.getBarcodejson())){
-					subBarcodelist = JSON.parseArray(sub.getBarcodejson(), String.class);
+					subBarcodelist = JSON.parseArray(sub.getBarcodejson(), ProjectBarcodeVo.class);
 				}
 				if(subBarcodelist==null){
-					subBarcodelist = new ArrayList<String>();
+					subBarcodelist = new ArrayList<ProjectBarcodeVo>();
 				}
 				for(int i=0;i<sub.getPlanAmount();i++){
 					desSub = new ProjectSubEntity();
@@ -248,7 +288,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 					}
 					desSub.setNewUuid(i+"_"+sub.getUuid());
 					if(i<subBarcodelist.size()){
-						desSub.setBarcode(subBarcodelist.get(i));
+						desSub.setBarcode(subBarcodelist.get(i).getBc());
 					}else{
 						desSub.setBarcode("");
 					}

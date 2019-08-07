@@ -177,7 +177,7 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 			return arm;
 		}
 		List<ProjectSubEntity> resultList = new ArrayList<>();
-		List<String> subBarcodelist = null;
+		List<ProjectBarcodeVo> subBarcodelist = null;
 		ProjectSubEntity desSub = null;
 		Set<String> projectIdSet = new HashSet<>();
 		List<EnumDataSubEntity> enumList = EnumDataUtils.getEnumSubList("barCodeExtract");
@@ -187,10 +187,10 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 			projectIdSet.add(sub.getMain().getUuid());
 			if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
 				if(StringUtils.isNotEmpty(sub.getBarcodejson())){
-					subBarcodelist = JSON.parseArray(sub.getBarcodejson(), String.class);
+					subBarcodelist = JSON.parseArray(sub.getBarcodejson(), ProjectBarcodeVo.class);
 				}
 				if(subBarcodelist==null){
-					subBarcodelist = new ArrayList<String>();
+					subBarcodelist = new ArrayList<ProjectBarcodeVo>();
 				}
 				for(int i=0;i<sub.getPlanAmount();i++){
 					desSub = new ProjectSubEntity();
@@ -207,18 +207,31 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 					}else{
 						desSub.setFirstRow("0");
 					}
-					desSub.setNewUuid(i+"_"+sub.getUuid());
 					if(i<subBarcodelist.size()){
-						desSub.setBarcode(subBarcodelist.get(i));
+						desSub.setNewUuid(subBarcodelist.get(i).getUuid()+"_"+sub.getUuid());
+						desSub.setBarcode(subBarcodelist.get(i).getBc());
 					}else{
+						desSub.setNewUuid(i+"_"+sub.getUuid());
 						desSub.setBarcode("");
 					}
 					checkStyle(desSub,enumList);
 					resultList.add(desSub);
 				}
 			}else{
+				if(StringUtils.isNotEmpty(sub.getBarcodejson())){
+					subBarcodelist = JSON.parseArray(sub.getBarcodejson(), ProjectBarcodeVo.class);
+				}
+				if(subBarcodelist==null){
+					subBarcodelist = new ArrayList<ProjectBarcodeVo>();
+				}
+				if(subBarcodelist.size()>0){
+					sub.setNewUuid(subBarcodelist.get(0).getUuid()+"_"+sub.getUuid());
+					sub.setBarcode(subBarcodelist.get(0).getBc());
+				}else{
+					sub.setNewUuid(0+"_"+sub.getUuid());
+					sub.setBarcode("");
+				}
 				checkStyle(sub,enumList);
-				sub.setNewUuid("0_"+sub.getUuid());
 				sub.setFirstRow("1");
 				resultList.add(sub);
 			}

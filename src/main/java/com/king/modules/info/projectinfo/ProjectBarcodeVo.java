@@ -4,6 +4,7 @@ public class ProjectBarcodeVo {
 
 	private String uuid;
 	private String bc;//条码
+//	private int streamType=0;
 	
 	public ProjectBarcodeVo() {
 	}
@@ -23,4 +24,11 @@ public class ProjectBarcodeVo {
 	public void setBc(String bc) {
 		this.bc = bc;
 	}
+//	public int getStreamType() {
+//		return streamType;
+//	}
+//	public void setStreamType(int streamType) {
+//		this.streamType = streamType;
+//	}
+	
 }
