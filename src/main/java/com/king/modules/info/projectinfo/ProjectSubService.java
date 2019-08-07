@@ -100,48 +100,6 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 		ProjectSubEntity sub = getOne(idArr[1]);
 		String barcodeJson = sub.getBarcodejson();
 		List<ProjectBarcodeVo> blist = new ArrayList<>();
-//		boolean hasStream = false;
-//		boolean hasFound = false;
-//		if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
-//			if(!StringUtils.isEmpty(barcodeJson)){
-//				blist = JSON.parseArray(barcodeJson, ProjectBarcodeVo.class);
-//				for(ProjectBarcodeVo vo:blist){
-//					if(vo.getUuid().equals(idArr[0])){
-//						vo.setBc(newBarcode);
-//						hasStream = true;
-//						hasFound =true;
-//						break;
-//					}
-//				}
-//			}else{
-//				hasFound =true;
-//				for(int i=0;i<sub.getPlanAmount();i++){
-//					if(i==0){
-//						blist.add(new ProjectBarcodeVo(UUIDString.getUUIDString(), newBarcode,1));
-//					}else{
-//						blist.add(new ProjectBarcodeVo(UUIDString.getUUIDString(), "",0));
-//					}
-//				}
-//			}
-//		}else{
-//			if(!StringUtils.isEmpty(barcodeJson)){
-//				blist = JSON.parseArray(barcodeJson, ProjectBarcodeVo.class);
-//				for(ProjectBarcodeVo vo:blist){
-//					if(vo.getUuid().equals(idArr[0])){
-//						vo.setBc(newBarcode);
-//						hasStream = true;
-//						hasFound =true;
-//						break;
-//					}
-//				}
-//			}else{
-//				hasFound =true;
-//				blist.add(new ProjectBarcodeVo(UUIDString.getUUIDString(), newBarcode,1));
-//			}	
-//		}
-//		if(!hasFound){
-//			throw new ServiceException("没有对应的条码明细");
-//		}
 		
 		//保存条码日志
 		ProjectBarcodeLogEntity barcodeLog = new ProjectBarcodeLogEntity();
@@ -153,7 +111,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 		if(!StringUtils.isEmpty(barcodeJson)){
 			blist = JSON.parseArray(barcodeJson, ProjectBarcodeVo.class);
 		}
-		if(idArr[0].length()<10){//没有流水的
+		if(checkHasStream(idArr[0])){//没有流水的
 			//扫码时出库
 			String streamId = stockDetailService.descStockDetail(sub);
 			blist.add(new ProjectBarcodeVo(streamId, newBarcode));
@@ -178,6 +136,26 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 		return arm;
 	}
 
+	
+	@Transactional
+	public ActionResultModel<ProjectSubEntity> unBySub(String newUuid) {
+		ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity>();
+		String []idArr = newUuid.split("_");
+		
+		
+		arm.setSuccess(true);
+		arm.setMsg("操作成功");
+		return arm;
+	}
+	
+	
+	private boolean checkHasStream(String index){
+		if(index.length()<10){
+			return false;
+		}
+		return true;
+	}
+	
 	
 	public void changeToSheet(List<ProjectInfoEntity> mainList, Workbook wb) {
 		for(ProjectInfoEntity main:mainList){
