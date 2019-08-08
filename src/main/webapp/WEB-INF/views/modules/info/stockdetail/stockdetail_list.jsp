@@ -10,17 +10,14 @@
 <body>
 	<div id="yy-page" class="container-fluid page-container">
 		<div class="page-content" id="yy-page-list">
-			<!-- <div class="row yy-toolbar">
-				<button id="yy-btn-add" class="btn blue btn-sm">
-					<i class="fa fa-plus"></i> 新增
-				</button>
-				<button id="yy-btn-remove" class="btn red btn-sm">
-					<i class="fa fa-trash-o"></i> 删除
-				</button>
+			<div class="row yy-toolbar">
 				<button id="yy-btn-refresh" class="btn blue btn-sm">
 					<i class="fa fa-refresh"></i> 刷新
 				</button>
-			</div> -->
+				<button id="yy-btn-export-query" queryformId="yy-form-query" class="btn green btn-sm">
+					<i class="fa fa-chevron-up"></i> 导出
+				</button>
+			</div>
 			<div class="row yy-searchbar form-inline">
 				<form id="yy-form-query">
 					<label for="search_LIKE_name" class="control-label">仓库名称</label>
@@ -140,6 +137,10 @@
 			_queryData = $("#yy-form-query").serializeArray();
 			bindListActions();
 			serverPage(null);
+			
+			$("#yy-btn-export-query").click(function(){
+				window.open('${serviceurl}/exportQuery?'+$("#yy-form-query").serialize(),"_blank"); 
+			});
 		});
 		
 		
