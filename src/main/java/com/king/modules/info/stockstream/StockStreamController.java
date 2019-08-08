@@ -1,22 +1,27 @@
 package com.king.modules.info.stockstream;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
 import javax.servlet.ServletRequest;
-
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import com.king.common.utils.DateUtil;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.BaseController;
 import com.king.frame.controller.QueryRequest;
+import com.king.frame.utils.RequestUtil;
 import com.king.modules.info.projectinfo.ProjectSubEntity;
 import com.king.modules.info.projectinfo.ProjectSubService;
 
@@ -103,6 +108,15 @@ public class StockStreamController extends BaseController<StockStreamEntity> {
 		addParam.put("EQ_status", "1");
 //		addParam.put("GT_surplusAmount", "0");
 		
+		String GT_surplusAmount= request.getParameter("GT_surplusAmount");
+		if(StringUtils.isNotEmpty(GT_surplusAmount)){
+			if(GT_surplusAmount.equals("0")){//已出库
+				addParam.put("EQ_surplusAmount", "0");
+			}else{
+				addParam.put("GT_surplusAmount", "0");
+			}
+		}
+		
 		String search_GTE_createtime = request.getParameter("search_GTE_createtime");
 		if(StringUtils.isNotEmpty(search_GTE_createtime)){
 			addParam.put("LTE_createtime", search_GTE_createtime+" 59:59:59");//要预警 
@@ -120,6 +134,51 @@ public class StockStreamController extends BaseController<StockStreamEntity> {
 		return execQuery(qr, baseService);
 	}
 	
+	
+	
+	@RequestMapping(value = "/exportWarnQuery")
+	public void exportWarnQuery(HttpServletRequest request, HttpServletResponse response) {
+		ActionResultModel<StockStreamEntity> arm=new ActionResultModel<StockStreamEntity>();
+		OutputStream os = null;
+		Workbook wb = null;
+		try {
+			os = response.getOutputStream();// 取得输出流   
+	        response.reset();// 清空输出流   
+	        response.setContentType("application/octet-stream; charset=utf-8");
+			String explorerType = RequestUtil.getExplorerType((HttpServletRequest)request);
+			
+			arm= dataWarning(request);
+			
+			List<StockStreamEntity> resultList = arm.getRecords();
+			
+			if (explorerType == null || explorerType.contains("IE")) {// IE
+				response.setHeader("Content-Disposition",
+				"attachment; filename=\"" + RequestUtil.encode(("预警物料"+DateUtil.getDateTimeZone()),"utf-8")+".xlsx" + "\"");
+			} else {// fireFox/Chrome
+				response.setHeader("Content-Disposition",
+						"attachment; filename=" + new String(("预警物料"+DateUtil.getDateTimeZone()).getBytes("utf-8"), "ISO8859-1")+".xlsx");
+			}
+	        response.setContentType("application/msexcel");// 定义输出类型 
+			wb = new SXSSFWorkbook(100);
+			service.changeToWarnCells(resultList, wb);
+			wb.write(os);
+		} catch (Exception e) {
+			arm.setSuccess(false);
+			arm.setMsg(e.getMessage());
+			e.printStackTrace();
+		}finally{
+			try {
+				if(wb!=null){
+					wb.close();
+				}
+				if(os!=null){
+					os.close();// 关闭流
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			} 
+		} 
+	}
 	
 	/**
 	 * 仓库的物料

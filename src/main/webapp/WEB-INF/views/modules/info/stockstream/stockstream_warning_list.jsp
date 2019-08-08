@@ -10,6 +10,14 @@
 <body>
 	<div id="yy-page" class="container-fluid page-container">
 		<div class="page-content" id="yy-page-list">
+			<div class="row yy-toolbar">
+				<button id="yy-btn-refresh" class="btn blue btn-sm">
+					<i class="fa fa-refresh"></i> 刷新
+				</button>
+				<button id="yy-btn-export-query" queryformId="yy-form-query" class="btn green btn-sm">
+					<i class="fa fa-chevron-up"></i> 导出
+				</button>
+			</div>
 			<div class="row yy-searchbar form-inline">
 				<form id="yy-form-query">
 					<label for="search_LIKE_name" class="control-label">仓库名称</label>
@@ -53,13 +61,19 @@
 					class="form-control input-sm Wdate" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:00',minDate:'#F{$dp.$D(\'search_GTE_createtime\')}'});">	 -->
 				
 					<label class="control-label">入库时间</label> 
-					<input type="text" autocomplete="on" name="search_GTE_createtime" style="width: 150px;" id="search_GTE_createtime" 
+					<input type="text" autocomplete="on" name="search_GTE_createtime" style="width: 90px;" id="search_GTE_createtime" 
 						class="form-control input-sm Wdate" onclick="WdatePicker();">
 	
 					<label class="control-label">预警时间</label> 
-					<input type="text" autocomplete="on" name="search_LTE_warningTime" style="width: 150px;" id="search_LTE_warningTime" 
+					<input type="text" autocomplete="on" name="search_LTE_warningTime" style="width: 90px;" id="search_LTE_warningTime" 
 						class="form-control input-sm Wdate" onclick="WdatePicker();">
 					
+					<label class="control-label">状态</label> 
+					<select class="yy-input-enumdata form-control" id="GT_surplusAmount" name="GT_surplusAmount">
+						<option value="">请选择</option>
+						<option value="1">在库</option>
+						<option value="0">已出库</option>
+					</select>
 				</form>
 			</div>
 			<div class="row">
@@ -187,6 +201,11 @@
 			_queryData = $("#yy-form-query").serializeArray();
 			bindListActions();
 			serverPage('${serviceurl}/dataWarning?orderby=createtime@desc');
+			
+			
+			$("#yy-btn-export-query").click(function(){
+				window.open('${serviceurl}/exportWarnQuery?'+$("#yy-form-query").serialize(),"_blank"); 
+			});
 		});
 		
 		//重写防止双击
