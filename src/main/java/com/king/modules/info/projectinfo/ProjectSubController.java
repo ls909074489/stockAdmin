@@ -223,20 +223,24 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 					desSub.setFirstRow(i==0?"1":"0");
 					setSubBarcode(subBarcodelist, desSub, i);
 					checkStyle(desSub,enumList);
-					sub.setSurplusAmount(calcSurplusAmount(sub,streamMap.get(sub.getUuid())));
-					if(isSearchBarcode&&sub.getBarcode().contains(custom_search_barcode)){
-						resultList.add(sub);
+					desSub.setSurplusAmount(calcSurplusAmount(desSub,streamMap.get(desSub.getUuid())));
+					if(isSearchBarcode){
+						if(desSub.getBarcode().contains(custom_search_barcode)){
+							resultList.add(desSub);
+						}
 					}else{
-						resultList.add(sub);
+						resultList.add(desSub);
 					}
 				}
 			}else{
-				setSubBarcode(subBarcodelist, desSub, 0);
-				checkStyle(sub,enumList);
 				sub.setFirstRow("1");
+				setSubBarcode(subBarcodelist, sub, 0);
+				checkStyle(sub,enumList);
 				sub.setSurplusAmount(calcSurplusAmount(sub,streamMap.get(sub.getUuid())));
-				if(isSearchBarcode&&sub.getBarcode().contains(custom_search_barcode)){
-					resultList.add(sub);
+				if(isSearchBarcode){
+					if(sub.getBarcode().contains(custom_search_barcode)){
+						resultList.add(sub);
+					}
 				}else{
 					resultList.add(sub);
 				}
@@ -259,6 +263,11 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 	 * @return
 	 */
 	private ProjectSubEntity setSubBarcode(List<ProjectSubBarcodeEntity> subBarcodelist,ProjectSubEntity sub,int i){
+		if(CollectionUtils.isEmpty(subBarcodelist)){
+			sub.setNewUuid(i+"_"+sub.getUuid());
+			sub.setBarcode("");
+			return sub;
+		}
 		if(i<subBarcodelist.size()){
 			sub.setNewUuid(subBarcodelist.get(i).getUuid()+"_"+sub.getUuid());
 			sub.setBarcode(subBarcodelist.get(i).getBarcode());

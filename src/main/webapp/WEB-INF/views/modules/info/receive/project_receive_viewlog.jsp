@@ -23,6 +23,7 @@
 							<th>收货类型</th>
 							<th>收货数量</th>
 							<th>收货时间</th>
+							<th>预警时间</th>
 							<th>备注</th>
 							<th>创建人</th>
 							<th>创建时间</th>
@@ -59,6 +60,11 @@
 				orderable : true
 			},{
 				data : "receiveTime",
+				width : "200",
+				className : "center",
+				orderable : true
+			},{
+				data : "warningTime",
 				width : "200",
 				className : "center",
 				orderable : true

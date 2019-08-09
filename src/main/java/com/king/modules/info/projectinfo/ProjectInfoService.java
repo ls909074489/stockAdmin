@@ -47,6 +47,7 @@ import com.king.modules.info.stockstream.StockStreamEntity;
 import com.king.modules.info.stockstream.StockStreamService;
 import com.king.modules.sys.imexlate.ImexlateSubEntity;
 import com.king.modules.sys.imexlate.ImexlateSubService;
+import com.king.modules.sys.param.ParameterUtil;
 import com.king.modules.sys.user.UserEntity;
 
 /**
@@ -336,7 +337,13 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 								entity.setMemo(ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("memo"))));
 								
 								materialCodeSet.add(distinctCode);
-								list.add(entity);
+								if(entity.getMaterialPurchaseType().equals("TK")){
+									if(ParameterUtil.getParamValue("isImpInTK").equals("1")){
+										list.add(entity);
+									}
+								}else{
+									list.add(entity);
+								}
 							}
 						}
 					}
@@ -411,7 +418,14 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 								entity.setMemo(ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("memo"))));
 								
 								materialCodeSet.add(distinctCode);
-								list.add(entity);
+								
+								if(entity.getMaterialPurchaseType().equals("TK")){
+									if(ParameterUtil.getParamValue("isImpInTK").equals("1")){
+										list.add(entity);
+									}
+								}else{
+									list.add(entity);
+								}
 							}
 						}
 					}
@@ -430,9 +444,6 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 				Map<String,MaterialEntity> hwmaterialMap = new HashMap<>();
 				for (ProjectSubEntity projectSub : list) {
 					hasMaterial = false;
-					if(projectSub.getMaterialHwCode().equals("02310NBS")){
-						System.out.println("==========");
-					}
 					for (MaterialEntity material : materialList) {
 						if (projectSub.getMaterialPurchaseType().equals(MaterialEntity.PURCHASETYPE_CS)&&
 								projectSub.getMaterialHwCode().equals(material.getHwcode())) {

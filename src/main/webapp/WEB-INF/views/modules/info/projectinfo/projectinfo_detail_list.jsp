@@ -93,7 +93,7 @@ th,td{
 						
 						<!-- <label class="control-label">项目</label>
 						<div class="input-group input-icon right">
-							<input id="search_LIKE_mainId" name="search_LIKE_main.uuid" type="hidden"> 
+							<input id="search_LIKE_mainId" name="search_EQ_main.uuid" type="hidden"> 
 							<i class="fa fa-remove" onclick="cleanDef('search_LIKE_mainId','search_LIKE_mainName');" title="清空"></i>
 							<input id="search_LIKE_mainName" name="search_LIKE_main.name" type="text" class="form-control" readonly="readonly">
 							<span class="input-group-btn">
@@ -107,13 +107,13 @@ th,td{
 							<c:when test="${empty sourceBillId}">
 								<label class="control-label">项目</label>
 								<div class="input-group">
-									<select class="combox form-control projectSelectCls" id="search_LIKE_mainId" onchange="changeProjectSel();" name="search_LIKE_main.uuid" style="float: left;width: 200px;">
+									<select class="combox form-control projectSelectCls" id="search_LIKE_mainId" onchange="changeProjectSel();" name="search_EQ_main.uuid" style="float: left;width: 200px;">
 										<option value=""></option>
 									</select>
 								</div>
 							</c:when>
 							<c:otherwise>
-								<input name="search_LIKE_main.uuid" id="search_LIKE_mainId" type="hidden" value="${sourceBillId}" class="yy-input"> 
+								<input name="search_EQ_main.uuid" id="search_LIKE_mainId" type="hidden" value="${sourceBillId}" class="yy-input"> 
 								<span style="display: none;">
 									<select class="combox form-control projectSelectCls"  name="" style="display: none;">
 											<option value="${sourceBillId}">${sourceBillId}</option>

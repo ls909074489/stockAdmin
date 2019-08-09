@@ -177,6 +177,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 			ProjectSubBarcodeEntity bc = projectSubBarcodeService.getOne(idArr[0]);
 			if(bc!=null){
 				stockDetailService.unOutBySub(bc.getStreamId());//idArr[0]
+				projectSubBarcodeService.delete(bc);
 			}
 		}else{
 			throw new ServiceException("未扫码出库不能撤销");
