@@ -77,9 +77,9 @@ public class ProjectSubEntity extends BaseEntity {
 	@Column(name = "barcode",length=50)
 	private String barcode="";//条码
 	
-	@MetaData(value = "条码验证状态")
-	@Column(length=2000)
-	private String barcodejson="[]";//条码json ProjectBarcodeVo
+//	@MetaData(value = "条码验证状态")
+//	@Column(length=2000)
+//	private String barcodejson="[]";//条码json ProjectBarcodeVo
 	
 	@MetaData(value = "条码验证状态")
 	@Column(length=2)
@@ -263,13 +263,13 @@ public class ProjectSubEntity extends BaseEntity {
 		this.materialPurchaseType = materialPurchaseType;
 	}
 
-	public String getBarcodejson() {
-		return barcodejson;
-	}
-
-	public void setBarcodejson(String barcodejson) {
-		this.barcodejson = barcodejson;
-	}
+//	public String getBarcodejson() {
+//		return barcodejson;
+//	}
+//
+//	public void setBarcodejson(String barcodejson) {
+//		this.barcodejson = barcodejson;
+//	}
 
 	public int getLimitCount() {
 		return limitCount;

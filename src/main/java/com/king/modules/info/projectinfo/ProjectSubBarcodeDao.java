@@ -19,4 +19,11 @@ public interface ProjectSubBarcodeDao extends IBaseDAO<ProjectSubBarcodeEntity, 
 	List<ProjectSubBarcodeEntity> findBySubId(String subId);
 
 	
+	@Query("from ProjectSubBarcodeEntity where main.uuid in ?1 and status=1 order by main.uuid,createtime")
+	List<ProjectSubBarcodeEntity> findByProjectIds(List<String> projectIds);
+
+	@Query("from ProjectSubBarcodeEntity ur where ur.barcode like ?1 and status=1")
+	List<ProjectSubBarcodeEntity> findLikeBarcode(String barcode);
+
+	
 }

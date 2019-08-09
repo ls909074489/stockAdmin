@@ -26,17 +26,32 @@ public class ProjectSubBarcodeEntity extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "subid")
-	private ProjectSubEntity sub;
+	@JoinColumn(name = "mainid")
+	private ProjectInfoBaseEntity main;
 	
-	@Column(name = "barcode",length=50)
-	private String barcode="";//条码
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "subid")
+	private ProjectSubBaseEntity sub;
+	
+	@Column(name = "条码",length=50)
+	private String barcode="";
 
-	public ProjectSubEntity getSub() {
+	@Column(name = "流水id",length=36)
+	private String streamId="";
+
+	public ProjectInfoBaseEntity getMain() {
+		return main;
+	}
+
+	public void setMain(ProjectInfoBaseEntity main) {
+		this.main = main;
+	}
+
+	public ProjectSubBaseEntity getSub() {
 		return sub;
 	}
 
-	public void setSub(ProjectSubEntity sub) {
+	public void setSub(ProjectSubBaseEntity sub) {
 		this.sub = sub;
 	}
 
@@ -44,11 +59,20 @@ public class ProjectSubBarcodeEntity extends BaseEntity {
 		return barcode;
 	}
 
+
 	public void setBarcode(String barcode) {
 		this.barcode = barcode;
 	}
-	
-	
+
+
+	public String getStreamId() {
+		return streamId;
+	}
+
+
+	public void setStreamId(String streamId) {
+		this.streamId = streamId;
+	}
 	
 	
 }

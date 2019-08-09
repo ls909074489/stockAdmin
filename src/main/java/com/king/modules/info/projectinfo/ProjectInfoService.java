@@ -567,7 +567,6 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 //				sub.setBarcodejson(JSON.toJSONString(barcodeList));
 //			}
 //		}else{
-			//TODO
 //			if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
 //				String barcodeJson = sub.getBarcodejson();
 //				if(StringUtils.isEmpty(barcodeJson)){

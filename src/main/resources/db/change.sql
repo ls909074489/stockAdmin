@@ -322,6 +322,7 @@ INSERT INTO `yy_imexlate_sub` (`uuid`, `create_time`, `createtime`, `creator`, `
 
 
 
-
+2019/8/9
+ALTER TABLE yy_project_sub DROP COLUMN barcodejson; 
 
 

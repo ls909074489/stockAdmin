@@ -24,7 +24,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.alibaba.fastjson.JSON;
 import com.king.common.utils.Json;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.BaseController;
@@ -59,7 +58,8 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 	private ProjectReceiveService receiveService;
 	@Autowired
 	private StockStreamService streamService;
-	
+	@Autowired
+	private ProjectSubBarcodeService projectSubBarcodeService;
 	
 	
 	@Override
@@ -170,28 +170,44 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		addParam.put("EQ_stock.uuid", request.getParameter("stockId"));
 		addParam.put("EQ_material.uuid", request.getParameter("materialId"));
 		addParam.put("EQ_status", "1");
+		String custom_search_barcode = request.getParameter("custom_search_barcode");
+		if(StringUtils.isNotEmpty(custom_search_barcode)){
+			List<ProjectSubBarcodeEntity> searchBarcodeList = projectSubBarcodeService.findLikeBarcode(custom_search_barcode);
+			if(CollectionUtils.isEmpty(searchBarcodeList)){
+				return new ActionResultModel<>(true, "没有记录");
+			}
+			Set<String> projectIdInSet = new HashSet<>();
+			Set<String> subIdInSet = new HashSet<>();
+			for(ProjectSubBarcodeEntity bc:searchBarcodeList){
+				projectIdInSet.add(bc.getMain().getUuid());
+				subIdInSet.add(bc.getSub().getUuid());
+			}
+			addParam.put("IN_main.uuid", StringUtils.join(projectIdInSet, ","));
+			addParam.put("IN_uuid", StringUtils.join(subIdInSet, ","));
+		}
 		QueryRequest<ProjectSubEntity> qr = getQueryRequest(request, addParam);
 		ActionResultModel<ProjectSubEntity> arm =  execDetailQuery(request,qr, baseService);
 		List<ProjectSubEntity> subList = arm.getRecords();
 		if(CollectionUtils.isEmpty(subList)){
 			return arm;
 		}
+		List<EnumDataSubEntity> enumList = EnumDataUtils.getEnumSubList("barCodeExtract");
 		List<ProjectSubEntity> resultList = new ArrayList<>();
-		List<ProjectBarcodeVo> subBarcodelist = null;
 		ProjectSubEntity desSub = null;
 		Set<String> projectIdSet = new HashSet<>();
-		List<EnumDataSubEntity> enumList = EnumDataUtils.getEnumSubList("barCodeExtract");
 		Map<String,Long> subActualMap = new HashMap<String,Long>();
 		for(ProjectSubEntity sub : subList){
 			subActualMap.put(sub.getUuid(), sub.getSurplusAmount());
 			projectIdSet.add(sub.getMain().getUuid());
+		}
+		List<StockStreamEntity> streamList = streamService.findSurplusAllBySourceIdsIn(new ArrayList<String>(projectIdSet));
+		Map<String,List<StockStreamEntity>> streamMap = changeToStreamMap(streamList);
+		List<ProjectSubBarcodeEntity> barcodeList = projectSubBarcodeService.findByProjectIds(new ArrayList<String>(projectIdSet));
+		Map<String,List<ProjectSubBarcodeEntity>> barcodeMap = changeToBarcodeMap(barcodeList);
+		List<ProjectSubBarcodeEntity> subBarcodelist = null;
+		for(ProjectSubEntity sub : subList){
+			subBarcodelist = barcodeMap.get(sub.getUuid());
 			if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
-				if(StringUtils.isNotEmpty(sub.getBarcodejson())){
-					subBarcodelist = JSON.parseArray(sub.getBarcodejson(), ProjectBarcodeVo.class);
-				}
-				if(subBarcodelist==null){
-					subBarcodelist = new ArrayList<ProjectBarcodeVo>();
-				}
 				for(int i=0;i<sub.getPlanAmount();i++){
 					desSub = new ProjectSubEntity();
 					try {
@@ -202,44 +218,19 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 					} catch (InvocationTargetException e) {
 						e.printStackTrace();
 					}
-					if(i==0){
-						desSub.setFirstRow("1");
-					}else{
-						desSub.setFirstRow("0");
-					}
-					if(i<subBarcodelist.size()){
-						desSub.setNewUuid(subBarcodelist.get(i).getUuid()+"_"+sub.getUuid());
-						desSub.setBarcode(subBarcodelist.get(i).getBc());
-					}else{
-						desSub.setNewUuid(i+"_"+sub.getUuid());
-						desSub.setBarcode("");
-					}
+					desSub.setFirstRow(i==0?"1":"0");
+					setSubBarcode(subBarcodelist, desSub, i);
 					checkStyle(desSub,enumList);
+					sub.setSurplusAmount(calcSurplusAmount(sub,streamMap.get(sub.getUuid())));
 					resultList.add(desSub);
 				}
 			}else{
-				if(StringUtils.isNotEmpty(sub.getBarcodejson())){
-					subBarcodelist = JSON.parseArray(sub.getBarcodejson(), ProjectBarcodeVo.class);
-				}
-				if(subBarcodelist==null){
-					subBarcodelist = new ArrayList<ProjectBarcodeVo>();
-				}
-				if(subBarcodelist.size()>0){
-					sub.setNewUuid(subBarcodelist.get(0).getUuid()+"_"+sub.getUuid());
-					sub.setBarcode(subBarcodelist.get(0).getBc());
-				}else{
-					sub.setNewUuid(0+"_"+sub.getUuid());
-					sub.setBarcode("");
-				}
+				setSubBarcode(subBarcodelist, desSub, 0);
 				checkStyle(sub,enumList);
 				sub.setFirstRow("1");
+				sub.setSurplusAmount(calcSurplusAmount(sub,streamMap.get(sub.getUuid())));
 				resultList.add(sub);
 			}
-		}
-		List<StockStreamEntity> streamList = streamService.findSurplusAllBySourceIdsIn(new ArrayList<String>(projectIdSet));
-		Map<String,List<StockStreamEntity>> streamMap = changeToStreamMap(streamList);
-		for(ProjectSubEntity sub : resultList){
-			sub.setSurplusAmount(calcSurplusAmount(sub,streamMap.get(sub.getUuid())));
 //			System.out.println(sub.getUuid()+">>"+sub.getSurplusAmount()+">>>>>>>>>>>>"+subActualMap.get(sub.getUuid()));
 		}
 		arm.setRecords(resultList);
@@ -250,6 +241,24 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		return arm;
 	}
 	
+	/**
+	 * 设置条码
+	 * @param subBarcodelist
+	 * @param sub
+	 * @param i
+	 * @return
+	 */
+	private ProjectSubEntity setSubBarcode(List<ProjectSubBarcodeEntity> subBarcodelist,ProjectSubEntity sub,int i){
+		if(i<subBarcodelist.size()){
+			sub.setNewUuid(subBarcodelist.get(i).getUuid()+"_"+sub.getUuid());
+			sub.setBarcode(subBarcodelist.get(i).getBarcode());
+		}else{
+			sub.setNewUuid(i+"_"+sub.getUuid());
+			sub.setBarcode("");
+		}
+		return sub;
+	}
+
 	/**
 	 * 计算剩余 的流水
 	 * @param sub
@@ -288,6 +297,29 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		}
 		return map;
 	}
+	
+	/**
+	 * 转成条码map
+	 * @param streamList
+	 * @return
+	 */
+	private Map<String, List<ProjectSubBarcodeEntity>> changeToBarcodeMap(List<ProjectSubBarcodeEntity> barcodeList) {
+		Map<String,List<ProjectSubBarcodeEntity>> map = new HashMap<String, List<ProjectSubBarcodeEntity>>();
+		if(CollectionUtils.isEmpty(barcodeList)){
+			return map;
+		}
+		List<ProjectSubBarcodeEntity> list = null;
+		for(ProjectSubBarcodeEntity s:barcodeList){
+			list = map.get(s.getSub().getUuid());
+			if(list==null){
+				list = new ArrayList<ProjectSubBarcodeEntity>();
+			}
+			list.add(s);
+			map.put(s.getSub().getUuid(), list);
+		}
+		return map;
+	}
+
 	
 	
 	private ProjectSubEntity checkStyle(ProjectSubEntity sub,List<EnumDataSubEntity> enumList){

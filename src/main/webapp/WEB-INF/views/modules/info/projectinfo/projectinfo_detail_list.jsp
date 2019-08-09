@@ -136,8 +136,8 @@ th,td{
 						<label for="search_LIKE_material.name" class="control-label">物料名称</label>
 						<input type="text" autocomplete="on" name="search_LIKE_material.name" id="search_LIKE_material.name" class="form-control input-sm">			 
 								
-						<label for="search_LIKE_barcode" class="control-label">条码&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-						<input type="text" autocomplete="on" name="search_LIKE_barcode" id="search_LIKE_barcode" class="form-control input-sm">
+						<label for="custom_search_barcode" class="control-label">条码&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+						<input type="text" autocomplete="on" name="custom_search_barcode" id="custom_search_barcode" class="form-control input-sm">
 	
 						<button id="yy-btn-search" type="button" class="btn btn-sm btn-info">
 							<i class="fa fa-search"></i>查询

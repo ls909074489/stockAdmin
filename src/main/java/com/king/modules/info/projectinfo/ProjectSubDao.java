@@ -19,7 +19,7 @@ public interface ProjectSubDao extends IBaseDAO<ProjectSubEntity, String> {
 	List<ProjectSubEntity> findByMain(String mainId);
 
 	
-	@Query("from ProjectSubEntity ur where ur.barcodejson like ?1 and status=1")
-	List<ProjectSubEntity> findByBarcode(String newBarcode);
+//	@Query("from ProjectSubEntity ur where ur.barcodejson like ?1 and status=1")
+//	List<ProjectSubEntity> findByBarcode(String newBarcode);
 
 }

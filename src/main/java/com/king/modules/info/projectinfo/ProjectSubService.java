@@ -2,7 +2,9 @@ package com.king.modules.info.projectinfo;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.ConvertUtils;
@@ -24,7 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import com.alibaba.fastjson.JSON;
 import com.king.common.enums.BillStatus;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.dao.IBaseDAO;
@@ -57,6 +58,8 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 	@Lazy
 	@Autowired
 	private StockDetailService stockDetailService;
+	@Autowired
+	private ProjectSubBarcodeService projectSubBarcodeService;
 
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -98,38 +101,67 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 		ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity>();
 		String []idArr = newUuid.split("_");
 		ProjectSubEntity sub = getOne(idArr[1]);
-		String barcodeJson = sub.getBarcodejson();
-		List<ProjectBarcodeVo> blist = new ArrayList<>();
+//		String barcodeJson = sub.getBarcodejson();
+//		List<ProjectBarcodeVo> blist = new ArrayList<>();
+//		if(!StringUtils.isEmpty(barcodeJson)){
+//			blist = JSON.parseArray(barcodeJson, ProjectBarcodeVo.class);
+//		}
+//		if(checkHasStream(idArr[0])){
+//			boolean hasFound = false;
+//			for(ProjectBarcodeVo vo:blist){
+//				if(vo.getUuid().equals(idArr[0])){
+//					vo.setBc(newBarcode);
+//					hasFound =true;
+//					break;
+//				}
+//			}
+//			if(!hasFound){
+//				throw new ServiceException("没有对应的条码明细");
+//			}
+//		}else{//没有流水的
+//			//扫码时出库
+//			String streamId = stockDetailService.descStockDetail(sub);
+//			blist.add(new ProjectBarcodeVo(streamId, newBarcode));
+//			
+//			ProjectSubBarcodeEntity subBc = new ProjectSubBarcodeEntity();
+//			ProjectInfoBaseEntity main = new ProjectInfoBaseEntity();
+//			main.setUuid(sub.getMain().getUuid());
+//			subBc.setMain(main);
+//			ProjectSubBaseEntity subBase = new ProjectSubBaseEntity();
+//			subBase.setUuid(sub.getUuid());
+//			subBc.setSub(subBase);
+//			subBc.setBarcode(newBarcode);
+//			subBc.setStreamId(streamId);
+//			projectSubBarcodeService.doAdd(subBc);
+//		}
+//		sub.setBarcode(blist.get(0).getBc());
+//		sub.setBarcodejson(JSON.toJSONString(blist));
 		
+		if(checkHasStream(idArr[0])){//已经出库的
+			ProjectSubBarcodeEntity bc = projectSubBarcodeService.getOne(idArr[0]);
+			if(bc==null){
+				throw new ServiceException("没有对应的条码明细");
+			}
+		}else{//扫码时出库
+			String streamId = stockDetailService.descStockDetail(sub);
+			
+			ProjectSubBarcodeEntity subBc = new ProjectSubBarcodeEntity();
+			ProjectInfoBaseEntity main = new ProjectInfoBaseEntity();
+			main.setUuid(sub.getMain().getUuid());
+			subBc.setMain(main);
+			ProjectSubBaseEntity subBase = new ProjectSubBaseEntity();
+			subBase.setUuid(sub.getUuid());
+			subBc.setSub(subBase);
+			subBc.setBarcode(newBarcode);
+			subBc.setStreamId(streamId);
+			projectSubBarcodeService.doAdd(subBc);
+		}
 		//保存条码日志
 		ProjectBarcodeLogEntity barcodeLog = new ProjectBarcodeLogEntity();
 		barcodeLog.setProjectId(sub.getMain().getUuid());
 		barcodeLog.setProjectSubId(sub.getUuid());
 		barcodeLog.setBarcode(newBarcode);
 		projectBarcodeLogService.doAdd(barcodeLog);
-		
-		if(!StringUtils.isEmpty(barcodeJson)){
-			blist = JSON.parseArray(barcodeJson, ProjectBarcodeVo.class);
-		}
-		if(checkHasStream(idArr[0])){
-			boolean hasFound = false;
-			for(ProjectBarcodeVo vo:blist){
-				if(vo.getUuid().equals(idArr[0])){
-					vo.setBc(newBarcode);
-					hasFound =true;
-					break;
-				}
-			}
-			if(!hasFound){
-				throw new ServiceException("没有对应的条码明细");
-			}
-		}else{//没有流水的
-			//扫码时出库
-			String streamId = stockDetailService.descStockDetail(sub);
-			blist.add(new ProjectBarcodeVo(streamId, newBarcode));
-		}
-		sub.setBarcode(blist.get(0).getBc());
-		sub.setBarcodejson(JSON.toJSONString(blist));
 		
 		arm.setSuccess(true);
 		arm.setMsg("操作成功");
@@ -142,22 +174,25 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 		ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity>();
 		String []idArr = newUuid.split("_");
 		if(checkHasStream(idArr[0])){
-			stockDetailService.unOutBySub(idArr[0]);
+			ProjectSubBarcodeEntity bc = projectSubBarcodeService.getOne(idArr[0]);
+			if(bc!=null){
+				stockDetailService.unOutBySub(bc.getStreamId());//idArr[0]
+			}
 		}else{
 			throw new ServiceException("未扫码出库不能撤销");
 		}
-		ProjectSubEntity sub = getOne(idArr[1]);
-		String barcodeJson = sub.getBarcodejson();
-		List<ProjectBarcodeVo> blist = new ArrayList<>();
-		if(!StringUtils.isEmpty(barcodeJson)){
-			blist = JSON.parseArray(barcodeJson, ProjectBarcodeVo.class);
-		}
-		for(int i=0;i<blist.size();i++){
-			if(blist.get(i).getUuid().equals(idArr[0])){
-				blist.remove(i);
-			}
-		}
-		sub.setBarcodejson(JSON.toJSONString(blist));
+//		ProjectSubEntity sub = getOne(idArr[1]);
+//		String barcodeJson = sub.getBarcodejson();
+//		List<ProjectBarcodeVo> blist = new ArrayList<>();
+//		if(!StringUtils.isEmpty(barcodeJson)){
+//			blist = JSON.parseArray(barcodeJson, ProjectBarcodeVo.class);
+//		}
+//		for(int i=0;i<blist.size();i++){
+//			if(blist.get(i).getUuid().equals(idArr[0])){
+//				blist.remove(i);
+//			}
+//		}
+//		sub.setBarcodejson(JSON.toJSONString(blist));
 		arm.setSuccess(true);
 		arm.setMsg("操作成功");
 		return arm;
@@ -175,16 +210,16 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 	public void changeToSheet(List<ProjectInfoEntity> mainList, Workbook wb) {
 		for(ProjectInfoEntity main:mainList){
 			List<ProjectSubEntity> subList = findByMain(main.getUuid());
-			changeToCells(main.getName() + "(" + main.getCode() + ")", subList, wb);
+			changeToCells(main, subList, wb);
 		}
 	}
 
 	
-	private void changeToCells(String sheetName, List<ProjectSubEntity> subList, Workbook wb) {
+	private void changeToCells(ProjectInfoEntity main, List<ProjectSubEntity> subList, Workbook wb) {
 		Row row = null;
 		Cell cell =null;
 		Sheet sh =null;
-		sh = wb.createSheet(sheetName);
+		sh = wb.createSheet(main.getName() + "(" + main.getCode() + ")");
 		CellStyle  style=wb.createCellStyle();// 样式对象    
 		//生成一个字体
         Font font=wb.createFont();
@@ -252,18 +287,18 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 		cell.setCellStyle(style);
 		cell.setCellValue("备注");
 		
+		
 		List<ProjectSubEntity> resultList = new ArrayList<>();
-		List<ProjectBarcodeVo> subBarcodelist = null;
+		List<String> projectIdList = new ArrayList<String>();
+		projectIdList.add(main.getUuid());
+		List<ProjectSubBarcodeEntity> barcodeList = projectSubBarcodeService.findByProjectIds(projectIdList);
+		Map<String,List<ProjectSubBarcodeEntity>> barcodeMap = changeToBarcodeMap(barcodeList);
+		List<ProjectSubBarcodeEntity> subBarcodelist = null;
 		ProjectSubEntity desSub = null;
 		List<EnumDataSubEntity> enumList = EnumDataUtils.getEnumSubList("barCodeExtract");
 		for(ProjectSubEntity sub:subList){
+			subBarcodelist = barcodeMap.get(sub.getUuid());
 			if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
-				if(org.apache.commons.lang3.StringUtils.isNotEmpty(sub.getBarcodejson())){
-					subBarcodelist = JSON.parseArray(sub.getBarcodejson(), ProjectBarcodeVo.class);
-				}
-				if(subBarcodelist==null){
-					subBarcodelist = new ArrayList<ProjectBarcodeVo>();
-				}
 				for(int i=0;i<sub.getPlanAmount();i++){
 					desSub = new ProjectSubEntity();
 					try {
@@ -281,7 +316,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 					}
 					desSub.setNewUuid(i+"_"+sub.getUuid());
 					if(i<subBarcodelist.size()){
-						desSub.setBarcode(subBarcodelist.get(i).getBc());
+						desSub.setBarcode(subBarcodelist.get(i).getBarcode());
 					}else{
 						desSub.setBarcode("");
 					}
@@ -292,6 +327,11 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 //				checkStyle(sub,enumList);
 				sub.setNewUuid("0_"+sub.getUuid());
 				sub.setFirstRow("1");
+				if(0<subBarcodelist.size()){
+					sub.setBarcode(subBarcodelist.get(0).getBarcode());
+				}else{
+					desSub.setBarcode("");
+				}
 				resultList.add(sub);
 			}
 		}
@@ -361,6 +401,28 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 			}
 		}	
 	}
+	
+	/**
+	 * 转成条码map
+	 * @param streamList
+	 * @return
+	 */
+	private Map<String, List<ProjectSubBarcodeEntity>> changeToBarcodeMap(List<ProjectSubBarcodeEntity> barcodeList) {
+		Map<String,List<ProjectSubBarcodeEntity>> map = new HashMap<String, List<ProjectSubBarcodeEntity>>();
+		if(CollectionUtils.isEmpty(barcodeList)){
+			return map;
+		}
+		List<ProjectSubBarcodeEntity> list = null;
+		for(ProjectSubBarcodeEntity s:barcodeList){
+			list = map.get(s.getSub().getUuid());
+			if(list==null){
+				list = new ArrayList<ProjectSubBarcodeEntity>();
+			}
+			list.add(s);
+			map.put(s.getSub().getUuid(), list);
+		}
+		return map;
+	}
 
 	
 	private boolean checkStyle(ProjectSubEntity sub,List<EnumDataSubEntity> enumList){
@@ -389,20 +451,21 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 	
 	public ActionResultModel<ProjectSubEntity> checkBarcode(String newBarcode, String subId) {
 		ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity> ();
-		List<ProjectSubEntity> subList = dao.findByBarcode("\""+newBarcode+"\"");
-		if(CollectionUtils.isEmpty(subList)){
+//		List<ProjectSubEntity> subList = dao.findByBarcode("\""+newBarcode+"\"");
+		List<ProjectSubBarcodeEntity> searchBarcodeList = projectSubBarcodeService.findLikeBarcode(newBarcode);
+		if(CollectionUtils.isEmpty(searchBarcodeList)){
 			arm.setSuccess(true);
 			arm.setMsg("没有重复的条码");
 			return arm;
 		}
-		if(subList.size()==1&&subList.get(0).getUuid().equals(subId)){
+		if(searchBarcodeList.size()==1&&searchBarcodeList.get(0).getUuid().equals(subId)){
 			arm.setSuccess(true);
 			arm.setMsg("没有重复的条码");
 			return arm;
 		}else{
 			List<String> repeatList = new ArrayList<>();
-			for(ProjectSubEntity sub:subList){
-				repeatList.add(sub.getMain().getName()+"("+sub.getMain().getCode()+")箱号"+sub.getBoxNum());
+			for(ProjectSubBarcodeEntity sub:searchBarcodeList){
+				repeatList.add(sub.getMain().getName()+"("+sub.getMain().getCode()+")箱号"+sub.getSub().getBoxNum());
 			}
 			arm.setSuccess(false);
 			arm.setMsg(org.apache.commons.lang.StringUtils.join(repeatList, ",")+"已存在条码"+newBarcode);

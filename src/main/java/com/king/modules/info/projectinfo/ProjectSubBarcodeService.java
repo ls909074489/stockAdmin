@@ -41,4 +41,14 @@ public class ProjectSubBarcodeService extends BaseServiceImpl<ProjectSubBarcodeE
 	public List<ProjectSubBarcodeEntity> findBySubId(String subId) {
 		return dao.findBySubId(subId);
 	}
+
+
+	public List<ProjectSubBarcodeEntity> findByProjectIds(List<String> projectIds) {
+		return dao.findByProjectIds(projectIds);
+	}
+
+
+	public List<ProjectSubBarcodeEntity> findLikeBarcode(String barcode) {
+		return dao.findLikeBarcode("%"+barcode+"%");
+	}
 }
