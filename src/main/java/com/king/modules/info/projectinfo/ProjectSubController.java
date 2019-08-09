@@ -171,6 +171,7 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		addParam.put("EQ_material.uuid", request.getParameter("materialId"));
 		addParam.put("EQ_status", "1");
 		String custom_search_barcode = request.getParameter("custom_search_barcode");
+		boolean isSearchBarcode = false;//是否查询条码
 		if(StringUtils.isNotEmpty(custom_search_barcode)){
 			List<ProjectSubBarcodeEntity> searchBarcodeList = projectSubBarcodeService.findLikeBarcode(custom_search_barcode);
 			if(CollectionUtils.isEmpty(searchBarcodeList)){
@@ -184,6 +185,7 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 			}
 			addParam.put("IN_main.uuid", StringUtils.join(projectIdInSet, ","));
 			addParam.put("IN_uuid", StringUtils.join(subIdInSet, ","));
+			isSearchBarcode = true;
 		}
 		QueryRequest<ProjectSubEntity> qr = getQueryRequest(request, addParam);
 		ActionResultModel<ProjectSubEntity> arm =  execDetailQuery(request,qr, baseService);
@@ -222,14 +224,22 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 					setSubBarcode(subBarcodelist, desSub, i);
 					checkStyle(desSub,enumList);
 					sub.setSurplusAmount(calcSurplusAmount(sub,streamMap.get(sub.getUuid())));
-					resultList.add(desSub);
+					if(isSearchBarcode&&sub.getBarcode().contains(custom_search_barcode)){
+						resultList.add(sub);
+					}else{
+						resultList.add(sub);
+					}
 				}
 			}else{
 				setSubBarcode(subBarcodelist, desSub, 0);
 				checkStyle(sub,enumList);
 				sub.setFirstRow("1");
 				sub.setSurplusAmount(calcSurplusAmount(sub,streamMap.get(sub.getUuid())));
-				resultList.add(sub);
+				if(isSearchBarcode&&sub.getBarcode().contains(custom_search_barcode)){
+					resultList.add(sub);
+				}else{
+					resultList.add(sub);
+				}
 			}
 //			System.out.println(sub.getUuid()+">>"+sub.getSurplusAmount()+">>>>>>>>>>>>"+subActualMap.get(sub.getUuid()));
 		}
