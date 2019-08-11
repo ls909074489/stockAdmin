@@ -81,13 +81,29 @@
 											<input type="text" autocomplete="on" name="search_LIKE_creatorname"
 												id="search_LIKE_creatorname" class="form-control input-sm">
 												
-											<label class="control-label">操作时间</label> 
+											<!-- <label class="control-label">操作时间</label> 
 											<input type="text" autocomplete="on" name="search_GTE_createtime" style="width: 150px;" id="search_GTE_createtime" class="form-control input-sm Wdate"
 											onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:00',maxDate:'#F{$dp.$D(\'search_LTE_createtime\')}'});">
 											
 											<label class="control-label">&nbsp;&nbsp;&nbsp;&nbsp;到&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </label> 
 											<input type="text" autocomplete="on" name="search_LTE_createtime" style="width: 150px;" id="search_LTE_createtime"
-											class="form-control input-sm Wdate" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:00',minDate:'#F{$dp.$D(\'search_GTE_createtime\')}'});">	
+											class="form-control input-sm Wdate" onclick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:00',minDate:'#F{$dp.$D(\'search_GTE_createtime\')}'});">	 -->
+											
+											
+											<label class="control-label">入库时间</label> 
+											<input type="text" autocomplete="on" name="search_GTE_createtime" style="width: 90px;" id="search_GTE_createtime" 
+												class="form-control input-sm Wdate" onclick="WdatePicker();">
+							
+											<label class="control-label">预警时间</label> 
+											<input type="text" autocomplete="on" name="search_LTE_warningTime" style="width: 90px;" id="search_LTE_warningTime" 
+												class="form-control input-sm Wdate" onclick="WdatePicker();">
+											
+											<label class="control-label">状态</label> 
+											<select class="yy-input-enumdata form-control" id="GT_surplusAmount" name="GT_surplusAmount">
+												<option value="">请选择</option>
+												<option value="1">在库</option>
+												<option value="0">已出库</option>
+											</select>
 											
 											<button id="yy-btn-search" type="button" class="btn btn-sm btn-info">
 												<i class="fa fa-search"></i>查询
@@ -114,6 +130,7 @@
 													<th>预占数量</th>
 													<th>可用数量</th>
 													<th>预警时间</th>
+													<th>状态</th>
 													<!-- <th>预警状态</th> -->
 												</tr>
 											</thead>
@@ -201,6 +218,18 @@
 			data : "warningTime",
 			width : "60",
 			className : "center",
+			orderable : false
+		},{
+			data : "surplusAmount",
+			width : "50",
+			className : "center",
+			render : function(data, type, full) {
+			     if(data>0){
+			    	 return "在库";
+			     }else{
+			    	 return "已出库";
+			     }
+			},
 			orderable : false
 		}];
 		
