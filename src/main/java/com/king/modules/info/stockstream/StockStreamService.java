@@ -71,6 +71,11 @@ public class StockStreamService extends BaseServiceImpl<StockStreamEntity,String
 		return dao.findSurplusAllBySourceIdsIn(sourceIdList,StockStreamEntity.IN_STOCK);
 	}
 	
+	
+	public List<StockStreamEntity> findBySourceId(String sourceId) {
+		return dao.findBySourceId(sourceId);
+	}
+	
 	/**
 	 * 入库的流水
 	 * @param sourceId

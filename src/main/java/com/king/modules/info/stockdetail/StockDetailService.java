@@ -175,6 +175,30 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 	
 	
 	@Transactional
+	public void descStockDetail(OrderInfoEntity orderInfo,List<OrderSubEntity>  subList) {
+		if(orderInfo.getOrderType().equals(OrderInfoEntity.ORDERTYPE_IN)){
+			List<StockStreamEntity> streamList = stockStreamService.findBySourceId(orderInfo.getUuid());
+			for(OrderSubEntity sub:subList){
+				for(StockStreamEntity stream:streamList){
+					if(sub.getUuid().equals(stream.getSourceSubId())&&sub.getPlanAmount()<=stream.getSurplusAmount()){
+						stockStreamService.delete(stream);
+						break;
+					}else{
+						throw new ServiceException("订单剩余库存不足，不能撤销审核");
+					}
+				}
+			}
+		}else if(orderInfo.getOrderType().equals(OrderInfoEntity.ORDERTYPE_OUT)){
+//			orderOut(orderInfo, sub, stockBase, stream, detail);
+		}else{
+			throw new ServiceException("订单类型不正确");
+		}
+	}
+
+	
+	
+	
+	@Transactional
 	public void incrStockDetail(ProjectInfoEntity projectInfo,List<ProjectReceiveEntity> receiveList,boolean receiveFLag){
 		StockStreamEntity stream = new StockStreamEntity();
 		
@@ -434,21 +458,21 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			}
 		}
 		sub.setSurplusAmount(sub.getSurplusAmount()-sub.getPlanAmount());
-		if(subAmount>0){
-			List<StockStreamEntity> orderStreams = stockStreamService.findOrderByStockAndMaterial(
-					stock.getUuid(),sub.getMaterial().getUuid());
-			if(CollectionUtils.isEmpty(orderStreams)){
-				throw new ServiceException("库存物料"+sub.getMaterial().getCode()+"流水不足");
-			}
-			for(StockStreamEntity ss:orderStreams){
-				if(ss.getSurplusAmount()>=subAmount){//计算流水剩余的数量
-					subAmount = enoughStream(projectInfo,sub,ss, subAmount, log, logList);
-					break;
-				}else{
-					subAmount =lackStream(projectInfo,sub,ss, subAmount, log, logList);
-				}
-			}
-		}
+//		if(subAmount>0){
+//			List<StockStreamEntity> orderStreams = stockStreamService.findOrderByStockAndMaterial(
+//					stock.getUuid(),sub.getMaterial().getUuid());
+//			if(CollectionUtils.isEmpty(orderStreams)){
+//				throw new ServiceException("库存物料"+sub.getMaterial().getCode()+"流水不足");
+//			}
+//			for(StockStreamEntity ss:orderStreams){
+//				if(ss.getSurplusAmount()>=subAmount){//计算流水剩余的数量
+//					subAmount = enoughStream(projectInfo,sub,ss, subAmount, log, logList);
+//					break;
+//				}else{
+//					subAmount =lackStream(projectInfo,sub,ss, subAmount, log, logList);
+//				}
+//			}
+//		}
 		if(subAmount>0){
 			throw new ServiceException("库存物料"+sub.getMaterial().getCode()+"流水不足");
 		}
