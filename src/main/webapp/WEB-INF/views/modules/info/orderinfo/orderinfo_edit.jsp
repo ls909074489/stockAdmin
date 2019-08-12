@@ -95,14 +95,14 @@
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-md-4">
+					<!-- <div class="col-md-4">
 						<div class="form-group">
 							<label class="control-label col-md-4 required">采购模式</label>
 							<div class="col-md-8" >
 								<select name="purchaseType" id="purchaseType" data-enum-group="PurchaseType" class="yy-input-enumdata form-control"></select>
 							</div>
 						</div>
-					</div>
+					</div> -->
 					<div class="col-md-8">
 						<div class="form-group">
 							<label class="control-label col-md-2" >备注</label>
@@ -419,7 +419,7 @@
 					'orderType' : {maxlength : 100},
 					//'planArriveTime' : {maxlength : 100},
 					'stockName' : {required : true,maxlength : 100},
-					'purchaseType' : {required : true,maxlength : 100},
+					//'purchaseType' : {required : true,maxlength : 100},
 					//'code' : {maxlength : 100},
 					//'name' : {maxlength : 100},
 					'memo' : {maxlength : 100}
@@ -434,7 +434,7 @@
 				//$("input[name='billdate']").val('${billdate}');
 			}else if('${openstate}'=='edit'){
 				$("#orderType").val('${entity.orderType}');
-				$("select[name='purchaseType']").val('${entity.purchaseType}');
+				//$("select[name='purchaseType']").val('${entity.purchaseType}');
 				loadSubList();
 			}
 		}

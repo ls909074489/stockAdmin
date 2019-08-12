@@ -20,16 +20,16 @@
 				<button id="yy-btn-refresh" class="btn blue btn-sm">
 					<i class="fa fa-refresh"></i> 刷新
 				</button>
-				<button id="yy-btn-submit" class="btn yellow btn-sm btn-info">
+				<!-- <button id="yy-btn-submit" class="btn yellow btn-sm btn-info">
 					<i class="fa fa-send"></i> 提交
 				</button>
 				<button id="yy-btn-unsubmit" class="btn yellow btn-sm btn-info">
 					<i class="fa fa-undo"></i> 撤销提交
-				</button>
+				</button> -->
 				<button id="yy-btn-approve-x" class="btn yellow btn-sm btn-info">
 					<i class="fa fa-check"></i> 审核
 				</button>
-				<button id="yy-btn-unapprove-project" class="btn yellow btn-sm btn-info">
+				<button id="yy-btn-unapprove" class="btn yellow btn-sm btn-info">
 					<i class="fa fa-reply"></i> 取消审核
 				</button>
 				<!-- <button id="yy-btn-unapprove" class="btn yellow btn-sm btn-info">
@@ -87,7 +87,7 @@
 
 	<!-- 公用脚本 -->
 	<%@include file="/WEB-INF/views/common/listscript.jsp"%>
-	<%@include file="/WEB-INF/views/common/commonscript_approve.jsp"%>
+	<%@include file="/WEB-INF/views/common/commonscript_approve_simple.jsp"%>
 
 	<script type="text/javascript">
 		_isNumber = true;
@@ -181,6 +181,23 @@
 				shade : 0.8,
 				content : '${serviceurl}/toImport'
 			});
+		}
+		
+		//审核前检查
+		function checkApprove(pks) {
+			if (pks.length < 1) {
+				YYUI.promMsg("请选择需要审核的记录");
+				return;
+			}
+			for (var i = 0; i < pks.length; i++) {
+				var row = $("input[value='" + pks[i] + "']").closest("tr");
+				var billstatus = _tableList.row(row).data().billstatus;
+				if (!(billstatus == 1||billstatus == 4)) {
+					YYUI.failMsg("未提交或被退回才能审核");
+					return false;
+				}
+			}
+			return true;
 		}
 	</script>
 </body>

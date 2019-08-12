@@ -54,9 +54,7 @@ public class OrderInfoService extends SuperServiceImpl<OrderInfoEntity,String> {
 				}
 
 				// 如果没有审批流 设置单据状态未 审核中或者审批通过，则设置为审核通过。
-				if (entity.getBillstatus() == BillStatus.SUBMIT.toStatusValue()) {
-					entity.setBillstatus(BillStatus.APPROVAL.toStatusValue());
-				}
+				entity.setBillstatus(BillStatus.APPROVAL.toStatusValue());
 
 				// 如果还有审批节点，直接返回。
 				if (entity.getBillstatus() == BillStatus.INAPPROVED.toStatusValue()) {

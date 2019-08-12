@@ -16,22 +16,22 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @Service
 @Transactional(readOnly=true)
-public class StreamLogService extends BaseServiceImpl<StreamLogEntity,String> {
+public class StreamProjectLogService extends BaseServiceImpl<StreamProjectLogEntity,String> {
 
 	@Autowired
-	private StreamLogDao dao;
+	private StreamProjectLogDao dao;
 	//@Autowired
 	//private DbUtilsDAO dbDao;
 
-	protected IBaseDAO<StreamLogEntity, String> getDAO() {
+	protected IBaseDAO<StreamProjectLogEntity, String> getDAO() {
 		return dao;
 	}
 
-	public List<StreamLogEntity> findByProjectIdAndBillType(String projectId,String billType) {
+	public List<StreamProjectLogEntity> findByProjectIdAndBillType(String projectId,String billType) {
 		return dao.findByProjectId(projectId,billType);
 	}
 
-	public List<StreamLogEntity> findByDestStreamId(String destStreamId) {
+	public List<StreamProjectLogEntity> findByDestStreamId(String destStreamId) {
 		return dao.findByDestStreamId(destStreamId);
 	}
 

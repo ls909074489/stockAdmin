@@ -83,14 +83,14 @@
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-md-4">
+					<!-- <div class="col-md-4">
 						<div class="form-group">
 							<label class="control-label col-md-4">采购模式</label>
 							<div class="col-md-8" >
 								<select name="purchaseType" id="purchaseType" data-enum-group="PurchaseType" class="yy-input-enumdata form-control"></select>
 							</div>
 						</div>
-					</div>
+					</div> -->
 					<div class="col-md-8">
 						<div class="form-group">
 							<label class="control-label col-md-2" >备注</label>
@@ -228,7 +228,7 @@
 				//$("input[name='billdate']").val('${billdate}');
 			}else if('${openstate}'=='detail'){
 				$("#orderType").val('${entity.orderType}');
-				$("select[name='purchaseType']").val('${entity.purchaseType}');
+				//$("select[name='purchaseType']").val('${entity.purchaseType}');
 				loadSubList();
 			}
 		}

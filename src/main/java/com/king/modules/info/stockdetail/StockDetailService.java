@@ -25,8 +25,10 @@ import com.king.modules.info.receive.ProjectReceiveEntity;
 import com.king.modules.info.stockinfo.StockBaseEntity;
 import com.king.modules.info.stockstream.StockStreamEntity;
 import com.king.modules.info.stockstream.StockStreamService;
-import com.king.modules.info.streamLog.StreamLogEntity;
-import com.king.modules.info.streamLog.StreamLogService;
+import com.king.modules.info.streamLog.StreamOrderLogEntity;
+import com.king.modules.info.streamLog.StreamOrderLogService;
+import com.king.modules.info.streamLog.StreamProjectLogEntity;
+import com.king.modules.info.streamLog.StreamProjectLogService;
 import com.king.modules.info.streamborrow.StreamBorrowEntity;
 import com.king.modules.info.streamborrow.StreamBorrowService;
 
@@ -47,11 +49,14 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 	@Autowired
 	private StockStreamService stockStreamService;
 	@Autowired
-	private StreamLogService streamLogService;
+	private StreamProjectLogService streamLogService;
 	@Autowired
 	private StreamBorrowService borrowService;
 	@Autowired
 	private ProjectSubService projectSubService;
+	@Autowired
+	private StreamOrderLogService streamOrderLogService;
+	
 	
 	protected IBaseDAO<StockDetailEntity, String> getDAO() {
 		return dao;
@@ -123,6 +128,15 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 		stream.setMemo("订购单入库");
 		stream.setStockDetailId(detail.getUuid());
 		stockStreamService.doAdd(stream);//添加库存流水
+		
+		StreamOrderLogEntity log = new StreamOrderLogEntity();
+		log.setOrderId(orderInfo.getUuid());
+		log.setOrderSubId(sub.getUuid());
+		log.setDestStreamId(stream.getUuid());
+		//计算流水剩余的数量
+		log.setActualAmount(sub.getActualAmount());
+		log.setStreamId(stream.getUuid());
+//		streamOrderLogService.doAdd(log);
 	}
 	
 	private void orderOut(OrderInfoEntity orderInfo,OrderSubEntity sub,StockBaseEntity stockBase,
@@ -149,12 +163,23 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 		stream.setActualAmount(subAmount*-1);
 		
 		super.doUpdate(detail);
+		StreamOrderLogEntity log = null;
+		List<StreamOrderLogEntity> logList = new ArrayList<>();
 		for(StockStreamEntity ss:streamList){
 			if(ss.getSurplusAmount()>=subAmount){
 				//计算流水剩余的数量
 				ss.setSurplusAmount(ss.getSurplusAmount()-subAmount);
 				ss.setOccupyAmount(ss.getOccupyAmount());
 				ss.setActualAmount(ss.getSurplusAmount()-ss.getOccupyAmount());
+				
+				log = new StreamOrderLogEntity();
+				log.setOrderId(orderInfo.getUuid());
+				log.setOrderSubId(sub.getUuid());
+				log.setDestStreamId(ss.getUuid());
+				//计算流水剩余的数量
+				log.setActualAmount(subAmount);
+				logList.add(log);
+				
 				subAmount = 0l;
 				break;
 			}else{
@@ -162,15 +187,30 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 				ss.setSurplusAmount(0l);
 				ss.setOccupyAmount(0l);
 				ss.setActualAmount(0l);
+				
+				log = new StreamOrderLogEntity();
+				log.setOrderId(orderInfo.getUuid());
+				log.setOrderSubId(sub.getUuid());
+				log.setDestStreamId(ss.getUuid());
+				if(ss.getWarningType().equals(StockStreamEntity.WARNINGTYPE_BE_NEED)){
+					ss.setWarningType(StockStreamEntity.WARNINGTYPE_HAS_USE);
+				}
+				log.setActualAmount(ss.getSurplusAmount());
+				logList.add(log);
 			}
 		}
 		if(subAmount>0){
 			throw new ServiceException("物料"+sub.getMaterial().getCode()+"流水不足");
 		}
+		
 		stream.setOperType(StockStreamEntity.OUT_STOCK);
 		stream.setMemo("订购单出库");
 		stream.setStockDetailId(detail.getUuid());
 		stockStreamService.doAdd(stream);//添加库存流水
+		for(StreamOrderLogEntity l:logList){
+			l.setStreamId(stream.getUuid());
+		}
+		streamOrderLogService.doAdd(logList);
 	}
 	
 	
@@ -180,16 +220,39 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			List<StockStreamEntity> streamList = stockStreamService.findBySourceId(orderInfo.getUuid());
 			for(OrderSubEntity sub:subList){
 				for(StockStreamEntity stream:streamList){
-					if(sub.getUuid().equals(stream.getSourceSubId())&&sub.getPlanAmount()<=stream.getSurplusAmount()){
-						stockStreamService.delete(stream);
-						break;
-					}else{
-						throw new ServiceException("订单剩余库存不足，不能撤销审核");
+					if(sub.getUuid().equals(stream.getSourceSubId())){
+						if(sub.getPlanAmount()<=stream.getSurplusAmount()){
+							stockStreamService.delete(stream);
+							break;
+						}else{
+							throw new ServiceException("订单剩余库存不足，不能撤销审核");
+						}
 					}
 				}
 			}
 		}else if(orderInfo.getOrderType().equals(OrderInfoEntity.ORDERTYPE_OUT)){
-//			orderOut(orderInfo, sub, stockBase, stream, detail);
+//			List<StockStreamEntity> streamList = stockStreamService.findBySourceId(orderInfo.getUuid());
+//			for(OrderSubEntity sub:subList){
+//				for(StockStreamEntity stream:streamList){
+//					if(sub.getUuid().equals(stream.getSourceSubId())){
+//						if(sub.getPlanAmount()<=stream.getSurplusAmount()){
+//							stockStreamService.delete(stream);
+//							break;
+//						}else{
+//							throw new ServiceException("订单剩余库存不足，不能撤销审核");
+//						}
+//					}
+//				}
+//			}
+			List<StreamOrderLogEntity> logList = streamOrderLogService.findByOrderId(orderInfo.getUuid());
+			for(StreamOrderLogEntity log:logList){
+				StockStreamEntity stream = stockStreamService.getOne(log.getDestStreamId());
+				stream.setSurplusAmount(stream.getSurplusAmount()+Math.abs(log.getActualAmount()));
+				stream.setOccupyAmount(stream.getOccupyAmount());
+				stream.setActualAmount(stream.getSurplusAmount());
+				streamOrderLogService.delete(log);
+				stockStreamService.delete(log.getStreamId());
+			}
 		}else{
 			throw new ServiceException("订单类型不正确");
 		}
@@ -339,8 +402,8 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 		List<StockStreamEntity> streamList = stockStreamService.findSurplusBySourceIdIn(projectInfo.getUuid());
 		Map<String,List<StockStreamEntity>> streamMap = changeToMap(streamList);
 		List<StockStreamEntity> subStreamList = null;
-		List<StreamLogEntity> logList = new ArrayList<>();
-		StreamLogEntity log = null;
+		List<StreamProjectLogEntity> logList = new ArrayList<>();
+		StreamProjectLogEntity log = null;
 		for(ProjectSubEntity sub:subList){
 			StockDetailEntity detail  = findByStockAndMaterial(stock.getUuid(),sub.getMaterial().getUuid());
 			
@@ -445,8 +508,8 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 		stream.setMaterial(material);
 		stream.setSourceSubId(sub.getUuid());
 		
-		List<StreamLogEntity> logList = new ArrayList<>();
-		StreamLogEntity log = null;
+		List<StreamProjectLogEntity> logList = new ArrayList<>();
+		StreamProjectLogEntity log = null;
 		List<StockStreamEntity> subStreamList = stockStreamService.findSurplusBySubIdIn(sub.getUuid());
 		for(StockStreamEntity ss:subStreamList){
 			System.out.println(ss.getSurplusAmount()+">>>>>>>>>"+subAmount);
@@ -485,7 +548,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 		stream.setMemo("项目单审核出库");
 		stream.setStockDetailId(detail.getUuid());
 		StockStreamEntity streamEntity = stockStreamService.doAdd(stream);//添加库存流水
-		for(StreamLogEntity logEntity:logList){
+		for(StreamProjectLogEntity logEntity:logList){
 			logEntity.setDestStreamId(streamEntity.getUuid());
 		}
 		streamLogService.doAdd(logList);
@@ -500,8 +563,8 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 	 * @param logList
 	 * @return
 	 */
-	private Long enoughStream(ProjectInfoEntity projectInfo,ProjectSubEntity sub,StockStreamEntity ss,Long subAmount,StreamLogEntity log,List<StreamLogEntity> logList){
-		log = new StreamLogEntity();
+	private Long enoughStream(ProjectInfoEntity projectInfo,ProjectSubEntity sub,StockStreamEntity ss,Long subAmount,StreamProjectLogEntity log,List<StreamProjectLogEntity> logList){
+		log = new StreamProjectLogEntity();
 		log.setProjectId(projectInfo.getUuid());
 		log.setProjectSubId(sub.getUuid());
 		log.setStreamId(ss.getUuid());
@@ -516,7 +579,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			ss.setWarningType(StockStreamEntity.WARNINGTYPE_HAS_USE);
 		}
 		log.setActualAmount(subAmount);
-		log.setBillType(StreamLogEntity.BILLTYPE_APPROVE);
+		log.setBillType(StreamProjectLogEntity.BILLTYPE_APPROVE);
 		logList.add(log);
 		subAmount = 0l;
 		return subAmount;
@@ -530,8 +593,8 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 	 * @param logList
 	 * @return
 	 */
-	private Long lackStream(ProjectInfoEntity projectInfo,ProjectSubEntity sub,StockStreamEntity ss,Long subAmount,StreamLogEntity log,List<StreamLogEntity> logList){
-		log = new StreamLogEntity();
+	private Long lackStream(ProjectInfoEntity projectInfo,ProjectSubEntity sub,StockStreamEntity ss,Long subAmount,StreamProjectLogEntity log,List<StreamProjectLogEntity> logList){
+		log = new StreamProjectLogEntity();
 		log.setProjectId(projectInfo.getUuid());
 		log.setProjectSubId(sub.getUuid());
 		log.setStreamId(ss.getUuid());
@@ -540,7 +603,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 		}
 		subAmount =subAmount - ss.getSurplusAmount();
 		log.setActualAmount(ss.getSurplusAmount());
-		log.setBillType(StreamLogEntity.BILLTYPE_APPROVE);
+		log.setBillType(StreamProjectLogEntity.BILLTYPE_APPROVE);
 		logList.add(log);
 		ss.setSurplusAmount(0l);
 		ss.setOccupyAmount(0l);
@@ -648,16 +711,16 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 	@Deprecated
 	@Transactional
 	public void unApproveStockDetail(ProjectInfoEntity entity, List<ProjectSubEntity> subList) {
-		List<StreamLogEntity> logList = streamLogService.findByProjectIdAndBillType(entity.getUuid(),StreamLogEntity.BILLTYPE_APPROVE);
+		List<StreamProjectLogEntity> logList = streamLogService.findByProjectIdAndBillType(entity.getUuid(),StreamProjectLogEntity.BILLTYPE_APPROVE);
 		if(CollectionUtils.isNotEmpty(logList)){
 			List<String> streamIdList = new ArrayList<>();
-			for(StreamLogEntity log : logList){
+			for(StreamProjectLogEntity log : logList){
 				streamIdList.add(log.getStreamId());
 			}
 //			List<StockStreamEntity> streamList = stockStreamService.findBySourceIdAndOperType(entity.getUuid(),StockStreamEntity.IN_STOCK);
 			List<StockStreamEntity> streamList = (List<StockStreamEntity>) stockStreamService.findAll(streamIdList);
 			boolean hasStream =false;
-			for(StreamLogEntity log:logList){
+			for(StreamProjectLogEntity log:logList){
 				hasStream =false;
 				for(StockStreamEntity stream:streamList){
 					if(stream.getUuid().equals(log.getStreamId())){
@@ -690,15 +753,15 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 	
 	@Transactional
 	public void unOutBySub(String destStreamId) {
-		List<StreamLogEntity> logList = streamLogService.findByDestStreamId(destStreamId);
+		List<StreamProjectLogEntity> logList = streamLogService.findByDestStreamId(destStreamId);
 		if(CollectionUtils.isNotEmpty(logList)){
 			List<String> streamIdList = new ArrayList<>();
-			for(StreamLogEntity log : logList){
+			for(StreamProjectLogEntity log : logList){
 				streamIdList.add(log.getStreamId());
 			}
 			List<StockStreamEntity> streamList = (List<StockStreamEntity>) stockStreamService.findAll(streamIdList);
 			boolean hasStream =false;
-			for(StreamLogEntity log:logList){
+			for(StreamProjectLogEntity log:logList){
 				hasStream =false;
 				for(StockStreamEntity stream:streamList){
 					if(stream.getUuid().equals(log.getStreamId())){

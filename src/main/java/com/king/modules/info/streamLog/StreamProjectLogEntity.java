@@ -11,16 +11,16 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 /**
- * 测试111
+ * 订单流水日志
  * @author ls2008
  * @date 2019-07-25 17:48:29
  */
 @Entity
-@Table(name = "yy_stream_log")
+@Table(name = "yy_stream_project_log")
 @DynamicInsert
 @DynamicUpdate
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class StreamLogEntity extends BaseEntity {
+public class StreamProjectLogEntity extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 
