@@ -83,7 +83,7 @@
 				data : "actualAmount",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			}];
 
 

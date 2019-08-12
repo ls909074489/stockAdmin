@@ -84,17 +84,17 @@
 				data : "user.loginname",
 				width : "180",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "user.username",
 				width : "200",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "user.mobilephone",
 				width : "200",
 				className : "center",
-				orderable : true
+				orderable : false
 			}];
 
 

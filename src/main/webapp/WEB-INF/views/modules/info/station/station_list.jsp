@@ -87,17 +87,17 @@
 							data : "name",
 							width : "200",
 							className : "center",
-							orderable : true
+							orderable : false
 						},{
 							data : "mark",
 							width : "80",
 							className : "center",
-							orderable : true
+							orderable : false
 						},{
 							data : "type",
 							width : "50",
 							className : "center",
-							orderable : true,
+							orderable : false,
 							render : function(data, type, full) {
 							       return YYDataUtils.getEnumName("StationType", data)+"";
 							}
@@ -105,7 +105,7 @@
 							data : "pos",
 							width : "60",
 							className : "center",
-							orderable : true
+							orderable : false
 						}];
 
 

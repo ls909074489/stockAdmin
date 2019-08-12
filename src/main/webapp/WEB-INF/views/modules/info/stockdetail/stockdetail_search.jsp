@@ -132,32 +132,32 @@
 				data : "stock.name",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "material.code",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "material.name",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			}/* ,{
 				data : "totalAmount",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			} */,{
 				data : "surplusAmount",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "occupyAmount",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "actualAmount",
 				width : "60",

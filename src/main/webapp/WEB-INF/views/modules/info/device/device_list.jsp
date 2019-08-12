@@ -111,7 +111,7 @@
 			data : "tid",
 			width : "10%",
 			className : "center",
-			orderable : true,
+			orderable : false,
 			render : function(data, type, full) {
 			       return YYDataUtils.getEnumName("DeviceType", data);
 			}
@@ -119,7 +119,7 @@
 			data : 'name',
 			width : "25%",
 			className : "left",
-			orderable : true,
+			orderable : false,
 			render : function(data, type, full) {
 			       if(data!=null){
 			    	   if(full.station!=null){
@@ -135,7 +135,7 @@
 			data : "interval",
 			width : "10%",
 			className : "center",
-			orderable : true,
+			orderable : false,
 			render : function(data, type, full) {
 				if(data!=null){
 					return data.name;
@@ -147,7 +147,7 @@
 			data : "supplier",
 			width : "20%",
 			className : "center",
-			orderable : true,
+			orderable : false,
 			render : function(data, type, full) {
 				if(data!=null){
 					return data.name;
@@ -159,7 +159,7 @@
 			data : "deviceStatus",
 			width : "10%",
 			className : "center",
-			orderable : true,
+			orderable : false,
 			render : function(data, type, full) {
 			       return YYDataUtils.getEnumName("DeviceStatus", data);
 			}

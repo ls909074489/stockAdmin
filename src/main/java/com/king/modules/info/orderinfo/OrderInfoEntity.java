@@ -73,6 +73,10 @@ public class OrderInfoEntity extends SuperEntity {
 	@Column(length = 250)
 	private String memo;
 	
+	@MetaData(value = "采购模式")
+	@Column(length = 2)
+	private String purchaseType;
+	
 	@Transient
 	private String stockId;
 	
@@ -159,6 +163,14 @@ public class OrderInfoEntity extends SuperEntity {
 
 	public void setSupplier(SupplierEntity supplier) {
 		this.supplier = supplier;
+	}
+
+	public String getPurchaseType() {
+		return purchaseType;
+	}
+
+	public void setPurchaseType(String purchaseType) {
+		this.purchaseType = purchaseType;
 	}
 	
 

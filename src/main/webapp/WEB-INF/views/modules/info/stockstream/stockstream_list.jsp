@@ -5,7 +5,7 @@
 <c:set var="serviceurl" value="${ctx}/info/stockstream"/>
 <html>
 <head>
-<title>测试111</title>
+<title>库存流水</title>
 </head>
 <body>
 	<div id="yy-page" class="container-fluid page-container">
@@ -88,32 +88,32 @@
 				data : "sourceId",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "sourceBillCode",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "totalAmount",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "occupyAmount",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "surplusAmount",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "operType",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			}];
 
 

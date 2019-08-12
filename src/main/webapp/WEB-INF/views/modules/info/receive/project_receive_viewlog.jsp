@@ -52,37 +52,37 @@
 				render : function(data, type, full) {
 					return YYDataUtils.getEnumName("ReceiveType", data);
 				},
-				orderable : true
+				orderable : false
 			},{
 				data : "receiveAmount",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "receiveTime",
 				width : "200",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "warningTime",
 				width : "200",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "memo",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "creatorname",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "createtime",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			}];
 
 

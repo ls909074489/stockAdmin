@@ -535,6 +535,8 @@
 			postApprove("审核意见", url, pks, true, fnCallback);
 		}
 	};
+	
+	
 	var _approveParam = {};
 	function postApprove(title, url, pks, isShowSuccess, fnCallback) {
 		if (isShowSuccess == null) {
@@ -652,6 +654,7 @@
 			toggle : "modal"
 		});
 	}
+	
 	//审核前检查
 	function checkApprove(pks) {
 		if (pks.length < 1) {

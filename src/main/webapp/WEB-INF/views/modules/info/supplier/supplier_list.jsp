@@ -105,32 +105,32 @@
 							data : "code",
 							width : "60",
 							className : "left",
-							orderable : true
+							orderable : false
 						},{
 							data : "name",
 							width : "100",
 							className : "left",
-							orderable : true
+							orderable : false
 						},{
 							data : "contacts",
 							width : "60",
 							className : "center",
-							orderable : true
+							orderable : false
 						},{
 							data : "phone",
 							width : "60",
 							className : "center",
-							orderable : true
+							orderable : false
 						},{
 							data : "email",
 							width : "60",
 							className : "center",
-							orderable : true
+							orderable : false
 						},{
 							data : "address",
 							width : "100",
 							className : "left",
-							orderable : true
+							orderable : false
 						}];
 
 

@@ -237,7 +237,7 @@ th,td{
 				data : 'newBarcode',
 				width : "200",
 				className : "center",
-				orderable : true,
+				orderable : false,
 				render : function(data, type, full) {
 					if(data==null){
 						data="";
@@ -298,7 +298,7 @@ th,td{
 				render : function(data, type, full) {
 					return "<a onclick=\"showReceiveLog(\'"+full.uuid+"\');\">"+YYDataUtils.getEnumName("ReceiveStatus", data)+"</a>";
 				},
-				orderable : true
+				orderable : false
 			},{
 				data : "main.code",
 				width : "80",

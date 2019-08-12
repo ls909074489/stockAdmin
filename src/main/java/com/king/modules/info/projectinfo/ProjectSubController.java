@@ -3,6 +3,7 @@ package com.king.modules.info.projectinfo;
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -209,6 +210,10 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		List<ProjectSubBarcodeEntity> subBarcodelist = null;
 		for(ProjectSubEntity sub : subList){
 			subBarcodelist = barcodeMap.get(sub.getUuid());
+			if(sub.getMain().getReceiveType()!=null&&sub.getMain().getReceiveType().equals(ProjectInfoEntity.receiveType_no)
+					&&sub.getReceiveTime()==null){
+				sub.setReceiveTime(new Date());
+			}
 			if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
 				for(int i=0;i<sub.getPlanAmount();i++){
 					desSub = new ProjectSubEntity();

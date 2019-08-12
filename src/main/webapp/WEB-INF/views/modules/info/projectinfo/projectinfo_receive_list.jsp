@@ -93,7 +93,7 @@
 				render : function(data, type, full) {
 					return YYDataUtils.getEnumName("BillStatus", data);
 				},
-				orderable : true
+				orderable : false
 			},{
 				data : "receiveType",
 				width : "60",
@@ -101,32 +101,32 @@
 				render : function(data, type, full) {
 					return YYDataUtils.getEnumName("ReceiveStatus", data);
 				},
-				orderable : true
+				orderable : false
 			},{
 				data : "code",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "name",
 				width : "200",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "stock.name",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "creatorname",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "createtime",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			}];
 
 

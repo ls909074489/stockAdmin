@@ -90,17 +90,17 @@
 				data : "stock.name",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "material.code",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "material.hwcode",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "material.name",
 				width : "200",
@@ -108,27 +108,27 @@
 				render : function(data, type, full) {
 					return '<a onclick="showMaterial(\''+full.material.uuid+'\');">'+data+'</a>';
 				},
-				orderable : true
+				orderable : false
 			}/* ,{
 				data : "totalAmount",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			} */,{
 				data : "surplusAmount",
 				width : "60",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "occupyAmount",
 				width : "60",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "actualAmount",
 				width : "60",
 				className : "center",
-				orderable : true
+				orderable : false
 			}];
 
 

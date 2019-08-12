@@ -29,6 +29,9 @@
 				<button id="yy-btn-approve-x" class="btn yellow btn-sm btn-info">
 					<i class="fa fa-check"></i> 审核
 				</button>
+				<button id="yy-btn-unapprove-project" class="btn yellow btn-sm btn-info">
+					<i class="fa fa-reply"></i> 取消审核
+				</button>
 				<!-- <button id="yy-btn-unapprove" class="btn yellow btn-sm btn-info">
 					<i class="fa fa-reply"></i> 取消审核
 				</button> -->

@@ -91,27 +91,27 @@
 				render : function(data, type, full) {
 					return YYDataUtils.getEnumName("projectApplyType", data);
 				},
-				orderable : true
+				orderable : false
 			},{
 				data : "sourceBillCode",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "content",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "creatorname",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "createtime",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			}];
 
 

@@ -83,6 +83,14 @@
 					</div>
 				</div>
 				<div class="row">
+					<div class="col-md-4">
+						<div class="form-group">
+							<label class="control-label col-md-4">采购模式</label>
+							<div class="col-md-8" >
+								<select name="purchaseType" id="purchaseType" data-enum-group="PurchaseType" class="yy-input-enumdata form-control"></select>
+							</div>
+						</div>
+					</div>
 					<div class="col-md-8">
 						<div class="form-group">
 							<label class="control-label col-md-2" >备注</label>
@@ -164,17 +172,17 @@
 				data : 'material.code',
 				width : "80",
 				className : "center",
-				orderable : true
+				orderable : false
 			}, {
 				data : 'material.hwcode',
 				width : "80",
 				className : "center",
-				orderable : true
+				orderable : false
 			}, {
 				data : 'material.name',
 				width : "80",
 				className : "center",
-				orderable : true,
+				orderable : false,
 				render : function(data, type, full) {
 					return '<span class="materialNameInputCls">'+data+'</span>';
 				}
@@ -182,17 +190,17 @@
 				data : 'planAmount',
 				width : "80",
 				className : "center",
-				orderable : true
+				orderable : false
 			}, {
 				data : 'warningTime',
 				width : "80",
 				className : "center",
-				orderable : true
+				orderable : false
 			}, {
 				data : 'memo',
 				width : "160",
 				className : "center",
-				orderable : true
+				orderable : false
 			}];
 
 		 
@@ -220,6 +228,7 @@
 				//$("input[name='billdate']").val('${billdate}');
 			}else if('${openstate}'=='detail'){
 				$("#orderType").val('${entity.orderType}');
+				$("select[name='purchaseType']").val('${entity.purchaseType}');
 				loadSubList();
 			}
 		}

@@ -85,17 +85,17 @@
 				data : "code",
 				width : "100",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "name",
 				width : "160",
 				className : "center",
-				orderable : true
+				orderable : false
 			},{
 				data : "memo",
 				width : "200",
 				className : "center",
-				orderable : true
+				orderable : false
 			}];
 
 
