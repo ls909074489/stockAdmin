@@ -692,7 +692,7 @@
 									if (typeof (fnCallback) != "undefined")
 										fnCallback(data);
 								} else {
-									YYUI.failMsg("取消审核失败，原因：" + data.msg);
+									YYUI.promAlert("取消审核失败，原因：" + data.msg);
 								}
 							},
 							"error" : function(XMLHttpRequest, textStatus,

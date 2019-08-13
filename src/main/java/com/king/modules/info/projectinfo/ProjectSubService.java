@@ -328,10 +328,10 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 //				checkStyle(sub,enumList);
 				sub.setNewUuid("0_"+sub.getUuid());
 				sub.setFirstRow("1");
-				if(0<subBarcodelist.size()){
+				if(subBarcodelist!=null&&subBarcodelist.size()>0){
 					sub.setBarcode(subBarcodelist.get(0).getBarcode());
 				}else{
-					desSub.setBarcode("");
+					sub.setBarcode("");
 				}
 				resultList.add(sub);
 			}

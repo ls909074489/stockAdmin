@@ -2,8 +2,10 @@ package com.king.modules.info.stockdetail;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.service.spi.ServiceException;
@@ -183,11 +185,6 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 				subAmount = 0l;
 				break;
 			}else{
-				subAmount =subAmount - ss.getSurplusAmount();
-				ss.setSurplusAmount(0l);
-				ss.setOccupyAmount(0l);
-				ss.setActualAmount(0l);
-				
 				log = new StreamOrderLogEntity();
 				log.setOrderId(orderInfo.getUuid());
 				log.setOrderSubId(sub.getUuid());
@@ -195,7 +192,13 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 				if(ss.getWarningType().equals(StockStreamEntity.WARNINGTYPE_BE_NEED)){
 					ss.setWarningType(StockStreamEntity.WARNINGTYPE_HAS_USE);
 				}
-				log.setActualAmount(ss.getSurplusAmount());
+				log.setActualAmount(ss.getSurplusAmount());//要在减少之前设置setActualAmount
+				
+				subAmount =subAmount - ss.getSurplusAmount();
+				ss.setSurplusAmount(0l);
+				ss.setOccupyAmount(0l);
+				ss.setActualAmount(0l);
+				
 				logList.add(log);
 			}
 		}
@@ -225,7 +228,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 							stockStreamService.delete(stream);
 							break;
 						}else{
-							throw new ServiceException("订单剩余库存不足，不能撤销审核");
+							throw new ServiceException("出入库单物料"+sub.getMaterial().getCode()+"["+sub.getMaterial().getHwcode()+"]剩余库存不足，不能撤销审核");
 						}
 					}
 				}
@@ -245,14 +248,17 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 //				}
 //			}
 			List<StreamOrderLogEntity> logList = streamOrderLogService.findByOrderId(orderInfo.getUuid());
+			Set<String> streamIdSet = new HashSet<>();
 			for(StreamOrderLogEntity log:logList){
 				StockStreamEntity stream = stockStreamService.getOne(log.getDestStreamId());
 				stream.setSurplusAmount(stream.getSurplusAmount()+Math.abs(log.getActualAmount()));
 				stream.setOccupyAmount(stream.getOccupyAmount());
 				stream.setActualAmount(stream.getSurplusAmount());
 				streamOrderLogService.delete(log);
-				stockStreamService.delete(log.getStreamId());
+				streamIdSet.add(log.getStreamId());
 			}
+			String[] streamPks=streamIdSet.toArray(new String[0]);
+			stockStreamService.delete(streamPks);
 		}else{
 			throw new ServiceException("订单类型不正确");
 		}
@@ -658,7 +664,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 						(sub.getSub().getUuid(),sub.getMaterial().getUuid());
 				
 				if(CollectionUtils.isEmpty(streamList)){
-					throw new ServiceException("库存物料"+sub.getMaterial().getCode()+"流水不存在");
+					throw new ServiceException("库存物料"+sub.getMaterial().getCode()+"["+sub.getMaterial().getHwcode()+"]流水不存在");
 				}
 				
 				Long subAmount = Math.abs(sub.getReceiveAmount());
