@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import com.king.common.utils.Constants;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.SuperController;
 import com.king.modules.info.material.MaterialBaseEntity;
@@ -88,7 +86,7 @@ public class OrderInfoController extends SuperController<OrderInfoEntity> {
 		ActionResultModel<OrderInfoEntity> arm = new ActionResultModel<OrderInfoEntity>();
 		arm.setSuccess(true);
 		List<OrderSubEntity> subList = this.convertToEntities(subArrs);
-		try {
+//		try {
 			if(StringUtils.isEmpty(entity.getSupplierId())){
 				entity.setSupplier(null);
 			}else{
@@ -97,15 +95,15 @@ public class OrderInfoController extends SuperController<OrderInfoEntity> {
 				entity.setSupplier(supplier);
 			}
 			arm = subService.saveSelfAndSubList(entity, subList, deletePKs);
-		}catch (DataIntegrityViolationException e) {
-			e.printStackTrace();
-			arm.setSuccess(false);
-			arm.setMsg(Constants.getConstraintMsg(e.getMessage()));
-		}catch (Exception e) {
-			arm.setSuccess(false);
-			arm.setMsg("保存失败");
-			e.printStackTrace();
-		}
+//		}catch (DataIntegrityViolationException e) {
+//			e.printStackTrace();
+//			arm.setSuccess(false);
+//			arm.setMsg(Constants.getConstraintMsg(e.getMessage()));
+//		}catch (Exception e) {
+//			arm.setSuccess(false);
+//			arm.setMsg("保存失败");
+//			e.printStackTrace();
+//		}
 		return arm;
 	}
 
@@ -118,7 +116,7 @@ public class OrderInfoController extends SuperController<OrderInfoEntity> {
 		ActionResultModel<OrderInfoEntity> arm = new ActionResultModel<OrderInfoEntity>();
 		arm.setSuccess(true);
 		List<OrderSubEntity> subList = this.convertToEntities(subArrs);
-		try {
+//		try {
 			StockBaseEntity stock = new StockBaseEntity();
 			stock.setUuid(entity.getStockId());
 			entity.setStock(stock);
@@ -130,15 +128,15 @@ public class OrderInfoController extends SuperController<OrderInfoEntity> {
 				entity.setSupplier(supplier);
 			}
 			arm = subService.saveSelfAndSubList(entity, subList, deletePKs);
-		}catch (DataIntegrityViolationException e) {
-			e.printStackTrace();
-			arm.setSuccess(false);
-			arm.setMsg(Constants.getConstraintMsg(e.getMessage()));
-		} catch (Exception e) {
-			arm.setSuccess(false);
-			arm.setMsg("保存失败");
-			e.printStackTrace();
-		}
+//		}catch (DataIntegrityViolationException e) {
+//			e.printStackTrace();
+//			arm.setSuccess(false);
+//			arm.setMsg(Constants.getConstraintMsg(e.getMessage()));
+//		} catch (Exception e) {
+//			arm.setSuccess(false);
+//			arm.setMsg("保存失败");
+//			e.printStackTrace();
+//		}
 		return arm;
 	}
 

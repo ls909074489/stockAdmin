@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.service.spi.ServiceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,8 @@ import com.king.modules.info.stockdetail.StockDetailService;
 @Transactional(readOnly=true)
 public class OrderInfoService extends SuperServiceImpl<OrderInfoEntity,String> {
 
+	private static Logger logger = LoggerFactory.getLogger(OrderInfoService.class);
+	
 	@Autowired
 	private OrderInfoDao dao;
 	@Lazy
@@ -70,6 +74,7 @@ public class OrderInfoService extends SuperServiceImpl<OrderInfoEntity,String> {
 				throw new ServiceException("自由态或退回态才能审核");
 			}
 		} catch (Exception e) {
+			logger.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + getTrace(e));
 			e.printStackTrace();
 			throw new ServiceException(e.getMessage());
 		}

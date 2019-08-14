@@ -44,13 +44,13 @@
 				</div>
 			<div class="row yy-searchbar form-inline">
 				<form id="yy-form-query">
-					<label for="search_EQ_billstatus" class="control-label">订单类型</label>
-					<select class="yy-input-enumdata form-control" id="search_EQ_billstatus" 
-						name="search_EQ_billstatus" data-enum-group="OrderType"></select>
+					<label for="search_EQ_orderType" class="control-label">订单类型</label>
+					<select class="yy-input-enumdata form-control" id="search_EQ_orderType" 
+						name="search_EQ_orderType" data-enum-group="OrderType"></select>
 
-					<label for="search_LIKE_name" class="control-label">订单名称</label>
-					<input type="text" autocomplete="on" name="search_LIKE_name"
-						id="search_LIKE_name" class="form-control input-sm">
+					<label for="search_LIKE_code" class="control-label">订单编码</label>
+					<input type="text" autocomplete="on" name="search_LIKE_code"
+						id="search_LIKE_code" class="form-control input-sm">
 
 					<button id="yy-btn-search" type="button" class="btn btn-sm btn-info">
 						<i class="fa fa-search"></i>查询

@@ -12,6 +12,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.hibernate.service.spi.ServiceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.king.common.dao.DbUtilsDAO;
+import com.king.common.exception.MyExceptionHandler;
 import com.king.frame.dao.IBaseDAO;
 import com.king.frame.entity.BaseEntity;
 import com.king.frame.security.ShiroUser;
@@ -38,6 +41,8 @@ import com.king.frame.security.ShiroUser;
 @Service
 @Transactional(rollbackFor = { Exception.class })
 public abstract class BaseServiceImpl<T extends BaseEntity, PK extends Serializable> implements IService<T, PK> {
+	
+	private static Logger logger = LoggerFactory.getLogger(BaseServiceImpl.class);
 
 	protected abstract IBaseDAO<T, PK> getDAO();
 
@@ -47,6 +52,14 @@ public abstract class BaseServiceImpl<T extends BaseEntity, PK extends Serializa
 
 	public BaseServiceImpl() {
 		init();
+	}
+	
+	public static String getTrace(Throwable t) {
+		StringWriter stringWriter = new StringWriter();
+		PrintWriter writer = new PrintWriter(stringWriter);
+		t.printStackTrace(writer);
+		StringBuffer buffer = stringWriter.getBuffer();
+		return buffer.toString();
 	}
 
 	/**

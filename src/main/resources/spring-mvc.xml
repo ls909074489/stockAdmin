@@ -59,6 +59,8 @@
 			</props>
 		</property>
 	</bean>
+	
+	<bean id="exceptionHandler" class="com.king.common.exception.MyExceptionHandler"/> 
 
 	<!-- websocket配置：处理类和握手协议环境 <bean id="websocket" class="com.king.frame.websocket.SystemWebSocketHandler" 
 		/> -->
