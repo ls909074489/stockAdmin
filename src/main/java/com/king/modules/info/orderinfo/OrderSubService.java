@@ -18,6 +18,8 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -51,6 +53,8 @@ import com.king.modules.sys.user.UserEntity;
 @Transactional(readOnly=true)
 public class OrderSubService extends BaseServiceImpl<OrderSubEntity, String> {
 
+	private static Logger logger = LoggerFactory.getLogger(OrderSubService.class);
+	
 	@Autowired
 	private OrderSubDao dao;
 	@Lazy
@@ -84,6 +88,9 @@ public class OrderSubService extends BaseServiceImpl<OrderSubEntity, String> {
 			String[] deletePKs) {
 		ActionResultModel<OrderInfoEntity> arm = new ActionResultModel<OrderInfoEntity>();
       try {
+    	 if(entity.getBillstatus()==BillStatus.APPROVAL.toStatusValue()){
+    		 throw new ServiceException("已审核不能修改");
+    	 }
     	// 删除子表一数据
   		if (deletePKs != null && deletePKs.length > 0) {
   			delete(deletePKs);
@@ -130,10 +137,16 @@ public class OrderSubService extends BaseServiceImpl<OrderSubEntity, String> {
   		}
   		arm.setRecords(savedEntity);
   		arm.setSuccess(true);
+      }catch(ServiceException e){
+    	  arm.setSuccess(false);
+    	  arm.setMsg(e.getMessage());
+    	  e.printStackTrace();
+    	  logger.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + getTrace(e));
       } catch (Exception e) {
     	  arm.setSuccess(false);
     	  arm.setMsg(e.getMessage());
     	  e.printStackTrace();
+    	  logger.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + getTrace(e));
       }
 	  return arm;
 	}
@@ -318,10 +331,16 @@ public class OrderSubService extends BaseServiceImpl<OrderSubEntity, String> {
 					arm.setMsg("料号"+org.apache.commons.lang3.StringUtils.join(notExitCode)+"不存在");
 				}
 			}
-		} catch (Exception e) {
+		}catch(ServiceException e){
+	    	  arm.setSuccess(false);
+	    	  arm.setMsg(e.getMessage());
+	    	  e.printStackTrace();
+	    	  logger.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + getTrace(e));
+	    } catch (Exception e) {
 			e.printStackTrace();
 			arm.setSuccess(false);
 			arm.setMsg(e.getMessage());
+			logger.error(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + getTrace(e));
 		}finally {
 			try {
 				if(is!=null){
@@ -339,8 +358,5 @@ public class OrderSubService extends BaseServiceImpl<OrderSubEntity, String> {
 		}
 		return arm;
 	}
-
-
-
 	
 }
