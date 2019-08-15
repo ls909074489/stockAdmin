@@ -140,6 +140,7 @@
 								<th>华为物料编码</th>	
 								<th>物料名称</th>	
 								<th>计划数量</th>
+								<th>剩余数量</th>
 								<th>预警时间</th>		
 								<th>备注</th>	
 							</tr>
@@ -188,6 +189,11 @@
 				}
 			}, {
 				data : 'planAmount',
+				width : "80",
+				className : "center",
+				orderable : false
+			}, {
+				data : 'surplusAmount',
 				width : "80",
 				className : "center",
 				orderable : false

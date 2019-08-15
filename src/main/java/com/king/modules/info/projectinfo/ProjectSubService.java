@@ -316,7 +316,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 						desSub.setFirstRow("0");
 					}
 					desSub.setNewUuid(i+"_"+sub.getUuid());
-					if(i<subBarcodelist.size()){
+					if(subBarcodelist!=null&&i<subBarcodelist.size()){
 						desSub.setBarcode(subBarcodelist.get(i).getBarcode());
 					}else{
 						desSub.setBarcode("");

@@ -63,6 +63,11 @@ public class OrderSubEntity extends BaseEntity {
 	@Transient
 	@JsonIgnore
 	private String materialCode="";
+	
+	
+	@MetaData(value = "剩余数量")
+	@Transient
+	private Long surplusAmount = 0l;
 
 	public OrderInfoEntity getMain() {
 		return main;
@@ -135,6 +140,14 @@ public class OrderSubEntity extends BaseEntity {
 
 	public void setMaterialCode(String materialCode) {
 		this.materialCode = materialCode;
+	}
+
+	public Long getSurplusAmount() {
+		return surplusAmount;
+	}
+
+	public void setSurplusAmount(Long surplusAmount) {
+		this.surplusAmount = surplusAmount;
 	}
 	
 
