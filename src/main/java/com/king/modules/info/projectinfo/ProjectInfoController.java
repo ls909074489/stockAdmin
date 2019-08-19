@@ -403,11 +403,27 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 		return arm;
 	}
 	
-	
+	/**
+	 * 查询项目
+	 * @param codeOrName
+	 * @return
+	 */
 	@RequestMapping(value = "/select2Query")
 	@ResponseBody
 	public ActionResultModel<ProjectInfoVo> select2Query(String codeOrName) {
 		return service.select2Query(codeOrName);
+	}
+	
+	
+	/**
+	 * 查询箱号
+	 * @param codeOrName
+	 * @return
+	 */
+	@RequestMapping(value = "/select2BoxNumQuery")
+	@ResponseBody
+	public ActionResultModel<ProjectInfoVo> select2BoxNumQuery(String projectId,String boxNum) {
+		return service.select2BoxNumQueryselect2BoxNumQuery(projectId,boxNum);
 	}
 	
 	

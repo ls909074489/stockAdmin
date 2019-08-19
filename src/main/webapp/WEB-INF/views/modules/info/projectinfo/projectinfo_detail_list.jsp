@@ -76,6 +76,10 @@ th,td{
 					<button id="yy-btn-unapprove-project" class="btn yellow btn-sm btn-info">
 						<i class="fa fa-reply"></i> 取消审核
 					</button>
+					<button id="yy-btn-check-null" class="btn yellow btn-sm btn-info">
+						<i class="fa fa-undo"></i> 一键差漏
+					</button>
+					
 					
 					<button id="yy-btn-export-pks" queryformid="yy-form-query" class="btn green btn-sm btn-info">
 						<i class="fa fa-chevron-up"></i> 导出
@@ -123,9 +127,8 @@ th,td{
 						</c:choose>
 													
 						<label for="search_EQ_boxNum" class="control-label">箱号</label>
-						<!-- <select class="yy-input-enumdata form-control" id="search_EQ_boxNum" name="search_EQ_boxNum"
-									 data-enum-group="BoxNum"></select>	 -->
-						<input type="text" autocomplete="on" name="search_EQ_boxNum" id="search_EQ_boxNum" style="width:120px;" class="form-control input-sm">
+						<!-- <input type="text" autocomplete="on" name="search_EQ_boxNum" id="search_EQ_boxNum" style="width:120px;" class="form-control input-sm"> -->
+						<select class="yy-input-enumdata form-control" id="search_EQ_boxNum" name="search_EQ_boxNum"></select>
 									 
 						<!-- <label for="search_LIKE_materialCode" class="control-label">物料编码</label>
 						<input type="text" autocomplete="on" name="search_LIKE_material.code" id="search_LIKE_materialCode" class="form-control input-sm"> -->
@@ -521,6 +524,10 @@ th,td{
 			$("#yy-btn-cancel-receive").bind("click", function() {
 				cancelReceive();
 			});
+			$("#yy-btn-check-null").bind("click", function() {
+				checkNull();
+			});
+			
 			
 			$("#yy-btn-export-pks").bind('click', exportPks);//选择导出
 			
@@ -566,6 +573,42 @@ th,td{
 		        }
 		    });
 			
+			$("#search_EQ_boxNum").select2({
+		        theme: "bootstrap",
+		        allowClear: true,
+		        placeholder: "请选择",
+		        ajax:{
+		            url:"${ctx}/info/projectinfo/select2BoxNumQuery",
+		            dataType:"json",
+		            delay:250,
+		            data:function(params){
+		                return {projectId: $("#search_LIKE_mainId").val()};
+		            },
+		            cache:true,
+		            processResults: function (res, params) {
+		            	var t_projectId = $("#search_LIKE_mainId").val();
+		    			if(t_projectId==null||t_projectId==''){
+		    				return {
+			                    results: []
+			                };
+		    			}else{
+		    				console.info(res);
+			            	console.info(params);
+			                var options = [];
+			                var records = res.records;
+			                for(var i= 0, len=records.length;i<len;i++){
+			                    var option = {"id":records[i].name, "text":records[i].name};
+			                    options.push(option);
+			                }
+			                return {
+			                    results: options
+			                };
+		    			}
+		            },
+		            escapeMarkup: function (markup) { return markup; },
+		            minimumInputLength: 1
+		        }
+		    });
 		});
 		
 		
@@ -1094,6 +1137,21 @@ th,td{
 			YYUI.promMsg('正在导出，请稍后.',3000);
 			window.open('${servicemainurl}/exportCsByIds?pks='+t_projectId,"_blank");
 		}
+		//一键查空
+		function checkNull(){
+			var t_projectId = $("#search_LIKE_mainId").val();
+			console.info(">>>>>>>>>>>>"+t_projectId);
+			if(t_projectId==null||t_projectId==''){
+				YYUI.promMsg("请选择项目");
+				return false;
+			}
+			if($("#projectInfoId").val()!=$("#search_LIKE_mainId").val()){
+				YYUI.promMsg("请选择项目进行查询");
+				return false;
+			}
+			onQuery();
+		}
+		
 		
 		//校验子表
 		function validTemp(){

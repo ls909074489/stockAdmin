@@ -693,6 +693,38 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 		arm.setRecords(voList);
 		return arm;
 	}
+
+	
+	public ActionResultModel<ProjectInfoVo> select2BoxNumQueryselect2BoxNumQuery(String projectId,String boxNum) {
+		ActionResultModel<ProjectInfoVo> arm = new ActionResultModel<ProjectInfoVo>();
+		List<ProjectInfoVo> voList = new ArrayList<ProjectInfoVo>();
+		if(StringUtils.isEmpty(projectId)){
+			arm.setSuccess(true);
+			arm.setRecords(voList);
+			return arm;
+		}
+		if(StringUtils.isEmpty(boxNum)){
+			try {
+				Object [] params  = {projectId};
+				voList =  dbDao.find(ProjectInfoVo.class, "select DISTINCT(box_num) from yy_project_sub where mainid=? order by createtime desc", params);
+				arm.setSuccess(true);
+			} catch (DAOException e) {
+				arm.setSuccess(false);
+				e.printStackTrace();
+			}
+		}else{
+			Object [] params  = {projectId,"%"+boxNum+"%"};
+			try {
+				voList =  dbDao.find(ProjectInfoVo.class, "select DISTINCT(box_num) name from yy_project_sub where mainid=? and box_num like ? order by createtime desc", params);
+				arm.setSuccess(true);
+			} catch (DAOException e) {
+				arm.setSuccess(false);
+				e.printStackTrace();
+			}
+		}
+		arm.setRecords(voList);
+		return arm;
+	}
 	
 	
 
