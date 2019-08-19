@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.king.frame.dao.IBaseDAO;
 import com.king.frame.service.BaseServiceImpl;
@@ -48,7 +49,15 @@ public class ProjectSubBarcodeService extends BaseServiceImpl<ProjectSubBarcodeE
 	}
 
 
-	public List<ProjectSubBarcodeEntity> findLikeBarcode(String barcode) {
-		return dao.findLikeBarcode("%"+barcode+"%");
+	public List<ProjectSubBarcodeEntity> findLikeBarcode(String barcode,String barCodeNull) {
+		if(StringUtils.isEmpty(barCodeNull)){
+			return dao.findLikeBarcode("%"+barcode+"%");
+		}else if(barCodeNull.equals("1")){
+			return dao.findLikeBarcodeNotNull();
+		}else if(barCodeNull.equals("0")){
+			return dao.findLikeBarcodeNull();
+		}else{
+			return dao.findLikeBarcode("%"+barcode+"%");
+		}
 	}
 }

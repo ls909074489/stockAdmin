@@ -706,7 +706,16 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 		if(StringUtils.isEmpty(boxNum)){
 			try {
 				Object [] params  = {projectId};
-				voList =  dbDao.find(ProjectInfoVo.class, "select DISTINCT(box_num) from yy_project_sub where mainid=? order by createtime desc", params);
+				voList =  dbDao.find(ProjectInfoVo.class, "select DISTINCT(box_num) name from yy_project_sub where mainid=? order by createtime desc", params);
+				if(voList!=null){
+					for(ProjectInfoVo v:voList){
+						v.setUuid(v.getName());
+					}
+				}
+				ProjectInfoVo vo = new ProjectInfoVo();
+				vo.setName("请选择");
+				vo.setUuid("");
+				voList.add(vo);
 				arm.setSuccess(true);
 			} catch (DAOException e) {
 				arm.setSuccess(false);
@@ -716,6 +725,15 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 			Object [] params  = {projectId,"%"+boxNum+"%"};
 			try {
 				voList =  dbDao.find(ProjectInfoVo.class, "select DISTINCT(box_num) name from yy_project_sub where mainid=? and box_num like ? order by createtime desc", params);
+				if(voList!=null){
+					for(ProjectInfoVo v:voList){
+						v.setUuid(v.getName());
+					}
+				}
+				ProjectInfoVo vo = new ProjectInfoVo();
+				vo.setName("请选择");
+				vo.setUuid("");
+				voList.add(vo);
 				arm.setSuccess(true);
 			} catch (DAOException e) {
 				arm.setSuccess(false);

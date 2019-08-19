@@ -77,7 +77,7 @@ th,td{
 						<i class="fa fa-reply"></i> 取消审核
 					</button>
 					<button id="yy-btn-check-null" class="btn yellow btn-sm btn-info">
-						<i class="fa fa-undo"></i> 一键差漏
+						<i class="fa fa-undo"></i> 一键查漏
 					</button>
 					
 					
@@ -126,9 +126,9 @@ th,td{
 							</c:otherwise>
 						</c:choose>
 													
-						<label for="search_EQ_boxNum" class="control-label">箱号</label>
-						<!-- <input type="text" autocomplete="on" name="search_EQ_boxNum" id="search_EQ_boxNum" style="width:120px;" class="form-control input-sm"> -->
-						<select class="yy-input-enumdata form-control" id="search_EQ_boxNum" name="search_EQ_boxNum"></select>
+						<label for="search_LIKE_boxNum" class="control-label">箱号</label>
+						<!-- <input type="text" autocomplete="on" name="search_LIKE_boxNum" id="search_LIKE_boxNum" style="width:120px;" class="form-control input-sm"> -->
+						<select class="yy-input-enumdata form-control" id="search_LIKE_boxNum" name="search_LIKE_boxNum" style="width:120px;"></select>
 									 
 						<!-- <label for="search_LIKE_materialCode" class="control-label">物料编码</label>
 						<input type="text" autocomplete="on" name="search_LIKE_material.code" id="search_LIKE_materialCode" class="form-control input-sm"> -->
@@ -500,6 +500,7 @@ th,td{
 
 		//改变当前项目
 		function changeProjectSel(){
+		
 			onQuery();
 		}
 		
@@ -573,7 +574,7 @@ th,td{
 		        }
 		    });
 			
-			$("#search_EQ_boxNum").select2({
+			$("#search_LIKE_boxNum").select2({
 		        theme: "bootstrap",
 		        allowClear: true,
 		        placeholder: "请选择",
@@ -582,7 +583,7 @@ th,td{
 		            dataType:"json",
 		            delay:250,
 		            data:function(params){
-		                return {projectId: $("#search_LIKE_mainId").val()};
+		                return {projectId: $("#search_LIKE_mainId").val(),"boxNum":params.term};
 		            },
 		            cache:true,
 		            processResults: function (res, params) {
@@ -597,7 +598,7 @@ th,td{
 			                var options = [];
 			                var records = res.records;
 			                for(var i= 0, len=records.length;i<len;i++){
-			                    var option = {"id":records[i].name, "text":records[i].name};
+			                    var option = {"id":records[i].uuid, "text":records[i].name};
 			                    options.push(option);
 			                }
 			                return {
@@ -704,7 +705,7 @@ th,td{
 				YYUI.promMsg("请选择项目");
 				return false;
 			}
-			var t_boxNum = $("#search_EQ_boxNum").val();
+			var t_boxNum = $("#search_LIKE_boxNum").val();
 			if(t_boxNum==null||t_boxNum==''){
 				YYUI.promMsg("请填写箱号");
 				return false;
