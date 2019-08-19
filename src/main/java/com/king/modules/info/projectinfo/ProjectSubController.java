@@ -174,7 +174,7 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		String custom_search_barcode = request.getParameter("custom_search_barcode");
 		boolean isSearchBarcode = false;//是否查询条码
 		if(StringUtils.isNotEmpty(custom_search_barcode)){
-			List<ProjectSubBarcodeEntity> searchBarcodeList = projectSubBarcodeService.findLikeBarcode(custom_search_barcode);
+			List<ProjectSubBarcodeEntity> searchBarcodeList = projectSubBarcodeService.findLikeBarcode(custom_search_barcode,request.getParameter("barCodeNull"));
 			if(CollectionUtils.isEmpty(searchBarcodeList)){
 				return new ActionResultModel<>(true, "没有记录");
 			}

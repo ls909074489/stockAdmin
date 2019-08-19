@@ -25,5 +25,12 @@ public interface ProjectSubBarcodeDao extends IBaseDAO<ProjectSubBarcodeEntity, 
 	@Query("from ProjectSubBarcodeEntity ur where ur.barcode like ?1 and status=1")
 	List<ProjectSubBarcodeEntity> findLikeBarcode(String barcode);
 
+	@Query("from ProjectSubBarcodeEntity ur where status=1 and barcode is null")
+	List<ProjectSubBarcodeEntity> findLikeBarcodeNotNull();
+
+
+	@Query("from ProjectSubBarcodeEntity ur where status=1 and barcode not null")
+	List<ProjectSubBarcodeEntity> findLikeBarcodeNull();
+
 	
 }
