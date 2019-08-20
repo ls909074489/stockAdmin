@@ -77,7 +77,10 @@ th,td{
 						<i class="fa fa-reply"></i> 取消审核
 					</button>
 					<button id="yy-btn-check-null" class="btn yellow btn-sm btn-info">
-						<i class="fa fa-undo"></i> 一键查漏
+						<i class="fa fa-video-camera"></i> 一键查漏
+					</button>
+					<button id="yy-btn-check-repeat" class="btn yellow btn-sm btn-info">
+						<i class="fa fa-files-o"></i> 一键查重
 					</button>
 					
 					
@@ -141,6 +144,8 @@ th,td{
 								
 						<label for="custom_search_barcode" class="control-label">条码&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
 						<input type="text" autocomplete="on" name="custom_search_barcode" id="custom_search_barcode" class="form-control input-sm">
+						
+						<input type="text" name="checkVal" id="checkVal" class="form-control input-sm">
 	
 						<button id="yy-btn-search" type="button" class="btn btn-sm btn-info">
 							<i class="fa fa-search"></i>查询
@@ -406,7 +411,7 @@ th,td{
 						if(full.main.receiveType=="1"){
 							return "<a onclick=\"showReceiveLog(\'"+full.uuid+"\');\">"+data+"</a>";
 						}else{
-							return '<input class="form-control" value="'+ data + '" name="actualAmount">';
+							return '<input class="form-control" value="'+ data + '" name="actualAmount"  onchange="changeActualAmount(this);">';
 						}
 					}else{
 						return '';
@@ -500,8 +505,17 @@ th,td{
 
 		//改变当前项目
 		function changeProjectSel(){
-		
 			onQuery();
+		}
+		
+		//改变收货数量
+		function changeActualAmount(t){
+			if($(t).val()!=null&&$(t).val()!=''){
+				var t_receiveTimeEle = $(t).closest("tr").find("input[name='receiveTime']");
+				if(t_receiveTimeEle.val()==null||t_receiveTimeEle.val()==""){
+					t_receiveTimeEle.val("${curDate}");
+				}
+			}
 		}
 		
 		//var _setOrder = [[5,'desc']];
@@ -527,6 +541,9 @@ th,td{
 			});
 			$("#yy-btn-check-null").bind("click", function() {
 				checkNull();
+			});
+			$("#yy-btn-check-repeat").bind("click", function() {
+				checkRepeat();
 			});
 			
 			
@@ -1150,7 +1167,18 @@ th,td{
 				YYUI.promMsg("请选择项目进行查询");
 				return false;
 			}
+			//onReset();
+			$("#checkVal").val("1");
 			onQuery();
+			$("#checkVal").val("");
+		}
+		
+		//一键查重
+		function checkRepeat(){
+			onReset();
+			$("#checkVal").val("2");
+			onQuery();
+			$("#checkVal").val("");
 		}
 		
 		
@@ -1207,13 +1235,13 @@ th,td{
 			return [ {
 				name : "actualAmount",
 				rules : {
-					required : true,
+					//required : true,
 					//number :true,
 					digits :true,
 					maxlength:8
 				},
 				message : {
-					required : "必输",
+					//required : "必输",
 					//number :"请输入合法的数字",
 					digits :"只能输入整数",
 					maxlength : "最大长度为8"

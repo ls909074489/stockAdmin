@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
@@ -33,11 +35,18 @@ public class ProjectSubBarcodeEntity extends BaseEntity {
 	@JoinColumn(name = "subid")
 	private ProjectSubBaseEntity sub;
 	
-	@Column(name = "条码",length=50)
+	@Column(name = "barcode",length=50)
 	private String barcode="";
 
-	@Column(name = "流水id",length=36)
+	@Column(name = "stream_id",length=36)
 	private String streamId="";
+	
+	@Transient
+	private String mainId;
+	
+	@Transient
+	private String subId;
+	
 
 	public ProjectInfoBaseEntity getMain() {
 		return main;
@@ -69,9 +78,24 @@ public class ProjectSubBarcodeEntity extends BaseEntity {
 		return streamId;
 	}
 
-
 	public void setStreamId(String streamId) {
 		this.streamId = streamId;
+	}
+
+	public String getSubId() {
+		return subId;
+	}
+
+	public void setSubId(String subId) {
+		this.subId = subId;
+	}
+
+	public String getMainId() {
+		return mainId;
+	}
+
+	public void setMainId(String mainId) {
+		this.mainId = mainId;
 	}
 	
 	

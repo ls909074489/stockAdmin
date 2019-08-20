@@ -25,6 +25,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.king.common.utils.DateUtil;
 import com.king.common.utils.Json;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.BaseController;
@@ -126,6 +127,7 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		}
 		model.addAttribute("subList", Json.toJson(subList));
 		model.addAttribute("sourceBillId", sourceBillId);
+		model.addAttribute("curDate", DateUtil.getCurrentDate("yyyy-MM-dd"));
 		return "modules/info/projectinfo/projectinfo_detail_list";
 	}
 	
@@ -173,8 +175,9 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		addParam.put("EQ_status", "1");
 		String custom_search_barcode = request.getParameter("custom_search_barcode");
 		boolean isSearchBarcode = false;//是否查询条码
+		String mainId = request.getParameter("search_LIKE_main.uuid");
 		if(StringUtils.isNotEmpty(custom_search_barcode)){
-			List<ProjectSubBarcodeEntity> searchBarcodeList = projectSubBarcodeService.findLikeBarcode(custom_search_barcode,request.getParameter("barCodeNull"));
+			List<ProjectSubBarcodeEntity> searchBarcodeList = projectSubBarcodeService.findLikeBarcode(mainId,custom_search_barcode);
 			if(CollectionUtils.isEmpty(searchBarcodeList)){
 				return new ActionResultModel<>(true, "没有记录");
 			}
@@ -188,6 +191,33 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 			addParam.put("IN_uuid", StringUtils.join(subIdInSet, ","));
 			isSearchBarcode = true;
 		}
+		String checkVal = request.getParameter("checkVal");
+//		if(barCodeNull!=null&&barCodeNull.equals("1")){//查询条码为空
+//			List<ProjectSubBarcodeEntity> searchBarcodeList = projectSubBarcodeService.findBarcodeNull(mainId);
+//			if(CollectionUtils.isEmpty(searchBarcodeList)){
+//				return new ActionResultModel<>(true, "没有记录");
+//			}
+//			Set<String> subIdInSet = new HashSet<>();
+//			for(ProjectSubBarcodeEntity bc:searchBarcodeList){
+//				subIdInSet.add(bc.getSubId());
+//			}
+//			addParam.put("IN_uuid", StringUtils.join(subIdInSet, ","));
+//		}
+		if(checkVal!=null&&checkVal.equals("2")){//查询条码重复
+			List<ProjectSubBarcodeEntity> searchBarcodeList = projectSubBarcodeService.findBarcodeRepeat();
+			if(CollectionUtils.isEmpty(searchBarcodeList)){
+				return new ActionResultModel<>(true, "没有记录");
+			}
+			Set<String> projectIdInSet = new HashSet<>();
+			Set<String> subIdInSet = new HashSet<>();
+			for(ProjectSubBarcodeEntity bc:searchBarcodeList){
+				projectIdInSet.add(bc.getMainId());
+				subIdInSet.add(bc.getSubId());
+			}
+			addParam.put("IN_main.uuid", StringUtils.join(projectIdInSet, ","));
+			addParam.put("IN_uuid", StringUtils.join(subIdInSet, ","));
+		}
+		
 		QueryRequest<ProjectSubEntity> qr = getQueryRequest(request, addParam);
 		ActionResultModel<ProjectSubEntity> arm =  execDetailQuery(request,qr, baseService);
 		List<ProjectSubEntity> subList = arm.getRecords();
@@ -211,7 +241,7 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		for(ProjectSubEntity sub : subList){
 			subBarcodelist = barcodeMap.get(sub.getUuid());
 			if(sub.getMain().getReceiveType()!=null&&sub.getMain().getReceiveType().equals(ProjectInfoEntity.receiveType_no)
-					&&sub.getReceiveTime()==null){
+					&&sub.getReceiveTime()==null&&sub.getActualAmount()!=null&&sub.getActualAmount()!=0){
 				sub.setReceiveTime(new Date());
 			}
 			if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique&&sub.getPlanAmount()>1){//唯一
@@ -252,8 +282,16 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 			}
 //			System.out.println(sub.getUuid()+">>"+sub.getSurplusAmount()+">>>>>>>>>>>>"+subActualMap.get(sub.getUuid()));
 		}
+		if(checkVal!=null&&checkVal.equals("1")){//查询条码为空
+			List<ProjectSubEntity> barcodeNullList = new ArrayList<>();
+			for(ProjectSubEntity sub:resultList){
+				if(StringUtils.isEmpty(sub.getBarcode())){
+					barcodeNullList.add(sub);
+				}
+			}
+			resultList = barcodeNullList;
+		}
 		arm.setRecords(resultList);
-		String mainId = request.getParameter("search_LIKE_main.uuid");
 		if(StringUtils.isNotEmpty(mainId)){
 			arm.setTotal(resultList.size());
 		}

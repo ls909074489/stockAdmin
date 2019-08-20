@@ -182,7 +182,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 						sub.setCreatorname(user.getUsername());
 						sub.setCreatetime(new Date());
 //						sub.setLimitCount(sub.getMaterial().getLimitCount());
-						sub.setActualAmount(sub.getPlanAmount());
+						sub.setActualAmount(0l);//sub.getPlanAmount()
 						addList.add(sub);
 					}else{
 						updateList.add(sub);
@@ -215,9 +215,9 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 						subEntity.setMaterial(sub.getMaterial());
 						subEntity.setLimitCount(sub.getLimitCount());
 						subEntity.setPlanAmount(sub.getPlanAmount());
-						if(entity.getReceiveType().equals(ProjectInfoEntity.receiveType_no)){
-							subEntity.setActualAmount(subEntity.getPlanAmount());
-						}
+//						if(entity.getReceiveType().equals(ProjectInfoEntity.receiveType_no)){
+//							subEntity.setActualAmount(subEntity.getPlanAmount());
+//						}
 						subEntity.setMemo(sub.getMemo());
 						subEntity.setWarningTime(sub.getWarningTime());
 					}
@@ -331,7 +331,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 										throw new ServiceException("第" + (rowNum + 1) + "行计划数量不为有效数字");
 									}
 								}
-								entity.setActualAmount(entity.getPlanAmount());
+								entity.setActualAmount(0l);//entity.getPlanAmount()
 								
 								entity.setMaterialUnit(ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("materialUnit"))));
 								entity.setMemo(ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("memo"))));
@@ -412,7 +412,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 										throw new ServiceException("第" + (rowNum + 1) + "行计划数量不为有效数字");
 									}
 								}
-								entity.setActualAmount(entity.getPlanAmount());
+								entity.setActualAmount(0l);//entity.getPlanAmount()
 								
 								entity.setMaterialUnit(ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("materialUnit"))));
 								entity.setMemo(ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("memo"))));
@@ -507,7 +507,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 						sub.setCreatorname(user.getUsername());
 						sub.setCreatetime(new Date());
 						sub.setLimitCount(sub.getMaterial().getLimitCount());
-						sub.setActualAmount(sub.getPlanAmount());
+						sub.setActualAmount(0l);//sub.getPlanAmount()
 						addList.add(sub);
 						sub.setMain(savedEntity);
 						sub.setMid(savedEntity.getUuid());

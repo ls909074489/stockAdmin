@@ -452,8 +452,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 	
 	public ActionResultModel<ProjectSubEntity> checkBarcode(String newBarcode, String subId) {
 		ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity> ();
-//		List<ProjectSubEntity> subList = dao.findByBarcode("\""+newBarcode+"\"");
-		List<ProjectSubBarcodeEntity> searchBarcodeList = projectSubBarcodeService.findLikeBarcode(newBarcode);
+		List<ProjectSubBarcodeEntity> searchBarcodeList = projectSubBarcodeService.findLikeBarcode(null,newBarcode);
 		if(CollectionUtils.isEmpty(searchBarcodeList)){
 			arm.setSuccess(true);
 			arm.setMsg("没有重复的条码");
