@@ -57,12 +57,12 @@ th,td{
 					<button id="yy-btn-temp-receive" class="btn blue btn-sm">
 						<i class="fa fa-save"></i> 暂存收货
 					</button>
-					<button id="yy-btn-confrim-receive" class="btn blue btn-sm">
+					<!-- <button id="yy-btn-confrim-receive" class="btn blue btn-sm">
 						<i class="fa fa-check"></i> 确认收货
 					</button>
 					<button id="yy-btn-cancel-receive" class="btn blue btn-sm">
 						<i class="fa fa-check"></i> 撤销收货
-					</button>
+					</button> -->
 					<button id="yy-btn-submit" class="btn yellow btn-sm btn-info">
 						<i class="fa fa-send"></i> 提交
 					</button>
