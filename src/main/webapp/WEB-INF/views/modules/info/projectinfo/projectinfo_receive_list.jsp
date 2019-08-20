@@ -49,7 +49,7 @@
 							</th>
 							<th>操作</th>
 							<th>单据状态</th>
-							<th>收货状态</th>
+							<!-- <th>收货状态</th> -->
 							<th>项目号</th>
 							<th>项目名称</th>
 							<th>仓库</th>
@@ -94,7 +94,7 @@
 					return YYDataUtils.getEnumName("BillStatus", data);
 				},
 				orderable : false
-			},{
+			}/* ,{
 				data : "receiveType",
 				width : "60",
 				className : "center",
@@ -102,7 +102,7 @@
 					return YYDataUtils.getEnumName("ReceiveStatus", data);
 				},
 				orderable : false
-			},{
+			} */,{
 				data : "code",
 				width : "100",
 				className : "center",

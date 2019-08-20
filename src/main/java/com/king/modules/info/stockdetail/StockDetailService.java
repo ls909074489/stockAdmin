@@ -305,9 +305,6 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			stream.setStockDetailId(detail.getUuid());
 			stockStreamService.doAdd(stream);//添加库存流水
 			
-//			if(projectInfo.getReceiveType().equals(ProjectInfoEntity.receiveType_yes)){//已收货
-//				changeHasBorrw(projectInfo.getUuid(),sub);
-//			}
 			if(receiveFLag){//没有借料，直接增加库存
 				ProjectSubEntity projectSub = projectSubService.getOne(sub.getSub().getUuid());
 				projectSub.setSurplusAmount(projectSub.getSurplusAmount()+sub.getReceiveAmount());

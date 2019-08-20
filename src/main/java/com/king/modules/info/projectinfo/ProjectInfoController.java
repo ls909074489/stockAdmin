@@ -262,6 +262,14 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 		return arm;
 	}
 	
+	@RequestMapping(value = "/saveSubReceive")
+	@ResponseBody
+	public ActionResultModel<ProjectInfoEntity> saveSubReceive(ServletRequest request,ProjectReceiveVo vo) {
+		ActionResultModel<ProjectInfoEntity> arm = new ActionResultModel<ProjectInfoEntity>();
+		arm.setSuccess(true);
+		return receiveService.saveSubReceive(vo);
+	}
+	
 	/**
 	 * 取消收货
 	 * @param request

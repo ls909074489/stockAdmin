@@ -79,6 +79,9 @@ public class ProjectReceiveService extends BaseServiceImpl<ProjectReceiveEntity,
 		return new ArrayList<ProjectReceiveEntity>();
 	}
 
+	public List<ProjectReceiveEntity> findBySubId(String subId){
+		return dao.findBySubId(subId);
+	}
 	
 	
 	/**
@@ -116,6 +119,7 @@ public class ProjectReceiveService extends BaseServiceImpl<ProjectReceiveEntity,
 	 * @param subList
 	 * @return
 	 */
+	@Deprecated
 	@Transactional
 	public ActionResultModel<ProjectInfoEntity> confirmReceive(ProjectInfoEntity entity,
 			List<ProjectReceiveVo> subList) {
@@ -157,6 +161,94 @@ public class ProjectReceiveService extends BaseServiceImpl<ProjectReceiveEntity,
 		return arm;
 	}
 	
+	
+	@Transactional
+	public ActionResultModel<ProjectInfoEntity> saveSubReceive(ProjectReceiveVo sub) {
+		ActionResultModel<ProjectInfoEntity> arm = new ActionResultModel<ProjectInfoEntity>();
+		ProjectSubEntity subEntity = subService.getOne(sub.getUuid());
+		if(subEntity.getSubReceiveType()!=null&&subEntity.getSubReceiveType().equals(ProjectInfoEntity.receiveType_yes)){
+			arm.setSuccess(false);
+			arm.setMsg("已确认收货，不能保存，请单独添加物料收货明细");
+			return arm;
+		}
+
+		List<ProjectReceiveEntity>  receiveList = findBySubId(sub.getUuid());
+		if(CollectionUtils.isEmpty(receiveList)){
+			receiveList = new ArrayList<>();
+			ProjectSubBaseEntity subBase = null;
+			subEntity.setActualAmount(sub.getActualAmount());
+			subEntity.setReceiveTime(sub.getReceiveTime());
+			subEntity.setReceiveMemo(sub.getMemo());
+			subEntity.setWarningTime(sub.getWarningTime());
+		
+			ProjectReceiveEntity receive = new ProjectReceiveEntity();
+			receive.setMain(subEntity.getMain());
+			subBase = new ProjectSubBaseEntity();
+			subBase.setUuid(sub.getUuid());
+			receive.setSub(subBase);
+			receive.setMaterial(subEntity.getMaterial());
+			receive.setReceiveAmount(subEntity.getActualAmount());
+			receive.setReceiveType(ProjectReceiveEntity.receiveType_add);
+			receive.setReceiveTime(sub.getReceiveTime());
+			receive.setMemo(sub.getMemo());
+			receive.setWarningTime(sub.getWarningTime());
+			
+			receiveList.add(doAdd(receive));
+			
+			if(subEntity.getActualAmount()>=subEntity.getPlanAmount()){
+				subEntity.setSubReceiveType(ProjectInfoEntity.receiveType_yes);
+			}
+			
+			stockDetailService.incrStockDetail(subEntity.getMain(), receiveList,true);
+		}else if(receiveList.size()==1){
+			subEntity.setActualAmount(sub.getActualAmount());
+			subEntity.setReceiveTime(sub.getReceiveTime());
+			subEntity.setReceiveMemo(sub.getMemo());
+			subEntity.setWarningTime(sub.getWarningTime());
+			if(subEntity.getActualAmount()>=subEntity.getPlanAmount()){
+				subEntity.setSubReceiveType(ProjectInfoEntity.receiveType_yes);
+			}
+			
+			ProjectReceiveEntity receiveEntity = receiveList.get(0);
+			receiveEntity.setReceiveAmount(sub.getActualAmount());
+			receiveEntity.setReceiveTime(sub.getReceiveTime());
+			receiveEntity.setMemo(sub.getMemo());
+			receiveEntity.setWarningTime(sub.getWarningTime());
+			
+			List<String> subIdList = new ArrayList<>();
+			subIdList.add(sub.getUuid());
+			List<StockStreamEntity> streamList = streamService.findReceiveByProjectSubIds(subIdList);
+			long diffVal = sub.getActualAmount()-receiveEntity.getReceiveAmount();
+			if(CollectionUtils.isNotEmpty(streamList)){
+				if(diffVal>0){
+					StockStreamEntity stream = streamList.get(0);
+					stream.setTotalAmount(stream.getTotalAmount()+diffVal);
+					stream.setSurplusAmount(stream.getSurplusAmount()+diffVal);
+					stream.setOccupyAmount(stream.getOccupyAmount()+diffVal);
+					stream.setActualAmount(0l);
+				}else if(diffVal==0){
+					//相等不改
+				}else{
+					StockStreamEntity stream = streamList.get(0);
+					if(stream.getSurplusAmount()>=sub.getActualAmount()){
+						stream.setTotalAmount(stream.getTotalAmount()+diffVal);
+						stream.setSurplusAmount(stream.getSurplusAmount()+diffVal);
+						stream.setOccupyAmount(stream.getOccupyAmount()+diffVal);
+						stream.setActualAmount(0l);
+					}else{
+						throw new ServiceException("收货流水剩余数量不足");
+					}
+				}
+			}
+		}else{
+			arm.setSuccess(false);
+			arm.setMsg("已有多条收货记录，请单独添加物料收货明细");
+			return arm;
+		}
+		arm.setSuccess(true);
+		arm.setMsg("操作成功");
+		return arm;
+	}
 	
 	@Transactional
 	public ActionResultModel<ProjectInfoEntity> cancelReceive(ProjectInfoEntity vo) {
@@ -232,7 +324,6 @@ public class ProjectReceiveService extends BaseServiceImpl<ProjectReceiveEntity,
 		}
 		return new ActionResultModel<>(true, "保存成功");
 	}
-
 
 	
 }

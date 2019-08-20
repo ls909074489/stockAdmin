@@ -99,6 +99,9 @@ public class ProjectSubEntity extends BaseEntity {
 	@Column()
 	private Date warningTime;
 
+	@MetaData(value = "收货类型 0：未完成  1：已完成")
+	@Column(length = 2)
+	private String subReceiveType="0";
 	
 	@Transient
 	private String materialId;
@@ -351,6 +354,13 @@ public class ProjectSubEntity extends BaseEntity {
 	public void setBarcodeUuid(String barcodeUuid) {
 		this.barcodeUuid = barcodeUuid;
 	}
-	
+
+	public String getSubReceiveType() {
+		return subReceiveType;
+	}
+
+	public void setSubReceiveType(String subReceiveType) {
+		this.subReceiveType = subReceiveType;
+	}
 	
 }

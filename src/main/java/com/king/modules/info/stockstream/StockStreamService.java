@@ -107,6 +107,11 @@ public class StockStreamService extends BaseServiceImpl<StockStreamEntity,String
 		return dao.findByProjectSubIds(subIdList);
 	}
 
+	public List<StockStreamEntity> findReceiveByProjectSubIds(List<String> subIdList) {
+		return dao.findReceiveByProjectSubIds(subIdList,StockStreamEntity.BILLTYPE_RECEIVE);
+	}
+	
+	
 	@Transactional
 	public void updateSourceBillCode(String sourceBillCode,String sourceBillId) {
 		dao.updateSourceBillCode(sourceBillCode,sourceBillId);

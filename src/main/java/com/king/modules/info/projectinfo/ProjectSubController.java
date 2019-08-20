@@ -240,7 +240,7 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		List<ProjectSubBarcodeEntity> subBarcodelist = null;
 		for(ProjectSubEntity sub : subList){
 			subBarcodelist = barcodeMap.get(sub.getUuid());
-			if(sub.getMain().getReceiveType()!=null&&sub.getMain().getReceiveType().equals(ProjectInfoEntity.receiveType_no)
+			if(sub.getSubReceiveType()!=null&&sub.getSubReceiveType().equals(ProjectInfoEntity.receiveType_no)
 					&&sub.getReceiveTime()==null&&sub.getActualAmount()!=null&&sub.getActualAmount()!=0){
 				sub.setReceiveTime(new Date());
 			}

@@ -57,4 +57,7 @@ public interface StockStreamDao extends IBaseDAO<StockStreamEntity,String> {
 	@Query("from StockStreamEntity where sourceId=? and status=1 order by createtime")
 	List<StockStreamEntity> findBySourceId(String sourceId);
 
+	@Query("from StockStreamEntity where projectSubId in ?1 and billType=?2 and status=1")
+	List<StockStreamEntity> findReceiveByProjectSubIds(List<String> subIdList, String billtypeReceive);
+
 }

@@ -300,7 +300,7 @@ th,td{
 				},
 				orderable : false
 			},{
-				data : "main.receiveType",
+				data : "subReceiveType",
 				width : "60",
 				className : "center",
 				render : function(data, type, full) {
@@ -408,7 +408,7 @@ th,td{
 						data="";
 					}
 					if(full.firstRow=="1"){
-						if(full.main.receiveType=="1"){
+						if(full.subReceiveType=="1"){
 							return "<a onclick=\"showReceiveLog(\'"+full.uuid+"\');\">"+data+"</a>";
 						}else{
 							return '<input class="form-control" value="'+ data + '" name="actualAmount"  onchange="changeActualAmount(this);">';
@@ -427,7 +427,7 @@ th,td{
 						data="";
 					}
 					if(full.firstRow=="1"){
-						if(full.main.receiveType=="1"){
+						if(full.subReceiveType=="1"){
 							return data;
 						}else{
 							return '<input class="form-control Wdate" value="'+ data + '" name="receiveTime" onClick="WdatePicker()">';
@@ -446,7 +446,7 @@ th,td{
 						data="";
 					}
 					if(full.firstRow=="1"){
-						if(full.main.receiveType=="1"){
+						if(full.subReceiveType=="1"){
 							return data;
 						}else{
 							return '<input class="form-control Wdate" value="'+ data + '" name="warningTime" onClick="WdatePicker()">';
@@ -465,7 +465,7 @@ th,td{
 						data="";
 					}
 					if(full.firstRow=="1"){
-						if(full.main.receiveType=="1"){
+						if(full.subReceiveType=="1"){
 							return data;
 						}else{
 							return '<input class="form-control" value="'+data+'" name="memo">';
@@ -486,10 +486,10 @@ th,td{
 							//btnAble ='disabled="disabled" title="已审核不能操作" ';
 						}
 						var appendReceiveStr = "";
-						if(full.main.receiveType=="1"){
+						if(full.subReceiveType=="1"){
 							appendReceiveStr = '<button class="btn btn-xs btn-info" onclick="appendLog(\''+data+'\');" data-rel="tooltip" title="添加收货记录"><i class="fa fa-edit"></i>添加收货记录</button>';
 						}else{
-							appendReceiveStr = '<button class="btn btn-xs btn-info" disabled="disabled"  data-rel="tooltip" title="已收货才能追加收货记录"><i class="fa fa-edit"></i>追加收货记录</button>';
+							appendReceiveStr = '<button class="btn btn-xs btn-info" onclick="saveSubReceive(this);"  data-rel="tooltip" title="确认收货"><i class="fa fa-edit"></i>确认收货</button>';
 						}
 						return "<div class='yy-btn-actiongroup'>"
 						+ appendReceiveStr
@@ -1335,6 +1335,40 @@ th,td{
 				shade : 0.8,
 				area : [ '800px', '250px' ],
 				content : '${ctx}/info/receive/toAppendLog?subId='+subId
+			});
+		}
+		
+		//子表确认收货
+		function saveSubReceive(t){
+			//var newBarcodeVal = $(t).closest("tr").find("input[name='actualAmount']").val();
+			var row = $(t).closest("tr");
+			var rowData = _tableList.row(row).data();
+			var tr_hwcode = rowData.material.hwcode;
+			if(validateRowsData(rowData,getRowValidatorConfirm())==false){
+				return false;
+			}
+			console.info(rowData.actualAmount);
+			console.info(rowData.receiveTime);
+			console.info(rowData.warningTime);
+			console.info(rowData.memo);
+
+			$.ajax({
+				type : "POST",
+				data :{"newBarcode": newBarcodeVal,"subId":$(t).attr("rowUuid")},
+				url : "${serviceurl}/updateBarcode",
+				async : true,
+				dataType : "json",
+				success : function(data) {
+					if(data.success){
+						YYUI.succMsg(data.msg);
+						onQuery();
+					}else{
+						YYUI.promMsg(data.msg);
+					}
+				},
+				error : function(data) {
+					YYUI.promMsg("操作失败，请联系管理员");
+				}
 			});
 		}
 		
