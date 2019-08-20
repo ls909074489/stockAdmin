@@ -142,6 +142,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 			if(bc==null){
 				throw new ServiceException("没有对应的条码明细");
 			}
+			bc.setBarcode(newBarcode);
 		}else{//扫码时出库
 			String streamId = stockDetailService.descStockDetail(sub);
 			

@@ -145,7 +145,7 @@ th,td{
 						<label for="custom_search_barcode" class="control-label">条码&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
 						<input type="text" autocomplete="on" name="custom_search_barcode" id="custom_search_barcode" class="form-control input-sm">
 						
-						<input type="text" name="checkVal" id="checkVal" class="form-control input-sm">
+						<input type="hidden" name="checkVal" id="checkVal" class="form-control input-sm">
 	
 						<button id="yy-btn-search" type="button" class="btn btn-sm btn-info">
 							<i class="fa fa-search"></i>查询
@@ -1343,19 +1343,27 @@ th,td{
 			//var newBarcodeVal = $(t).closest("tr").find("input[name='actualAmount']").val();
 			var row = $(t).closest("tr");
 			var rowData = _tableList.row(row).data();
-			var tr_hwcode = rowData.material.hwcode;
-			if(validateRowsData(rowData,getRowValidatorConfirm())==false){
+			if(validateRowsData(row,getRowValidatorConfirm())==false){
 				return false;
 			}
-			console.info(rowData.actualAmount);
-			console.info(rowData.receiveTime);
-			console.info(rowData.warningTime);
-			console.info(rowData.memo);
+			//if(_tableList.row(rowList[i]).data().firstRow=="1"&&!validateRowData(rowList[i],validator)){
+			
+			console.info(rowData.uuid);	
+			console.info($(t).closest("tr").find("input[name='actualAmount']").val());
+			console.info($(t).closest("tr").find("input[name='receiveTime']").val());
+			console.info($(t).closest("tr").find("input[name='warningTime']").val());
+			console.info($(t).closest("tr").find("input[name='memo']").val());
 
 			$.ajax({
 				type : "POST",
-				data :{"newBarcode": newBarcodeVal,"subId":$(t).attr("rowUuid")},
-				url : "${serviceurl}/updateBarcode",
+				data :{
+					"uuid": rowData.uuid,
+					"actualAmount":$(t).closest("tr").find("input[name='actualAmount']").val(),
+					"receiveTime":$(t).closest("tr").find("input[name='receiveTime']").val(),
+					"warningTime":$(t).closest("tr").find("input[name='warningTime']").val(),
+					"memo":$(t).closest("tr").find("input[name='memo']").val()
+				},
+				url : "${servicemainurl}/saveSubReceive",
 				async : true,
 				dataType : "json",
 				success : function(data) {

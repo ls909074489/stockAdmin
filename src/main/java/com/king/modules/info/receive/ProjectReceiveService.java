@@ -210,11 +210,6 @@ public class ProjectReceiveService extends BaseServiceImpl<ProjectReceiveEntity,
 			}
 			
 			ProjectReceiveEntity receiveEntity = receiveList.get(0);
-			receiveEntity.setReceiveAmount(sub.getActualAmount());
-			receiveEntity.setReceiveTime(sub.getReceiveTime());
-			receiveEntity.setMemo(sub.getMemo());
-			receiveEntity.setWarningTime(sub.getWarningTime());
-			
 			List<String> subIdList = new ArrayList<>();
 			subIdList.add(sub.getUuid());
 			List<StockStreamEntity> streamList = streamService.findReceiveByProjectSubIds(subIdList);
@@ -240,6 +235,10 @@ public class ProjectReceiveService extends BaseServiceImpl<ProjectReceiveEntity,
 					}
 				}
 			}
+			receiveEntity.setReceiveAmount(sub.getActualAmount());
+			receiveEntity.setReceiveTime(sub.getReceiveTime());
+			receiveEntity.setMemo(sub.getMemo());
+			receiveEntity.setWarningTime(sub.getWarningTime());
 		}else{
 			arm.setSuccess(false);
 			arm.setMsg("已有多条收货记录，请单独添加物料收货明细");
