@@ -93,15 +93,19 @@ public class ProjectReceiveService extends BaseServiceImpl<ProjectReceiveEntity,
 	@Transactional
 	public ActionResultModel<ProjectInfoEntity> tempReceive(ProjectInfoEntity entity, List<ProjectReceiveVo> subList) {
 		ActionResultModel<ProjectInfoEntity> arm = new ActionResultModel<ProjectInfoEntity>();
-		ProjectInfoEntity obj = mainService.getOne(entity.getUuid());
-		if(obj.getReceiveType()!=null&&obj.getReceiveType().equals(ProjectInfoEntity.receiveType_yes)){
-			arm.setSuccess(false);
-			arm.setMsg("已确认收货，不能保存，请单独添加物料收货明细");
-			return arm;
-		}
+//		ProjectInfoEntity obj = mainService.getOne(entity.getUuid());
+//		if(obj.getReceiveType()!=null&&obj.getReceiveType().equals(ProjectInfoEntity.receiveType_yes)){
+//			arm.setSuccess(false);
+//			arm.setMsg("已确认收货，不能保存，请单独添加物料收货明细");
+//			return arm;
+//		}
 		ProjectSubEntity subEntity = null;
 		for(ProjectReceiveVo sub:subList){
 			subEntity = subService.getOne(sub.getUuid());
+			if(subEntity.getSubReceiveType()!=null&&subEntity.getSubReceiveType().equals(ProjectInfoEntity.receiveType_yes)){
+				//已收货
+				continue;
+			}
 			subEntity.setActualAmount(sub.getActualAmount());
 			subEntity.setReceiveTime(sub.getReceiveTime());
 			subEntity.setWarningTime(sub.getWarningTime());
@@ -125,11 +129,11 @@ public class ProjectReceiveService extends BaseServiceImpl<ProjectReceiveEntity,
 			List<ProjectReceiveVo> subList) {
 		ActionResultModel<ProjectInfoEntity> arm = new ActionResultModel<ProjectInfoEntity>();
 		ProjectInfoEntity obj = mainService.getOne(entity.getUuid());
-		if(obj.getReceiveType()!=null&&obj.getReceiveType().equals(ProjectInfoEntity.receiveType_yes)){
-			arm.setSuccess(false);
-			arm.setMsg("已确认收货，不能保存，请单独添加物料收货明细");
-			return arm;
-		}
+//		if(obj.getReceiveType()!=null&&obj.getReceiveType().equals(ProjectInfoEntity.receiveType_yes)){
+//			arm.setSuccess(false);
+//			arm.setMsg("已确认收货，不能保存，请单独添加物料收货明细");
+//			return arm;
+//		}
 		obj.setReceiveType(ProjectInfoEntity.receiveType_yes);
 		ProjectSubEntity subEntity = null;
 		ProjectReceiveEntity receive = null;
@@ -137,6 +141,11 @@ public class ProjectReceiveService extends BaseServiceImpl<ProjectReceiveEntity,
 		List<ProjectReceiveEntity> receiveList = new ArrayList<>();
 		for(ProjectReceiveVo sub:subList){
 			subEntity = subService.getOne(sub.getUuid());
+			if(subEntity.getSubReceiveType()!=null&&subEntity.getSubReceiveType().equals(ProjectInfoEntity.receiveType_yes)){
+				//已收货
+				continue;
+			}
+			
 			subEntity.setActualAmount(sub.getActualAmount());
 			subEntity.setReceiveTime(sub.getReceiveTime());
 			subEntity.setReceiveMemo(sub.getMemo());
@@ -249,6 +258,7 @@ public class ProjectReceiveService extends BaseServiceImpl<ProjectReceiveEntity,
 		return arm;
 	}
 	
+	@Deprecated
 	@Transactional
 	public ActionResultModel<ProjectInfoEntity> cancelReceive(ProjectInfoEntity vo) {
 		ActionResultModel<ProjectInfoEntity> arm = new ActionResultModel<ProjectInfoEntity>();
@@ -302,8 +312,7 @@ public class ProjectReceiveService extends BaseServiceImpl<ProjectReceiveEntity,
 		if(entity.getReceiveTime()==null){
 			entity.setReceiveTime(new Date());
 		}
-		ProjectInfoEntity obj = sub.getMain();
-		if(obj.getReceiveType()!=null&&!obj.getReceiveType().equals(ProjectInfoEntity.receiveType_yes)){
+		if(sub.getSubReceiveType()==null||!sub.getSubReceiveType().equals(ProjectInfoEntity.receiveType_yes)){
 			arm.setSuccess(false);
 			arm.setMsg("未确认收货，不能追加收货记录");
 			return arm;

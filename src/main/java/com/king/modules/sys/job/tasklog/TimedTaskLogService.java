@@ -58,7 +58,7 @@ public class TimedTaskLogService extends BaseServiceImpl<TimedTaskLogEntity,Stri
 	 * @param timedTaskLog
 	*/
 	public void resumeRequest(String[] pks) {
-		System.out.println("TimedTaskLogService.resumeRequest(old)");
+//		System.out.println("TimedTaskLogService.resumeRequest(old)");
 	} 
 
 	/**

@@ -45,7 +45,6 @@ public class DocumentsController extends BaseController<DocumentsEntity> {
 		String billcode = "";
 		try {
 			billcode = billCodeService.createBillCode(documentType, null);
-			System.out.println(Thread.currentThread().getName() + "号线程生成单据号：" + billcode + "。");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -90,7 +89,7 @@ public class DocumentsController extends BaseController<DocumentsEntity> {
 		try {
 			for (int i = 1; i <= 20; i++) {
 				String billcode = billCodeService.createBillCode(documentType, null);
-				System.out.println(Thread.currentThread().getName() + "号线程生成单据号：" + billcode + "。");
+//				System.out.println(Thread.currentThread().getName() + "号线程生成单据号：" + billcode + "。");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

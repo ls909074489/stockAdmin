@@ -2,6 +2,8 @@ package com.king.modules.info.stockdetail;
 
 import com.king.frame.dao.IBaseDAO;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -13,7 +15,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface StockDetailDao extends IBaseDAO<StockDetailEntity,String> {
 
-	@Query("from StockDetailEntity ur where ur.stock.uuid = ?1 and ur.material.uuid = ?2")
+	@Query("from StockDetailEntity ur where ur.stock.uuid = ?1 and ur.material.uuid = ?2 and ur.status=1")
 	StockDetailEntity findByStockAndMaterial(String stockId, String materialId);
+
+	@Query("from StockDetailEntity ur where ur.status=1 and updateType='1'")
+	List<StockDetailEntity> listUpdateDetail();
 
 }

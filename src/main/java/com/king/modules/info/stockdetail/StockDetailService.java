@@ -59,11 +59,11 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 	@Autowired
 	private StreamOrderLogService streamOrderLogService;
 	
-	
 	protected IBaseDAO<StockDetailEntity, String> getDAO() {
 		return dao;
 	}
 	
+	@Transactional
 	public StockDetailEntity findByStockAndMaterial(String stockId, String materialId) {
 		StockDetailEntity detail =  dao.findByStockAndMaterial(stockId, materialId);
 		if(detail == null){
@@ -79,6 +79,8 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			detail.setOccupyAmount(0l);
 			detail.setActualAmount(detail.getSurplusAmount()-detail.getOccupyAmount());
 			detail =  super.doAdd(detail);
+		}else{
+			detail.setUpdateType("1");
 		}
 		return detail;
 	}
@@ -446,7 +448,6 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 				//预占变负数
 				super.doUpdate(detail);
 				for(StockStreamEntity ss:subStreamList){
-					System.out.println(ss.getSurplusAmount()+">>>>>>>>>"+subAmount);
 					if(ss.getSurplusAmount()>=subAmount){//计算流水剩余的数量
 						subAmount = enoughStream(projectInfo,sub,ss, subAmount, log, logList);
 						break;
@@ -515,7 +516,6 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 		StreamProjectLogEntity log = null;
 		List<StockStreamEntity> subStreamList = stockStreamService.findSurplusBySubIdIn(sub.getUuid());
 		for(StockStreamEntity ss:subStreamList){
-			System.out.println(ss.getSurplusAmount()+">>>>>>>>>"+subAmount);
 			if(ss.getSurplusAmount()>=subAmount){//计算流水剩余的数量
 				subAmount = enoughStream(projectInfo,sub,ss, subAmount, log, logList);
 				break;
@@ -871,8 +871,10 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 	}
 	
 	@Override
+	@Transactional
 	public Iterable<StockDetailEntity> save(Iterable<StockDetailEntity> entities) throws ServiceException {
-		throw new ServiceException("不允许操作");
+//		throw new ServiceException("不允许操作");
+		return super.save(entities);
 	}
 	@Override
 	public void deleteAll() throws ServiceException {
@@ -917,6 +919,10 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 	@Override
 	public void doDelete(String[] pks) throws ServiceException {
 		throw new ServiceException("不允许操作");
+	}
+
+	public List<StockDetailEntity> listUpdateDetail() {
+		return dao.listUpdateDetail();
 	}
 
 	

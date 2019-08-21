@@ -160,14 +160,9 @@ public class DeviceInfoService extends BaseServiceImpl<DeviceInfoEntity,String> 
 		String requestId = "123456";//UUID.randomUUID().toString();
 		int expireTime = 3000;
 		if(redisTool.tryGetDistributedLock(lockKey, requestId, expireTime)){
-			System.out.println("get lock>>>>>>>>");
 			count++;
-			System.out.println("count>>>>>>>>>>>>>>>"+count);
 			boolean isRelease = redisTool.releaseDistributedLock(lockKey, requestId);
-			
-			System.out.println("release lock>>>>>>>>>"+isRelease);
 		}else{
-			System.out.println("lock>>>>>>>>");
 		}
 		return true;
 	}

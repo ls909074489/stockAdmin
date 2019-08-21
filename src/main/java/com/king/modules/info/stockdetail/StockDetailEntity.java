@@ -1,6 +1,7 @@
 package com.king.modules.info.stockdetail;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -42,6 +43,26 @@ public class StockDetailEntity extends BaseEntity {
 	private MaterialBaseEntity material;
 	
 
+	@MetaData(value = "总数量")
+	@Column
+	private Long totalCount=0l;
+
+	@MetaData(value = "剩余数量")
+	@Column
+	private Long surplusCount=0l;
+
+	@MetaData(value = "预占数量")
+	@Column
+	private Long occupyCount=0l;
+
+	@MetaData(value = "实际数量/可用数量")
+	@Column
+	private Long actualCount=0l;
+	
+	@MetaData(value = "实际数量/可用数量")
+	@Column(length=1)
+	private String updateType="1";
+	
 	@MetaData(value = "总数量")
 	@Transient
 	private Long totalAmount=0l;
@@ -105,6 +126,46 @@ public class StockDetailEntity extends BaseEntity {
 
 	public void setActualAmount(Long actualAmount) {
 		this.actualAmount = actualAmount;
+	}
+
+	public Long getTotalCount() {
+		return totalCount;
+	}
+
+	public void setTotalCount(Long totalCount) {
+		this.totalCount = totalCount;
+	}
+
+	public Long getSurplusCount() {
+		return surplusCount;
+	}
+
+	public void setSurplusCount(Long surplusCount) {
+		this.surplusCount = surplusCount;
+	}
+
+	public Long getOccupyCount() {
+		return occupyCount;
+	}
+
+	public void setOccupyCount(Long occupyCount) {
+		this.occupyCount = occupyCount;
+	}
+
+	public Long getActualCount() {
+		return actualCount;
+	}
+
+	public void setActualCount(Long actualCount) {
+		this.actualCount = actualCount;
+	}
+
+	public String getUpdateType() {
+		return updateType;
+	}
+
+	public void setUpdateType(String updateType) {
+		this.updateType = updateType;
 	}
 
 }

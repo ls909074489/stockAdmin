@@ -540,10 +540,10 @@ th,td{
 				cancelReceive();
 			});
 			$("#yy-btn-check-null").bind("click", function() {
-				checkNull();
+				checkNullBarcode();
 			});
 			$("#yy-btn-check-repeat").bind("click", function() {
-				checkRepeat();
+				checkRepeatBarcode();
 			});
 			
 			
@@ -1156,7 +1156,7 @@ th,td{
 			window.open('${servicemainurl}/exportCsByIds?pks='+t_projectId,"_blank");
 		}
 		//一键查空
-		function checkNull(){
+		function checkNullBarcode(){
 			var t_projectId = $("#search_LIKE_mainId").val();
 			console.info(">>>>>>>>>>>>"+t_projectId);
 			if(t_projectId==null||t_projectId==''){
@@ -1174,8 +1174,9 @@ th,td{
 		}
 		
 		//一键查重
-		function checkRepeat(){
-			onReset();
+		function checkRepeatBarcode(){
+			console.info("checkRepeatBarcode>>>>>>>>>>>>>>>>");
+			//onReset();
 			$("#checkVal").val("2");
 			onQuery();
 			$("#checkVal").val("");

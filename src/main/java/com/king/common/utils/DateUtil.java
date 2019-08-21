@@ -663,7 +663,6 @@ public final class DateUtil {
 		calendar.setTime(date);
 		int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);// get 和 set
 															// 的字段数字，指示一个星期中的某天。
-		System.out.println("dayOfWeek:" + dayOfWeek);
 		return dayNames[dayOfWeek - 1];
 	}
 
@@ -1058,23 +1057,5 @@ public final class DateUtil {
 		return now.getTime();
 	}
 
-	// 测试
-	public static void main(String[] args) {
-		// Date d = timestampToDate("1460649600000");
-		// System.out.println("DateUtil.main()"+getDateTime(d));
-
-		Date d = null;
-		String s = "2015-06-13 20:00:00.3";
-		d = timestampStrToDate(s);
-		System.out.println("DateUtil.main()" + d);
-		System.out.println("DateUtil.main()" + d.getTime());
-
-		s = "2015-06-13 20:00:00.005";
-		d = timestampStrToDate(s);
-		System.out.println("DateUtil.main()" + d.getTime());
-
-		System.out.println("DateUtil.main()" + formatMSTime(171735000L).toString());
-
-	}
 
 }

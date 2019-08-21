@@ -328,4 +328,10 @@ ALTER TABLE yy_project_sub DROP COLUMN barcodejson;
 
 INSERT INTO `yy_parameter`(`uuid`, `status`, `defaultvalue`, `description`, `groudcode`, `isshow`, `paramtercode`, `paramtername`, `paramtertype`, `paramtervalue`, `showorder`, `sys`, `valuerange`, `create_time`, `creator`, `modifier`, `modify_time`, `createtime`, `creatorname`, `modifiername`, `modifytime`, `ispreset`, `ts`) VALUES ('46860851-dd8c-4778-9a5f-a1fc7604fd20', 1, NULL, '参数值0表示不导入，1表示导入', 'sys', b'1', 'isImpInTK', '物料清单导入是否包括TK物料', '', '0', NULL, b'0', '', NULL, '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, '2019-08-09 22:04:23', '超级系统管理员', NULL, NULL, '0', '2019-08-09 22:04:23');
 
+2019/8/21
+ALTER table yy_stock_detail drop COLUMN total_amount;
+ALTER table yy_stock_detail drop COLUMN surplus_amount;
+ALTER table yy_stock_detail drop COLUMN occupy_amount;
+ALTER table yy_stock_detail drop COLUMN actual_amount;
 
+INSERT INTO `yy_parameter` (`uuid`, `status`, `defaultvalue`, `description`, `groudcode`, `isshow`, `paramtercode`, `paramtername`, `paramtertype`, `paramtervalue`, `showorder`, `sys`, `valuerange`, `create_time`, `creator`, `modifier`, `modify_time`, `createtime`, `creatorname`, `modifiername`, `modifytime`, `ispreset`, `ts`) VALUES ('90d36aca-e5bd-4796-94f9-0ee0880122d3', '1', NULL, '0:流水计算  1：同步库存', 'sys', '', 'syncStockDetail', '实时同步数据库', '', '1', NULL, '\0', '', NULL, '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, '2019-08-21 15:03:14', '超级系统管理员', NULL, NULL, '0', '2019-08-21 15:03:14');

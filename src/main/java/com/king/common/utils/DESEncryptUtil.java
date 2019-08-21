@@ -159,9 +159,9 @@ private static final String DES_ALGORITHM = "DES";
 			
 			DESEncryptUtil des=DESEncryptUtil.getInstanceContant();
 			String result = des.encryption(input, key);
-			System.out.println("原密码："+input);
-			System.out.println("加密后："+result);
-			System.out.println("加密后:"+des.decryption(result, key));
+//			System.out.println("原密码："+input);
+//			System.out.println("加密后："+result);
+//			System.out.println("加密后:"+des.decryption(result, key));
 			
 	}
 		
