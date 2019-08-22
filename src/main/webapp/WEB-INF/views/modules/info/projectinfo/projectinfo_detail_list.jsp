@@ -76,10 +76,10 @@ th,td{
 					<button id="yy-btn-unapprove-project" class="btn yellow btn-sm btn-info">
 						<i class="fa fa-reply"></i> 取消审核
 					</button>
-					<button id="yy-btn-check-null" class="btn yellow btn-sm btn-info">
+					<button id="yy-btn-check-null" class="btn green btn-sm btn-info">
 						<i class="fa fa-video-camera"></i> 一键查漏
 					</button>
-					<button id="yy-btn-check-repeat" class="btn yellow btn-sm btn-info">
+					<button id="yy-btn-check-repeat" class="btn green btn-sm btn-info">
 						<i class="fa fa-files-o"></i> 一键查重
 					</button>
 					
