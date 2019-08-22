@@ -4,12 +4,21 @@ delete from yy_project_receive;
 delete from yy_stream_log;
 delete from yy_stream_borrow;
 delete from yy_project_barcode;
+delete from yy_project_apply;
+delete from yy_project_barcode_log;
+delete from yy_order_sub;
+delete from yy_order_info;
+delete from yy_project_sub;
+delete from yy_project_info;
+
 update yy_project_info set billstatus=1,receive_type=0;
-update yy_project_sub set actual_amount=plan_amount;
+update yy_project_sub set sub_receive_type=0,actual_amount=plan_amount;
+
+
+
 
 
 alter table yy_device drop index barcode;  
-
 
 alter table yy_device add UNIQUE index idx_uni_barcode(barcode)
 
