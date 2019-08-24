@@ -302,7 +302,7 @@ public class ProjectReceiveService extends BaseServiceImpl<ProjectReceiveEntity,
 	
 	@Transactional
 	public ActionResultModel<ProjectReceiveEntity> saveReceiveLog(ProjectReceiveEntity entity) {
-		ActionResultModel<ProjectReceiveEntity> arm = new ActionResultModel<ProjectReceiveEntity>();
+//		ActionResultModel<ProjectReceiveEntity> arm = new ActionResultModel<ProjectReceiveEntity>();
 		ProjectSubEntity sub = subService.getOne(entity.getSubId());
 		ProjectSubBaseEntity subBase = new ProjectSubBaseEntity();
 		subBase.setUuid(sub.getUuid());
@@ -312,11 +312,11 @@ public class ProjectReceiveService extends BaseServiceImpl<ProjectReceiveEntity,
 		if(entity.getReceiveTime()==null){
 			entity.setReceiveTime(new Date());
 		}
-		if(sub.getSubReceiveType()==null||!sub.getSubReceiveType().equals(ProjectInfoEntity.receiveType_yes)){
-			arm.setSuccess(false);
-			arm.setMsg("未确认收货，不能追加收货记录");
-			return arm;
-		}
+//		if(sub.getSubReceiveType()==null||!sub.getSubReceiveType().equals(ProjectInfoEntity.receiveType_yes)){
+//			arm.setSuccess(false);
+//			arm.setMsg("未确认收货，不能追加收货记录");
+//			return arm;
+//		}
 		entity = doAdd(entity);
 		List<ProjectReceiveEntity> receiveList = new ArrayList<>();
 		if(entity.getReceiveType().equals(ProjectReceiveEntity.receiveType_add)){
@@ -330,7 +330,34 @@ public class ProjectReceiveService extends BaseServiceImpl<ProjectReceiveEntity,
 			receiveList.add(entity);
 			stockDetailService.descStockDetailOnReceive(sub.getMain(), receiveList);
 		}
+		Long receiveCount = getReceiveCount(sub.getUuid());
+		if(receiveCount>=sub.getPlanAmount()){
+			sub.setSubReceiveType(ProjectInfoEntity.receiveType_yes);
+		}else{
+			sub.setSubReceiveType(ProjectInfoEntity.receiveType_no);
+		}
 		return new ActionResultModel<>(true, "保存成功");
+	}
+
+	private Long getReceiveCount(String subId){
+		List<ProjectReceiveEntity> hasReceiveList = findBySubId(subId);
+		Long receiveCount = 0l;
+		for(ProjectReceiveEntity re:hasReceiveList){
+			receiveCount=receiveCount+re.getReceiveAmount();
+		}
+		return receiveCount;
+	}
+	
+	public ActionResultModel<ProjectReceiveEntity> checkReceiveCount(String subId, Long receiveAmount) {
+		ActionResultModel<ProjectReceiveEntity> arm = new ActionResultModel<ProjectReceiveEntity>();
+		Long receiveCount = getReceiveCount(subId);
+		ProjectSubEntity sub = subService.getOne(subId);
+		receiveCount = receiveCount+receiveAmount;
+		arm.setSuccess(true);
+		if(receiveCount>sub.getPlanAmount()){
+			arm.setSuccess(false);
+		}		
+		return arm;
 	}
 
 	

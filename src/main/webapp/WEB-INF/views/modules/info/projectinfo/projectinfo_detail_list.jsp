@@ -4,6 +4,7 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <c:set var="serviceurl" value="${ctx}/info/projectinfoSub"/>
 <c:set var="servicemainurl" value="${ctx}/info/projectinfo"/>
+<c:set var="receiveurl" value="${ctx}/info/receive"/>
 <html>
 <head>
 <title>项目明细</title>
@@ -54,22 +55,22 @@ th,td{
 					<button id="yy-btn-match" type="button" class="btn btn-sm btn-info">
 						<i class="fa fa-search"></i> 匹配
 					</button>
-					<button id="yy-btn-temp-receive" class="btn blue btn-sm">
+					<!-- <button id="yy-btn-temp-receive" class="btn blue btn-sm">
 						<i class="fa fa-save"></i> 暂存收货
 					</button>
-					<!-- <button id="yy-btn-confrim-receive" class="btn blue btn-sm">
+					<button id="yy-btn-confrim-receive" class="btn blue btn-sm">
 						<i class="fa fa-check"></i> 确认收货
 					</button>
 					<button id="yy-btn-cancel-receive" class="btn blue btn-sm">
 						<i class="fa fa-check"></i> 撤销收货
-					</button> -->
+					</button>
 					<button id="yy-btn-submit" class="btn yellow btn-sm btn-info">
 						<i class="fa fa-send"></i> 提交
 					</button>
 					<button id="yy-btn-unsubmit" class="btn yellow btn-sm btn-info">
 						<i class="fa fa-undo"></i> 撤销提交
 					</button>
-					
+					 -->
 					 <button id="yy-btn-approve-project" class="btn yellow btn-sm btn-info" type="button">
 						<i class="fa fa-check"></i> 审核
 					</button>
@@ -89,7 +90,7 @@ th,td{
 					</button>
 				</div>
 				<div class="row yy-searchbar form-inline">
-					<form id="yy-form-query">
+					<form id="yy-form-query" class="queryform">
 						<!-- <label for="search_LIKE_main.code" class="control-label">项目号&nbsp;&nbsp;&nbsp;&nbsp;</label>
 						<input type="text" autocomplete="on" name="search_LIKE_main.code"
 							id="search_LIKE_main.code" class="form-control input-sm">
@@ -181,11 +182,12 @@ th,td{
 							<th>物料名称</th>
 							<th>计划数量</th>	
 							<th>剩余数量</th>
+							<th>已收数量</th>
 							<th>收货数量</th>
 							<th>收货时间</th>
 							<th>预警时间</th>
 							<th>收货备注</th>	
-							<th>挪料</th>
+							<th>添加收货记录</th>
 						</tr>
 					</thead>
 					<tbody></tbody>
@@ -196,7 +198,7 @@ th,td{
 
 	<!-- 公用脚本 -->
 	<%@include file="/WEB-INF/views/common/listscript.jsp"%>
-	<%@include file="/WEB-INF/views/common/commonscript_approve.jsp"%>
+	<%@include file="/WEB-INF/views/common/commonscript_approve_simple.jsp"%>
 
 	<script type="text/javascript">
 		_isNumber = true;
@@ -400,6 +402,25 @@ th,td{
 				orderable : false
 			}, {
 				data : 'actualAmount',
+				width : "30",
+				className : "center",
+				orderable : false,
+				render : function(data, type, full) {
+					if(data==null){
+						data="";
+					}
+					if(full.firstRow=="1"){
+						var textStyle = "";
+						if(full.planAmount<=full.actualAmount){
+							textStyle = "color:#e02222;";
+						}
+						return "<a onclick=\"showReceiveLog(\'"+full.uuid+"\');\"><span style='"+textStyle+"'>"+data+"</span></a>";
+					}else{
+						return '';
+					}
+				}
+			}, {
+				data : 'receiveAmount',
 				width : "80",
 				className : "center",
 				orderable : false,
@@ -409,9 +430,9 @@ th,td{
 					}
 					if(full.firstRow=="1"){
 						if(full.subReceiveType=="1"){
-							return "<a onclick=\"showReceiveLog(\'"+full.uuid+"\');\">"+data+"</a>";
+							return "<a onclick=\"showReceiveLog(\'"+full.uuid+"\');\">"+full.actualAmount+"</a>";
 						}else{
-							return '<input class="form-control" value="'+ data + '" name="actualAmount"  onchange="changeActualAmount(this);">';
+							return '<input class="form-control" value="'+ data + '" name="receiveAmount"  onchange="changeReceiveAmount(this);">';
 						}
 					}else{
 						return '';
@@ -430,7 +451,7 @@ th,td{
 						if(full.subReceiveType=="1"){
 							return data;
 						}else{
-							return '<input class="form-control Wdate" value="'+ data + '" name="receiveTime" onClick="WdatePicker()">';
+							return '<input class="form-control Wdate" value="${curDate}" name="receiveTime" onClick="WdatePicker()">';
 						}
 					}else{
 						return '';
@@ -487,7 +508,13 @@ th,td{
 						}
 						var appendReceiveStr = "";
 						if(full.subReceiveType=="1"){
-							appendReceiveStr = '<button class="btn btn-xs btn-info" onclick="appendLog(\''+data+'\');" data-rel="tooltip" title="添加收货记录"><i class="fa fa-edit"></i>添加收货记录</button>';
+							console.info(full.planAmount+"========"+full.actualAmount);
+							console.info(full.planAmount<=full.actualAmount);
+							if(full.planAmount<=full.actualAmount){
+								appendReceiveStr = '<button class="btn btn-xs btn-info" onclick="appendLog(\''+data+'\');" data-rel="tooltip" title="修改收货记录"><i class="fa fa-edit"></i>修改收货记录</button>';
+							}else{
+								appendReceiveStr = '<button class="btn btn-xs btn-info" onclick="appendLog(\''+data+'\');" data-rel="tooltip" title="添加收货记录"><i class="fa fa-edit"></i>添加收货记录</button>';
+							}
 						}else{
 							appendReceiveStr = '<button class="btn btn-xs btn-info" onclick="saveSubReceive(this);"  data-rel="tooltip" title="确认收货"><i class="fa fa-edit"></i>确认收货</button>';
 						}
@@ -509,7 +536,7 @@ th,td{
 		}
 		
 		//改变收货数量
-		function changeActualAmount(t){
+		function changeReceiveAmount(t){
 			if($(t).val()!=null&&$(t).val()!=''){
 				var t_receiveTimeEle = $(t).closest("tr").find("input[name='receiveTime']");
 				if(t_receiveTimeEle.val()==null||t_receiveTimeEle.val()==""){
@@ -525,6 +552,12 @@ th,td{
 		$(document).ready(function() {
 			_queryData = $("#yy-form-query").serializeArray();
 			bindListActions();
+			//按回车查询
+			$('#sweepCode').on('keyup', function(event){
+				if(event.keyCode == "13") {
+					matchMaterial();
+		        }
+			});
 			serverPage('${serviceurl}/dataDetail?orderby=mid@desc;boxNum@asc');
 			
 			$("#yy-btn-match").bind('click', matchMaterial);//
@@ -1355,24 +1388,71 @@ th,td{
 			console.info($(t).closest("tr").find("input[name='warningTime']").val());
 			console.info($(t).closest("tr").find("input[name='memo']").val());
 
+			var trEle = $(t).closest("tr");
 			$.ajax({
 				type : "POST",
 				data :{
-					"uuid": rowData.uuid,
-					"actualAmount":$(t).closest("tr").find("input[name='actualAmount']").val(),
-					"receiveTime":$(t).closest("tr").find("input[name='receiveTime']").val(),
-					"warningTime":$(t).closest("tr").find("input[name='warningTime']").val(),
-					"memo":$(t).closest("tr").find("input[name='memo']").val()
+					"subId": rowData.uuid,
+					"receiveAmount":$(t).closest("tr").find("input[name='receiveAmount']").val()
 				},
-				url : "${servicemainurl}/saveSubReceive",
+				url : "${receiveurl}/checkReceiveCount",
 				async : true,
 				dataType : "json",
 				success : function(data) {
 					if(data.success){
-						YYUI.succMsg(data.msg);
-						onQuery();
+						$.ajax({
+							type : "POST",
+							data :{
+								"subId": rowData.uuid,
+								"receiveType":"1",
+								"receiveAmount":trEle.find("input[name='receiveAmount']").val(),
+								"receiveTime":trEle.find("input[name='receiveTime']").val(),
+								"warningTime":trEle.find("input[name='warningTime']").val(),
+								"memo":trEle.find("input[name='memo']").val()
+							},
+							url : "${receiveurl}/saveReceiveLog",
+							async : true,
+							dataType : "json",
+							success : function(data) {
+								if(data.success){
+									YYUI.succMsg(data.msg);
+									onQuery();
+								}else{
+									YYUI.promMsg(data.msg);
+								}
+							},
+							error : function(data) {
+								YYUI.promMsg("操作失败，请联系管理员");
+							}
+						});
 					}else{
-						YYUI.promMsg(data.msg);
+						layer.confirm("收货数量已超出清单数量，是否保存", function(index) {
+							$.ajax({
+								type : "POST",
+								data :{
+									"subId": rowData.uuid,
+									"receiveType":"1",
+									"receiveAmount":trEle.find("input[name='receiveAmount']").val(),
+									"receiveTime":trEle.find("input[name='receiveTime']").val(),
+									"warningTime":trEle.find("input[name='warningTime']").val(),
+									"memo":trEle.find("input[name='memo']").val()
+								},
+								url : "${receiveurl}/saveReceiveLog",
+								async : true,
+								dataType : "json",
+								success : function(data) {
+									if(data.success){
+										YYUI.succMsg(data.msg);
+										onQuery();
+									}else{
+										YYUI.promMsg(data.msg);
+									}
+								},
+								error : function(data) {
+									YYUI.promMsg("操作失败，请联系管理员");
+								}
+							});
+						});
 					}
 				},
 				error : function(data) {

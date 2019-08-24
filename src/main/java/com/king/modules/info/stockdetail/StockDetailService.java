@@ -679,6 +679,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 				stream.setOccupyAmount(subAmount*-1);
 				stream.setActualAmount(0l);
 				for(StockStreamEntity ss:streamList){
+					System.out.println(ss.getUuid()+">>>>>>"+ss.getTotalAmount()+"===="+ss.getSurplusAmount());
 					if(ss.getSurplusAmount()>= subAmount ){
 						if(ss.getWarningType().equals(StockStreamEntity.WARNINGTYPE_BE_NEED)
 								&&ss.getSurplusAmount()==0){
@@ -694,10 +695,10 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 						if(ss.getWarningType().equals(StockStreamEntity.WARNINGTYPE_BE_NEED)){
 							ss.setWarningType(StockStreamEntity.WARNINGTYPE_HAS_USE);
 						}
+						subAmount =subAmount - ss.getSurplusAmount();
 						ss.setSurplusAmount(0l);
 						ss.setOccupyAmount(0l);
 						ss.setActualAmount(0l);
-						subAmount =subAmount - ss.getSurplusAmount();
 					}
 				}
 				if(subAmount>0){

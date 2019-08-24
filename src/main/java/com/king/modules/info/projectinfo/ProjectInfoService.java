@@ -650,6 +650,44 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 		}
 		super.beforeApprove(entity);
 	}
+	
+	
+
+	@Override
+	public ProjectInfoEntity doApprove(ProjectInfoEntity entity, String approveRemark) throws ServiceException {
+		try {
+			if (BillStatus.APPROVAL.toStatusValue() == entity.getBillstatus()) {
+				throw new ServiceException("审批态的单据不能审核！");
+			}
+
+			beforeApprove(entity);
+			if (entity != null) {
+				if (StringUtils.isEmpty(entity.getApprover())) {
+					entity.setApprover(ShiroUser.getCurrentUserEntity().getUuid());
+					entity.setApprovername(ShiroUser.getCurrentUserEntity().getUsername());
+				}
+				entity.setApprovetime(new Date());
+				entity.setApproveremark(approveRemark);
+			}
+
+			// 如果没有审批流 设置单据状态未 审核中或者审批通过，则设置为审核通过。
+			entity.setBillstatus(BillStatus.APPROVAL.toStatusValue());
+
+			// 如果还有审批节点，直接返回。
+			if (entity.getBillstatus() == BillStatus.INAPPROVED.toStatusValue()) {
+				return this.save(entity);
+			} else {
+				entity = this.save(entity);
+			}
+			//保存审批记录
+			saveMessage(entity.getBilltype(), entity.getUuid(), "审核  审核意见："+approveRemark);
+			afterApprove(entity);
+			return entity;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ServiceException(e.getMessage());
+		}
+	}
 
 	@Override
 	public void afterApprove(ProjectInfoEntity entity) throws ServiceException {

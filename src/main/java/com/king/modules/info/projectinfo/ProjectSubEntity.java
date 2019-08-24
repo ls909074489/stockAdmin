@@ -136,6 +136,8 @@ public class ProjectSubEntity extends BaseEntity {
 	@Transient
 	@JsonIgnore
 	private String barcodeUuid="";
+	@Transient
+	private Long receiveAmount=0l;//收货数量
 	
 	
 	public ProjectInfoEntity getMain() {
@@ -361,6 +363,14 @@ public class ProjectSubEntity extends BaseEntity {
 
 	public void setSubReceiveType(String subReceiveType) {
 		this.subReceiveType = subReceiveType;
+	}
+
+	public Long getReceiveAmount() {
+		return receiveAmount;
+	}
+
+	public void setReceiveAmount(Long receiveAmount) {
+		this.receiveAmount = receiveAmount;
 	}
 	
 }

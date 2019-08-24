@@ -1,7 +1,5 @@
 package com.king.modules.info.receive;
 
-import java.util.List;
-
 import javax.servlet.ServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +14,6 @@ import com.king.common.utils.Constants;
 import com.king.common.utils.DateUtil;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.BaseController;
-import com.king.modules.info.projectinfo.ProjectInfoEntity;
-import com.king.modules.info.projectinfo.ProjectSubEntity;
 
 /**
  * 收货
@@ -91,6 +87,7 @@ public class ProjectReceiveController extends BaseController<ProjectReceiveEntit
 			arm.setMsg(e.getMessage());
 			e.printStackTrace();
 		}
+		
 		return arm;
 	}
 	
@@ -102,5 +99,16 @@ public class ProjectReceiveController extends BaseController<ProjectReceiveEntit
 	}
 	
 	
-	
+	/**
+	 * 检查收货数量
+	 * @param model
+	 * @param request
+	 * @param entity
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/checkReceiveCount")
+	public ActionResultModel<ProjectReceiveEntity> checkReceiveCount(ServletRequest request,String subId,Long receiveAmount) {
+		return  service.checkReceiveCount(subId,receiveAmount);
+	}
 }
