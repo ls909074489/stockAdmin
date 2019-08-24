@@ -77,6 +77,11 @@ public class ProjectReceiveController extends BaseController<ProjectReceiveEntit
 		ActionResultModel<ProjectReceiveEntity> arm = new ActionResultModel<ProjectReceiveEntity>();
 		arm.setSuccess(true);
 		try {
+			if(entity.getReceiveAmount()==null||entity.getReceiveAmount()==0){
+				arm.setMsg("收货数量不能为空");
+				arm.setSuccess(false);
+				return arm;
+			}
 			arm =  service.saveReceiveLog(entity);
 		} catch (DataIntegrityViolationException e) {
 			e.printStackTrace();

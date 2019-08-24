@@ -807,8 +807,15 @@ th,td{
 		
 		function saveNewBarcode(t){
 			var newBarcodeVal = $(t).closest("tr").find("input[name='newBarcode']").val();
+			console.info(newBarcodeVal.trim()+"====");
+			if(newBarcodeVal==null||newBarcodeVal==''||newBarcodeVal.trim()==""){
+				YYUI.promMsg("条码不能为空");
+				return false;
+			}
 			var row = $(t).closest("tr");
 			var tr_hwcode = _tableList.row(row).data().material.hwcode;
+			var tr_actualAmount = _tableList.row(row).data().actualAmount;
+			var tr_limitCount = _tableList.row(row).data().limitCount;
 			console.info("tr_hwcode>>>>11>>>>"+tr_hwcode);
 			console.info(tr_hwcode+">>>>>>>>>"+newBarcodeVal);
 			console.info(newBarcodeVal.indexOf(tr_hwcode));
@@ -834,19 +841,19 @@ th,td{
 			if(showLengthConfirm){
 				layer.confirm(jsonResp[i].enumdataname+'限制长度为'+limitLength+',确定要保存吗', function(index) {
 					if(newBarcodeVal!=null&&newBarcodeVal.indexOf(tr_hwcode)>=0){
-						onCheckBarCode(newBarcodeVal,$(t).attr("rowUuid"));
+						onCheckBarCode(newBarcodeVal,$(t).attr("rowUuid"),tr_actualAmount,tr_limitCount);
 					}else{
 						layer.confirm("条码与华为物料编码不符合，确定要保存吗", function() {
-							onCheckBarCode(newBarcodeVal,$(t).attr("rowUuid"));
+							onCheckBarCode(newBarcodeVal,$(t).attr("rowUuid"),tr_actualAmount,tr_limitCount);
 						});
 					}
 				});
 			}else{
 				if(newBarcodeVal!=null&&newBarcodeVal.indexOf(tr_hwcode)>=0){
-					onCheckBarCode(newBarcodeVal,$(t).attr("rowUuid"));
+					onCheckBarCode(newBarcodeVal,$(t).attr("rowUuid"),tr_actualAmount,tr_limitCount);
 				}else{
 					layer.confirm("条码与华为物料编码不符合，确定要保存吗", function() {
-						onCheckBarCode(newBarcodeVal,$(t).attr("rowUuid"));
+						onCheckBarCode(newBarcodeVal,$(t).attr("rowUuid"),tr_actualAmount,tr_limitCount);
 					});
 				}
 			}
@@ -884,7 +891,17 @@ th,td{
 		}
 		
 		
-		function onCheckBarCode(newBarcodeVal,subId){
+		function onCheckBarCode(newBarcodeVal,subId,tr_actualAmount,tr_limitCount){
+			if(tr_limitCount==-1){//批次
+				layer.confirm("确定领料数量为："+tr_actualAmount+"  吗？", function() {
+					onComparetBarcode(newBarcodeVal,subId);
+				});
+			}else{
+				onComparetBarcode(newBarcodeVal,subId);
+			}
+		}
+		
+		function onComparetBarcode(newBarcodeVal,subId){
 			$.ajax({
 				type : "POST",
 				data :{"newBarcode": newBarcodeVal,"subId":subId},
@@ -895,6 +912,7 @@ th,td{
 					if(data.success){
 						onSaveBarCode(newBarcodeVal,subId);
 					}else{
+						//已存在条码
 						layer.confirm(data.msg+",确定要修改吗?", function() {
 							onSaveBarCode(newBarcodeVal,subId);
 						});
