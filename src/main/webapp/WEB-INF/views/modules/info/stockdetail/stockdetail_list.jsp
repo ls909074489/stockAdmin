@@ -19,7 +19,7 @@
 				</button>
 			</div>
 			<div class="row yy-searchbar form-inline">
-				<form id="yy-form-query">
+				<form id="yy-form-query" class="queryform">
 					<label for="search_LIKE_name" class="control-label">仓库名称</label>
 					<input type="text" autocomplete="on" name="search_LIKE_stock.name"
 						id="search_LIKE_stock.name" class="form-control input-sm">
@@ -35,6 +35,16 @@
 					<label for="search_LIKE_name" class="control-label">物料名称</label>
 					<input type="text" autocomplete="on" name="search_LIKE_material.name"
 						id="search_LIKE_material.name" class="form-control input-sm">
+						
+					<label for="search_LIKE_places" class="control-label">库位</label>
+					<input type="text" autocomplete="on" name="search_LIKE_places"
+						id="search_LIKE_places" class="form-control input-sm">
+						
+					<label for="search_GT_surplusCount" class="control-label">库存</label>
+					<select class="yy-input-enumdata form-control" id="search_GT_surplusCount" name="search_GT_surplusCount">
+						<option value="">请选择</option>
+						<option value="1">在库</option>
+					</select>
 
 					<button id="yy-btn-search" type="button" class="btn btn-sm btn-info">
 						<i class="fa fa-search"></i>查询
@@ -55,6 +65,7 @@
 							<th>华为物料编码</th>
 							<th>物料名称</th>
 							<!-- <th>总数量</th> -->
+							<th>库位</th>
 							<th>剩余数量</th>
 							<th>预占数量</th>
 							<th>可用数量</th>
@@ -79,16 +90,18 @@
 			},{
 				data : "uuid",
 				className : "center",
+				width : "200",
 				orderable : false,
 				render: function (data,type,row,meta ) {
 					return "<div class='yy-btn-actiongroup'>" 
 					+ "<button id='yy-btn-view-row' class='btn btn-xs btn-success' data-rel='tooltip' title='查看'><i class='fa fa-search-plus'></i>查看记录</button>"
+					+ "<button id='yy-btn-edit-row' class='btn btn-xs btn-success' data-rel='tooltip' title='修改库位'><i class='fa fa-edit'></i>修改库位</button>"
 					+ "</div>";
 		        },
 				width : "50"
 			},{
 				data : "stock.name",
-				width : "100",
+				width : "60",
 				className : "center",
 				orderable : false
 			},{
@@ -115,18 +128,23 @@
 				className : "center",
 				orderable : false
 			} */,{
-				data : "surplusAmount",
+				data : "places",
 				width : "60",
+				className : "center",
+				orderable : false
+			},{
+				data : "surplusAmount",
+				width : "40",
 				className : "center",
 				orderable : false
 			},{
 				data : "occupyAmount",
-				width : "60",
+				width : "40",
 				className : "center",
 				orderable : false
 			},{
 				data : "actualAmount",
-				width : "60",
+				width : "40",
 				className : "center",
 				orderable : false
 			}];
@@ -134,6 +152,7 @@
 
 		//var _setOrder = [[5,'desc']];
 		$(document).ready(function() {
+			$("#search_GT_surplusCount").val(1);
 			_queryData = $("#yy-form-query").serializeArray();
 			bindListActions();
 			serverPage(null);
@@ -146,7 +165,6 @@
 		
 		//行查看 param data 行数据 param rowidx 行下标
 		function onViewDetailRow(data, rowidx, row) {
-			console.info(data.stock.uuid+"========="+data.material.uuid);
 			layer.open({
 				title:"库存记录(【"+data.stock.name+"】物料"+data.material.code+")",
 			    type: 2,
@@ -159,7 +177,14 @@
 		
 		//重写防止双击
 		function onEditRow(aData, iDataIndex, nRow){
-			return false;
+			layer.open({
+				title:"修改库位",
+			    type: 2,
+			    area : [ '400px', '200px' ],
+			    shadeClose : false,
+				shade : 0.8,
+			    content: "${serviceurl}/toUpdatePlaces?uuid="+aData.uuid
+			});
 		}
 		
 		//查看物料明细

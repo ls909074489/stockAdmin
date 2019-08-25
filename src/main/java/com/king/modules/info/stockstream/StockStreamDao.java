@@ -51,7 +51,7 @@ public interface StockStreamDao extends IBaseDAO<StockStreamEntity,String> {
 	void updateSourceBillCode(String sourceBillCode,String sourceBillId);
 
 	
-	@Query("from StockStreamEntity where stockDetailId in ?1 and surplusAmount>0 and status=1")
+	@Query("from StockStreamEntity where stockDetailId in ?1 and surplusAmount>0 and showType='1' and status=1")
 	List<StockStreamEntity> findSurplusByDetailIds(List<String> detailIdList);
 	
 	@Query("from StockStreamEntity where sourceId=? and status=1 order by createtime")

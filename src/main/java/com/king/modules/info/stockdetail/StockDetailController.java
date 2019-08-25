@@ -41,6 +41,7 @@ import com.king.frame.controller.QueryRequest;
 import com.king.frame.service.BaseServiceImpl;
 import com.king.frame.service.IService;
 import com.king.frame.utils.RequestUtil;
+import com.king.modules.info.projectinfo.ProjectSubEntity;
 import com.king.modules.info.stockstream.StockStreamEntity;
 import com.king.modules.info.stockstream.StockStreamService;
 import com.king.modules.sys.imexlate.ImexlateSubEntity;
@@ -124,8 +125,16 @@ public class StockDetailController extends BaseController<StockDetailEntity> {
 		return execQuery(qr, baseService);
 	}
 
+//	@Override
+//	public Map<String, Object> addSearchParam(ServletRequest request) {
+//		Map<String, Object> addParam = new HashMap<String, Object>();
+//		addParam.put("EQ_showType", "1");
+//		return addParam;
+//	}
+
 	@Override
 	protected ActionResultModel<StockDetailEntity> execQuery(QueryRequest<StockDetailEntity> qr, IService service) {
+		
 		ActionResultModel<StockDetailEntity> arm = super.execQuery(qr, service);
 		List<StockDetailEntity> list = arm.getRecords();
 		if (CollectionUtils.isNotEmpty(list)) {
@@ -237,6 +246,26 @@ public class StockDetailController extends BaseController<StockDetailEntity> {
 			}
 		}
 		return "modules/info/stockdetail/stockdetail_list";
+	}
+	
+	
+	@RequestMapping(value = "/toUpdatePlaces")
+	public String toUpdatePlaces(ServletRequest request,String uuid,Model model) {
+		model.addAttribute("uuid", uuid);
+		return "modules/info/stockdetail/stockdetail_update_places";
+	}
+	
+	/**
+	 * 修改库位
+	 * @param request
+	 * @param uuid
+	 * @param places
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/updatePlaces")
+	public ActionResultModel<StockDetailEntity> updatePlaces(ServletRequest request,String uuid,String places) {
+		return stockDetailService.updatePlaces(uuid,places);
 	}
 
 	@Override

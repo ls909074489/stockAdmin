@@ -43,6 +43,7 @@ import com.king.modules.info.approve.ApproveUserService;
 import com.king.modules.info.material.MaterialBaseEntity;
 import com.king.modules.info.material.MaterialEntity;
 import com.king.modules.info.material.MaterialService;
+import com.king.modules.info.stockdetail.StockDetailService;
 import com.king.modules.info.stockstream.StockStreamEntity;
 import com.king.modules.info.stockstream.StockStreamService;
 import com.king.modules.sys.imexlate.ImexlateSubEntity;
@@ -78,6 +79,8 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 	private ImexlateSubService imexlateSubService;
 	@Autowired
 	private MaterialService materialService;
+	@Autowired
+	private StockDetailService stockDetailService;
 	
 	
 	protected IBaseDAO<ProjectInfoEntity, String> getDAO() {
@@ -225,6 +228,14 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 			}
 //			arm.setRecords(savedEntity);
 			arm.setSuccess(true);
+			
+			List<ApproveUserEntity> userList = approveUserService.findByAppplyType(ApproveUserEntity.PROJECTINFO_TYPE);
+			if(CollectionUtils.isNotEmpty(userList)){
+				for(ApproveUserEntity u:userList){
+					webSocketHandler.sendMessageToUser(u.getUser().getUuid(), new TextMessage(user.getUsername()+" 修改了物料清单,请及时处理。"));
+				}
+			}
+			
 //		} catch (Exception e) {
 //			arm.setSuccess(false);
 //			arm.setMsg(e.getMessage());
@@ -695,6 +706,11 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 //		stockDetailService.descStockDetail(entity, subList);
 		//将申请标志为已处理
 		projectApplyService.handleApply(entity.getUuid());
+		List<StockStreamEntity> streamList = streamService.findBySourceId(entity.getUuid());
+		for(StockStreamEntity stream:streamList){
+			stream.setShowType("1");
+		}
+		stockDetailService.updateUpdateType(streamList);
 		super.afterApprove(entity);
 	}
 
@@ -704,6 +720,11 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 	public void afterUnApprove(ProjectInfoEntity entity) throws ServiceException {
 //		List<ProjectSubEntity> subList = projectSubService.findByMain(entity.getUuid());
 //		stockDetailService.unApproveStockDetail(entity, subList);
+		List<StockStreamEntity> streamList = streamService.findBySourceId(entity.getUuid());
+		for(StockStreamEntity stream:streamList){
+			stream.setShowType("0");
+		}
+		stockDetailService.updateUpdateType(streamList);
 		super.afterUnApprove(entity);
 	}
 

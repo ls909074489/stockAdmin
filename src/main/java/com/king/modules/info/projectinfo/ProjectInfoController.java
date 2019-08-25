@@ -241,34 +241,34 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 	 * @param subArrs
 	 * @return
 	 */
-	@RequestMapping(value = "/confirmReceive")
-	@ResponseBody
-	public ActionResultModel<ProjectInfoEntity> confirmReceive(ServletRequest request, Model model, ProjectInfoEntity entity,
-			@RequestParam(value = "subList[]", required = false) String[] subArrs) {
-		ActionResultModel<ProjectInfoEntity> arm = new ActionResultModel<ProjectInfoEntity>();
-		arm.setSuccess(true);
-		List<ProjectReceiveVo> subList = this.convertToEntitieVos(subArrs);
-		try {
-			arm = receiveService.confirmReceive(entity, subList);
-		} catch (DataIntegrityViolationException e) {
-			e.printStackTrace();
-			arm.setSuccess(false);
-			arm.setMsg(Constants.getConstraintMsg(e.getMessage()));
-		} catch (Exception e) {
-			arm.setSuccess(false);
-			arm.setMsg(e.getMessage());
-			e.printStackTrace();
-		}
-		return arm;
-	}
+//	@RequestMapping(value = "/confirmReceive")
+//	@ResponseBody
+//	public ActionResultModel<ProjectInfoEntity> confirmReceive(ServletRequest request, Model model, ProjectInfoEntity entity,
+//			@RequestParam(value = "subList[]", required = false) String[] subArrs) {
+//		ActionResultModel<ProjectInfoEntity> arm = new ActionResultModel<ProjectInfoEntity>();
+//		arm.setSuccess(true);
+//		List<ProjectReceiveVo> subList = this.convertToEntitieVos(subArrs);
+//		try {
+//			arm = receiveService.confirmReceive(entity, subList);
+//		} catch (DataIntegrityViolationException e) {
+//			e.printStackTrace();
+//			arm.setSuccess(false);
+//			arm.setMsg(Constants.getConstraintMsg(e.getMessage()));
+//		} catch (Exception e) {
+//			arm.setSuccess(false);
+//			arm.setMsg(e.getMessage());
+//			e.printStackTrace();
+//		}
+//		return arm;
+//	}
 	
-	@RequestMapping(value = "/saveSubReceive")
-	@ResponseBody
-	public ActionResultModel<ProjectInfoEntity> saveSubReceive(ServletRequest request,ProjectReceiveVo vo) {
-		ActionResultModel<ProjectInfoEntity> arm = new ActionResultModel<ProjectInfoEntity>();
-		arm.setSuccess(true);
-		return receiveService.saveSubReceive(vo);
-	}
+//	@RequestMapping(value = "/saveSubReceive")
+//	@ResponseBody
+//	public ActionResultModel<ProjectInfoEntity> saveSubReceive(ServletRequest request,ProjectReceiveVo vo) {
+//		ActionResultModel<ProjectInfoEntity> arm = new ActionResultModel<ProjectInfoEntity>();
+//		arm.setSuccess(true);
+//		return receiveService.saveSubReceive(vo);
+//	}
 	
 	/**
 	 * 取消收货

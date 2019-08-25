@@ -236,6 +236,7 @@
 
 		//var _setOrder = [[5,'desc']];
 		$(document).ready(function() {
+			$("#GT_surplusAmount").val(1);
 			_queryData = $("#yy-form-query").serializeArray();
 			bindListActions();
 			serverPage('${ctx}/info/stockstream/dataWarning?orderby=createtime@desc');

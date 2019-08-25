@@ -118,6 +118,10 @@ public class StockStreamEntity extends BaseEntity {
 	@Column(length = 250)
 	private String memo;
 	
+	@MetaData(value = "是否显示")
+	@Column(length = 1)
+	private String showType="1";//0不现实 1：显示
+	
 	
 //	@MetaData(value = "总数量")
 //	@Column()
@@ -290,6 +294,15 @@ public class StockStreamEntity extends BaseEntity {
 	public void setStockDetailId(String stockDetailId) {
 		this.stockDetailId = stockDetailId;
 	}
-	
+
+
+	public String getShowType() {
+		return showType;
+	}
+
+
+	public void setShowType(String showType) {
+		this.showType = showType;
+	}
 
 }

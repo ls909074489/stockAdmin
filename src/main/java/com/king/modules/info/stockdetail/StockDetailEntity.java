@@ -63,6 +63,10 @@ public class StockDetailEntity extends BaseEntity {
 	@Column(length=1)
 	private String updateType="1";
 	
+	@MetaData(value = "库位")
+	@Column(length = 250)
+	private String places;
+	
 	@MetaData(value = "总数量")
 	@Transient
 	private Long totalAmount=0l;
@@ -166,6 +170,14 @@ public class StockDetailEntity extends BaseEntity {
 
 	public void setUpdateType(String updateType) {
 		this.updateType = updateType;
+	}
+
+	public String getPlaces() {
+		return places;
+	}
+
+	public void setPlaces(String places) {
+		this.places = places;
 	}
 
 }

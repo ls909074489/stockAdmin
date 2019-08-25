@@ -58,6 +58,10 @@ public class OrderSubEntity extends BaseEntity {
 	@Column(length = 250)
 	private String memo;
 	
+	@MetaData(value = "库位")
+	@Column(length = 250)
+	private String places;
+	
 	@Transient
 	private String materialId;
 	@Transient
@@ -149,6 +153,12 @@ public class OrderSubEntity extends BaseEntity {
 	public void setSurplusAmount(Long surplusAmount) {
 		this.surplusAmount = surplusAmount;
 	}
-	
 
+	public String getPlaces() {
+		return places;
+	}
+
+	public void setPlaces(String places) {
+		this.places = places;
+	}
 }

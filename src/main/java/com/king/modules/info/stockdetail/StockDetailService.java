@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.king.frame.controller.ActionResultModel;
 import com.king.frame.dao.IBaseDAO;
 import com.king.frame.service.BaseServiceImpl;
 import com.king.modules.info.material.MaterialBaseEntity;
@@ -78,6 +79,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			detail.setSurplusAmount(0l);
 			detail.setOccupyAmount(0l);
 			detail.setActualAmount(detail.getSurplusAmount()-detail.getOccupyAmount());
+			detail.setUpdateType("1");
 			detail =  super.doAdd(detail);
 		}else{
 			detail.setUpdateType("1");
@@ -93,6 +95,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 		StockBaseEntity stockBase = orderInfo.getStock();
 		for(OrderSubEntity sub:subList){
 			StockDetailEntity detail  = findByStockAndMaterial(stockBase.getUuid(),sub.getMaterial().getUuid());
+			detail.setPlaces(sub.getPlaces());
 			
 			stream = new StockStreamEntity();
 			stream.setBillType(StockStreamEntity.BILLTYPE_ORDER);
@@ -267,13 +270,12 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 	}
 
 	
-	
-	
 	@Transactional
 	public void incrStockDetail(ProjectInfoEntity projectInfo,List<ProjectReceiveEntity> receiveList,boolean receiveFLag){
 		StockStreamEntity stream = new StockStreamEntity();
 		
 		StockBaseEntity stockBase = projectInfo.getStock();
+		List<StreamBorrowEntity> borrowList =  borrowService.findBorrowByToProject(projectInfo.getUuid());
 		for(ProjectReceiveEntity sub:receiveList){
 			StockDetailEntity detail  = findByStockAndMaterial(stockBase.getUuid(),sub.getMaterial().getUuid());
 			
@@ -305,20 +307,21 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			stream.setMemo("收货入库");
 			stream.setStockDetailId(detail.getUuid());
 			stream.setStockDetailId(detail.getUuid());
+			stream.setShowType("0");
 			stockStreamService.doAdd(stream);//添加库存流水
 			
-			if(receiveFLag){//没有借料，直接增加库存
-				ProjectSubEntity projectSub = projectSubService.getOne(sub.getSub().getUuid());
-				projectSub.setSurplusAmount(projectSub.getSurplusAmount()+sub.getReceiveAmount());
-			}else{
-				changeHasBorrw(projectInfo.getUuid(),sub,stream,detail);
-			}
+//			if(receiveFLag){//没有借料，直接增加库存
+//				ProjectSubEntity projectSub = projectSubService.getOne(sub.getSub().getUuid());
+//				projectSub.setSurplusAmount(projectSub.getSurplusAmount()+sub.getReceiveAmount());
+//			}else{
+//				changeHasBorrw(projectInfo.getUuid(),sub,stream,detail);
+//			}
+			changeHasBorrw(borrowList,sub,stream,detail);
 		}
 	}
 	
 	
-	private boolean changeHasBorrw(String projectId,ProjectReceiveEntity sub,StockStreamEntity stream,StockDetailEntity detail) {
-		List<StreamBorrowEntity> borrowList =  borrowService.findBorrowByToProject(projectId);
+	private boolean changeHasBorrw(List<StreamBorrowEntity> borrowList,ProjectReceiveEntity sub,StockStreamEntity stream,StockDetailEntity detail) {
 		if(CollectionUtils.isEmpty(borrowList)){
 			return false;
 		}
@@ -360,6 +363,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 				streamIn.setOperType(StockStreamEntity.IN_STOCK);
 				streamIn.setMemo("收货还料入库");
 				streamIn.setStockDetailId(detail.getUuid());
+				streamIn.setShowType("0");
 				stockStreamService.doAdd(streamIn);//添加库存流水
 				
 				ProjectSubEntity toSub = projectSubService.getOne(borrow.getToSubId());
@@ -378,6 +382,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 				streamOut.setOperType(StockStreamEntity.OUT_STOCK);
 				streamOut.setMemo("收货还料出库");
 				streamOut.setStockDetailId(detail.getUuid());
+				streamOut.setShowType("0");
 				stockStreamService.doAdd(streamOut);//添加库存流水
 				//修改还料后的数量
 				stream.setSurplusAmount(sub.getReceiveAmount()-actualAmount);
@@ -397,7 +402,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 		return hasBorrow;
 	}
 
-	@Deprecated
+	/*@Deprecated
 	@Transactional
 	public void descStockDetail(ProjectInfoEntity projectInfo,List<ProjectSubEntity> subList){
 		StockBaseEntity stock = projectInfo.getStock();//getStockByOrderType(projectInfo.getBilltype());
@@ -486,7 +491,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			stockStreamService.doAdd(stream);//添加库存流水
 		}
 		streamLogService.doAdd(logList);
-	}
+	}*/
 	
 
 	@Transactional
@@ -712,7 +717,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 		}
 	}
 	
-	@Deprecated
+	/*@Deprecated
 	@Transactional
 	public void unApproveStockDetail(ProjectInfoEntity entity, List<ProjectSubEntity> subList) {
 		List<StreamProjectLogEntity> logList = streamLogService.findByProjectIdAndBillType(entity.getUuid(),StreamProjectLogEntity.BILLTYPE_APPROVE);
@@ -752,7 +757,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			}
 			stockStreamService.delBySourceIdAndOperType(entity.getUuid(),StockStreamEntity.OUT_STOCK);
 		}
-	}
+	}*/
 	
 	
 	@Transactional
@@ -863,6 +868,28 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			throw new ServiceException("流水不足，不能挪料"); 
 		}
 	}
+	
+	/**
+	 * 修改库存状态
+	 * @param streamList
+	 */
+	public void updateUpdateType(List<StockStreamEntity> streamList) {
+		for(StockStreamEntity stream:streamList){
+			findByStockAndMaterial(stream.getStock().getUuid(), stream.getMaterial().getUuid());
+		}
+		
+	}
+	
+	@Transactional
+	public ActionResultModel<StockDetailEntity> updatePlaces(String uuid, String places) {
+		ActionResultModel<StockDetailEntity> arm = new ActionResultModel<StockDetailEntity>();
+		StockDetailEntity detail = getOne(uuid);
+		detail.setPlaces(places);
+		arm.setSuccess(true);
+		arm.setMsg("操作成功");
+		return arm;
+	}
+
 
 	
 	@Override
@@ -925,6 +952,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 	public List<StockDetailEntity> listUpdateDetail() {
 		return dao.listUpdateDetail();
 	}
+
 
 	
 }
