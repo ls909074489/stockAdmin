@@ -19,9 +19,9 @@
 <link href="${ctx}/assets/component/useso/useso.css?v=20160801" rel="stylesheet" type="text/css"/>
 <link href="${ctx}/assets/metronic/v4.5/global/plugins/font-awesome/css/font-awesome.min.css?v=20160801" rel="stylesheet" type="text/css" />
 <link href="${ctx}/assets/metronic/v4.5/global/plugins/simple-line-icons/simple-line-icons.min.css?v=20160801" rel="stylesheet" type="text/css" />
-<link href="${ctx}/assets/metronic/v4.5/global/plugins/bootstrap/css/bootstrap.min.cssXXXXX?v=20160801" rel="stylesheet" type="text/css" />
+<link href="${ctx}/assets/metronic/v4.5/global/plugins/bootstrap/css/bootstrap.min.css?v=20160801" rel="stylesheet" type="text/css" />
 <%-- <link href="${ctx}/assets/metronic/v4.5/global/plugins/uniform/css/uniform.default.css?v=20160801" rel="stylesheet" type="text/css" /> --%>
-<link href="${ctx}/assets/metronic/v4.5/global/plugins/bootstrap-switch/css/bootstrap-switch.min.cssXXXXX?v=20160801" rel="stylesheet" type="text/css" />
+<link href="${ctx}/assets/metronic/v4.5/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css?v=20160801" rel="stylesheet" type="text/css" />
 <!-- END GLOBAL MANDATORY STYLES -->
 
 <!-- BEGIN PAGE LEVEL PLUGINS -->
@@ -29,7 +29,7 @@
 <!-- END PAGE LEVEL PLUGINS -->
         
 <!-- BEGIN PAGE LEVEL PLUGINS -->
-<link href="${ctx}/assets/metronic/v4.5/global/plugins/icheck/skins/all.cssXXXXX?v=20160801" rel="stylesheet" type="text/css" />
+<link href="${ctx}/assets/metronic/v4.5/global/plugins/icheck/skins/all.css?v=20160801" rel="stylesheet" type="text/css" />
 <!-- END PAGE LEVEL PLUGINS -->
 
 <!-- BEGIN PAGE LEVEL PLUGINS -->
@@ -39,15 +39,15 @@
 
 <!-- BEGIN PAGE LEVEL STYLES -->
 <link rel="stylesheet" type="text/css" href="${ctx}/assets/metronic/v4.5/global/plugins/select2/css/select2.min.css?v=20160801" rel="stylesheet" type="text/css" />
-<link rel="stylesheet" type="text/css" href="${ctx}/assets/metronic/v4.5/global/plugins/select2/css/select2-bootstrap.min.cssXXXXX?v=20160801" rel="stylesheet" type="text/css" />
-<link rel="stylesheet" type="text/css" href="${ctx}/assets/metronic/v4.5/global/plugins/datatables/datatables.min.cssXXXXX?v=20160801" />
+<link rel="stylesheet" type="text/css" href="${ctx}/assets/metronic/v4.5/global/plugins/select2/css/select2-bootstrap.min.css?v=20160801" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" type="text/css" href="${ctx}/assets/metronic/v4.5/global/plugins/datatables/datatables.min.css?v=20160801" />
 <!--<link rel="stylesheet" type="text/css" href="${ctx}/assets/metronic/v4.5/global/plugins/datatables/plugins/bootstrap/datatables.bootstrap.css?v=20160801"/>-->
 <%-- <link rel="stylesheet" type="text/css" href="${ctx}/assets/metronic/v4.5/global/plugins/datatables/extensions/Scroller/css/dataTables.scroller.min.css?v=20160801"/>
 <link rel="stylesheet" type="text/css" href="${ctx}/assets/metronic/v4.5/global/plugins/datatables/extensions/ColReorder/css/dataTables.colReorder.min.css?v=20160801"/> --%>
 <!-- END PAGE LEVEL STYLES -->
 
 <!-- BEGIN THEME GLOBAL STYLES -->
-<link href="${ctx}/assets/metronic/v4.5/global/css/components.min.cssXXXXX?v=20160801" rel="stylesheet" id="style_components" type="text/css" />
+<link href="${ctx}/assets/metronic/v4.5/global/css/components.min.css?v=20160801" rel="stylesheet" id="style_components" type="text/css" />
 <link href="${ctx}/assets/metronic/v4.5/global/css/plugins.css?v=20160801" rel="stylesheet" type="text/css" />
 <!-- END THEME GLOBAL STYLES -->
 
@@ -55,17 +55,17 @@
 <link href="${ctx}/assets/metronic/v4.5/layouts/layout/css/layout.min.css?v=20160801" rel="stylesheet" type="text/css" />
 <!--<link href="${ctx}/assets/metronic/v4.5/layouts/layout/css/themes/darkblue.min.css?v=20160801" rel="stylesheet" type="text/css" id="style_color" />-->
 <link href="${ctx}/assets/metronic/v4.5/layouts/layout/css/themes/light2.css?v=20160801" rel="stylesheet" type="text/css" id="style_color" />
-<link href="${ctx}/assets/metronic/v4.5/layouts/layout/css/custom.min.cssXXXXX?v=20160801" rel="stylesheet" type="text/css" />
+<link href="${ctx}/assets/metronic/v4.5/layouts/layout/css/custom.min.css?v=20160801" rel="stylesheet" type="text/css" />
 <!-- BEGIN zTree -->
 <link rel="stylesheet" type="text/css" href="${ctx}/assets/ztree/3.5.19/zTreeStyle/zTreeStyle.css?v=20160801">
 
 <!-- BEGIN YY CSS AND JS -->
-<link rel="stylesheet" type="text/css" href="${ctx}/assets/yy/css/yy.cssXXXXX?v=20160801"/>
-<link rel="stylesheet" type="text/css" href="${ctx}/assets/yy/css/yy_table.cssXXXXX?v=20160801"/>
+<link rel="stylesheet" type="text/css" href="${ctx}/assets/yy/css/yy.css?v=20160801"/>
+<link rel="stylesheet" type="text/css" href="${ctx}/assets/yy/css/yy_table.css?v=20160801"/>
 <!-- end YY CSS AND JS -->
 
 <!-- BEGIN YY Report -->
-<link rel="stylesheet" type="text/css" href="${ctx}/assets/yy/report/superTables.cssXXXXX?v=20160801"/>
+<link rel="stylesheet" type="text/css" href="${ctx}/assets/yy/report/superTables.css?v=20160801"/>
 <!-- end YY Report -->
 
 
