@@ -344,3 +344,10 @@ ALTER table yy_stock_detail drop COLUMN occupy_amount;
 ALTER table yy_stock_detail drop COLUMN actual_amount;
 
 INSERT INTO `yy_parameter` (`uuid`, `status`, `defaultvalue`, `description`, `groudcode`, `isshow`, `paramtercode`, `paramtername`, `paramtertype`, `paramtervalue`, `showorder`, `sys`, `valuerange`, `create_time`, `creator`, `modifier`, `modify_time`, `createtime`, `creatorname`, `modifiername`, `modifytime`, `ispreset`, `ts`) VALUES ('90d36aca-e5bd-4796-94f9-0ee0880122d3', '1', NULL, '0:流水计算  1：同步库存', 'sys', '', 'syncStockDetail', '实时同步数据库', '', '1', NULL, '\0', '', NULL, '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', NULL, NULL, '2019-08-21 15:03:14', '超级系统管理员', NULL, NULL, '0', '2019-08-21 15:03:14');
+
+
+2019/8/26
+ alter table yy_stock_stream add index idx_stream_stockdetailid(stock_detail_id) ;
+
+
+

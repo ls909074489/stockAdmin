@@ -106,10 +106,11 @@ public class StockStreamController extends BaseController<StockStreamEntity> {
 		addParam.put("EQ_operType", StockStreamEntity.IN_STOCK);//增加库存
 //		addParam.put("EQ_warningType", StockStreamEntity.WARNINGTYPE_BE_NEED);//要预警 
 		addParam.put("EQ_status", "1");
+		addParam.put("EQ_showType", "1");
 //		addParam.put("GT_surplusAmount", "0");
 		
 		String GT_surplusAmount= request.getParameter("GT_surplusAmount");
-		if(StringUtils.isNotEmpty(GT_surplusAmount)){
+		if(StringUtils.isNotEmpty(GT_surplusAmount)){//0:已出库、1:在库
 			if(GT_surplusAmount.equals("0")){//已出库
 				addParam.put("EQ_surplusAmount", "0");
 			}else{

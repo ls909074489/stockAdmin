@@ -451,7 +451,7 @@ th,td{
 						if(full.subReceiveType=="1"){
 							return data;
 						}else{
-							return '<input class="form-control Wdate" value="${curDate}" name="receiveTime" onClick="WdatePicker()">';
+							return '<input class="form-control Wdate" value="${curDate}" name="receiveTime" onClick="WdatePicker()"  autocomplete="off">';
 						}
 					}else{
 						return '';
@@ -470,7 +470,7 @@ th,td{
 						if(full.subReceiveType=="1"){
 							return data;
 						}else{
-							return '<input class="form-control Wdate" value="'+ data + '" name="warningTime" onClick="WdatePicker()">';
+							return '<input class="form-control Wdate" value="'+ data + '" name="warningTime" onClick="WdatePicker()"  autocomplete="off">';
 						}
 					}else{
 						return '';
@@ -1253,11 +1253,9 @@ th,td{
 		
 		//校验多行数据 返回boolean类型
 		function validateRowsData(rowList,validator) {
-			console.info("========================================");
 			var result = true;
 			for (var i = 0; i < rowList.length; i++) {
 				if(_tableList.row(rowList[i]).data().firstRow=="1"&&!validateRowData(rowList[i],validator)){
-					console.info(rowList[i]);
 					result = false;
 				}
 			}
@@ -1267,17 +1265,19 @@ th,td{
 		//表体校验
 		function getRowValidatorTemp() {
 			return [ {
-				name : "actualAmount",
+				name : "receiveAmount",
 				rules : {
 					//required : true,
 					//number :true,
 					digits :true,
+					min:1,
 					maxlength:8
 				},
 				message : {
 					//required : "必输",
 					//number :"请输入合法的数字",
 					digits :"只能输入整数",
+					min:"收货数量必须大于0",
 					maxlength : "最大长度为8"
 				}
 			}];
@@ -1285,17 +1285,19 @@ th,td{
 		
 		function getRowValidatorConfirm() {
 			return [ {
-				name : "actualAmount",
+				name : "receiveAmount",
 				rules : {
 					//required : true,
 					//number :true,
 					digits :true,
+					min:1,
 					maxlength:8
 				},
 				message : {
 					//required : "必输",
 					//number :"请输入合法的数字",
 					digits :"只能输入整数",
+					min:"收货数量必须大于0",
 					maxlength : "最大长度为8"
 				}
 			}];
