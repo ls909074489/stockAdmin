@@ -120,6 +120,7 @@
 													<th style="width: 30px;">序号</th>
 													<th>仓库名称</th>
 													<th>物料编码</th>
+													<th>华为物料编码</th>
 													<th>物料名称</th>
 													<th>源单号</th>
 													<th>操作人</th>
@@ -163,6 +164,11 @@
 			orderable : false
 		},{
 			data : "material.code",
+			width : "100",
+			className : "center",
+			orderable : false
+		},{
+			data : "material.hwcode",
 			width : "100",
 			className : "center",
 			orderable : false

@@ -158,25 +158,27 @@
 			var actualAmount = $(t).closest("tr").find("input[name='actualAmount']").val();
 			if(actualAmount!=null&&actualAmount!=''){
 				if ((/(^[1-9]\d*$)/.test(actualAmount))) { 
-					$.ajax({
-						type : "POST",
-						data :{"fromStreamId": $(t).attr("rowUuid"),"toSubId":'${subId}',"actualAmount":actualAmount},
-						url : "${serviceurl}/saveProjectBorrow",
-						async : true,
-						dataType : "json",
-						success : function(data) {
-							if(data.success){
-								YYUI.succMsg(data.msg);
-								window.parent.onQuery();
-								var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
-								parent.layer.close(index); //再执行关闭 
-							}else{
-								YYUI.promMsg(data.msg);
+					layer.confirm('挪用数量为 '+actualAmount+',确定要挪料吗', function(index) {
+						$.ajax({
+							type : "POST",
+							data :{"fromStreamId": $(t).attr("rowUuid"),"toSubId":'${subId}',"actualAmount":actualAmount},
+							url : "${serviceurl}/saveProjectBorrow",
+							async : true,
+							dataType : "json",
+							success : function(data) {
+								if(data.success){
+									YYUI.succMsg(data.msg);
+									window.parent.onQuery();
+									var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+									parent.layer.close(index); //再执行关闭 
+								}else{
+									YYUI.promMsg(data.msg);
+								}
+							},
+							error : function(data) {
+								YYUI.promMsg("操作失败，请联系管理员");
 							}
-						},
-						error : function(data) {
-							YYUI.promMsg("操作失败，请联系管理员");
-						}
+						});
 					});
 				}else{
 					YYUI.promMsg("请填写正整数");
