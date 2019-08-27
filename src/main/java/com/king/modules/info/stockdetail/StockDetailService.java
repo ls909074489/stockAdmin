@@ -208,7 +208,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			}
 		}
 		if(subAmount>0){
-			throw new ServiceException("物料"+sub.getMaterial().getCode()+"流水不足");
+			throw new ServiceException("物料"+sub.getMaterial().getCode()+"["+sub.getMaterial().getHwcode()+"]流水不足");
 		}
 		
 		stream.setOperType(StockStreamEntity.OUT_STOCK);
@@ -230,6 +230,8 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 				for(StockStreamEntity stream:streamList){
 					if(sub.getUuid().equals(stream.getSourceSubId())){
 						if(sub.getPlanAmount()<=stream.getSurplusAmount()){
+							StockDetailEntity detail  = findByStockAndMaterial(stream.getStock().getUuid(),stream.getMaterial().getUuid());
+							detail.setUpdateType("1");
 							stockStreamService.delete(stream);
 							break;
 						}else{
@@ -256,6 +258,8 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			Set<String> streamIdSet = new HashSet<>();
 			for(StreamOrderLogEntity log:logList){
 				StockStreamEntity stream = stockStreamService.getOne(log.getDestStreamId());
+				StockDetailEntity detail  = findByStockAndMaterial(stream.getStock().getUuid(),stream.getMaterial().getUuid());
+				detail.setUpdateType("1");
 				stream.setSurplusAmount(stream.getSurplusAmount()+Math.abs(log.getActualAmount()));
 				stream.setOccupyAmount(stream.getOccupyAmount());
 				stream.setActualAmount(stream.getSurplusAmount());

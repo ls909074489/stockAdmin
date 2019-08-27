@@ -590,7 +590,7 @@
 											fnCallback(data);
 									} else {
 										layer.close(listview);
-										YYUI.failMsg(data.msg);
+										YYUI.promAlert(data.msg);
 									}
 								},
 								"error" : function(XMLHttpRequest, textStatus,

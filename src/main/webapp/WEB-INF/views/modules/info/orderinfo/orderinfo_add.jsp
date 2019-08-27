@@ -221,7 +221,7 @@
 					if(data==null){
 						data="";
 					}
-					return '<input class="form-control Wdate" value="'+ data + '" name="warningTime"  onClick="WdatePicker()">';
+					return '<input class="form-control Wdate" value="'+ data + '" name="warningTime"  onClick="WdatePicker()" autocomplete="off">';
 				}
 			}, {
 				data : 'places',

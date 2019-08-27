@@ -229,6 +229,13 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 //			arm.setRecords(savedEntity);
 			arm.setSuccess(true);
 			
+			ProjectApplyEntity apply = new ProjectApplyEntity();
+			apply.setApplyType(ProjectApplyEntity.APPLYING);
+			apply.setContent("提交项目单"+entity.getCode());
+			apply.setSourceBillId(entity.getUuid());
+			apply.setSourceBillCode(entity.getCode());
+			projectApplyService.doAdd(apply);
+			
 			List<ApproveUserEntity> userList = approveUserService.findByAppplyType(ApproveUserEntity.PROJECTINFO_TYPE);
 			if(CollectionUtils.isNotEmpty(userList)){
 				for(ApproveUserEntity u:userList){
