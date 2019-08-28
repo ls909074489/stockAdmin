@@ -1,6 +1,5 @@
 package com.king.modules.info.projectinfo;
 
-import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -251,14 +250,10 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 					try {
 						ConvertUtils.register(new DateConverter(null), java.util.Date.class);
 						BeanUtils.copyProperties(desSub, sub);
-					} catch (IllegalAccessException e) {
-						e.printStackTrace();
-					} catch (InvocationTargetException e) {
-						e.printStackTrace();
-					}
+					} catch (Exception e) {e.printStackTrace();}
 					desSub.setFirstRow(i==0?"1":"0");
 					setSubBarcode(subBarcodelist, desSub, i);
-					desSub.setBarcodeHis(desSub.getBarcode());
+//					desSub.setBarcodeHis(desSub.getBarcode());
 					checkStyle(desSub,enumList);
 					desSub.setSurplusAmount(calcSurplusAmount(desSub,streamMap.get(desSub.getUuid())));
 					if(isSearchBarcode){
@@ -270,24 +265,38 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 					}
 				}
 			}else{
-				sub.setFirstRow("1");
-				setSubBarcode(subBarcodelist, sub, 0);
-				if(CollectionUtils.isNotEmpty(subBarcodelist)){
-					barcodeHis = new StringBuilder();
-					for(ProjectSubBarcodeEntity bc:subBarcodelist){
-						barcodeHis.append(bc.getBarcode()).append("数量：").append(bc.getSubAmount()).append("<br>");
-						sub.setBarcodeUuid(bc.getUuid());
-					}
-					sub.setBarcodeHis(barcodeHis.toString());
-				}
-				checkStyle(sub,enumList);
-				sub.setSurplusAmount(calcSurplusAmount(sub,streamMap.get(sub.getUuid())));
-				if(isSearchBarcode){
-					if(sub.getBarcode().contains(custom_search_barcode)){
+				if(CollectionUtils.isEmpty(subBarcodelist)){
+					sub.setFirstRow("1");
+					setSubBarcode(subBarcodelist, sub, 0);
+					checkStyle(sub,enumList);
+					sub.setSurplusAmount(calcSurplusAmount(sub,streamMap.get(sub.getUuid())));
+					if(isSearchBarcode){
+						if(sub.getBarcode().contains(custom_search_barcode)){
+							resultList.add(sub);
+						}
+					}else{
 						resultList.add(sub);
 					}
 				}else{
-					resultList.add(sub);
+					for(int i=0;i<subBarcodelist.size();i++){
+						desSub = new ProjectSubEntity();
+						try {
+							ConvertUtils.register(new DateConverter(null), java.util.Date.class);
+							BeanUtils.copyProperties(desSub, sub);
+						} catch (Exception e) {e.printStackTrace();}
+						desSub.setFirstRow(i==0?"1":"0");
+						setSubBarcode(subBarcodelist, desSub, i);
+//						desSub.setBarcodeHis(desSub.getBarcode());
+						checkStyle(desSub,enumList);
+						desSub.setSurplusAmount(calcSurplusAmount(desSub,streamMap.get(desSub.getUuid())));
+						if(isSearchBarcode){
+							if(desSub.getBarcode().contains(custom_search_barcode)){
+								resultList.add(desSub);
+							}
+						}else{
+							resultList.add(desSub);
+						}
+					}
 				}
 			}
 //			System.out.println(sub.getUuid()+">>"+sub.getSurplusAmount()+">>>>>>>>>>>>"+subActualMap.get(sub.getUuid()));
@@ -325,6 +334,7 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 			sub.setNewUuid(subBarcodelist.get(i).getUuid()+"_"+sub.getUuid());
 			sub.setBarcode(subBarcodelist.get(i).getBarcode());
 			sub.setBarcodeUuid(subBarcodelist.get(i).getUuid());
+			sub.setSubAmount(subBarcodelist.get(i).getSubAmount());
 		}else{
 			sub.setNewUuid(i+"_"+sub.getUuid());
 			sub.setBarcode("");

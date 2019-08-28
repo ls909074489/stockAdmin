@@ -43,7 +43,7 @@
 					<label for="search_GT_surplusCount" class="control-label">库存</label>
 					<select class="yy-input-enumdata form-control" id="search_GT_surplusCount" name="search_GT_surplusCount">
 						<option value="">请选择</option>
-						<option value="1">在库</option>
+						<option value="0">在库</option>
 					</select>
 
 					<button id="yy-btn-search" type="button" class="btn btn-sm btn-info">
@@ -67,7 +67,7 @@
 							<!-- <th>总数量</th> -->
 							<th>库位</th>
 							<th>剩余数量</th>
-							<th>预占数量</th>
+							<!-- <th>预占数量</th> -->
 							<th>可用数量</th>
 						</tr>
 					</thead>
@@ -137,12 +137,12 @@
 				width : "40",
 				className : "center",
 				orderable : false
-			},{
+			}/* ,{
 				data : "occupyAmount",
 				width : "40",
 				className : "center",
 				orderable : false
-			},{
+			} */,{
 				data : "actualAmount",
 				width : "40",
 				className : "center",
@@ -152,7 +152,7 @@
 
 		//var _setOrder = [[5,'desc']];
 		$(document).ready(function() {
-			$("#search_GT_surplusCount").val(1);
+			$("#search_GT_surplusCount").val(0);
 			_queryData = $("#yy-form-query").serializeArray();
 			bindListActions();
 			serverPage(null);

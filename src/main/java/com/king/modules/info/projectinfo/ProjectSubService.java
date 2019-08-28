@@ -152,6 +152,10 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 	@Transactional
 	public ActionResultModel<ProjectSubEntity> updateBarcodePc(String newBarcode, String subId,Long subAmount,String operType) {
 		ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity>();
+		String []idArr = subId.split("_");
+		if(idArr.length>1){
+			subId = idArr[1];
+		}
 		ProjectSubEntity sub = getOne(subId);
 		List<ProjectSubBarcodeEntity> bcList = projectSubBarcodeService.findBySubIdAndBarcode(subId,newBarcode);
 		if(CollectionUtils.isEmpty(bcList)){

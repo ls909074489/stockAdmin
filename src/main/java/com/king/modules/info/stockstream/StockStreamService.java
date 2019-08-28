@@ -91,7 +91,7 @@ public class StockStreamService extends BaseServiceImpl<StockStreamEntity,String
 	}
 
 	public List<StockStreamEntity> findOrderByStockAndMaterial(String stockId, String materialId) {
-		return dao.findOrderByStockAndMaterial(stockId, materialId,StockStreamEntity.BILLTYPE_ORDER);
+		return dao.findOrderByStockAndMaterial(stockId, materialId);//StockStreamEntity.BILLTYPE_ORDER
 	}
 	
 	

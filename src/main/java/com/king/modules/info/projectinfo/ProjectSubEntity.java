@@ -137,8 +137,10 @@ public class ProjectSubEntity extends BaseEntity {
 	private String barcodeUuid="";
 	@Transient
 	private Long receiveAmount=0l;//收货数量
+//	@Transient
+//	private String barcodeHis="";//条码记录
 	@Transient
-	private String barcodeHis="";//条码记录
+	private Long subAmount=0l;
 	
 	public ProjectInfoEntity getMain() {
 		return main;
@@ -373,12 +375,20 @@ public class ProjectSubEntity extends BaseEntity {
 		this.receiveAmount = receiveAmount;
 	}
 
-	public String getBarcodeHis() {
-		return barcodeHis;
+	public Long getSubAmount() {
+		return subAmount;
 	}
 
-	public void setBarcodeHis(String barcodeHis) {
-		this.barcodeHis = barcodeHis;
+	public void setSubAmount(Long subAmount) {
+		this.subAmount = subAmount;
 	}
-	
+
+//	public String getBarcodeHis() {
+//		return barcodeHis;
+//	}
+//
+//	public void setBarcodeHis(String barcodeHis) {
+//		this.barcodeHis = barcodeHis;
+//	}
+//	
 }

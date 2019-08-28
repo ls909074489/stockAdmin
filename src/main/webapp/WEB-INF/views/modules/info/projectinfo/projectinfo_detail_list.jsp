@@ -266,19 +266,37 @@ th,td{
 				width : "80",
 				className : "center",
 				render : function(data, type, full) {
-					if(full.checkStatus=='30'){
-						return '<a onclick="showBarcodeLog(\''+full.uuid+'\');"><span style="color:#e02222;">'+data+'</span></a>';
-					} else if(full.checkStatus=='20'){
-						if(full.barcodeStatus=='30'){
-							return '<a onclick="showBarcodeLog(\''+full.uuid+'\');"><span style="color:#e92810;">'+data+'</span></a>';
+					if(full.limitCount==1){//唯一条码
+						if(full.checkStatus=='30'){//错误的料号
+							return '<a onclick="showBarcodeLog(\''+full.uuid+'\');"><span style="color:#e02222;">'+data+'</span></a>';
+						} else if(full.checkStatus=='20'){//通过的料号
+							if(full.barcodeStatus=='30'){//条码长度不符
+								return '<a onclick="showBarcodeLog(\''+full.uuid+'\');"><span style="color:#e92810;">'+data+'</span></a>';
+							}else{
+								return '<a onclick="showBarcodeLog(\''+full.uuid+'\');"><span style="color:#319430;">'+data+'</span></a>';
+							}
 						}else{
-							return '<a onclick="showBarcodeLog(\''+full.uuid+'\');"><span style="color:#319430;">'+data+'</span></a>';
+							if(full.barcodeStatus=='30'){
+								return '<a onclick="showBarcodeLog(\''+full.uuid+'\');"><span style="color:#e92810;">'+data+'</span></a>';
+							}else{
+								return '<a onclick="showBarcodeLog(\''+full.uuid+'\');">'+data+"</a>";
+							}
 						}
 					}else{
-						if(full.barcodeStatus=='30'){
-							return '<a onclick="showBarcodeLog(\''+full.uuid+'\');"><span style="color:#e92810;">'+data+'</span></a>';
+						if(full.checkStatus=='30'){//错误的料号
+							return '<a onclick="showBarcodeLog(\''+full.uuid+'\');"><span style="color:#e02222;">'+data+'  数量：'+full.subAmount+'</span></a>';
+						} else if(full.checkStatus=='20'){//通过的料号
+							if(full.barcodeStatus=='30'){//条码长度不符
+								return '<a onclick="showBarcodeLog(\''+full.uuid+'\');"><span style="color:#e92810;">'+data+'  数量：'+full.subAmount+'</span></a>';
+							}else{
+								return '<a onclick="showBarcodeLog(\''+full.uuid+'\');"><span style="color:#319430;">'+data+'  数量：'+full.subAmount+'</span></a>';
+							}
 						}else{
-							return '<a onclick="showBarcodeLog(\''+full.uuid+'\');">'+data+"</a>";
+							if(full.barcodeStatus=='30'){
+								return '<a onclick="showBarcodeLog(\''+full.uuid+'\');"><span style="color:#e92810;">'+data+'  数量：'+full.subAmount+'</span></a>';
+							}else{
+								return '<a onclick="showBarcodeLog(\''+full.uuid+'\');">'+data+"  数量："+full.subAmount+"</a>";
+							}
 						}
 					}
 				},
@@ -843,7 +861,8 @@ th,td{
 					if(newBarcodeVal!=null&&newBarcodeVal.indexOf(tr_hwcode)>=0){
 						onCheckBarCode(newBarcodeVal,$(t).attr("rowUuid"),tr_planAmount,tr_limitCount);
 					}else{
-						layer.confirm("条码与华为物料编码不符合，确定要保存吗", function() {
+						layer.confirm("条码与华为物料编码不符合，确定要保存吗", function(index) {
+							layer.close(index);
 							onCheckBarCode(newBarcodeVal,$(t).attr("rowUuid"),tr_planAmount,tr_limitCount);
 						});
 					}
@@ -852,7 +871,8 @@ th,td{
 				if(newBarcodeVal!=null&&newBarcodeVal.indexOf(tr_hwcode)>=0){
 					onCheckBarCode(newBarcodeVal,$(t).attr("rowUuid"),tr_planAmount,tr_limitCount);
 				}else{
-					layer.confirm("条码与华为物料编码不符合，确定要保存吗", function() {
+					layer.confirm("条码与华为物料编码不符合，确定要保存吗", function(index) {
+						layer.close(index);
 						onCheckBarCode(newBarcodeVal,$(t).attr("rowUuid"),tr_planAmount,tr_limitCount);
 					});
 				}

@@ -10,8 +10,11 @@
 	<div id="yy-page" class="container-fluid page-container">
 	<div class="page-content" id="yy-page-list">
 			<div class="row yy-toolbar">
-				<button id="yy-btn-save" class="btn blue btn-sm">
-					<i class="fa fa-chevron-down"></i> 保存
+				<button id="yy-btn-add" class="btn blue btn-sm">
+					<i class="fa fa-plus"></i> 添加
+				</button>
+				<button id="yy-btn-update" class="btn blue btn-sm">
+					<i class="fa fa-edit"></i> 修改
 				</button>
 				<button id="yy-btn-cancel" class="btn blue btn-sm">
 					<i class="fa fa-chevron-down"></i> 取消
@@ -21,6 +24,7 @@
 			<div class="row" style="margin-left: 20px;">
 				<form id="yy-form-edit" >
 					<input name="subId" id="subId" type="text" class="hide" value="${subId}">
+					<input name="operType" id="operType" type="hidden"  value="">
 					<input name="newBarcodeVal" id="newBarcodeVal" type="text" class="hide" value="${newBarcodeVal}">
 					<div>
 						<div style="height: 20px;"></div>
@@ -43,7 +47,12 @@
 				 //验证表单
 				validateForms();
 				 
-				$("#yy-btn-save").bind("click", function() {
+				$("#yy-btn-add").bind("click", function() {
+					$("#operType").val('add');
+					onSave(isClose);
+				});
+				$("#yy-btn-update").bind("click", function() {
+					$("#operType").val('update');
 					onSave(isClose);
 				});
 				
@@ -99,7 +108,7 @@
 			function onSaveBarCode(newBarcodeVal,subId){
 				$.ajax({
 					type : "POST",
-					data :{"newBarcode": newBarcodeVal,"subId":subId,"subAmount":$("#planAmount").val(),"operType":$("operType").val()},
+					data :{"newBarcode": newBarcodeVal,"subId":subId,"subAmount":$("#planAmount").val(),"operType":$("#operType").val()},
 					url : "${serviceurl}/updateBarcodePc",
 					async : true,
 					dataType : "json",
@@ -107,6 +116,8 @@
 						if(data.success){
 							YYUI.succMsg(data.msg);
 							window.parent.onQuery();
+							var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+							parent.layer.close(index); //再执行关闭 
 						}else{
 							YYUI.promAlert(data.msg);
 						}

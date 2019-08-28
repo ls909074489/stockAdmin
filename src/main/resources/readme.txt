@@ -107,7 +107,8 @@ path="/stockAdmin/jlbcuploadfiles/qrcode/temp"/>
 #######################################################################################################
 
 
-	layer.confirm("确认收货将生成入库单，确定要保存吗", function() {
+	layer.confirm("确认收货将生成入库单，确定要保存吗", function(index) {
+					layer.close(index);
 					confirmReceive(isClose);
 				});
 				
