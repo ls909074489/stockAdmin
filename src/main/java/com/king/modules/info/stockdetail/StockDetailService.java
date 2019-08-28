@@ -89,7 +89,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 	
 	
 	@Transactional
-	public void incrStockDetail(OrderInfoEntity orderInfo,List<OrderSubEntity> subList){
+	public void approveOrder(OrderInfoEntity orderInfo,List<OrderSubEntity> subList){
 		StockStreamEntity stream = new StockStreamEntity();
 		
 		StockBaseEntity stockBase = orderInfo.getStock();
@@ -499,13 +499,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 	
 
 	@Transactional
-	public String descStockDetail(ProjectSubEntity sub) {
-		Long subAmount = 0l;
-		if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique){//唯一,每次只出一个
-			subAmount = 1l;
-		}else{
-			subAmount = Math.abs(sub.getPlanAmount());
-		}
+	public String descStockDetail(ProjectSubEntity sub,Long subAmount) {
 		Long streamOutCount = subAmount*-1;
 		ProjectInfoEntity projectInfo = sub.getMain();
 		StockBaseEntity stock = projectInfo.getStock();
@@ -786,6 +780,10 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 						projectSub.setSurplusAmount(projectSub.getSurplusAmount()+log.getActualAmount());
 						
 						hasStream =true;
+						
+//						stream.setShowType("0");
+						StockDetailEntity stockDetail = findByStockAndMaterial(stream.getStock().getUuid(), stream.getMaterial().getUuid());
+						stockDetail.setUpdateType("1");
 					}
 				}
 				if(hasStream){
