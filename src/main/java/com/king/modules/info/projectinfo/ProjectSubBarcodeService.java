@@ -105,4 +105,9 @@ public class ProjectSubBarcodeService extends BaseServiceImpl<ProjectSubBarcodeE
 		}
 		return voList;
 	}
+
+
+	public List<ProjectSubBarcodeEntity> findBySubIdAndBarcode(String subId, String newBarcode) {
+		return dao.findBySubIdAndBarcode(subId,newBarcode);
+	}
 }

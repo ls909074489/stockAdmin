@@ -893,8 +893,16 @@ th,td{
 		
 		function onCheckBarCode(newBarcodeVal,subId,tr_planAmount,tr_limitCount){
 			if(tr_limitCount==-1){//批次
-				layer.confirm("确定领料数量为："+tr_planAmount+"  吗？", function() {
+			  /*layer.confirm("确定领料数量为："+tr_planAmount+"  吗？", function() {
 					onComparetBarcode(newBarcodeVal,subId);
+				}); */
+				layer.open({
+					type : 2,
+					title : '保存条码',
+					shadeClose : false,
+					shade : 0.8,
+					area : [ '600px', '300px' ],
+					content : '${serviceurl}/toConfrimCount?subId='+subId+'&planAmount='+tr_planAmount+'&newBarcodeVal='+newBarcodeVal//iframe的url
 				});
 			}else{
 				onComparetBarcode(newBarcodeVal,subId);
@@ -927,7 +935,7 @@ th,td{
 		function onSaveBarCode(newBarcodeVal,subId){
 			$.ajax({
 				type : "POST",
-				data :{"newBarcode": newBarcodeVal,"newUuid":subId},
+				data :{"newBarcode": newBarcodeVal,"newUuid":subId,"subAmount":1},
 				url : "${serviceurl}/updateBarcode",
 				async : true,
 				dataType : "json",

@@ -238,6 +238,7 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		List<ProjectSubBarcodeEntity> barcodeList = projectSubBarcodeService.findByProjectIds(new ArrayList<String>(projectIdSet));
 		Map<String,List<ProjectSubBarcodeEntity>> barcodeMap = changeToBarcodeMap(barcodeList);
 		List<ProjectSubBarcodeEntity> subBarcodelist = null;
+		StringBuilder barcodeHis = null;
 		for(ProjectSubEntity sub : subList){
 			subBarcodelist = barcodeMap.get(sub.getUuid());
 			if(sub.getSubReceiveType()!=null&&sub.getSubReceiveType().equals(ProjectInfoEntity.receiveType_no)
@@ -257,6 +258,7 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 					}
 					desSub.setFirstRow(i==0?"1":"0");
 					setSubBarcode(subBarcodelist, desSub, i);
+					desSub.setBarcodeHis(desSub.getBarcode());
 					checkStyle(desSub,enumList);
 					desSub.setSurplusAmount(calcSurplusAmount(desSub,streamMap.get(desSub.getUuid())));
 					if(isSearchBarcode){
@@ -270,6 +272,14 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 			}else{
 				sub.setFirstRow("1");
 				setSubBarcode(subBarcodelist, sub, 0);
+				if(CollectionUtils.isNotEmpty(subBarcodelist)){
+					barcodeHis = new StringBuilder();
+					for(ProjectSubBarcodeEntity bc:subBarcodelist){
+						barcodeHis.append(bc.getBarcode()).append("数量：").append(bc.getSubAmount()).append("<br>");
+						sub.setBarcodeUuid(bc.getUuid());
+					}
+					sub.setBarcodeHis(barcodeHis.toString());
+				}
 				checkStyle(sub,enumList);
 				sub.setSurplusAmount(calcSurplusAmount(sub,streamMap.get(sub.getUuid())));
 				if(isSearchBarcode){
@@ -314,6 +324,7 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		if(i<subBarcodelist.size()){
 			sub.setNewUuid(subBarcodelist.get(i).getUuid()+"_"+sub.getUuid());
 			sub.setBarcode(subBarcodelist.get(i).getBarcode());
+			sub.setBarcodeUuid(subBarcodelist.get(i).getUuid());
 		}else{
 			sub.setNewUuid(i+"_"+sub.getUuid());
 			sub.setBarcode("");
@@ -407,7 +418,7 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 	
 	@ResponseBody
 	@RequestMapping(value = "/updateBarcode")
-	public ActionResultModel<ProjectSubEntity> updateBarcode(ServletRequest request,String newUuid,String newBarcode) {
+	public ActionResultModel<ProjectSubEntity> updateBarcode(ServletRequest request,String newUuid,String newBarcode,Long subAmount) {
 		ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity>();
 		boolean hasPri = approveUserService.checkIsApproveUser(ShiroUser.getCurrentUserEntity(), ApproveUserEntity.PROJECTINFO_TYPE);
 		if(!hasPri){
@@ -416,7 +427,7 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 			return arm;
 		}
 		try {
-			arm = projectSubService.updateBarcode(newBarcode,newUuid);
+			arm = projectSubService.updateBarcode(newBarcode,newUuid,subAmount);
 		} catch (Exception e) {
 			e.printStackTrace();
 			arm.setSuccess(false);
@@ -426,7 +437,42 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		return arm;
 	}
 	
+	/**
+	 * 保存条码-批次
+	 * @param request
+	 * @param newUuid
+	 * @param newBarcode
+	 * @param subAmount
+	 * @param operType 添加add 修改update
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/updateBarcodePc")
+	public ActionResultModel<ProjectSubEntity> updateBarcodePc(ServletRequest request,String subId,String newBarcode,Long subAmount,String operType) {
+		ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity>();
+		boolean hasPri = approveUserService.checkIsApproveUser(ShiroUser.getCurrentUserEntity(), ApproveUserEntity.PROJECTINFO_TYPE);
+		if(!hasPri){
+			arm.setSuccess(false);
+			arm.setMsg("您不是审核用户，不能进行操作.");
+			return arm;
+		}
+		try {
+			arm = projectSubService.updateBarcodePc(newBarcode,subId,subAmount,operType);
+		} catch (Exception e) {
+			e.printStackTrace();
+			arm.setSuccess(false);
+			arm.setMsg("操作失败："+e.getMessage());
+			return arm;
+		}
+		return arm;
+	}
 	
+	/**
+	 * 撤销出库
+	 * @param request
+	 * @param newUuid
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/unOutBySub")
 	public ActionResultModel<ProjectSubEntity> unOutBySub(ServletRequest request,String newUuid) {
@@ -469,5 +515,19 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 	@RequestMapping(value = "/updateLimitCount")
 	public ActionResultModel<ProjectSubEntity> updateLimitCount(ServletRequest request,String subId,int limitCount) {
 		return projectSubService.updateLimitCount(limitCount,subId);
+	}
+	
+	/**
+	 * 保存条码确定数量
+	 * @param model
+	 * @param subId
+	 * @return
+	 */
+	@RequestMapping("/toConfrimCount")
+	public String toConfrimCount(Model model,String subId,Long planAmount,String newBarcodeVal) {
+		model.addAttribute("subId", subId);
+		model.addAttribute("planAmount", planAmount);
+		model.addAttribute("newBarcodeVal", newBarcodeVal);
+		return "modules/info/projectinfo/projectinfo_sub_confirm_count";
 	}
 }

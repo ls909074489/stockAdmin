@@ -97,45 +97,10 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 	 * @return
 	 */
 	@Transactional
-	public ActionResultModel<ProjectSubEntity> updateBarcode(String newBarcode, String newUuid) {
+	public ActionResultModel<ProjectSubEntity> updateBarcode(String newBarcode, String newUuid,Long subAmount) {
 		ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity>();
 		String []idArr = newUuid.split("_");
 		ProjectSubEntity sub = getOne(idArr[1]);
-//		String barcodeJson = sub.getBarcodejson();
-//		List<ProjectBarcodeVo> blist = new ArrayList<>();
-//		if(!StringUtils.isEmpty(barcodeJson)){
-//			blist = JSON.parseArray(barcodeJson, ProjectBarcodeVo.class);
-//		}
-//		if(checkHasStream(idArr[0])){
-//			boolean hasFound = false;
-//			for(ProjectBarcodeVo vo:blist){
-//				if(vo.getUuid().equals(idArr[0])){
-//					vo.setBc(newBarcode);
-//					hasFound =true;
-//					break;
-//				}
-//			}
-//			if(!hasFound){
-//				throw new ServiceException("没有对应的条码明细");
-//			}
-//		}else{//没有流水的
-//			//扫码时出库
-//			String streamId = stockDetailService.descStockDetail(sub);
-//			blist.add(new ProjectBarcodeVo(streamId, newBarcode));
-//			
-//			ProjectSubBarcodeEntity subBc = new ProjectSubBarcodeEntity();
-//			ProjectInfoBaseEntity main = new ProjectInfoBaseEntity();
-//			main.setUuid(sub.getMain().getUuid());
-//			subBc.setMain(main);
-//			ProjectSubBaseEntity subBase = new ProjectSubBaseEntity();
-//			subBase.setUuid(sub.getUuid());
-//			subBc.setSub(subBase);
-//			subBc.setBarcode(newBarcode);
-//			subBc.setStreamId(streamId);
-//			projectSubBarcodeService.doAdd(subBc);
-//		}
-//		sub.setBarcode(blist.get(0).getBc());
-//		sub.setBarcodejson(JSON.toJSONString(blist));
 		
 		if(checkHasStream(idArr[0])){//已经出库的
 			ProjectSubBarcodeEntity bc = projectSubBarcodeService.getOne(idArr[0]);
@@ -144,7 +109,12 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 			}
 			bc.setBarcode(newBarcode);
 		}else{//扫码时出库
-			String streamId = stockDetailService.descStockDetail(sub);
+			if(sub.getLimitCount()==MaterialBaseEntity.limitCount_unique){//唯一,每次只出一个
+				subAmount = 1l;
+			}else{
+				subAmount = Math.abs(subAmount);
+			}
+			String streamId = stockDetailService.descStockDetail(sub,subAmount);
 			
 			ProjectSubBarcodeEntity subBc = new ProjectSubBarcodeEntity();
 			ProjectInfoBaseEntity main = new ProjectInfoBaseEntity();
@@ -155,6 +125,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 			subBc.setSub(subBase);
 			subBc.setBarcode(newBarcode);
 			subBc.setStreamId(streamId);
+			subBc.setSubAmount(subAmount);
 			projectSubBarcodeService.doAdd(subBc);
 		}
 		//保存条码日志
@@ -168,6 +139,60 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 		arm.setMsg("操作成功");
 		return arm;
 	}
+	
+	
+	/**
+	 * 保存批次
+	 * @param newBarcode
+	 * @param subId
+	 * @param subAmount
+	 * @param operType  添加add 修改update
+	 * @return
+	 */
+	@Transactional
+	public ActionResultModel<ProjectSubEntity> updateBarcodePc(String newBarcode, String subId,Long subAmount,String operType) {
+		ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity>();
+		ProjectSubEntity sub = getOne(subId);
+		List<ProjectSubBarcodeEntity> bcList = projectSubBarcodeService.findBySubIdAndBarcode(subId,newBarcode);
+		if(CollectionUtils.isEmpty(bcList)){
+			subAmount = Math.abs(subAmount);
+			String streamId = stockDetailService.descStockDetail(sub,subAmount);
+			
+			ProjectSubBarcodeEntity subBc = new ProjectSubBarcodeEntity();
+			ProjectInfoBaseEntity main = new ProjectInfoBaseEntity();
+			main.setUuid(sub.getMain().getUuid());
+			subBc.setMain(main);
+			ProjectSubBaseEntity subBase = new ProjectSubBaseEntity();
+			subBase.setUuid(sub.getUuid());
+			subBc.setSub(subBase);
+			subBc.setBarcode(newBarcode);
+			subBc.setStreamId(streamId);
+			subBc.setSubAmount(subAmount);
+			projectSubBarcodeService.doAdd(subBc);
+		}else{
+			ProjectSubBarcodeEntity bc = bcList.get(0);
+			if(operType.equals("update")){
+				bc.setSubAmount(subAmount);
+			}else {
+				bc.setSubAmount(bc.getSubAmount()+subAmount);
+			}
+			stockDetailService.unOutBySub(bc.getStreamId());//插销出库
+			
+			String streamId = stockDetailService.descStockDetail(sub,bc.getSubAmount());
+			bc.setStreamId(streamId);
+		}
+		//保存条码日志
+		ProjectBarcodeLogEntity barcodeLog = new ProjectBarcodeLogEntity();
+		barcodeLog.setProjectId(sub.getMain().getUuid());
+		barcodeLog.setProjectSubId(sub.getUuid());
+		barcodeLog.setBarcode(newBarcode);
+		projectBarcodeLogService.doAdd(barcodeLog);
+		
+		arm.setSuccess(true);
+		arm.setMsg("操作成功");
+		return arm;
+	}
+	
 
 	
 	@Transactional

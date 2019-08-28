@@ -85,7 +85,7 @@ public class OrderInfoService extends SuperServiceImpl<OrderInfoEntity,String> {
 	@Override
 	public void afterApprove(OrderInfoEntity entity) throws ServiceException {
 		List<OrderSubEntity>  subList = orderSubService.findByMain(entity.getUuid());
-		stockDetailService.incrStockDetail(entity, subList);
+		stockDetailService.approveOrder(entity, subList);
 		super.afterApprove(entity);
 	}
 

@@ -120,7 +120,7 @@ public class StockStreamEntity extends BaseEntity {
 	
 	@MetaData(value = "是否显示")
 	@Column(length = 1)
-	private String showType="1";//0不现实 1：显示
+	private String showType="1";//0不显示 1：显示
 	
 	
 //	@MetaData(value = "总数量")

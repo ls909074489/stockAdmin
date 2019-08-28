@@ -41,6 +41,9 @@ public class ProjectSubBarcodeEntity extends BaseEntity {
 	@Column(name = "stream_id",length=36)
 	private String streamId="";
 	
+	@Column
+	private Long subAmount;
+	
 	@Transient
 	private String mainId;
 	
@@ -97,6 +100,13 @@ public class ProjectSubBarcodeEntity extends BaseEntity {
 	public void setMainId(String mainId) {
 		this.mainId = mainId;
 	}
-	
+
+	public Long getSubAmount() {
+		return subAmount;
+	}
+
+	public void setSubAmount(Long subAmount) {
+		this.subAmount = subAmount;
+	}
 	
 }
