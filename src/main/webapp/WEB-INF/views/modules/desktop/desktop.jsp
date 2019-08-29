@@ -284,7 +284,6 @@
 				"url" : "${ctx}/info/apply/query",
 				"async" : false,
 				"success" : function(data) {
-					console.info(data);
 					if (data.success) {
 						var records = data.records;
 						var str="";
