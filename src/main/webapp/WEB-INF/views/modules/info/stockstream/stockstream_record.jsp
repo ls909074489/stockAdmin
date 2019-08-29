@@ -50,8 +50,8 @@
 							<th>单据类型</th>
 							<th>总数量</th>
 							<th>剩余数量</th>
-							<th>预占数量</th>
-							<th>可用数量</th>
+							<!-- <th>预占数量</th>
+							<th>可用数量</th> -->
 							<th>预警时间</th>
 							<th>备注</th>
 							<!-- <th>预警状态</th> -->
@@ -106,7 +106,7 @@
 				width : "60",
 				className : "center",
 				orderable : false
-			},{
+			}/* ,{
 				data : "occupyAmount",
 				width : "100",
 				className : "center",
@@ -116,7 +116,7 @@
 				width : "100",
 				className : "center",
 				orderable : false
-			},{
+			} */,{
 				data : "warningTime",
 				width : "60",
 				className : "center",

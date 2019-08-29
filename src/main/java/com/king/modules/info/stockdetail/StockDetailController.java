@@ -41,7 +41,6 @@ import com.king.frame.controller.QueryRequest;
 import com.king.frame.service.BaseServiceImpl;
 import com.king.frame.service.IService;
 import com.king.frame.utils.RequestUtil;
-import com.king.modules.info.projectinfo.ProjectSubEntity;
 import com.king.modules.info.stockstream.StockStreamEntity;
 import com.king.modules.info.stockstream.StockStreamService;
 import com.king.modules.sys.imexlate.ImexlateSubEntity;
@@ -107,14 +106,6 @@ public class StockDetailController extends BaseController<StockDetailEntity> {
 
 	@RequestMapping("/search")
 	public String search(Model model) {
-		if(ParameterUtil.getParamValue("syncStockDetail", "0").equals("1")){
-			try {
-				calUpdateStockDetail();
-			} catch (Exception e) {
-				logger.error("list 计算库存出错》》》》"+e.getMessage());
-				e.printStackTrace();
-			}
-		}
 		return "modules/info/stockdetail/stockdetail_search";
 	}
 
@@ -134,7 +125,14 @@ public class StockDetailController extends BaseController<StockDetailEntity> {
 
 	@Override
 	protected ActionResultModel<StockDetailEntity> execQuery(QueryRequest<StockDetailEntity> qr, IService service) {
-		
+		if(ParameterUtil.getParamValue("syncStockDetail", "0").equals("1")){
+			try {
+				calUpdateStockDetail();
+			} catch (Exception e) {
+				logger.error("list 计算库存出错》》》》"+e.getMessage());
+				e.printStackTrace();
+			}
+		}
 		ActionResultModel<StockDetailEntity> arm = super.execQuery(qr, service);
 		List<StockDetailEntity> list = arm.getRecords();
 		if (CollectionUtils.isNotEmpty(list)) {
@@ -237,14 +235,6 @@ public class StockDetailController extends BaseController<StockDetailEntity> {
 	 */
 	@RequestMapping("/list")
 	public String listView(Model model) {
-		if(ParameterUtil.getParamValue("syncStockDetail", "0").equals("1")){
-			try {
-				calUpdateStockDetail();
-			} catch (Exception e) {
-				logger.error("list 计算库存出错》》》》"+e.getMessage());
-				e.printStackTrace();
-			}
-		}
 		return "modules/info/stockdetail/stockdetail_list";
 	}
 	

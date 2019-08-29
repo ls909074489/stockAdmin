@@ -159,7 +159,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 					for(StockStreamEntity stream:streamList){
 						if(stream.getSurplusAmount()<stream.getTotalAmount()){
 							throw new ServiceException("物料编码："+stream.getMaterial().getCode()+
-									",华为编码："+stream.getMaterial().getHwcode()+" 已使用(剩余数量小于总数量)，不能删除");
+									"["+stream.getMaterial().getHwcode()+"] 已使用(剩余数量小于总数量)，不能删除");
 						}
 					}
 					streamService.delete(streamList);

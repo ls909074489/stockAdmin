@@ -237,7 +237,7 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		List<ProjectSubBarcodeEntity> barcodeList = projectSubBarcodeService.findByProjectIds(new ArrayList<String>(projectIdSet));
 		Map<String,List<ProjectSubBarcodeEntity>> barcodeMap = changeToBarcodeMap(barcodeList);
 		List<ProjectSubBarcodeEntity> subBarcodelist = null;
-		StringBuilder barcodeHis = null;
+//		StringBuilder barcodeHis = null;
 		for(ProjectSubEntity sub : subList){
 			subBarcodelist = barcodeMap.get(sub.getUuid());
 			if(sub.getSubReceiveType()!=null&&sub.getSubReceiveType().equals(ProjectInfoEntity.receiveType_no)

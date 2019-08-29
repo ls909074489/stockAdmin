@@ -858,6 +858,7 @@ th,td{
 			}
 			if(showLengthConfirm){
 				layer.confirm(jsonResp[i].enumdataname+'限制长度为'+limitLength+',确定要保存吗', function(index) {
+					layer.close(index);
 					if(newBarcodeVal!=null&&newBarcodeVal.indexOf(tr_hwcode)>=0){
 						onCheckBarCode(newBarcodeVal,$(t).attr("rowUuid"),tr_planAmount,tr_limitCount);
 					}else{

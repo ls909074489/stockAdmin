@@ -351,19 +351,37 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 					}else{
 						desSub.setBarcode("");
 					}
-//					checkStyle(desSub,enumList);
 					resultList.add(desSub);
 				}
 			}else{
-//				checkStyle(sub,enumList);
-				sub.setNewUuid("0_"+sub.getUuid());
-				sub.setFirstRow("1");
-				if(subBarcodelist!=null&&subBarcodelist.size()>0){
-					sub.setBarcode(subBarcodelist.get(0).getBarcode());
-				}else{
+//				sub.setNewUuid("0_"+sub.getUuid());
+//				sub.setFirstRow("1");
+//				if(subBarcodelist!=null&&subBarcodelist.size()>0){
+//					sub.setBarcode(subBarcodelist.get(0).getBarcode());
+//				}else{
+//					sub.setBarcode("");
+//				}
+//				resultList.add(sub);
+				
+				if(CollectionUtils.isEmpty(subBarcodelist)){
+					sub.setFirstRow("1");
 					sub.setBarcode("");
+					checkStyle(sub,enumList);
+					resultList.add(sub);
+				}else{
+					for(int i=0;i<subBarcodelist.size();i++){
+						desSub = new ProjectSubEntity();
+						try {
+							ConvertUtils.register(new DateConverter(null), java.util.Date.class);
+							BeanUtils.copyProperties(desSub, sub);
+						} catch (Exception e) {e.printStackTrace();}
+						desSub.setFirstRow(i==0?"1":"0");
+						desSub.setBarcode(subBarcodelist.get(i).getBarcode());
+//						desSub.setBarcodeHis(desSub.getBarcode());
+						checkStyle(desSub,enumList);
+						resultList.add(desSub);
+					}
 				}
-				resultList.add(sub);
 			}
 		}
 		int rownum=0;
@@ -487,6 +505,10 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 			arm.setSuccess(true);
 			arm.setMsg("没有重复的条码");
 			return arm;
+		}
+		String []arr = subId.split("_");
+		if(arr.length>1){
+			subId = arr[0];
 		}
 		if(searchBarcodeList.size()==1&&searchBarcodeList.get(0).getUuid().equals(subId)){
 			arm.setSuccess(true);

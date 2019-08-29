@@ -102,6 +102,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			stream.setSourceId(orderInfo.getUuid());
 			stream.setSourceBillCode(orderInfo.getCode());
 			stream.setSourceSubId(sub.getUuid());
+			stream.setProjectSubId("xxx-xxx");
 			stream.setStock(stockBase);
 			MaterialBaseEntity material = new MaterialBaseEntity();
 			material.setUuid(sub.getMaterial().getUuid());
