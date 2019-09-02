@@ -103,6 +103,10 @@ public class ProjectSubEntity extends BaseEntity {
 	@Column(length = 2)
 	private String subReceiveType="0";
 	
+	@Column()
+	private Long receiveAmount=0l;//最后收货数量
+	
+	
 	@Transient
 	private String materialId;
 
@@ -135,8 +139,7 @@ public class ProjectSubEntity extends BaseEntity {
 	private String materialPurchaseType="";//采购模式
 	@Transient
 	private String barcodeUuid="";
-	@Transient
-	private Long receiveAmount=0l;//收货数量
+
 //	@Transient
 //	private String barcodeHis="";//条码记录
 	@Transient

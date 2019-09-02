@@ -310,6 +310,15 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 			}
 			resultList = barcodeNullList;
 		}
+		if(checkVal!=null&&checkVal.equals("3")){//欠料查询（收货数量和计划数量不相等）
+			List<ProjectSubEntity> noEqualList = new ArrayList<>();
+			for(ProjectSubEntity sub:resultList){
+				if(sub.getActualAmount()==null||sub.getPlanAmount()!=sub.getActualAmount()){
+					noEqualList.add(sub);
+				}
+			}
+			resultList = noEqualList;
+		}
 		arm.setRecords(resultList);
 		if(StringUtils.isNotEmpty(mainId)){
 			arm.setTotal(resultList.size());

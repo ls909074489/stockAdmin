@@ -83,6 +83,9 @@ th,td{
 					<button id="yy-btn-check-repeat" class="btn green btn-sm btn-info">
 						<i class="fa fa-files-o"></i> 一键查重
 					</button>
+					<button id="yy-btn-check-unequal" class="btn green btn-sm btn-info">
+						<i class="fa fa-files-o"></i> 欠料查询
+					</button>
 					
 					
 					<button id="yy-btn-export-pks" queryformid="yy-form-query" class="btn green btn-sm btn-info">
@@ -284,18 +287,18 @@ th,td{
 						}
 					}else{
 						if(full.checkStatus=='30'){//错误的料号
-							return '<a onclick="showBarcodeLog(\''+full.uuid+'\');"><span style="color:#e02222;">'+data+'  数量：'+full.subAmount+'</span></a>';
+							return '<a onclick="showBarcodeLog(\''+full.uuid+'\');"><span style="color:#e02222;">'+data+'<br>数量：'+full.subAmount+'</span></a>';
 						} else if(full.checkStatus=='20'){//通过的料号
 							if(full.barcodeStatus=='30'){//条码长度不符
-								return '<a onclick="showBarcodeLog(\''+full.uuid+'\');"><span style="color:#e92810;">'+data+'  数量：'+full.subAmount+'</span></a>';
+								return '<a onclick="showBarcodeLog(\''+full.uuid+'\');"><span style="color:#e92810;">'+data+'<br>数量：'+full.subAmount+'</span></a>';
 							}else{
-								return '<a onclick="showBarcodeLog(\''+full.uuid+'\');"><span style="color:#319430;">'+data+'  数量：'+full.subAmount+'</span></a>';
+								return '<a onclick="showBarcodeLog(\''+full.uuid+'\');"><span style="color:#319430;">'+data+'<br>数量：'+full.subAmount+'</span></a>';
 							}
 						}else{
 							if(full.barcodeStatus=='30'){
-								return '<a onclick="showBarcodeLog(\''+full.uuid+'\');"><span style="color:#e92810;">'+data+'  数量：'+full.subAmount+'</span></a>';
+								return '<a onclick="showBarcodeLog(\''+full.uuid+'\');"><span style="color:#e92810;">'+data+'<br>数量：'+full.subAmount+'</span></a>';
 							}else{
-								return '<a onclick="showBarcodeLog(\''+full.uuid+'\');">'+data+"  数量："+full.subAmount+"</a>";
+								return '<a onclick="showBarcodeLog(\''+full.uuid+'\');">'+data+"<br>数量："+full.subAmount+"</a>";
 							}
 						}
 					}
@@ -450,7 +453,7 @@ th,td{
 						if(full.subReceiveType=="1"){
 							return "<a onclick=\"showReceiveLog(\'"+full.uuid+"\');\">"+full.actualAmount+"</a>";
 						}else{
-							return '<input class="form-control" value="'+ data + '" name="receiveAmount"  onchange="changeReceiveAmount(this);">';
+							return '<input class="form-control" value="'+ data + '" name="receiveAmount"  onchange="changeReceiveAmount(this);"  onkeyup="keyUpRecieve(this);">';
 						}
 					}else{
 						return '';
@@ -534,7 +537,7 @@ th,td{
 								appendReceiveStr = '<button class="btn btn-xs btn-info" onclick="appendLog(\''+data+'\');" data-rel="tooltip" title="添加收货记录"><i class="fa fa-edit"></i>添加收货记录</button>';
 							}
 						}else{
-							appendReceiveStr = '<button class="btn btn-xs btn-info" onclick="saveSubReceive(this);"  data-rel="tooltip" title="确认收货"><i class="fa fa-edit"></i>确认收货</button>';
+							appendReceiveStr = '<button class="btn btn-xs btn-info saveSubReceiveCLs" onclick="saveSubReceive(this);"  data-rel="tooltip" title="确认收货"><i class="fa fa-edit"></i>确认收货</button>';
 						}
 						return "<div class='yy-btn-actiongroup'>"
 						+ appendReceiveStr
@@ -561,6 +564,14 @@ th,td{
 					t_receiveTimeEle.val("${curDate}");
 				}
 			}
+		}
+		
+		//回车确认收货
+		function keyUpRecieve(e){
+			if(e.keyCode == "13") {
+				console.info("keyUpRecieve>>>>>>>>>>>>>>>");
+				 $(e).closest("tr").find(".saveSubReceiveCLs").click();
+	        }
 		}
 		
 		//var _setOrder = [[5,'desc']];
@@ -595,6 +606,9 @@ th,td{
 			});
 			$("#yy-btn-check-repeat").bind("click", function() {
 				checkRepeatBarcode();
+			});
+			$("#yy-btn-check-unequal").bind("click", function() {
+				checkUnEqualAmount();
 			});
 			
 			
@@ -1261,6 +1275,26 @@ th,td{
 			onQuery();
 			$("#checkVal").val("");
 		}
+		
+		
+		//欠料查询
+		function checkUnEqualAmount(){
+			var t_projectId = $("#search_LIKE_mainId").val();
+			console.info(">>>>>>>>>>>>"+t_projectId);
+			if(t_projectId==null||t_projectId==''){
+				YYUI.promMsg("请选择项目");
+				return false;
+			}
+			if($("#projectInfoId").val()!=$("#search_LIKE_mainId").val()){
+				YYUI.promMsg("请选择项目进行查询");
+				return false;
+			}
+			//onReset();
+			$("#checkVal").val("3");
+			onQuery();
+			$("#checkVal").val("");
+		}
+		
 		
 		
 		//校验子表
