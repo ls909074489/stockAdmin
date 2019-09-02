@@ -281,6 +281,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 			List<String> hwcodeList = new ArrayList<>();
 			List<String> repeatCode = new ArrayList<>();
 			String distinctCode = "";
+			//receiveTime	barcode	receiveAmount
 			if (!ExcelDataUtil.EMPTY.equals(postfix)) {
 				is = file.getInputStream();
 				if (ExcelDataUtil.OFFICE_EXCEL_2003_POSTFIX.equals(postfix)) {
