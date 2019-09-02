@@ -159,6 +159,9 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 		ProjectSubEntity sub = getOne(subId);
 		List<ProjectSubBarcodeEntity> bcList = projectSubBarcodeService.findBySubIdAndBarcode(subId,newBarcode);
 		if(CollectionUtils.isEmpty(bcList)){
+			if(operType.equals("back")){//退料
+				throw new ServiceException("条码未出库不能退料");
+			}
 			subAmount = Math.abs(subAmount);
 			String streamId = stockDetailService.descStockDetail(sub,subAmount);
 			
@@ -175,15 +178,28 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 			projectSubBarcodeService.doAdd(subBc);
 		}else{
 			ProjectSubBarcodeEntity bc = bcList.get(0);
-			if(operType.equals("update")){
+			if(operType.equals("update")){//修改
 				bc.setSubAmount(subAmount);
-			}else {
+				stockDetailService.unOutBySub(bc.getStreamId());//撤销出库
+				String streamId = stockDetailService.descStockDetail(sub,bc.getSubAmount());
+				bc.setStreamId(streamId);
+			}else if(operType.equals("back")){//退料
+				if((bc.getSubAmount()-subAmount)<0){
+					throw new ServiceException("条码"+bc.getBarcode()+"出库数量为"+bc.getSubAmount()+"小于退料数量"+subAmount+"，不能退料");
+				}else if((bc.getSubAmount()-subAmount)==0){
+					stockDetailService.unOutBySub(bc.getStreamId());//撤销出库
+				}else{
+					bc.setSubAmount(bc.getSubAmount()-subAmount);
+					stockDetailService.unOutBySub(bc.getStreamId());//撤销出库
+					String streamId = stockDetailService.descStockDetail(sub,bc.getSubAmount());
+					bc.setStreamId(streamId);
+				}
+			}else {//add
 				bc.setSubAmount(bc.getSubAmount()+subAmount);
+				stockDetailService.unOutBySub(bc.getStreamId());//撤销出库
+				String streamId = stockDetailService.descStockDetail(sub,bc.getSubAmount());
+				bc.setStreamId(streamId);
 			}
-			stockDetailService.unOutBySub(bc.getStreamId());//插销出库
-			
-			String streamId = stockDetailService.descStockDetail(sub,bc.getSubAmount());
-			bc.setStreamId(streamId);
 		}
 		//保存条码日志
 		ProjectBarcodeLogEntity barcodeLog = new ProjectBarcodeLogEntity();

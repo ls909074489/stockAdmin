@@ -453,7 +453,7 @@ th,td{
 						if(full.subReceiveType=="1"){
 							return "<a onclick=\"showReceiveLog(\'"+full.uuid+"\');\">"+full.actualAmount+"</a>";
 						}else{
-							return '<input class="form-control" value="'+ data + '" name="receiveAmount"  onchange="changeReceiveAmount(this);"  onkeyup="keyUpRecieve(this);">';
+							return '<input class="form-control" value="'+ data + '" name="receiveAmount"  onchange="changeReceiveAmount(this);"  onkeyup="keyUpRecieve(event,this);">';
 						}
 					}else{
 						return '';
@@ -567,10 +567,9 @@ th,td{
 		}
 		
 		//回车确认收货
-		function keyUpRecieve(e){
+		function keyUpRecieve(e,t){
 			if(e.keyCode == "13") {
-				console.info("keyUpRecieve>>>>>>>>>>>>>>>");
-				 $(e).closest("tr").find(".saveSubReceiveCLs").click();
+				 $(t).closest("tr").find(".saveSubReceiveCLs").click();
 	        }
 		}
 		

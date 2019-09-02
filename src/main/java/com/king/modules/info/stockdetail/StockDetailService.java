@@ -544,7 +544,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 //			}
 //		}
 		if(subAmount>0){
-			throw new ServiceException("库存物料"+sub.getMaterial().getCode()+"流水不足");
+			throw new ServiceException("库存物料"+sub.getMaterial().getCode()+"["+sub.getMaterial().getHwcode()+"]流水不足");
 		}
 		StockDetailEntity detail  = findByStockAndMaterial(stock.getUuid(),sub.getMaterial().getUuid());
 		stream.setTotalAmount(streamOutCount);

@@ -62,9 +62,9 @@ public class ProjectSubBarcodeService extends BaseServiceImpl<ProjectSubBarcodeE
 	public List<ProjectSubBarcodeEntity> findLikeBarcode(String projectId,String barcode) {
 		
 		if(StringUtils.isEmpty(projectId)){
-			return dao.findLikeBarcode(barcode);
+			return dao.findLikeBarcode("%"+barcode+"%");
 		}else{
-			return dao.findProjectLikeBarcode(projectId, barcode);
+			return dao.findProjectLikeBarcode(projectId, "%"+barcode+"%");
 		}
 	}
 	

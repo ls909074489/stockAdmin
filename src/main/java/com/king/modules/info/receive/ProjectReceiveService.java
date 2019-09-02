@@ -330,6 +330,11 @@ public class ProjectReceiveService extends BaseServiceImpl<ProjectReceiveEntity,
 			receiveList.add(entity);
 			stockDetailService.descStockDetailOnReceive(sub.getMain(), receiveList);
 		}
+		sub.setReceiveAmount(entity.getReceiveAmount());
+		sub.setReceiveTime(entity.getReceiveTime());
+		sub.setWarningTime(entity.getWarningTime());
+		sub.setReceiveMemo(entity.getMemo());
+		
 		Long receiveCount = getReceiveCount(sub.getUuid());
 		if(receiveCount>=sub.getPlanAmount()){
 			sub.setSubReceiveType(ProjectInfoEntity.receiveType_yes);

@@ -446,6 +446,9 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 			return arm;
 		}
 		try {
+			if(newBarcode!=null){
+				newBarcode = newBarcode.trim();
+			}
 			arm = projectSubService.updateBarcode(newBarcode,newUuid,subAmount);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -476,6 +479,9 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 			return arm;
 		}
 		try {
+			if(newBarcode!=null){
+				newBarcode = newBarcode.trim();
+			}
 			arm = projectSubService.updateBarcodePc(newBarcode,subId,subAmount,operType);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -546,6 +552,9 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 	public String toConfrimCount(Model model,String subId,Long planAmount,String newBarcodeVal) {
 		model.addAttribute("subId", subId);
 		model.addAttribute("planAmount", planAmount);
+		if(newBarcodeVal!=null){
+			newBarcodeVal = newBarcodeVal.trim();
+		}
 		model.addAttribute("newBarcodeVal", newBarcodeVal);
 		return "modules/info/projectinfo/projectinfo_sub_confirm_count";
 	}

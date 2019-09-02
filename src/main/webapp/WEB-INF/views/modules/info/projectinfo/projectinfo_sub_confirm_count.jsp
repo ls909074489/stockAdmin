@@ -19,17 +19,25 @@
 				<button id="yy-btn-cancel" class="btn blue btn-sm">
 					<i class="fa fa-chevron-down"></i> 取消
 				</button>
+				<button id="yy-btn-back" class="btn blue btn-sm">
+					<i class="fa fa-reply"></i> 退料
+				</button>
 			</div>
 			
 			<div class="row" style="margin-left: 20px;">
 				<form id="yy-form-edit" >
 					<input name="subId" id="subId" type="text" class="hide" value="${subId}">
 					<input name="operType" id="operType" type="hidden"  value="">
-					<input name="newBarcodeVal" id="newBarcodeVal" type="text" class="hide" value="${newBarcodeVal}">
 					<div>
 						<div style="height: 20px;"></div>
 						<table>
 							<tr>
+								<td style="">新条码&nbsp;&nbsp;&nbsp;&nbsp;</td>
+								<td>
+									<input name="newBarcodeVal" id="newBarcodeVal" type="text" value="${newBarcodeVal}" class="form-control" readonly="readonly">
+								</td>
+							</tr>
+							<tr style="height: 50px;">
 								<td style="color: #e02222;">确定领料数量&nbsp;&nbsp;&nbsp;&nbsp;</td>
 								<td>
 									<input name="planAmount" id="planAmount" type="text" value="${planAmount}" class="form-control">
@@ -55,6 +63,12 @@
 					$("#operType").val('update');
 					onSave(isClose);
 				});
+				
+				$("#yy-btn-back").bind("click", function() {
+					$("#operType").val('back');
+					onSave(isClose);
+				});
+				
 				
 				$("#yy-btn-cancel").bind('click', onConfirmCancel);
 				 

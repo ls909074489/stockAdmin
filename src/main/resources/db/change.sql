@@ -349,5 +349,11 @@ INSERT INTO `yy_parameter` (`uuid`, `status`, `defaultvalue`, `description`, `gr
 2019/8/26
  alter table yy_stock_stream add index idx_stream_stockdetailid(stock_detail_id) ;
 
+ 
+ 2019/9/02
+INSERT INTO `stock_admin`.`yy_imexlate_sub` (`uuid`, `create_time`, `createtime`, `creator`, `creatorname`, `modifier`, `modifiername`, `modify_time`, `modifytime`, `status`, `chinese_field`, `export_cell_num`, `field_name`, `is_main_field`, `template_id`, `ts`, `enumdata`, `isnotempty`, `qualified_value`, `datatype`, `column_width`) VALUES ('1c6d316e-c025-45cd-8c8e-2c1f01326b42', NULL, '2019-09-02 22:15:28', '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', '超级系统管理员', NULL, NULL, NULL, NULL, '1', '收货时间', 'I', 'receiveTime', '\0', '397a6f33-4498-4920-8ea9-09e6d12d61f7', '2019-09-02 22:15:28', NULL, '\0', NULL, NULL, NULL);
+INSERT INTO `stock_admin`.`yy_imexlate_sub` (`uuid`, `create_time`, `createtime`, `creator`, `creatorname`, `modifier`, `modifiername`, `modify_time`, `modifytime`, `status`, `chinese_field`, `export_cell_num`, `field_name`, `is_main_field`, `template_id`, `ts`, `enumdata`, `isnotempty`, `qualified_value`, `datatype`, `column_width`) VALUES ('4f2c9268-c352-4ba3-ae69-91a7055002a1', NULL, '2019-09-02 22:15:28', '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', '超级系统管理员', NULL, NULL, NULL, NULL, '1', '条码', 'J', 'barcode', '\0', '397a6f33-4498-4920-8ea9-09e6d12d61f7', '2019-09-02 22:15:28', NULL, '\0', NULL, NULL, NULL);
+INSERT INTO `stock_admin`.`yy_imexlate_sub` (`uuid`, `create_time`, `createtime`, `creator`, `creatorname`, `modifier`, `modifiername`, `modify_time`, `modifytime`, `status`, `chinese_field`, `export_cell_num`, `field_name`, `is_main_field`, `template_id`, `ts`, `enumdata`, `isnotempty`, `qualified_value`, `datatype`, `column_width`) VALUES ('6dc0b060-f33f-4f04-808f-ad742e88021d', NULL, '2019-09-02 22:15:28', '5bd60c1d-ffb3-46de-84ae-9d996d007e9f', '超级系统管理员', NULL, NULL, NULL, NULL, '1', '收货数量', 'H', 'receiveAmount', '\0', '397a6f33-4498-4920-8ea9-09e6d12d61f7', '2019-09-02 22:15:28', NULL, '\0', NULL, NULL, NULL);
+
 
 
