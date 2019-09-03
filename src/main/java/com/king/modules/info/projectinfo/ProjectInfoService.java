@@ -2,6 +2,7 @@ package com.king.modules.info.projectinfo;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -43,6 +44,8 @@ import com.king.modules.info.approve.ApproveUserService;
 import com.king.modules.info.material.MaterialBaseEntity;
 import com.king.modules.info.material.MaterialEntity;
 import com.king.modules.info.material.MaterialService;
+import com.king.modules.info.receive.ProjectReceiveEntity;
+import com.king.modules.info.receive.ProjectReceiveService;
 import com.king.modules.info.stockdetail.StockDetailService;
 import com.king.modules.info.stockstream.StockStreamEntity;
 import com.king.modules.info.stockstream.StockStreamService;
@@ -81,6 +84,9 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 	private MaterialService materialService;
 	@Autowired
 	private StockDetailService stockDetailService;
+	@Lazy
+	@Autowired
+	private ProjectReceiveService projectReceiveService;
 	
 	
 	protected IBaseDAO<ProjectInfoEntity, String> getDAO() {
@@ -273,15 +279,19 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 			String postfix = ExcelDataUtil.getPostfix(file.getOriginalFilename());
 			String code = "";
 			String planCount = "";
+			String receiveAmount = "";
+			String receiveTime="";
 			String boxNumStr = "";
 			String materialPurchaseType = "";
 			List<ProjectSubEntity> list = new ArrayList<>();
 			Set<String> materialCodeSet = new HashSet<>();
+			Map<String,List<ProjectReceiveEntity>> subReceiveMap = new HashMap<String,List<ProjectReceiveEntity>>();
+			List<ProjectReceiveEntity> subReceiveList = null;
 			List<String> codeList = new ArrayList<>();
 			List<String> hwcodeList = new ArrayList<>();
 			List<String> repeatCode = new ArrayList<>();
 			String distinctCode = "";
-			//receiveTime	barcode	receiveAmount
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 			if (!ExcelDataUtil.EMPTY.equals(postfix)) {
 				is = file.getInputStream();
 				if (ExcelDataUtil.OFFICE_EXCEL_2003_POSTFIX.equals(postfix)) {
@@ -355,14 +365,48 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 								entity.setMaterialUnit(ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("materialUnit"))));
 								entity.setMemo(ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("memo"))));
 								
-								materialCodeSet.add(distinctCode);
+								
+								//receiveTime	barcode	receiveAmount
+								receiveAmount = ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("receiveAmount")));
+								if (!StringUtils.isEmpty(receiveAmount)) {
+									try {
+										receiveAmount = receiveAmount.replace(".0", "");
+										entity.setReceiveAmount(Long.parseLong(receiveAmount));
+									} catch (Exception e) {
+										e.printStackTrace();
+										throw new ServiceException("第" + (rowNum + 1) + "行收货数量不为有效数字");
+									}
+								}
+								receiveTime= ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get(receiveTime)));
+								if (!StringUtils.isEmpty(receiveTime)) {
+									try {
+										entity.setReceiveTime(formatter.parse(receiveTime));
+									} catch (Exception e) {
+										e.printStackTrace();
+										throw new ServiceException("第" + (rowNum + 1) + "行收货日期格式不为yyyy-MM-dd");
+									}
+								}
+								entity.setBarcode(ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("barcode"))));
+								
 								if(entity.getMaterialPurchaseType().equals("TK")){
 									if(ParameterUtil.getParamValue("isImpInTK").equals("1")){
-										list.add(entity);
+										if (!materialCodeSet.contains(distinctCode)) {
+											list.add(entity);
+										}
 									}
 								}else{
-									list.add(entity);
+									if (!materialCodeSet.contains(distinctCode)) {
+										list.add(entity);
+									}
 								}
+								subReceiveList = subReceiveMap.get(distinctCode);
+								if(subReceiveList==null){
+									subReceiveList = new ArrayList<>();
+								}
+								subReceiveList.add(new ProjectReceiveEntity(entity.getReceiveAmount(), entity.getReceiveTime(),
+										ProjectReceiveEntity.receiveType_add, "", null, null));
+								subReceiveMap.put(distinctCode, subReceiveList);
+								materialCodeSet.add(distinctCode);
 							}
 						}
 					}
@@ -436,15 +480,49 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 								entity.setMaterialUnit(ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("materialUnit"))));
 								entity.setMemo(ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("memo"))));
 								
-								materialCodeSet.add(distinctCode);
+								
+								//receiveTime	barcode	receiveAmount
+								receiveAmount = ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("receiveAmount")));
+								if (!StringUtils.isEmpty(receiveAmount)) {
+									try {
+										receiveAmount = receiveAmount.replace(".0", "");
+										entity.setReceiveAmount(Long.parseLong(receiveAmount));
+									} catch (Exception e) {
+										e.printStackTrace();
+										throw new ServiceException("第" + (rowNum + 1) + "行收货数量不为有效数字");
+									}
+								}
+								receiveTime= ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get(receiveTime)));
+								if (!StringUtils.isEmpty(receiveTime)) {
+									try {
+										entity.setReceiveTime(formatter.parse(receiveTime));
+									} catch (Exception e) {
+										e.printStackTrace();
+										throw new ServiceException("第" + (rowNum + 1) + "行收货日期格式不为yyyy-MM-dd");
+									}
+								}
+								entity.setBarcode(ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("barcode"))));
+								
 								
 								if(entity.getMaterialPurchaseType().equals("TK")){
 									if(ParameterUtil.getParamValue("isImpInTK").equals("1")){
-										list.add(entity);
+										if (!materialCodeSet.contains(distinctCode)) {
+											list.add(entity);
+										}
 									}
 								}else{
-									list.add(entity);
+									if (!materialCodeSet.contains(distinctCode)) {
+										list.add(entity);
+									}
 								}
+								subReceiveList = subReceiveMap.get(distinctCode);
+								if(subReceiveList==null){
+									subReceiveList = new ArrayList<>();
+								}
+								subReceiveList.add(new ProjectReceiveEntity(entity.getReceiveAmount(), entity.getReceiveTime(),
+										ProjectReceiveEntity.receiveType_add, "", null, null));
+								subReceiveMap.put(distinctCode, subReceiveList);
+								materialCodeSet.add(distinctCode);
 							}
 						}
 					}
@@ -534,7 +612,6 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 						sub.setModifiername(user.getUsername());
 						sub.setModifytime(new Date());
 						
-						
 						if (sub.getMaterialPurchaseType().equals(MaterialEntity.PURCHASETYPE_CS)) {
 							if(codeMap.containsKey(sub.getBoxNum()+"_"+sub.getMaterialHwCode())){
 								throw new ServiceException("第"+sub.getBoxNum()+"箱华为CS料号"+sub.getMaterialHwCode()+"不能重复");
@@ -552,7 +629,23 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 					}
 					projectSubService.doAdd(addList);
 				}
-				
+				//收货
+				for(ProjectSubEntity sub:addList){
+					if(sub.getMaterial().getPurchaseType().equals(MaterialEntity.PURCHASETYPE_CS)){
+						distinctCode = "第" + sub.getBoxNum() + "箱料号" + sub.getMaterial().getHwcode();
+					}else{
+						distinctCode = "第" + sub.getBoxNum() + "箱料号" + sub.getMaterial().getCode();	
+					}
+					subReceiveList = subReceiveMap.get(distinctCode);
+					if(subReceiveList!=null){
+						for(ProjectReceiveEntity receive:subReceiveList){
+							if(receive.getReceiveAmount()!=null&&receive.getReceiveAmount()!=0){
+								receive.setSubId(sub.getUuid());
+								projectReceiveService.saveReceiveLog(receive);
+							}
+						}
+					}
+				}
 				
 				arm.setSuccess(true);
 				arm.setMsg("导入成功.");

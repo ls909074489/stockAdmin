@@ -81,6 +81,21 @@ public class ProjectReceiveEntity extends BaseEntity {
 	@Transient
 	@JsonIgnore
 	private String subId;
+	
+	
+	
+	public ProjectReceiveEntity() {
+	}
+
+	public ProjectReceiveEntity(Long receiveAmount, Date receiveTime, String receiveType, String memo, Date warningTime,
+			String subId) {
+		this.receiveAmount = receiveAmount;
+		this.receiveTime = receiveTime;
+		this.receiveType = receiveType;
+		this.memo = memo;
+		this.warningTime = warningTime;
+		this.subId = subId;
+	}
 
 	public ProjectInfoEntity getMain() {
 		return main;

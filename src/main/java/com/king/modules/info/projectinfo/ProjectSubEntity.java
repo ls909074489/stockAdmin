@@ -106,6 +106,8 @@ public class ProjectSubEntity extends BaseEntity {
 	@Column()
 	private Long receiveAmount=0l;//最后收货数量
 	
+	@Column(name = "randomuuid",length=36)
+	private String randomuuid="";
 	
 	@Transient
 	private String materialId;
@@ -385,6 +387,15 @@ public class ProjectSubEntity extends BaseEntity {
 	public void setSubAmount(Long subAmount) {
 		this.subAmount = subAmount;
 	}
+
+	public String getRandomuuid() {
+		return randomuuid;
+	}
+
+	public void setRandomuuid(String randomuuid) {
+		this.randomuuid = randomuuid;
+	}
+	
 
 //	public String getBarcodeHis() {
 //		return barcodeHis;
