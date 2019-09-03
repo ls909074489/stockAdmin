@@ -318,7 +318,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 								
 								materialPurchaseType = ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("materialPurchaseType")));
 								if (StringUtils.isEmpty(materialPurchaseType)) {
-									throw new ServiceException("第" + (rowNum + 1) + "行采购模式不能为空");
+									//throw new ServiceException("第" + (rowNum + 1) + "行采购模式不能为空");
 								} else {
 									if((materialPurchaseType.equals(MaterialEntity.PURCHASETYPE_CS)||materialPurchaseType.equals("C/S"))){
 										entity.setMaterialPurchaseType(MaterialEntity.PURCHASETYPE_CS);
@@ -350,7 +350,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 								
 								planCount = ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("planAmount")));
 								if (StringUtils.isEmpty(planCount)) {
-									throw new ServiceException("第" + (rowNum + 1) + "计划数量不能为空");
+									//throw new ServiceException("第" + (rowNum + 1) + "计划数量不能为空");
 								} else {
 									try {
 										planCount = planCount.replace(".0", "");
@@ -377,7 +377,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 										throw new ServiceException("第" + (rowNum + 1) + "行收货数量不为有效数字");
 									}
 								}
-								receiveTime= ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get(receiveTime)));
+								receiveTime= ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("receiveTime")));
 								if (!StringUtils.isEmpty(receiveTime)) {
 									try {
 										entity.setReceiveTime(formatter.parse(receiveTime));
@@ -434,7 +434,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 								
 								materialPurchaseType = ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("materialPurchaseType")));
 								if (StringUtils.isEmpty(materialPurchaseType)) {
-									throw new ServiceException("第" + (rowNum + 1) + "行采购模式不能为空");
+									//throw new ServiceException("第" + (rowNum + 1) + "行采购模式不能为空");
 								} else {
 									if((materialPurchaseType.equals("CS")||materialPurchaseType.equals("C/S"))){
 										entity.setMaterialPurchaseType(MaterialEntity.PURCHASETYPE_CS);
@@ -465,7 +465,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 								
 								planCount = ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("planAmount")));
 								if (StringUtils.isEmpty(planCount)) {
-									throw new ServiceException("第" + (rowNum + 1) + "计划数量不能为空");
+									//throw new ServiceException("第" + (rowNum + 1) + "计划数量不能为空");
 								} else {
 									try {
 										planCount = planCount.replace(".0", "");
@@ -492,7 +492,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 										throw new ServiceException("第" + (rowNum + 1) + "行收货数量不为有效数字");
 									}
 								}
-								receiveTime= ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get(receiveTime)));
+								receiveTime= ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("receiveTime")));
 								if (!StringUtils.isEmpty(receiveTime)) {
 									try {
 										entity.setReceiveTime(formatter.parse(receiveTime));
@@ -528,10 +528,10 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 					}
 				}
 			}
-			if (repeatCode.size() > 0) {
-				arm.setSuccess(false);
-				arm.setMsg(org.apache.commons.lang.StringUtils.join(repeatCode,",") + "存在相同的物料编码");
-			} else {
+//			if (repeatCode.size() > 0) {
+//				arm.setSuccess(false);
+//				arm.setMsg(org.apache.commons.lang.StringUtils.join(repeatCode,",") + "存在相同的物料编码");
+//			} else {
 				List<MaterialEntity> materialList = materialService.findByCodes(codeList);
 				List<MaterialEntity> hwmaterialList = materialService.findByHwCodes(hwcodeList);
 				materialList.addAll(hwmaterialList);
@@ -596,6 +596,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 				UserEntity user = ShiroUser.getCurrentUserEntity();	
 				
 				List<ProjectSubEntity> addList = new ArrayList<>();
+				List<ProjectSubEntity> savedList = new ArrayList<>();
 				// 保存子表数据
 				if (list != null && list.size() > 0) {
 					Map<String,String> codeMap = new HashMap<>();
@@ -627,14 +628,15 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 						//设置条形码
 						setBarcodeJson(sub);
 					}
-					projectSubService.doAdd(addList);
+					savedList=(List<ProjectSubEntity>) projectSubService.doAdd(addList);
 				}
 				//收货
-				for(ProjectSubEntity sub:addList){
-					if(sub.getMaterial().getPurchaseType().equals(MaterialEntity.PURCHASETYPE_CS)){
-						distinctCode = "第" + sub.getBoxNum() + "箱料号" + sub.getMaterial().getHwcode();
+				for(ProjectSubEntity sub:savedList){
+					MaterialEntity material = materialService.getOne(sub.getMaterial().getUuid());
+					if(material.getPurchaseType().equals(MaterialEntity.PURCHASETYPE_CS)){
+						distinctCode = "第" + sub.getBoxNum() + "箱料号" + material.getHwcode();
 					}else{
-						distinctCode = "第" + sub.getBoxNum() + "箱料号" + sub.getMaterial().getCode();	
+						distinctCode = "第" + sub.getBoxNum() + "箱料号" + material.getCode();	
 					}
 					subReceiveList = subReceiveMap.get(distinctCode);
 					if(subReceiveList!=null){
@@ -649,7 +651,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 				
 				arm.setSuccess(true);
 				arm.setMsg("导入成功.");
-			}
+//			}
 		}catch (ServiceException e) {
 			e.printStackTrace();
 			arm.setSuccess(false);
