@@ -355,7 +355,7 @@
 										fnCallback(data);
 								} else {
 									layer.close(listview);
-									YYUI.failMsg(YYMsg.alertMsg('sys-delete-fail') + data.msg);//删除失败，原因：
+									YYUI.promAlert(YYMsg.alertMsg('sys-delete-fail') + data.msg);//删除失败，原因：
 								}
 							},
 							"error" : function(XMLHttpRequest, textStatus,

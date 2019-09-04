@@ -31,6 +31,7 @@ import org.springframework.web.socket.TextMessage;
 import com.king.common.dao.DbUtilsDAO;
 import com.king.common.enums.BillStatus;
 import com.king.common.exception.DAOException;
+import com.king.common.utils.DateUtil;
 import com.king.common.utils.ExcelDataUtil;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.dao.IBaseDAO;
@@ -111,22 +112,48 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 				subIdList.add(sub.getUuid());
 				sub.setStatus(0);
 			}
-			List<StockStreamEntity> streamList = streamService.findByProjectSubIds(subIdList);
+//			List<StockStreamEntity> streamList = streamService.findByProjectSubIds(subIdList);
+			List<String> sourceIdList = new ArrayList<>();
+			sourceIdList.add(pk);
+			List<StockStreamEntity> streamList = streamService.findSurplusAllBySourceIdsIn(sourceIdList);
+			Map<String,List<StockStreamEntity>> streamMap = new HashMap<>();
+			List<StockStreamEntity> list = null;
 			if(CollectionUtils.isNotEmpty(streamList)){
 				for(StockStreamEntity stream:streamList){
-					if(stream.getSurplusAmount()<stream.getTotalAmount()){
-						throw new ServiceException("物料编码："+stream.getMaterial().getCode()+
-								",华为编码："+stream.getMaterial().getHwcode()+" 已使用(剩余数量小于总数量)，不能删除");
+//					if(stream.getSurplusAmount()<stream.getTotalAmount()){
+//						throw new ServiceException("(流水号"+stream.getUuid()+") 物料编码："+stream.getMaterial().getCode()+
+//								",华为编码："+stream.getMaterial().getHwcode()+" 已使用(剩余数量"+stream.getSurplusAmount()+"小于总数量"+stream.getTotalAmount()+")，不能删除");
+//					}
+					list = streamMap.get(stream.getProjectSubId());
+					if(list==null){
+						list = new ArrayList<>();
+					}
+					list.add(stream);
+					streamMap.put(stream.getProjectSubId(), list);
+				}
+//				streamService.delete(streamList);
+			}
+			for(ProjectSubEntity sub:subList){
+				list = streamMap.get(sub.getUuid());
+				if(CollectionUtils.isNotEmpty(list)){
+					long surplusAmount = 0l;
+					for(StockStreamEntity stream:list){
+						if(stream.getOperType().equals(StockStreamEntity.IN_STOCK)){
+							surplusAmount =surplusAmount+stream.getSurplusAmount();
+						}
+					}
+					if(surplusAmount<sub.getActualAmount()){
+						throw new ServiceException("箱号"+sub.getBoxNum()+" 物料编码："+sub.getMaterial().getCode()+
+								"[华为编码："+sub.getMaterial().getHwcode()+"]已使用(剩余数量"+surplusAmount+"小于收货数量"+sub.getActualAmount()+")，不能删除");
 					}
 				}
-				streamService.delete(streamList);
 			}
 		}
 		try {
 			ProjectInfoEntity entity = this.getOne(pk);
 			beforeDelete(entity);
 			entity.setStatus(0);
-			entity.setCode("Del_");
+			entity.setCode(DateUtil.getCurrentDate("yyyyMMddHHmmssSSS")+"_");
 			save(entity);
 			afterDelete(entity);
 		} catch (Exception e) {

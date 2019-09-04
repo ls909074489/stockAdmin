@@ -15,14 +15,18 @@
 					<label for="search_EQ_operType" class="control-label">单据类型</label>
 					<select class="yy-input-enumdata form-control" id="search_EQ_operType" name="search_EQ_operType"
 					 data-enum-group="StockStreamOperType"></select>	
-					
+					 
+					<label for="search_LIKE_uuid" class="control-label">流水号</label>
+					<input type="text" autocomplete="on" name="search_LIKE_uuid"
+						id="search_LIKE_uuid" class="form-control input-sm" style="width: 100px;">
+						
 					<label for="search_LIKE_sourceBillCode" class="control-label">源单号</label>
 					<input type="text" autocomplete="on" name="search_LIKE_sourceBillCode"
-						id="search_LIKE_sourceBillCode" class="form-control input-sm">
+						id="search_LIKE_sourceBillCode" class="form-control input-sm" style="width: 100px;">
 						
 					<label for="search_LIKE_creatorname" class="control-label">操作人</label>	
 					<input type="text" autocomplete="on" name="search_LIKE_creatorname"
-						id="search_LIKE_creatorname" class="form-control input-sm">
+						id="search_LIKE_creatorname" class="form-control input-sm" style="width: 100px;">
 						
 					<label class="control-label">操作时间</label> 
 					<input type="text" autocomplete="on" name="search_GTE_createtime" style="width: 150px;" id="search_GTE_createtime" class="form-control input-sm Wdate"
@@ -44,6 +48,7 @@
 					<thead>
 						<tr>
 							<th style="width: 30px;">序号</th>
+							<th>流水号</th>
 							<th>源单号</th>
 							<th>操作人</th>
 							<th>操作时间</th>
@@ -73,6 +78,11 @@
 				orderable : false,
 				className : "center",
 				width : "50"
+			},{
+				data : "uuid",
+				width : "100",
+				className : "center",
+				orderable : false
 			},{
 				data : "sourceBillCode",
 				width : "100",
