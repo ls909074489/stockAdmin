@@ -50,6 +50,12 @@ public class ProjectSubBarcodeEntity extends BaseEntity {
 	@Transient
 	private String subId;
 	
+	
+	public ProjectSubBarcodeEntity() {
+	}
+	public ProjectSubBarcodeEntity(String barcode) {
+		this.barcode = barcode;
+	}
 
 	public ProjectInfoBaseEntity getMain() {
 		return main;

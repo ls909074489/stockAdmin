@@ -449,7 +449,7 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 			if(newBarcode!=null){
 				newBarcode = newBarcode.trim();
 			}
-			arm = projectSubService.updateBarcode(newBarcode,newUuid,subAmount);
+			arm = projectSubService.updateBarcode(newBarcode,newUuid,subAmount,null);
 		} catch (Exception e) {
 			e.printStackTrace();
 			arm.setSuccess(false);
@@ -482,7 +482,7 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 			if(newBarcode!=null){
 				newBarcode = newBarcode.trim();
 			}
-			arm = projectSubService.updateBarcodePc(newBarcode,subId,subAmount,operType);
+			arm = projectSubService.updateBarcodePc(newBarcode,subId,subAmount,operType,null);
 		} catch (Exception e) {
 			e.printStackTrace();
 			arm.setSuccess(false);

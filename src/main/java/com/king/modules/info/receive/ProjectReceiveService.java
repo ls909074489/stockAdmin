@@ -301,7 +301,7 @@ public class ProjectReceiveService extends BaseServiceImpl<ProjectReceiveEntity,
 	}
 	
 	@Transactional
-	public ActionResultModel<ProjectReceiveEntity> saveReceiveLog(ProjectReceiveEntity entity) {
+	public ActionResultModel<StockStreamEntity> saveReceiveLog(ProjectReceiveEntity entity) {
 //		ActionResultModel<ProjectReceiveEntity> arm = new ActionResultModel<ProjectReceiveEntity>();
 		ProjectSubEntity sub = subService.getOne(entity.getSubId());
 		ProjectSubBaseEntity subBase = new ProjectSubBaseEntity();
@@ -319,11 +319,13 @@ public class ProjectReceiveService extends BaseServiceImpl<ProjectReceiveEntity,
 //		}
 		entity = doAdd(entity);
 		List<ProjectReceiveEntity> receiveList = new ArrayList<>();
+		List<StockStreamEntity> streamList = new ArrayList<StockStreamEntity>();
 		if(entity.getReceiveType().equals(ProjectReceiveEntity.receiveType_add)){
 			sub.setActualAmount(sub.getActualAmount()+entity.getReceiveAmount());
 			entity.setReceiveAmount(Math.abs(entity.getReceiveAmount()));
 			receiveList.add(entity);
-			stockDetailService.incrStockDetail(sub.getMain(), receiveList,false);
+			StockStreamEntity stream = stockDetailService.incrStockDetail(sub.getMain(), receiveList,false);
+			streamList.add(stream);
 		}else{
 			sub.setActualAmount(sub.getActualAmount()-Math.abs(entity.getReceiveAmount()));
 			entity.setReceiveAmount(Math.abs(entity.getReceiveAmount())*-1);
@@ -341,7 +343,7 @@ public class ProjectReceiveService extends BaseServiceImpl<ProjectReceiveEntity,
 		}else{
 			sub.setSubReceiveType(ProjectInfoEntity.receiveType_no);
 		}
-		return new ActionResultModel<>(true, "保存成功");
+		return new ActionResultModel<>(streamList, true, "保存成功");
 	}
 
 	private Long getReceiveCount(String subId){

@@ -18,6 +18,8 @@ import com.king.frame.controller.ActionResultModel;
 import com.king.frame.dao.IBaseDAO;
 import com.king.frame.service.BaseServiceImpl;
 import com.king.modules.info.material.MaterialBaseEntity;
+import com.king.modules.info.material.MaterialEntity;
+import com.king.modules.info.material.MaterialService;
 import com.king.modules.info.orderinfo.OrderInfoEntity;
 import com.king.modules.info.orderinfo.OrderSubEntity;
 import com.king.modules.info.projectinfo.ProjectInfoBaseEntity;
@@ -59,6 +61,8 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 	private ProjectSubService projectSubService;
 	@Autowired
 	private StreamOrderLogService streamOrderLogService;
+	@Autowired
+	private MaterialService materialService;
 	
 	protected IBaseDAO<StockDetailEntity, String> getDAO() {
 		return dao;
@@ -276,7 +280,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 
 	
 	@Transactional
-	public void incrStockDetail(ProjectInfoEntity projectInfo,List<ProjectReceiveEntity> receiveList,boolean receiveFLag){
+	public StockStreamEntity incrStockDetail(ProjectInfoEntity projectInfo,List<ProjectReceiveEntity> receiveList,boolean receiveFLag){
 		StockStreamEntity stream = new StockStreamEntity();
 		
 		StockBaseEntity stockBase = projectInfo.getStock();
@@ -322,7 +326,9 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 //				changeHasBorrw(projectInfo.getUuid(),sub,stream,detail);
 //			}
 			changeHasBorrw(borrowList,sub,stream,detail);
+			
 		}
+		return stream;
 	}
 	
 	
@@ -500,7 +506,7 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 	
 
 	@Transactional
-	public String descStockDetail(ProjectSubEntity sub,Long subAmount) {
+	public String descStockDetail(ProjectSubEntity sub,Long subAmount,List<StockStreamEntity> subStreamList) {
 		Long streamOutCount = subAmount*-1;
 		ProjectInfoEntity projectInfo = sub.getMain();
 		StockBaseEntity stock = projectInfo.getStock();
@@ -518,7 +524,14 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 		
 		List<StreamProjectLogEntity> logList = new ArrayList<>();
 		StreamProjectLogEntity log = null;
-		List<StockStreamEntity> subStreamList = stockStreamService.findSurplusBySubIdIn(sub.getUuid());
+		if(CollectionUtils.isEmpty(subStreamList)){
+			subStreamList = stockStreamService.findSurplusBySubIdIn(sub.getUuid());
+		}
+		if(CollectionUtils.isEmpty(subStreamList)){
+			MaterialEntity materialEntity = materialService.getOne(sub.getMaterial().getUuid());
+			throw new ServiceException("库存物料"+materialEntity.getCode()+"["+materialEntity.getHwcode()+"]流水不足");
+		}
+		
 		for(StockStreamEntity ss:subStreamList){
 			if(ss.getSurplusAmount()>=subAmount){//计算流水剩余的数量
 				subAmount = enoughStream(projectInfo,sub,ss, subAmount, log, logList);

@@ -286,7 +286,9 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 			List<ProjectSubEntity> list = new ArrayList<>();
 			Set<String> materialCodeSet = new HashSet<>();
 			Map<String,List<ProjectReceiveEntity>> subReceiveMap = new HashMap<String,List<ProjectReceiveEntity>>();
+			Map<String,List<ProjectSubBarcodeEntity>> subBarcodeMap = new HashMap<String,List<ProjectSubBarcodeEntity>>();
 			List<ProjectReceiveEntity> subReceiveList = null;
+			List<ProjectSubBarcodeEntity> subBarcodeList = null;
 			List<String> codeList = new ArrayList<>();
 			List<String> hwcodeList = new ArrayList<>();
 			List<String> repeatCode = new ArrayList<>();
@@ -399,6 +401,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 										list.add(entity);
 									}
 								}
+								//收货
 								subReceiveList = subReceiveMap.get(distinctCode);
 								if(subReceiveList==null){
 									subReceiveList = new ArrayList<>();
@@ -406,6 +409,16 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 								subReceiveList.add(new ProjectReceiveEntity(entity.getReceiveAmount(), entity.getReceiveTime(),
 										ProjectReceiveEntity.receiveType_add, "", null, null));
 								subReceiveMap.put(distinctCode, subReceiveList);
+								//条码
+								if(!StringUtils.isEmpty(entity.getBarcode())){
+									subBarcodeList = subBarcodeMap.get(distinctCode);
+									if(subBarcodeList==null){
+										subBarcodeList = new ArrayList<>();
+									}
+									subBarcodeList.add(new ProjectSubBarcodeEntity(entity.getBarcode()));
+									subBarcodeMap.put(distinctCode, subBarcodeList);
+								}
+								
 								materialCodeSet.add(distinctCode);
 							}
 						}
@@ -515,6 +528,8 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 										list.add(entity);
 									}
 								}
+								
+								//收货
 								subReceiveList = subReceiveMap.get(distinctCode);
 								if(subReceiveList==null){
 									subReceiveList = new ArrayList<>();
@@ -522,6 +537,16 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 								subReceiveList.add(new ProjectReceiveEntity(entity.getReceiveAmount(), entity.getReceiveTime(),
 										ProjectReceiveEntity.receiveType_add, "", null, null));
 								subReceiveMap.put(distinctCode, subReceiveList);
+								//条码
+								if(!StringUtils.isEmpty(entity.getBarcode())){
+									subBarcodeList = subBarcodeMap.get(distinctCode);
+									if(subBarcodeList==null){
+										subBarcodeList = new ArrayList<>();
+									}
+									subBarcodeList.add(new ProjectSubBarcodeEntity(entity.getBarcode()));
+									subBarcodeMap.put(distinctCode, subBarcodeList);
+								}
+								
 								materialCodeSet.add(distinctCode);
 							}
 						}
@@ -630,7 +655,9 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 					}
 					savedList=(List<ProjectSubEntity>) projectSubService.doAdd(addList);
 				}
-				//收货
+				
+				ActionResultModel<StockStreamEntity>  receiveArm = null;
+				List<StockStreamEntity> subStreamList = null;
 				for(ProjectSubEntity sub:savedList){
 					MaterialEntity material = materialService.getOne(sub.getMaterial().getUuid());
 					if(material.getPurchaseType().equals(MaterialEntity.PURCHASETYPE_CS)){
@@ -638,12 +665,32 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 					}else{
 						distinctCode = "第" + sub.getBoxNum() + "箱料号" + material.getCode();	
 					}
+					subStreamList = new ArrayList<>();
+					//收货
 					subReceiveList = subReceiveMap.get(distinctCode);
 					if(subReceiveList!=null){
 						for(ProjectReceiveEntity receive:subReceiveList){
 							if(receive.getReceiveAmount()!=null&&receive.getReceiveAmount()!=0){
 								receive.setSubId(sub.getUuid());
-								projectReceiveService.saveReceiveLog(receive);
+								receiveArm = projectReceiveService.saveReceiveLog(receive);
+								if(receiveArm.isSuccess()&&CollectionUtils.isNotEmpty(receiveArm.getRecords())){
+									subStreamList.addAll(receiveArm.getRecords());
+								}
+							}
+						}
+					}
+					//条码出库
+					subBarcodeList = subBarcodeMap.get(distinctCode);
+					if(subBarcodeList!=null){
+						int rowIdx=0;
+						for(ProjectSubBarcodeEntity barcodeEntity:subBarcodeList){
+							if(!StringUtils.isEmpty(barcodeEntity.getBarcode())){
+								if(material.getLimitCount()==MaterialBaseEntity.limitCount_unique){//唯一,每次只出一个
+									projectSubService.updateBarcode(barcodeEntity.getBarcode(), rowIdx+"_"+sub.getUuid(), 1l,subStreamList);
+								}else{
+									projectSubService.updateBarcodePc(barcodeEntity.getBarcode(), rowIdx+"_"+sub.getUuid(), sub.getPlanAmount(), "add",subStreamList);
+								}
+								rowIdx++;
 							}
 						}
 					}
@@ -656,6 +703,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 			e.printStackTrace();
 			arm.setSuccess(false);
 			arm.setMsg(e.getMessage());
+			throw new ServiceException(e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
 			arm.setSuccess(false);

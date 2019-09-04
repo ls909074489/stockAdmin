@@ -35,6 +35,7 @@ import com.king.modules.info.barcode.ProjectBarcodeLogService;
 import com.king.modules.info.material.MaterialBaseEntity;
 import com.king.modules.info.material.MaterialEntity;
 import com.king.modules.info.stockdetail.StockDetailService;
+import com.king.modules.info.stockstream.StockStreamEntity;
 import com.king.modules.sys.enumdata.EnumDataSubEntity;
 import com.king.modules.sys.enumdata.EnumDataUtils;
 
@@ -97,7 +98,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 	 * @return
 	 */
 	@Transactional
-	public ActionResultModel<ProjectSubEntity> updateBarcode(String newBarcode, String newUuid,Long subAmount) {
+	public ActionResultModel<ProjectSubEntity> updateBarcode(String newBarcode, String newUuid,Long subAmount,List<StockStreamEntity> subStreamList) {
 		ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity>();
 		String []idArr = newUuid.split("_");
 		ProjectSubEntity sub = getOne(idArr[1]);
@@ -114,7 +115,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 			}else{
 				subAmount = Math.abs(subAmount);
 			}
-			String streamId = stockDetailService.descStockDetail(sub,subAmount);
+			String streamId = stockDetailService.descStockDetail(sub,subAmount,subStreamList);
 			
 			ProjectSubBarcodeEntity subBc = new ProjectSubBarcodeEntity();
 			ProjectInfoBaseEntity main = new ProjectInfoBaseEntity();
@@ -150,7 +151,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 	 * @return
 	 */
 	@Transactional
-	public ActionResultModel<ProjectSubEntity> updateBarcodePc(String newBarcode, String subId,Long subAmount,String operType) {
+	public ActionResultModel<ProjectSubEntity> updateBarcodePc(String newBarcode, String subId,Long subAmount,String operType,List<StockStreamEntity> subStreamList) {
 		ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity>();
 		String []idArr = subId.split("_");
 		if(idArr.length>1){
@@ -163,7 +164,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 				throw new ServiceException("条码未出库不能退料");
 			}
 			subAmount = Math.abs(subAmount);
-			String streamId = stockDetailService.descStockDetail(sub,subAmount);
+			String streamId = stockDetailService.descStockDetail(sub,subAmount,subStreamList);
 			
 			ProjectSubBarcodeEntity subBc = new ProjectSubBarcodeEntity();
 			ProjectInfoBaseEntity main = new ProjectInfoBaseEntity();
@@ -181,7 +182,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 			if(operType.equals("update")){//修改
 				bc.setSubAmount(subAmount);
 				stockDetailService.unOutBySub(bc.getStreamId());//撤销出库
-				String streamId = stockDetailService.descStockDetail(sub,bc.getSubAmount());
+				String streamId = stockDetailService.descStockDetail(sub,bc.getSubAmount(),subStreamList);
 				bc.setStreamId(streamId);
 			}else if(operType.equals("back")){//退料
 				if((bc.getSubAmount()-subAmount)<0){
@@ -191,13 +192,13 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 				}else{
 					bc.setSubAmount(bc.getSubAmount()-subAmount);
 					stockDetailService.unOutBySub(bc.getStreamId());//撤销出库
-					String streamId = stockDetailService.descStockDetail(sub,bc.getSubAmount());
+					String streamId = stockDetailService.descStockDetail(sub,bc.getSubAmount(),subStreamList);
 					bc.setStreamId(streamId);
 				}
 			}else {//add
 				bc.setSubAmount(bc.getSubAmount()+subAmount);
 				stockDetailService.unOutBySub(bc.getStreamId());//撤销出库
-				String streamId = stockDetailService.descStockDetail(sub,bc.getSubAmount());
+				String streamId = stockDetailService.descStockDetail(sub,bc.getSubAmount(),subStreamList);
 				bc.setStreamId(streamId);
 			}
 		}

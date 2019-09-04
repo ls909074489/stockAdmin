@@ -37,6 +37,13 @@ public class ActionResultModel<T> {
 		this.success = success;
 		this.msg = msg;
 	}
+	
+
+	public ActionResultModel(List<T> records, boolean success, String msg) {
+		this.records = records;
+		this.success = success;
+		this.msg = msg;
+	}
 
 	public long getRecordsFiltered() {
 		return recordsFiltered;

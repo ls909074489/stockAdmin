@@ -1,5 +1,7 @@
 package com.king.modules.info.receive;
 
+import java.util.ArrayList;
+
 import javax.servlet.ServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import com.king.common.utils.Constants;
 import com.king.common.utils.DateUtil;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.controller.BaseController;
+import com.king.modules.info.stockstream.StockStreamEntity;
 
 /**
  * 收货
@@ -73,8 +76,8 @@ public class ProjectReceiveController extends BaseController<ProjectReceiveEntit
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/saveReceiveLog")
-	public ActionResultModel<ProjectReceiveEntity> saveReceiveLog(Model model, ServletRequest request,ProjectReceiveEntity entity) {
-		ActionResultModel<ProjectReceiveEntity> arm = new ActionResultModel<ProjectReceiveEntity>();
+	public ActionResultModel<StockStreamEntity> saveReceiveLog(Model model, ServletRequest request,ProjectReceiveEntity entity) {
+		ActionResultModel<StockStreamEntity> arm = new ActionResultModel<StockStreamEntity>();
 		arm.setSuccess(true);
 		try {
 			if(entity.getReceiveAmount()==null||entity.getReceiveAmount()==0){
@@ -83,6 +86,7 @@ public class ProjectReceiveController extends BaseController<ProjectReceiveEntit
 				return arm;
 			}
 			arm =  service.saveReceiveLog(entity);
+			arm.setRecords(new ArrayList<StockStreamEntity>());
 		} catch (DataIntegrityViolationException e) {
 			e.printStackTrace();
 			arm.setSuccess(false);
