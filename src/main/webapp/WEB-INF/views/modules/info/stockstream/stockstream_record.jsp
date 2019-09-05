@@ -16,9 +16,9 @@
 					<select class="yy-input-enumdata form-control" id="search_EQ_operType" name="search_EQ_operType"
 					 data-enum-group="StockStreamOperType"></select>	
 					 
-					<label for="search_LIKE_uuid" class="control-label">流水号</label>
+					<!-- <label for="search_LIKE_uuid" class="control-label">流水号</label>
 					<input type="text" autocomplete="on" name="search_LIKE_uuid"
-						id="search_LIKE_uuid" class="form-control input-sm" style="width: 100px;">
+						id="search_LIKE_uuid" class="form-control input-sm" style="width: 100px;"> -->
 						
 					<label for="search_LIKE_sourceBillCode" class="control-label">源单号</label>
 					<input type="text" autocomplete="on" name="search_LIKE_sourceBillCode"
@@ -48,7 +48,7 @@
 					<thead>
 						<tr>
 							<th style="width: 30px;">序号</th>
-							<th>流水号</th>
+							<!-- <th>流水号</th> -->
 							<th>源单号</th>
 							<th>操作人</th>
 							<th>操作时间</th>
@@ -78,12 +78,12 @@
 				orderable : false,
 				className : "center",
 				width : "50"
-			},{
+			}/* ,{
 				data : "uuid",
 				width : "100",
 				className : "center",
 				orderable : false
-			},{
+			} */,{
 				data : "sourceBillCode",
 				width : "100",
 				className : "center",

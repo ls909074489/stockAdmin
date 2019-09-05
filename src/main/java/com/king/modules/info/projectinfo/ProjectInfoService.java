@@ -104,6 +104,13 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 	
 	@Override
 	public void doDelete(String pk) throws ServiceException {
+		ProjectInfoEntity entity = this.getOne(pk);
+		beforeDelete(entity);
+		entity.setStatus(0);
+		entity.setCode(DateUtil.getCurrentDate("MMddHHmmssSSS")+"_");
+		save(entity);
+		afterDelete(entity);
+		
 		List<ProjectSubEntity> subList = projectSubService.findByMain(pk);
 		if (CollectionUtils.isNotEmpty(subList)) {
 //			projectSubService.delete(subList);
@@ -138,27 +145,18 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 				if(CollectionUtils.isNotEmpty(list)){
 					long surplusAmount = 0l;
 					for(StockStreamEntity stream:list){
+						stream.setStatus(0);
 						if(stream.getOperType().equals(StockStreamEntity.IN_STOCK)){
 							surplusAmount =surplusAmount+stream.getSurplusAmount();
 						}
 					}
-					if(surplusAmount<sub.getActualAmount()){
+					if(!(surplusAmount>=sub.getActualAmount()||surplusAmount>=sub.getPlanAmount())){
 						throw new ServiceException("箱号"+sub.getBoxNum()+" 物料编码："+sub.getMaterial().getCode()+
-								"[华为编码："+sub.getMaterial().getHwcode()+"]已使用(剩余数量"+surplusAmount+"小于收货数量"+sub.getActualAmount()+")，不能删除");
+								"[华为编码："+sub.getMaterial().getHwcode()+"]已使用(剩余数量"+surplusAmount+"小于收货数量"+sub.getActualAmount()+"或小于计划数量"+sub.getPlanAmount()+")，不能删除");
 					}
 				}
+				stockDetailService.findByStockAndMaterial(entity.getStock().getUuid(), sub.getMaterial().getUuid());
 			}
-		}
-		try {
-			ProjectInfoEntity entity = this.getOne(pk);
-			beforeDelete(entity);
-			entity.setStatus(0);
-			entity.setCode(DateUtil.getCurrentDate("yyyyMMddHHmmssSSS")+"_");
-			save(entity);
-			afterDelete(entity);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new ServiceException(e.getMessage());
 		}
 	}
 
@@ -592,11 +590,15 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 				Map<String,MaterialEntity> materialMap = new HashMap<>();
 				Map<String,MaterialEntity> hwmaterialMap = new HashMap<>();
 				for (ProjectSubEntity projectSub : list) {
+					if("53453343".equals(projectSub.getMaterialHwCode())){
+						System.out.println(">>>>>>>>>>>>");
+					}
 					hasMaterial = false;
 					for (MaterialEntity material : materialList) {
 						if (projectSub.getMaterialPurchaseType().equals(MaterialEntity.PURCHASETYPE_CS)&&
 								projectSub.getMaterialHwCode().equals(material.getHwcode())) {
 							hasMaterial = true;
+							projectSub.setLimitCount(material.getLimitCount());
 							materialBase = new MaterialBaseEntity();
 							materialBase.setUuid(material.getUuid());
 							projectSub.setMaterial(materialBase);
@@ -605,6 +607,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 						if (projectSub.getMaterialPurchaseType().equals(MaterialEntity.PURCHASETYPE_TK)&&
 								projectSub.getMaterialCode().equals(material.getCode())) {
 							hasMaterial = true;
+							projectSub.setLimitCount(material.getLimitCount());
 							materialBase = new MaterialBaseEntity();
 							materialBase.setUuid(material.getUuid());
 							projectSub.setMaterial(materialBase);
@@ -639,6 +642,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 						materialBase = new MaterialBaseEntity();
 						materialBase.setUuid(material.getUuid());
 						projectSub.setMaterial(materialBase);
+						projectSub.setLimitCount(material.getLimitCount());
 					}
 				}
 //				mainService.saveSelfAndSubList(projectInfo, list, null);
@@ -656,7 +660,6 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 						sub.setCreator(user.getUuid());
 						sub.setCreatorname(user.getUsername());
 						sub.setCreatetime(new Date());
-						sub.setLimitCount(sub.getMaterial().getLimitCount());
 						sub.setActualAmount(0l);//sub.getPlanAmount()
 						addList.add(sub);
 						sub.setMain(savedEntity);
