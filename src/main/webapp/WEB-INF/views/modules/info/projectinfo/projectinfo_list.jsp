@@ -14,9 +14,9 @@
 				<button id="yy-btn-add" class="btn blue btn-sm">
 					<i class="fa fa-plus"></i> 新增
 				</button>
-				<button id="yy-btn-remove" class="btn red btn-sm">
+				<!-- <button id="yy-btn-remove" class="btn red btn-sm">
 					<i class="fa fa-trash-o"></i> 删除
-				</button>
+				</button> -->
 				<button id="yy-btn-refresh" class="btn blue btn-sm">
 					<i class="fa fa-refresh"></i> 刷新
 				</button>
@@ -191,6 +191,62 @@
 				window.open('${serviceurl}/exportCsByIds?pks='+pks,"_blank");
 			}
 		}
+		
+		/**
+		 * 删除记录 url 后台删除的url pks 主键数组 fnCallback 成功后回调函数
+		 */
+		function removeRecord(url, pks, fnCallback, isConfirm, isSuccess) {
+			if (checkDelete(pks)) {
+
+				if (typeof (isConfirm) == "undefined") {
+					isConfirm = true;
+				}
+				if (typeof (isSuccess) == "undefined") {
+					isSuccess = false;
+				}
+				//'确实要删除吗？'
+				//layer.confirm(YYMsg.alertMsg('sys-delete-sure'), function() {
+					//prompt层
+
+					layer.prompt({title: '确定要删除吗？', formType: 0}, function(pass, index){
+					  layer.close(index);
+					  if(pass=='确定'){
+						  var listview = layer.load(2);
+							$.ajax({
+								"dataType" : "json",
+								"type" : "POST",
+								"url" : url,
+								"data" : {
+									"pks" : pks.toString()
+								},
+								"success" : function(data) {
+									if (data.success) {
+										layer.close(listview);
+										//if (isSuccess)
+										//"删除成功"
+										YYUI.succMsg(YYMsg.alertMsg('sys-delete-success'), {
+											icon : 1
+										});
+										if (typeof (fnCallback) != "undefined")
+											fnCallback(data);
+									} else {
+										layer.close(listview);
+										YYUI.promAlert(YYMsg.alertMsg('sys-delete-fail') + data.msg);//删除失败，原因：
+									}
+								},
+								"error" : function(XMLHttpRequest, textStatus,
+										errorThrown) {
+									layer.close(listview);
+									YYUI.failMsg(YYMsg.alertMsg('sys-delete-http'));//"删除失败，HTTP错误。"
+								}
+							});
+					  }else{
+						  YYUI.promMsg("验证失败，不能删除");
+					  }
+					});
+				//});
+			}
+		};
 	</script>
 </body>
 </html>	
