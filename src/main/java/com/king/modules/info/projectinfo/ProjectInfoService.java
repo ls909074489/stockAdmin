@@ -13,9 +13,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -319,6 +321,8 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 			List<String> repeatCode = new ArrayList<>();
 			String distinctCode = "";
 			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			XSSFCell xssCell = null;
+			HSSFCell hssCell = null;
 			if (!ExcelDataUtil.EMPTY.equals(postfix)) {
 				is = file.getInputStream();
 				if (ExcelDataUtil.OFFICE_EXCEL_2003_POSTFIX.equals(postfix)) {
@@ -404,13 +408,39 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 										throw new ServiceException("第" + (rowNum + 1) + "行收货数量不为有效数字");
 									}
 								}
-								receiveTime= ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("receiveTime")));
-								if (!StringUtils.isEmpty(receiveTime)) {
+								hssCell = hssfRow.getCell(imexMap.get("receiveTime"));
+								if(hssCell!=null){
 									try {
-										entity.setReceiveTime(formatter.parse(receiveTime));
-									} catch (Exception e) {
-										e.printStackTrace();
-										throw new ServiceException("第" + (rowNum + 1) + "行收货日期格式不为yyyy-MM-dd");
+										Date receiveDate = hssCell.getDateCellValue();
+										entity.setReceiveTime(receiveDate);
+									} catch (IllegalStateException eill) {
+										receiveTime = ExcelDataUtil.getValue(hssCell);
+										if (!StringUtils.isEmpty(receiveTime)) {
+											receiveTime = receiveTime.trim();
+											if(receiveTime.contains("年")){
+												receiveTime = receiveTime.replace("年", "-");
+												receiveTime = receiveTime.replace("月", "-");
+												receiveTime = receiveTime.replace("日", "");
+												String [] timeArr = receiveTime.split("-");
+												if(timeArr.length>2){
+													if(timeArr[1].length()==1){
+														timeArr[1] = "0"+timeArr[1];
+													} 
+													if(timeArr[2].length()==1){
+														timeArr[2] = "0"+timeArr[2];
+													}
+												}else{
+													throw new ServiceException("第" + (rowNum + 1) + "行收货日期格式不为yyyy年MM月dd日");
+												}
+												receiveTime = timeArr[0]+"-"+timeArr[1]+"-"+timeArr[2];
+											}	
+											try {
+												entity.setReceiveTime(formatter.parse(receiveTime));
+											} catch (Exception e) {
+												e.printStackTrace();
+												throw new ServiceException("第" + (rowNum + 1) + "行收货日期格式不为yyyy-MM-dd");
+											}
+										}
 									}
 								}
 								entity.setBarcode(ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("barcode"))));
@@ -530,15 +560,43 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 										throw new ServiceException("第" + (rowNum + 1) + "行收货数量不为有效数字");
 									}
 								}
-								receiveTime= ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("receiveTime")));
-								if (!StringUtils.isEmpty(receiveTime)) {
+								
+								xssCell = xssfRow.getCell(imexMap.get("receiveTime"));
+								if(xssCell!=null){
 									try {
-										entity.setReceiveTime(formatter.parse(receiveTime));
-									} catch (Exception e) {
-										e.printStackTrace();
-										throw new ServiceException("第" + (rowNum + 1) + "行收货日期格式不为yyyy-MM-dd");
+										Date receiveDate = xssCell.getDateCellValue();
+										entity.setReceiveTime(receiveDate);
+									} catch (IllegalStateException eill) {
+										receiveTime = ExcelDataUtil.getValue(xssCell);
+										if (!StringUtils.isEmpty(receiveTime)) {
+											receiveTime = receiveTime.trim();
+											if(receiveTime.contains("年")){
+												receiveTime = receiveTime.replace("年", "-");
+												receiveTime = receiveTime.replace("月", "-");
+												receiveTime = receiveTime.replace("日", "");
+												String [] timeArr = receiveTime.split("-");
+												if(timeArr.length>2){
+													if(timeArr[1].length()==1){
+														timeArr[1] = "0"+timeArr[1];
+													} 
+													if(timeArr[2].length()==1){
+														timeArr[2] = "0"+timeArr[2];
+													}
+												}else{
+													throw new ServiceException("第" + (rowNum + 1) + "行收货日期格式不为yyyy年MM月dd日");
+												}
+												receiveTime = timeArr[0]+"-"+timeArr[1]+"-"+timeArr[2];
+											}	
+											try {
+												entity.setReceiveTime(formatter.parse(receiveTime));
+											} catch (Exception e) {
+												e.printStackTrace();
+												throw new ServiceException("第" + (rowNum + 1) + "行收货日期格式不为yyyy-MM-dd");
+											}
+										}
 									}
 								}
+								
 								entity.setBarcode(ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("barcode"))));
 								
 								
