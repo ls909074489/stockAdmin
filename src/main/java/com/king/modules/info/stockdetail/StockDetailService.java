@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.dao.IBaseDAO;
@@ -557,7 +558,8 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 //			}
 //		}
 		if(subAmount>0){
-			throw new ServiceException("库存物料"+sub.getMaterial().getCode()+"["+sub.getMaterial().getHwcode()+"]流水不足");
+			throw new ServiceException("库存物料"+(StringUtils.isEmpty(sub.getMaterial().getCode())?sub.getMaterialCode():sub.getMaterial().getCode())+
+					"["+(StringUtils.isEmpty(sub.getMaterial().getHwcode())?sub.getMaterialHwCode():sub.getMaterial().getHwcode())+"]流水不足");
 		}
 		StockDetailEntity detail  = findByStockAndMaterial(stock.getUuid(),sub.getMaterial().getUuid());
 		stream.setTotalAmount(streamOutCount);
