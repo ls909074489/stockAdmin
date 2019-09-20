@@ -11,12 +11,16 @@
 	<div id="yy-page" class="container-fluid page-container">
 		<div class="page-content" id="yy-page-list">
 			<div class="row yy-toolbar">
-				<button id="yy-btn-add" class="btn blue btn-sm">
+				<shiro:hasPermission name="stockinfoAdd">
+					<button id="yy-btn-add" class="btn blue btn-sm">
 					<i class="fa fa-plus"></i> 新增
 				</button>
-				<button id="yy-btn-remove" class="btn red btn-sm">
-					<i class="fa fa-trash-o"></i> 删除
-				</button>
+				</shiro:hasPermission>
+				<shiro:hasPermission name="stockinfoDel">
+					<button id="yy-btn-remove" class="btn red btn-sm">
+						<i class="fa fa-trash-o"></i> 删除
+					</button>
+				</shiro:hasPermission>
 				<button id="yy-btn-refresh" class="btn blue btn-sm">
 					<i class="fa fa-refresh"></i> 刷新
 				</button>
@@ -79,7 +83,14 @@
 				data : "uuid",
 				className : "center",
 				orderable : false,
-				render : YYDataTableUtils.renderActionCol,
+				//render : YYDataTableUtils.renderActionCol,
+				render : function(data, type, full) {
+					return "<div class='yy-btn-actiongroup'>"
+					+ "<button id='yy-btn-view-row' class='btn btn-xs btn-success' data-rel='tooltip' title='查看'><i class='fa fa-search-plus'></i></button>"
+					+ "<shiro:hasPermission name='stockinfoEdit'><button id='yy-btn-edit-row' class='btn btn-xs btn-info' data-rel='tooltip' title='编辑'><i class='fa fa-edit'></i></button></shiro:hasPermission>"
+					+ "<shiro:hasPermission name='stockinfoDel'><button id='yy-btn-remove-row' class='btn btn-xs btn-danger' data-rel='tooltip' title='删除'><i class='fa fa-trash-o'></i></button></shiro:hasPermission>"
+					+ "</div>";
+				},
 				width : "40"
 			},{
 				data : "code",

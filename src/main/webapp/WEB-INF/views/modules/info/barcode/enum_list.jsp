@@ -3,7 +3,7 @@
 <div class="" id="yy-page-list">
 	<div role="form" class="row yy-searchbar form-inline">
 		<form id="yy-form-query">
-			<input type="hidden" autocomplete="on" name="search_LIKE_groupcode" id="search_LIKE_groupcode" class="form-control input-sm" value="barCodeExtract">
+			<input type="hidden" autocomplete="on" name="search_IN_groupcode" id="search_LIKE_groupcode" class="form-control input-sm" value="barCodeExtract,limitMaterial">
 		</form>
 	</div>
 	<div class="row">

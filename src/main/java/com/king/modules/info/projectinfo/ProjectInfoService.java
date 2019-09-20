@@ -52,6 +52,8 @@ import com.king.modules.info.receive.ProjectReceiveService;
 import com.king.modules.info.stockdetail.StockDetailService;
 import com.king.modules.info.stockstream.StockStreamEntity;
 import com.king.modules.info.stockstream.StockStreamService;
+import com.king.modules.sys.enumdata.EnumDataSubEntity;
+import com.king.modules.sys.enumdata.EnumDataUtils;
 import com.king.modules.sys.imexlate.ImexlateSubEntity;
 import com.king.modules.sys.imexlate.ImexlateSubService;
 import com.king.modules.sys.param.ParameterUtil;
@@ -647,6 +649,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 				MaterialBaseEntity materialBase = null;
 				Map<String,MaterialEntity> materialMap = new HashMap<>();
 				Map<String,MaterialEntity> hwmaterialMap = new HashMap<>();
+				List<EnumDataSubEntity> limitEnums = EnumDataUtils.getEnumSubList("limitMaterial");
 				for (ProjectSubEntity projectSub : list) {
 					hasMaterial = false;
 					for (MaterialEntity material : materialList) {
@@ -699,6 +702,8 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 						projectSub.setMaterial(materialBase);
 						projectSub.setLimitCount(material.getLimitCount());
 					}
+					//根据配置设置物料是唯一还是批次的
+					setSubLimitCount(projectSub,limitEnums);
 				}
 //				mainService.saveSelfAndSubList(projectInfo, list, null);
 				// 保存自身数据
@@ -812,6 +817,31 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 	}
 	
 	
+	private void setSubLimitCount(ProjectSubEntity projectSub, List<EnumDataSubEntity> limitEnums) {
+		if(CollectionUtils.isEmpty(limitEnums)){
+			return ;
+		}
+//		if(StringUtils.isEmpty(projectSub.getMaterialHwCode())){
+//			sub.setCheckStatus(ProjectSubEntity.checkStatus_init);
+//		}else if(sub.getBarcode().contains(sub.getMaterial().getHwcode())){
+//			sub.setCheckStatus(ProjectSubEntity.checkStatus_pass);
+//		}else{
+//			sub.setCheckStatus(ProjectSubEntity.checkStatus_error);
+//		}
+		for(EnumDataSubEntity enumSub:limitEnums){
+			String t_pre = enumSub.getEnumdatakey();
+			if(projectSub.getMaterialHwCode()!=null&&projectSub.getMaterialHwCode().indexOf(t_pre)==0){//以19,39...开头的
+				String limitLength = enumSub.getDescription();//限制长度
+				if(limitLength!=null&&limitLength!=""&&Integer.parseInt(limitLength)!=projectSub.getMaterialHwCode().length()){
+					sub.setBarcodeStatus(ProjectSubEntity.BARCODE_STATUS_LENGTH_WRONG);
+					break;
+				}
+			}
+		}
+		return sub;
+		
+	}
+
 	private ProjectSubEntity setBarcodeJson(ProjectSubEntity sub){
 //		List<ProjectBarcodeVo> barcodeList = new ArrayList<>();
 //		if (StringUtils.isEmpty(sub.getUuid())) {
