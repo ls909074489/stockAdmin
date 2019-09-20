@@ -64,8 +64,8 @@
 					<input type="text" autocomplete="on" name="search_GTE_createtime" style="width: 90px;" id="search_GTE_createtime" 
 						class="form-control input-sm Wdate" onclick="WdatePicker();">
 	
-					<label class="control-label">预警时间</label> 
-					<input type="text" autocomplete="on" name="search_LTE_warningTime" style="width: 90px;" id="search_LTE_warningTime" 
+					<label class="control-label">提醒时间</label> 
+					<input type="text" autocomplete="on" name="search_LTE_remindTime" style="width: 90px;" id="search_LTE_remindTime" 
 						class="form-control input-sm Wdate" onclick="WdatePicker();">
 					
 					<label class="control-label">状态</label> 
@@ -93,6 +93,7 @@
 							<th>剩余数量</th>
 							<th>预占数量</th>
 							<th>可用数量</th>
+							<th>提醒时间</th>
 							<th>预警时间</th>
 							<th>状态</th>
 							<!-- <th>预警状态</th> -->
@@ -175,6 +176,11 @@
 			},{
 				data : "actualAmount",
 				width : "60",
+				className : "center",
+				orderable : false
+			},{
+				data : "remindTime",
+				width : "100",
 				className : "center",
 				orderable : false
 			},{

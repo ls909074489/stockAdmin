@@ -11,12 +11,16 @@
 	<div id="yy-page" class="container-fluid page-container">
 		<div class="page-content" id="yy-page-list">
 			<div class="row yy-toolbar">
-				<button id="yy-btn-add" class="btn blue btn-sm">
-					<i class="fa fa-plus"></i> 新增
-				</button>
-				<button id="yy-btn-remove" class="btn red btn-sm">
-					<i class="fa fa-trash-o"></i> 删除
-				</button>
+				<shiro:hasPermission name="orderinfoAdd">
+					<button id="yy-btn-add" class="btn blue btn-sm">
+						<i class="fa fa-plus"></i> 新增
+					</button>
+				</shiro:hasPermission>	
+				<shiro:hasPermission name="orderinfoDel">
+					<button id="yy-btn-remove" class="btn red btn-sm">
+						<i class="fa fa-trash-o"></i> 删除
+					</button>
+				</shiro:hasPermission>
 				<button id="yy-btn-refresh" class="btn blue btn-sm">
 					<i class="fa fa-refresh"></i> 刷新
 				</button>
@@ -26,21 +30,27 @@
 				<button id="yy-btn-unsubmit" class="btn yellow btn-sm btn-info">
 					<i class="fa fa-undo"></i> 撤销提交
 				</button> -->
-				<button id="yy-btn-approve-x" class="btn yellow btn-sm btn-info">
-					<i class="fa fa-check"></i> 审核
-				</button>
-				<button id="yy-btn-unapprove" class="btn yellow btn-sm btn-info">
-					<i class="fa fa-reply"></i> 取消审核
-				</button>
+				<shiro:hasPermission name="orderinfoApprove">
+					<button id="yy-btn-approve-x" class="btn yellow btn-sm btn-info">
+						<i class="fa fa-check"></i> 审核
+					</button>
+				</shiro:hasPermission>
+				<shiro:hasPermission name="orderinfoUnApprove">
+					<button id="yy-btn-unapprove" class="btn yellow btn-sm btn-info">
+						<i class="fa fa-reply"></i> 取消审核
+					</button>
+				</shiro:hasPermission>
 				<!-- <button id="yy-btn-unapprove" class="btn yellow btn-sm btn-info">
 					<i class="fa fa-reply"></i> 取消审核
 				</button> -->
-				<button class="btn green btn-sm btn-info" id="yy-btn-import">
-					<i class="fa fa-chevron-down"></i> 导入
-				</button>
-				<button class="btn green btn-sm btn-info" id="yy-btn-templatedownload">
-					<i class="fa fa-chevron-down"></i> 导入模板下载
-				</button>
+				<shiro:hasPermission name="orderinfoImport">
+					<button class="btn green btn-sm btn-info" id="yy-btn-import">
+						<i class="fa fa-chevron-down"></i> 导入
+					</button>
+					<button class="btn green btn-sm btn-info" id="yy-btn-templatedownload">
+						<i class="fa fa-chevron-down"></i> 导入模板下载
+					</button>
+				</shiro:hasPermission>
 				</div>
 			<div class="row yy-searchbar form-inline">
 				<!-- <form id="yy-form-query">
@@ -126,7 +136,14 @@
 				data : "uuid",
 				className : "center",
 				orderable : false,
-				render : YYDataTableUtils.renderActionCol,
+				//render : YYDataTableUtils.renderActionCol,
+				render : function(data, type, full) {
+					return "<div class='yy-btn-actiongroup'>"
+					+ "<button id='yy-btn-view-row' class='btn btn-xs btn-success' data-rel='tooltip' title='查看'><i class='fa fa-search-plus'></i></button>"
+					+ "<shiro:hasPermission name='orderinfoEdit'><button id='yy-btn-edit-row' class='btn btn-xs btn-info' data-rel='tooltip' title='编辑'><i class='fa fa-edit'></i></button></shiro:hasPermission>"
+					+ "<shiro:hasPermission name='orderinfoDel'><button id='yy-btn-remove-row' class='btn btn-xs btn-danger' data-rel='tooltip' title='删除'><i class='fa fa-trash-o'></i></button></shiro:hasPermission>"
+					+ "</div>";
+				},
 				width : "60"
 			},{
 				data : "billstatus",

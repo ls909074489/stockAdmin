@@ -314,6 +314,20 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 		return "modules/info/barcode/projectinfo_barcode_config";
 	}
 	
+	/**
+	 * 预警物料配置
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/toWarningConfig", method = RequestMethod.GET)
+	public String toWarningConfig(Model model, ServletRequest request) {
+		EnumDataEntity enumData = enumDataService.getByGroupcode("barCodeExtract");
+		model.addAttribute(ENTITY, enumData);
+		return "modules/info/wanrning/projectinfo_wanrning_config";
+	}
+	
+	
 
 	private List<ProjectSubEntity> convertToEntities(String[] paramArr) {
 		List<ProjectSubEntity> returnList = new ArrayList<ProjectSubEntity>();
@@ -472,4 +486,5 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 			}
 		}
 	}
+	
 }

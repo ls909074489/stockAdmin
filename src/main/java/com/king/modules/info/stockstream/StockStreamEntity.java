@@ -90,7 +90,7 @@ public class StockStreamEntity extends BaseEntity {
 	@Column(length = 2)
 	private String billType;
 	
-	@MetaData(value = "计划数量")
+	@MetaData(value = "预警时间")
 	@Column()
 	private Date warningTime;
 	
@@ -121,6 +121,10 @@ public class StockStreamEntity extends BaseEntity {
 	@MetaData(value = "是否显示")
 	@Column(length = 1)
 	private String showType="1";//0不显示 1：显示
+	
+	@MetaData(value = "提醒时间")
+	@Column()
+	private Date remindTime;
 	
 	
 //	@MetaData(value = "总数量")
@@ -303,6 +307,15 @@ public class StockStreamEntity extends BaseEntity {
 
 	public void setShowType(String showType) {
 		this.showType = showType;
+	}
+
+
+	public Date getRemindTime() {
+		return remindTime;
+	}
+
+	public void setRemindTime(Date remindTime) {
+		this.remindTime = remindTime;
 	}
 
 }

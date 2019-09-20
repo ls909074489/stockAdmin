@@ -71,12 +71,17 @@ th,td{
 						<i class="fa fa-undo"></i> 撤销提交
 					</button>
 					 -->
-					 <button id="yy-btn-approve-project" class="btn yellow btn-sm btn-info" type="button">
-						<i class="fa fa-check"></i> 审核
-					</button>
-					<button id="yy-btn-unapprove-project" class="btn yellow btn-sm btn-info">
-						<i class="fa fa-reply"></i> 取消审核
-					</button>
+					 
+					 <shiro:hasPermission name="projectdetailApprove">
+					 	 <button id="yy-btn-approve-project" class="btn yellow btn-sm btn-info" type="button">
+							<i class="fa fa-check"></i> 审核
+						</button>
+					 </shiro:hasPermission>
+					 <shiro:hasPermission name="projectdetailUnApprove">
+						<button id="yy-btn-unapprove-project" class="btn yellow btn-sm btn-info">
+							<i class="fa fa-reply"></i> 取消审核
+						</button>
+					</shiro:hasPermission>
 					<button id="yy-btn-check-null" class="btn green btn-sm btn-info">
 						<i class="fa fa-video-camera"></i> 一键查漏
 					</button>
@@ -231,17 +236,17 @@ th,td{
 					var newStreamId = full.newUuid.split("_");
 					var unOutBtn = "";
 					if(newStreamId[0].length>10){
-						unOutBtn = "<button  onclick=\"unOuntSub('"+full.newUuid+"');\" "+btnAble+" rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info unOuntSubBtn' data-rel='tooltip' title='撤销出库'><i class='fa fa-undo'></i>撤销出库</button>";
+						unOutBtn = "<shiro:hasPermission name='projectdetailUnout'><button  onclick=\"unOuntSub('"+full.newUuid+"');\" "+btnAble+" rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info unOuntSubBtn' data-rel='tooltip' title='撤销出库'><i class='fa fa-undo'></i>撤销出库</button></shiro:hasPermission>";
 					}
 					if(full.barcode!=null&&full.barcode!=''){
 						return uuidInput+"<div class='yy-btn-actiongroup'>"
-						+ "<button  onclick='changeToSave(this);' "+btnAble+" rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info' data-rel='tooltip' title='修改'><i class='fa yy-btn-save'></i>修改</button>"
-						+ "<button  onclick='saveNewBarcode(this);' "+btnAble+"  style='display: none;' rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info saveBcBtn' data-rel='tooltip' title='保存'><i class='fa yy-btn-save'></i>保存</button>"
+						+ "<shiro:hasPermission name='projectdetailSaveBarcode'><button  onclick='changeToSave(this);' "+btnAble+" rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info' data-rel='tooltip' title='修改'><i class='fa yy-btn-save'></i>修改</button>"
+						+ "<button  onclick='saveNewBarcode(this);' "+btnAble+"  style='display: none;' rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info saveBcBtn' data-rel='tooltip' title='保存'><i class='fa yy-btn-save'></i>保存</button></shiro:hasPermission>"
 						+unOutBtn
 						+ "</div>";
 					}else{
 						return uuidInput+"<div class='yy-btn-actiongroup'>"
-						+ "<button  onclick='saveNewBarcode(this);' "+btnAble+" rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info saveBcBtn' data-rel='tooltip' title='保存'><i class='fa yy-btn-save'></i>保存</button>"
+						+ "<shiro:hasPermission name='projectdetailSaveBarcode'><button  onclick='saveNewBarcode(this);' "+btnAble+" rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info saveBcBtn' data-rel='tooltip' title='保存'><i class='fa yy-btn-save'></i>保存</button></shiro:hasPermission>"
 						+ "</div>";
 					}
 				},
@@ -532,16 +537,16 @@ th,td{
 							console.info(full.planAmount+"========"+full.actualAmount);
 							console.info(full.planAmount<=full.actualAmount);
 							if(full.planAmount<=full.actualAmount){
-								appendReceiveStr = '<button class="btn btn-xs btn-info" onclick="appendLog(\''+data+'\');" data-rel="tooltip" title="修改收货记录"><i class="fa fa-edit"></i>修改收货记录</button>';
+								appendReceiveStr = '<shiro:hasPermission name="projectdetailAppendLog"><button class="btn btn-xs btn-info" onclick="appendLog(\''+data+'\');" data-rel="tooltip" title="修改收货记录"><i class="fa fa-edit"></i>修改收货记录</button></shiro:hasPermission>';
 							}else{
-								appendReceiveStr = '<button class="btn btn-xs btn-info" onclick="appendLog(\''+data+'\');" data-rel="tooltip" title="添加收货记录"><i class="fa fa-edit"></i>添加收货记录</button>';
+								appendReceiveStr = '<shiro:hasPermission name="projectdetailAppendLog"><button class="btn btn-xs btn-info" onclick="appendLog(\''+data+'\');" data-rel="tooltip" title="添加收货记录"><i class="fa fa-edit"></i>添加收货记录</button></shiro:hasPermission>';
 							}
 						}else{
-							appendReceiveStr = '<button class="btn btn-xs btn-info saveSubReceiveCLs" onclick="saveSubReceive(this);"  data-rel="tooltip" title="确认收货"><i class="fa fa-edit"></i>确认收货</button>';
+							appendReceiveStr = '<shiro:hasPermission name="projectdetailSaveSub"><button class="btn btn-xs btn-info saveSubReceiveCLs" onclick="saveSubReceive(this);"  data-rel="tooltip" title="确认收货"><i class="fa fa-edit"></i>确认收货</button></shiro:hasPermission>';
 						}
 						return "<div class='yy-btn-actiongroup'>"
 						+ appendReceiveStr
-						+ "<button  onclick=\"toBorrowMaterital(\'"+data+"\');\" "+btnAble+" class='btn btn-xs btn-info' data-rel='tooltip' title='挪料'><i class='fa yy-btn-edit'></i>挪料</button>"
+						+ "<shiro:hasPermission name='projectdetailBoorrow'><button  onclick=\"toBorrowMaterital(\'"+data+"\');\" "+btnAble+" class='btn btn-xs btn-info' data-rel='tooltip' title='挪料'><i class='fa yy-btn-edit'></i>挪料</button></shiro:hasPermission>"
 						+ "</div>";
 					}else{
 						return "";
@@ -1464,12 +1469,6 @@ th,td{
 			}
 			//if(_tableList.row(rowList[i]).data().firstRow=="1"&&!validateRowData(rowList[i],validator)){
 			
-			console.info(rowData.uuid);	
-			console.info($(t).closest("tr").find("input[name='actualAmount']").val());
-			console.info($(t).closest("tr").find("input[name='receiveTime']").val());
-			console.info($(t).closest("tr").find("input[name='warningTime']").val());
-			console.info($(t).closest("tr").find("input[name='memo']").val());
-
 			var trEle = $(t).closest("tr");
 			$.ajax({
 				type : "POST",

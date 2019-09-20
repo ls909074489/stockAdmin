@@ -124,12 +124,12 @@ public class StockStreamController extends BaseController<StockStreamEntity> {
 			addParam.put("GTE_createtime", search_GTE_createtime+" 00:00:00");//要预警 
 		}
 		
-		String search_LTE_warningTime = request.getParameter("search_LTE_warningTime");
-		if(StringUtils.isEmpty(search_LTE_warningTime)){
-			addParam.put("LTE_warningTime", DateUtil.getDate()+" 59:59:59");//要预警 
+		String search_LTE_remindTime = request.getParameter("search_LTE_remindTime");
+		if(StringUtils.isEmpty(search_LTE_remindTime)){
+			addParam.put("LTE_remindTime", DateUtil.getDate()+" 59:59:59");//要预警 
 		}else{
-			addParam.put("LTE_warningTime", search_LTE_warningTime+" 59:59:59");//要预警 
-			addParam.put("GTE_warningTime", search_LTE_warningTime+" 00:00:00");//要预警 
+			addParam.put("LTE_remindTime", search_LTE_remindTime+" 59:59:59");//要预警 
+			addParam.put("GTE_remindTime", search_LTE_remindTime+" 00:00:00");//要预警 
 		}
 		QueryRequest<StockStreamEntity> qr = getQueryRequest(request, addParam);
 		return execQuery(qr, baseService);

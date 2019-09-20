@@ -402,11 +402,11 @@
 			name : "actioncode",
 			rules : {
 				required : true,
-				maxlength : 20
+				maxlength : 50
 			},
 			message :{
 				required : "请填写按钮编码",
-				maxlength : "按钮编码不能超过20个字符"
+				maxlength : "按钮编码不能超过50个字符"
 			}
 			}, {
 			name : "actionname",

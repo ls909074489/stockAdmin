@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.king.common.utils.DateUtil;
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.dao.IBaseDAO;
 import com.king.frame.service.BaseServiceImpl;
@@ -37,6 +38,8 @@ import com.king.modules.info.streamLog.StreamProjectLogEntity;
 import com.king.modules.info.streamLog.StreamProjectLogService;
 import com.king.modules.info.streamborrow.StreamBorrowEntity;
 import com.king.modules.info.streamborrow.StreamBorrowService;
+import com.king.modules.sys.enumdata.EnumDataSubEntity;
+import com.king.modules.sys.enumdata.EnumDataUtils;
 
 /**
  * 库存明细
@@ -286,6 +289,9 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 		
 		StockBaseEntity stockBase = projectInfo.getStock();
 		List<StreamBorrowEntity> borrowList =  borrowService.findBorrowByToProject(projectInfo.getUuid());
+		
+		List<EnumDataSubEntity> enumList = EnumDataUtils.getEnumSubList("warningMaterial");//预警时间必填
+		
 		for(ProjectReceiveEntity sub:receiveList){
 			StockDetailEntity detail  = findByStockAndMaterial(stockBase.getUuid(),sub.getMaterial().getUuid());
 			
@@ -300,6 +306,9 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			material.setUuid(sub.getMaterial().getUuid());
 			stream.setMaterial(material);
 			stream.setWarningTime(sub.getWarningTime());
+			if(checkWarningTime(sub.getMaterial().getHwcode(),stream,enumList)){
+				throw new ServiceException("物料"+sub.getMaterial().getCode()+"["+sub.getMaterial().getHwcode()+"]预警时间不能为空");
+			}
 //			stream.setWarningType(StockStreamEntity.WARNINGTYPE_NO_NEED);
 			stream.setSurplusAmount(sub.getReceiveAmount());
 			
@@ -332,7 +341,31 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 		return stream;
 	}
 	
-	
+	/**
+	 * 判断物料的预警时间是否为空
+	 * @param hwcode
+	 * @param warningTime
+	 * @param enumList
+	 * @return
+	 */
+	private boolean checkWarningTime(String hwcode, StockStreamEntity stream, List<EnumDataSubEntity> enumList) {
+		if(CollectionUtils.isEmpty(enumList)){
+			return false;
+		}
+		for(EnumDataSubEntity sub:enumList){
+			if(hwcode.indexOf(sub.getEnumdatakey())==0){//物料开头
+				if(stream.getWarningTime()==null){
+					return true;
+				}else{
+					//设置提醒时间
+					stream.setRemindTime(DateUtil.subDays(stream.getWarningTime(), sub.getKeyLength()));
+					return false;
+				}
+			}
+		}
+		return false;
+	}
+
 	private boolean changeHasBorrw(List<StreamBorrowEntity> borrowList,ProjectReceiveEntity sub,StockStreamEntity stream,StockDetailEntity detail) {
 		if(CollectionUtils.isEmpty(borrowList)){
 			return false;

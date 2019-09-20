@@ -648,9 +648,6 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 				Map<String,MaterialEntity> materialMap = new HashMap<>();
 				Map<String,MaterialEntity> hwmaterialMap = new HashMap<>();
 				for (ProjectSubEntity projectSub : list) {
-					if("53453343".equals(projectSub.getMaterialHwCode())){
-						System.out.println(">>>>>>>>>>>>");
-					}
 					hasMaterial = false;
 					for (MaterialEntity material : materialList) {
 						if (projectSub.getMaterialPurchaseType().equals(MaterialEntity.PURCHASETYPE_CS)&&
