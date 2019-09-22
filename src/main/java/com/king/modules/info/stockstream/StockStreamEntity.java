@@ -309,7 +309,7 @@ public class StockStreamEntity extends BaseEntity {
 		this.showType = showType;
 	}
 
-
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+08:00")
 	public Date getRemindTime() {
 		return remindTime;
 	}

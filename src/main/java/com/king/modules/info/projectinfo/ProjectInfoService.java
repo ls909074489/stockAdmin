@@ -310,6 +310,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 			String planCount = "";
 			String receiveAmount = "";
 			String receiveTime="";
+			String warngingTime="";
 			String boxNumStr = "";
 			String materialPurchaseType = "";
 			List<ProjectSubEntity> list = new ArrayList<>();
@@ -445,6 +446,41 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 										}
 									}
 								}
+								hssCell = hssfRow.getCell(imexMap.get("warningTime"));
+								if(hssCell!=null){
+									try {
+										Date warningTime = hssCell.getDateCellValue();
+										entity.setWarningTime(warningTime);
+									} catch (IllegalStateException eill) {
+										warngingTime = ExcelDataUtil.getValue(hssCell);
+										if (!StringUtils.isEmpty(warngingTime)) {
+											warngingTime = warngingTime.trim();
+											if(warngingTime.contains("年")){
+												warngingTime = warngingTime.replace("年", "-");
+												warngingTime = warngingTime.replace("月", "-");
+												warngingTime = warngingTime.replace("日", "");
+												String [] timeArr = warngingTime.split("-");
+												if(timeArr.length>2){
+													if(timeArr[1].length()==1){
+														timeArr[1] = "0"+timeArr[1];
+													} 
+													if(timeArr[2].length()==1){
+														timeArr[2] = "0"+timeArr[2];
+													}
+												}else{
+													throw new ServiceException("第" + (rowNum + 1) + "行收货日期格式不为yyyy年MM月dd日");
+												}
+												warngingTime = timeArr[0]+"-"+timeArr[1]+"-"+timeArr[2];
+											}	
+											try {
+												entity.setWarningTime(formatter.parse(warngingTime));
+											} catch (Exception e) {
+												e.printStackTrace();
+												throw new ServiceException("第" + (rowNum + 1) + "行预警时间格式不为yyyy-MM-dd");
+											}
+										}
+									}
+								}
 								entity.setBarcode(ExcelDataUtil.getValue(hssfRow.getCell(imexMap.get("barcode"))));
 								
 								if(entity.getMaterialPurchaseType().equals("TK")){
@@ -464,7 +500,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 									subReceiveList = new ArrayList<>();
 								}
 								subReceiveList.add(new ProjectReceiveEntity(entity.getReceiveAmount(), entity.getReceiveTime(),
-										ProjectReceiveEntity.receiveType_add, "", null, null));
+										ProjectReceiveEntity.receiveType_add, "", entity.getWarningTime(), null));
 								subReceiveMap.put(distinctCode, subReceiveList);
 								//条码
 								if(!StringUtils.isEmpty(entity.getBarcode())){
@@ -598,7 +634,41 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 										}
 									}
 								}
-								
+								xssCell = xssfRow.getCell(imexMap.get("warningTime"));
+								if(xssCell!=null){
+									try {
+										Date warningTime = xssCell.getDateCellValue();
+										entity.setWarningTime(warningTime);
+									} catch (IllegalStateException eill) {
+										warngingTime = ExcelDataUtil.getValue(xssCell);
+										if (!StringUtils.isEmpty(warngingTime)) {
+											warngingTime = warngingTime.trim();
+											if(warngingTime.contains("年")){
+												warngingTime = warngingTime.replace("年", "-");
+												warngingTime = warngingTime.replace("月", "-");
+												warngingTime = warngingTime.replace("日", "");
+												String [] timeArr = warngingTime.split("-");
+												if(timeArr.length>2){
+													if(timeArr[1].length()==1){
+														timeArr[1] = "0"+timeArr[1];
+													} 
+													if(timeArr[2].length()==1){
+														timeArr[2] = "0"+timeArr[2];
+													}
+												}else{
+													throw new ServiceException("第" + (rowNum + 1) + "行收货日期格式不为yyyy年MM月dd日");
+												}
+												warngingTime = timeArr[0]+"-"+timeArr[1]+"-"+timeArr[2];
+											}	
+											try {
+												entity.setWarningTime(formatter.parse(warngingTime));
+											} catch (Exception e) {
+												e.printStackTrace();
+												throw new ServiceException("第" + (rowNum + 1) + "行预警时间格式不为yyyy-MM-dd");
+											}
+										}
+									}
+								}
 								entity.setBarcode(ExcelDataUtil.getValue(xssfRow.getCell(imexMap.get("barcode"))));
 								
 								
@@ -620,7 +690,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 									subReceiveList = new ArrayList<>();
 								}
 								subReceiveList.add(new ProjectReceiveEntity(entity.getReceiveAmount(), entity.getReceiveTime(),
-										ProjectReceiveEntity.receiveType_add, "", null, null));
+										ProjectReceiveEntity.receiveType_add, "", entity.getWarningTime(), null));
 								subReceiveMap.put(distinctCode, subReceiveList);
 								//条码
 								if(!StringUtils.isEmpty(entity.getBarcode())){
@@ -821,25 +891,19 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 		if(CollectionUtils.isEmpty(limitEnums)){
 			return ;
 		}
-//		if(StringUtils.isEmpty(projectSub.getMaterialHwCode())){
-//			sub.setCheckStatus(ProjectSubEntity.checkStatus_init);
-//		}else if(sub.getBarcode().contains(sub.getMaterial().getHwcode())){
-//			sub.setCheckStatus(ProjectSubEntity.checkStatus_pass);
-//		}else{
-//			sub.setCheckStatus(ProjectSubEntity.checkStatus_error);
-//		}
 		for(EnumDataSubEntity enumSub:limitEnums){
 			String t_pre = enumSub.getEnumdatakey();
 			if(projectSub.getMaterialHwCode()!=null&&projectSub.getMaterialHwCode().indexOf(t_pre)==0){//以19,39...开头的
 				String limitLength = enumSub.getDescription();//限制长度
-				if(limitLength!=null&&limitLength!=""&&Integer.parseInt(limitLength)!=projectSub.getMaterialHwCode().length()){
-					sub.setBarcodeStatus(ProjectSubEntity.BARCODE_STATUS_LENGTH_WRONG);
-					break;
+				if(limitLength!=null&&limitLength!=""){
+					if(Integer.parseInt(limitLength)==projectSub.getMaterialHwCode().length()){
+						projectSub.setLimitCount(1);
+					}
+				}else{
+					projectSub.setLimitCount(1);
 				}
 			}
 		}
-		return sub;
-		
 	}
 
 	private ProjectSubEntity setBarcodeJson(ProjectSubEntity sub){

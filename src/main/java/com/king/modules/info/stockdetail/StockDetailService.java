@@ -307,7 +307,8 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 			stream.setMaterial(material);
 			stream.setWarningTime(sub.getWarningTime());
 			if(checkWarningTime(sub.getMaterial().getHwcode(),stream,enumList)){
-				throw new ServiceException("物料"+sub.getMaterial().getCode()+"["+sub.getMaterial().getHwcode()+"]预警时间不能为空");
+				MaterialEntity materialEntity = materialService.getOne(sub.getMaterial().getUuid());
+				throw new ServiceException("预警物料"+materialEntity.getCode()+"["+materialEntity.getHwcode()+"]预警时间不能为空");
 			}
 //			stream.setWarningType(StockStreamEntity.WARNINGTYPE_NO_NEED);
 			stream.setSurplusAmount(sub.getReceiveAmount());
@@ -352,7 +353,17 @@ public class StockDetailService extends BaseServiceImpl<StockDetailEntity,String
 		if(CollectionUtils.isEmpty(enumList)){
 			return false;
 		}
+		MaterialEntity material = null;
 		for(EnumDataSubEntity sub:enumList){
+			if(StringUtils.isEmpty(hwcode)){
+				material =  materialService.getOne(stream.getMaterial().getUuid());
+				if(material!=null){
+					hwcode =material.getHwcode();
+				}
+			}
+			if(StringUtils.isEmpty(hwcode)){
+				hwcode ="";
+			}
 			if(hwcode.indexOf(sub.getEnumdatakey())==0){//物料开头
 				if(stream.getWarningTime()==null){
 					return true;

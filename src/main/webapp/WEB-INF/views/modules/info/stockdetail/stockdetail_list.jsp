@@ -95,7 +95,7 @@
 				render: function (data,type,row,meta ) {
 					return "<div class='yy-btn-actiongroup'>" 
 					+ "<button id='yy-btn-view-row' class='btn btn-xs btn-success' data-rel='tooltip' title='查看'><i class='fa fa-search-plus'></i>查看记录</button>"
-					+ "<button id='yy-btn-edit-row' class='btn btn-xs btn-success' data-rel='tooltip' title='修改库位'><i class='fa fa-edit'></i>修改库位</button>"
+					+ "<shiro:hasPermission name='stockDetailEditPlace'><button id='yy-btn-edit-row' class='btn btn-xs btn-success' data-rel='tooltip' title='修改库位'><i class='fa fa-edit'></i>修改库位</button></shiro:hasPermission>"
 					+ "</div>";
 		        },
 				width : "50"

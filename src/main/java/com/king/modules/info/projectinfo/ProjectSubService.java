@@ -32,6 +32,8 @@ import com.king.frame.dao.IBaseDAO;
 import com.king.frame.service.BaseServiceImpl;
 import com.king.modules.info.barcode.ProjectBarcodeLogEntity;
 import com.king.modules.info.barcode.ProjectBarcodeLogService;
+import com.king.modules.info.isolateMaterial.MateialIsolateEntity;
+import com.king.modules.info.isolateMaterial.MateialIsolateService;
 import com.king.modules.info.material.MaterialBaseEntity;
 import com.king.modules.info.material.MaterialEntity;
 import com.king.modules.info.stockdetail.StockDetailService;
@@ -61,6 +63,8 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 	private StockDetailService stockDetailService;
 	@Autowired
 	private ProjectSubBarcodeService projectSubBarcodeService;
+	@Autowired
+	private MateialIsolateService mateialIsolateService;
 
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -158,6 +162,11 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 			subId = idArr[1];
 		}
 		ProjectSubEntity sub = getOne(subId);
+		List<MateialIsolateEntity> isolateList = (List<MateialIsolateEntity>) mateialIsolateService.findByMaterialAndBarcode(sub.getMaterial().getUuid(),newBarcode);
+		if(CollectionUtils.isNotEmpty(isolateList)){
+			throw new ServiceException("物料"+sub.getMaterial().getCode()+"["+sub.getMaterial().getHwcode()+"]条码"+newBarcode+"已设置隔离，不能扫码出库.");
+		}
+		
 		List<ProjectSubBarcodeEntity> bcList = projectSubBarcodeService.findBySubIdAndBarcode(subId,newBarcode);
 		if(CollectionUtils.isEmpty(bcList)){
 			if(operType.equals("back")){//退料
