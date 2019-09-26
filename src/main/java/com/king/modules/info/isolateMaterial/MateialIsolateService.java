@@ -25,8 +25,8 @@ public class MateialIsolateService extends BaseServiceImpl<MateialIsolateEntity,
 		return dao;
 	}
 
-	public List<MateialIsolateEntity> findByMaterialAndBarcode(String materialId, String barcode) {
-		return dao.findByMaterialAndBarcode(materialId,barcode);
+	public List<MateialIsolateEntity> findByBarcode(String barcode) {
+		return dao.findByBarcode(barcode);
 	}
 
 

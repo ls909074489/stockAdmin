@@ -10,8 +10,8 @@ import com.king.frame.dao.IBaseDAO;
 @Repository
 public interface MateialIsolateDao extends IBaseDAO<MateialIsolateEntity,String> {
 
-	@Query("from MateialIsolateEntity where material.uuid=?1 and barcode=?2")
-	List<MateialIsolateEntity> findByMaterialAndBarcode(String materialId, String barcode);
+	@Query("from MateialIsolateEntity where barcode=?1")
+	List<MateialIsolateEntity> findByBarcode(String barcode);
 
 
 }

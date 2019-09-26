@@ -3,6 +3,7 @@ package com.king.modules.info.projectinfo;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +61,6 @@ public class ProjectSubBarcodeService extends BaseServiceImpl<ProjectSubBarcodeE
 
 
 	public List<ProjectSubBarcodeEntity> findLikeBarcode(String projectId,String barcode) {
-		
 		if(StringUtils.isEmpty(projectId)){
 			return dao.findLikeBarcode("%"+barcode+"%");
 		}else{
@@ -109,5 +109,13 @@ public class ProjectSubBarcodeService extends BaseServiceImpl<ProjectSubBarcodeE
 
 	public List<ProjectSubBarcodeEntity> findBySubIdAndBarcode(String subId, String newBarcode) {
 		return dao.findBySubIdAndBarcode(subId,newBarcode);
+	}
+
+
+	public List<ProjectSubBarcodeEntity> findByBarcodes(List<String> barcodeList) {
+		if(CollectionUtils.isEmpty(barcodeList)){
+			return new ArrayList<ProjectSubBarcodeEntity>();
+		}
+		return dao.findByBarcodes(barcodeList);
 	}
 }

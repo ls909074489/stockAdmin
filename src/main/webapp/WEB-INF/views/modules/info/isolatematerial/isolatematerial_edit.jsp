@@ -24,30 +24,19 @@
 				<div class="row">
 					<div class="col-md-4">
 						<div class="form-group">
-							<label class="control-label col-md-4 required">物料</label>
-							<div class="col-md-8">
-								<div class="input-group input-icon right">
-										<input id="materialId" name="material.uuid" type="hidden" value="${entity.material.uuid}"> 
-										<i class="fa fa-remove" onclick="cleanDef('materialId','materialHwcode');" title="清空"></i>
-										<input id="materialHwcode" name="materialHwcode" type="text" class="form-control" readonly="readonly" 
-											value="${entity.material.hwcode}">
-										<span class="input-group-btn">
-											<button id="material-select-btn" class="btn btn-default btn-ref" type="button">
-												<span class="glyphicon glyphicon-search"></span>
-											</button>
-										</span>
-									</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-md-4">
-						<div class="form-group">
-							<label class="control-label col-md-4 required" >条码</label>
+							<label class="control-label col-md-3 required" >条码</label>
 							<div class="col-md-8" >
-								<input name="barcode" id="barcode" type="text" value="${entity.barcode}" class="form-control">
+								<input name="barcode" type="text" value="${entity.barcode}" class="form-control">
+							</div>
+							<div class="col-md-1" >
+								<button class="btn blue btn-sm" type="button" onclick="addRow();">
+									<i class="fa fa-plus"></i> 添加
+								</button>
 							</div>
 						</div>
 					</div>
+				</div>
+				<div id="rowSpan">
 				</div>
 			</form>
 		</div>
@@ -68,33 +57,39 @@
 			
 			setValue();
 			
-			$('#material-select-btn').on('click', function() {
-				layer.open({
-					type : 2,
-					title : '请选择仓库',
-					shadeClose : false,
-					shade : 0.8,
-					area : [ '1000px', '90%' ],
-					content : '${ctx}/sys/ref/refMaterial?callBackMethod=window.parent.callBackMaterial'
-				});
-			});
-			
 		});
 		
-		//回调选择
-		function callBackMaterial(data){
-			$("#materialId").val(data.uuid);
-			$("#materialHwcode").val(data.hwcode);
+		function addRow(){
+			var str='<div class="row newrow">'+
+						'<div class="col-md-4">'+
+						'<div class="form-group">'+
+							'<label class="control-label col-md-3 required" >条码</label>'+
+							'<div class="col-md-8" >'+
+								'<input name="barcode" type="text" value="${entity.barcode}" class="form-control barcodecls">'+
+							'</div>'+
+							'<div class="col-md-1" >'+
+								'<button id="yy-btn-remove" class="btn red btn-sm btn-info" type="button"  onclick="delRow(this);">'+
+									'<i class="fa fa-trash-o"></i> 删除'+
+								'</button>'+
+							'</div>'+
+						'</div>'+
+					'</div>'+
+				'</div>';
+			$("#rowSpan").append(str);
+            $(".barcodecls").rules("add", { required : true,maxlength : 100});
+            
 		}
 		
-		 
+		function delRow(t){
+			$(t).closest(".newrow").remove();
+		}
+		
 		//表单校验
 		function validateForms(){
 			validata = $('#yy-form-edit').validate({
 				onsubmit : true,
 				rules : {
-					'barcode' : {required : true,maxlength : 100},
-					'materialHwcode' : {required : true,maxlength : 100}
+					'barcode' : {required : true,maxlength : 100}
 				}
 			});
 		}
@@ -109,46 +104,47 @@
 			}
 		}
 		
-		//主子表保存
-		function onSave22(isClose) {
-			var mainValidate=$('#yy-form-edit').valid();
-			if(!mainValidate){
-				return false;
+		
+	 	function onSave(isClose) {
+			addSubListValid();
+			if (!$('#yy-form-edit').valid()) return false;
+			doBeforeSave();
+			if (!validOther()) return false;
+			var editview = layer.load(2);
+			
+			var posturl = "${serviceurl}/adds";
+			var pk = $("input[name='uuid']").val();
+			if (pk != "" && typeof (pk) != "undefined") {
+				posturl = "${serviceurl}/update";
 			}
-			//保存新增的子表记录 
-	        var _subTable = $("#yy-table-sublist").dataTable();
-	        var subList = new Array();
-	        var rows = _subTable.fnGetNodes();
-	        for(var i = 0; i < rows.length; i++){
-	            subList.push(getRowData(rows[i]));
-	        }
-	        if(subList.length==0){
-	        	YYUI.promAlert("请添加明细");
-	        	return false;
-	        }
-			var saveWaitLoad=layer.load(2);
 			var opt = {
-				url : "${serviceurl}/updatewithsub",
+				url : posturl,
 				type : "post",
-				data : {"subList" : subList,"deletePKs" : _deletePKs},
 				success : function(data) {
-					layer.close(saveWaitLoad);
-					if (data.success == true) {
-						_deletePKs = new Array();
+					if (data.success) {
+						layer.close(editview);
 						if (isClose) {
 							window.parent.YYUI.succMsg('保存成功!');
 							window.parent.onRefresh(true);
+							//window.parent.onDetailRow(pk);跳转到编辑页面
 							closeEditView();
 						} else {
 							YYUI.succMsg('保存成功!');
 						}
+						doAfterSaveSuccess(data.records);
 					} else {
-						YYUI.promAlert("保存失败：" + data.msg);
+						//window.parent.YYUI.failMsg("保存出现错误：" + data.msg);
+						window.parent.YYUI.failMsg("保存失败：" + data.msg);
+						layer.close(editview);
 					}
+				},
+				error : function(XMLHttpRequest, textStatus, errorThrown) {
+					window.parent.YYUI.promAlert("保存失败，HTTP错误。");
+					layer.close(editview);
 				}
 			}
 			$("#yy-form-edit").ajaxSubmit(opt);
-		}
+		} 
 	</script>
 </body>
 </html>

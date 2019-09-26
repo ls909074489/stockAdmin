@@ -2,8 +2,6 @@ package com.king.modules.info.isolateMaterial;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -14,7 +12,6 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import com.king.common.annotation.MetaData;
 import com.king.frame.entity.BaseEntity;
-import com.king.modules.info.material.MaterialEntity;
 
 /**
  * 隔离物料
@@ -33,15 +30,18 @@ public class MateialIsolateEntity extends BaseEntity {
 	@MetaData(value = "条码")
 	@Column(length = 50)
 	private String barcode;
-	
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "materialid")
-	private MaterialEntity material;
-	
+
 	@Transient
-	private String materialId;
-
-
+	private String exitType="0";//是否存在项目
+	@Transient
+	private String projectCode;
+	@Transient
+	private String projectBoxNum;
+	@Transient
+	private String projectMaterial;
+	
+	
+	
 	public String getBarcode() {
 		return barcode;
 	}
@@ -52,23 +52,44 @@ public class MateialIsolateEntity extends BaseEntity {
 	}
 
 
-	public MaterialEntity getMaterial() {
-		return material;
+	public String getExitType() {
+		return exitType;
 	}
 
 
-	public void setMaterial(MaterialEntity material) {
-		this.material = material;
+	public void setExitType(String exitType) {
+		this.exitType = exitType;
 	}
 
 
-	public String getMaterialId() {
-		return materialId;
+	public String getProjectCode() {
+		return projectCode;
 	}
 
 
-	public void setMaterialId(String materialId) {
-		this.materialId = materialId;
+	public void setProjectCode(String projectCode) {
+		this.projectCode = projectCode;
 	}
+
+
+	public String getProjectBoxNum() {
+		return projectBoxNum;
+	}
+
+
+	public void setProjectBoxNum(String projectBoxNum) {
+		this.projectBoxNum = projectBoxNum;
+	}
+
+
+	public String getProjectMaterial() {
+		return projectMaterial;
+	}
+
+
+	public void setProjectMaterial(String projectMaterial) {
+		this.projectMaterial = projectMaterial;
+	}
+
 
 }

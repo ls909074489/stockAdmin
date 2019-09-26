@@ -112,5 +112,21 @@ path="/stockAdmin/jlbcuploadfiles/qrcode/temp"/>
 					confirmReceive(isClose);
 				});
 				
-				
-				
+#######################################################################################################			
+			$("#typeNameId").rules("remove");
+            $("#typeNameId").rules("add", { required : true,number:true,digits:true,maxlength : 20});
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            		

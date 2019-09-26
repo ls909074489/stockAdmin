@@ -162,7 +162,7 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 			subId = idArr[1];
 		}
 		ProjectSubEntity sub = getOne(subId);
-		List<MateialIsolateEntity> isolateList = (List<MateialIsolateEntity>) mateialIsolateService.findByMaterialAndBarcode(sub.getMaterial().getUuid(),newBarcode);
+		List<MateialIsolateEntity> isolateList = (List<MateialIsolateEntity>) mateialIsolateService.findByBarcode(newBarcode);
 		if(CollectionUtils.isNotEmpty(isolateList)){
 			throw new ServiceException("物料"+sub.getMaterial().getCode()+"["+sub.getMaterial().getHwcode()+"]条码"+newBarcode+"已设置隔离，不能扫码出库.");
 		}

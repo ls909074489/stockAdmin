@@ -314,6 +314,20 @@ public class ProjectInfoController extends SuperController<ProjectInfoEntity> {
 		return "modules/info/barcode/projectinfo_barcode_config";
 	}
 	
+	
+	/**
+	 * 条码追溯基线规则
+	 * @param model
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "/toTraceConifig", method = RequestMethod.GET)
+	public String toTraceConifig(Model model, ServletRequest request) {
+//		EnumDataEntity enumData = enumDataService.getByGroupcode("barCodeExtract");
+//		model.addAttribute(ENTITY, enumData);
+		return "modules/info/trace/projectinfo_trace_config";
+	}
+	
 	/**
 	 * 预警物料配置
 	 * @param model

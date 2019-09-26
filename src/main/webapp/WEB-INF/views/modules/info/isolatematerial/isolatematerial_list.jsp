@@ -24,9 +24,9 @@
 			<div class="row yy-searchbar form-inline">
 				<form id="yy-form-query">
 
-					<label for="search_LIKE_material.hwcode" class="control-label">华为物料编码</label>	
-					<input type="text" autocomplete="on" name="search_LIKE_material.hwcode"
-						id="search_LIKE_material.hwcode" class="form-control input-sm">
+					<label for="search_LIKE_material.hwcode" class="control-label">条码</label>	
+					<input type="text" autocomplete="on" name="search_LIKE_barcode"
+						id="search_LIKE_barcode" class="form-control input-sm">
 						
 
 					<button id="yy-btn-search" type="button" class="btn btn-sm btn-info">
@@ -46,10 +46,11 @@
 								<input type="checkbox" class="group-checkable" data-set="#yy-table-list .checkboxes"/>
 							</th>
 							<th>操作</th>
-							<th>物料编码</th>
-							<th>华为物料编码</th>
-							<th>名称</th>
 							<th>条码</th>
+							<th>是否存在于系统内</th>
+							<th>对应项目号</th>
+							<th>对应箱号</th>
+							<th>对应物料</th>
 						</tr>
 					</thead>
 					<tbody></tbody>
@@ -82,22 +83,27 @@
 				render : YYDataTableUtils.renderRemoveActionCol,
 				width : "50"
 			},{
-				data : "material.code",
+				data : "barcode",
+				width : "200",
+				className : "center",
+				orderable : false
+			},{
+				data : "exitType",
 				width : "180",
 				className : "center",
 				orderable : false
 			},{
-				data : "material.hwcode",
+				data : "projectCode",
 				width : "200",
 				className : "center",
 				orderable : false
 			},{
-				data : "material.name",
+				data : "projectBoxNum",
 				width : "200",
 				className : "center",
 				orderable : false
 			},{
-				data : "barcode",
+				data : "projectMaterial",
 				width : "200",
 				className : "center",
 				orderable : false
