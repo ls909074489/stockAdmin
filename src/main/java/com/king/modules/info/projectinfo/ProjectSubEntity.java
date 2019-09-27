@@ -41,6 +41,9 @@ public class ProjectSubEntity extends BaseEntity {
 	public static final String BARCODE_STATUS_INIT="10";
 	public static final String BARCODE_STATUS_LENGTH_WRONG="30";
 	
+	public static final int LIMITCOUNT_UNIQUE = 1;//唯一
+	public static final int LIMITCOUNT_BATCH = -1;//批次
+	
 	private static final long serialVersionUID = 1L;
 
 	@ManyToOne(optional = false)

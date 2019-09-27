@@ -58,6 +58,13 @@
 		data : 'icon',
 		width : "200",
 		orderable : false
+	}, {
+		data : 'description',
+		width : "200",
+		render : function(data, type, full) {
+			return YYDataUtils.getEnumName("MaterialLimitCount", data);
+		},
+		orderable : false
 	}];
 	
 	//加载页面时初始化子表
@@ -164,6 +171,7 @@
 		jqTds[2].innerHTML = '<input type="text" class="form-control" name="enumdatakey"  value="' + aData.enumdatakey + '">';
 		jqTds[3].innerHTML = '<input type="text" class="form-control" name="enumdataname"  value="' + aData.enumdataname + '">';
 		jqTds[4].innerHTML = '<input type="text" class="form-control" name="icon"  value="' + aData.icon + '">';
+		jqTds[5].innerHTML = YYDataUtils.getEnumSelect("MaterialLimitCount", "", "description");
 		//setRowStyle(nRow);
 		_addList.push(nRow);
 	}
@@ -184,6 +192,7 @@
 				+ '<input name="uuid" type="hidden"  value="' + aData.uuid + '">';
 		jqTds[3].innerHTML = '<input type="text" class="form-control" name="enumdataname"  value="' + aData.enumdataname + '">';
 		jqTds[4].innerHTML = '<input type="text" class="form-control" name="icon"  value="' + aData.icon + '">';
+		jqTds[5].innerHTML = YYDataUtils.getEnumSelect("MaterialLimitCount", aData.description, "description");
 		
 		$("td input[value='null']", nRow).val("");
 		//YYFormUtils.setCheckBox("yy-table-sublist", "edit");//调整checkbox样式

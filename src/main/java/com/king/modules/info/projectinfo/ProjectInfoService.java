@@ -894,7 +894,7 @@ public class ProjectInfoService extends SuperServiceImpl<ProjectInfoEntity,Strin
 		for(EnumDataSubEntity enumSub:limitEnums){
 			String t_pre = enumSub.getEnumdatakey();
 			if(projectSub.getMaterialHwCode()!=null&&projectSub.getMaterialHwCode().indexOf(t_pre)==0){//以19,39...开头的
-				projectSub.setLimitCount(1);
+				projectSub.setLimitCount(Integer.parseInt(enumSub.getDescription()));
 			}
 		}
 	}
