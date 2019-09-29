@@ -70,6 +70,8 @@ public class MateialIsolateController extends BaseController<MateialIsolateEntit
 					subList = barcodeMap.get(mi.getBarcode());
 					if(CollectionUtils.isNotEmpty(subList)){
 						for(ProjectSubBarcodeEntity sub:subList){
+							mi = new MateialIsolateEntity();
+							mi.setBarcode(sub.getBarcode());
 							mi.setProjectCode(sub.getMain().getCode());
 							mi.setProjectBoxNum(sub.getSub().getBoxNum());
 							ProjectSubEntity subEntity = projectSubService.getOne(sub.getSub().getUuid());

@@ -10,6 +10,14 @@
 	<!-- 公用脚本 -->
 	<%@include file="/WEB-INF/views/common/commonscript.jsp"%>
 	<div class="container-fluid page-container page-content">
+		<div class="row yy-toolbar">
+			<button id="yy-btn-save" class="btn blue btn-sm" onclick="onSaveBarcode();">
+				<i class="fa fa-chevron-down"></i> 保存
+			</button>
+			<button id="yy-btn-cancel" class="btn blue btn-sm" type="button" onclick="closeDialog();">
+				<i class="fa fa-rotate-left"></i> 取消
+			</button>
+		</div>
 		<div class="row" style="text-align: center;margin-top: 20px;">
 			<label for="sweepCode" class="control-label">扫描条码</label>
 			<input type="text" autocomplete="on" name="sweepCode"
@@ -44,16 +52,18 @@
 				<div class="row yy-searchbar">
 				</div>
 				<div class="row">
-					<table id="yy-table-listSelect" class="yy-table">
-						<thead>
-							<tr>
-								<th>已扫条码</th>
-							</tr>
-						</thead>
-						<tbody id="barcodeBodyId">
-							
-						</tbody>
-					</table>
+					<form id="yy-form-save" class="">
+						<table id="yy-table-listSelect" class="yy-table">
+							<thead>
+								<tr>
+									<th>已扫条码</th>
+								</tr>
+							</thead>
+							<tbody id="barcodeBodyId">
+								
+							</tbody>
+						</table>
+					</form>
 				</div>
 			</div>
 		</div>
@@ -135,13 +145,13 @@
 				"order" : []
 			});
 			
-			_tableListSelect = $('#yy-table-listSelect').DataTable({
+			/* _tableListSelect = $('#yy-table-listSelect').DataTable({
 				"columns" : _tableColsSelect,
 				"createdRow" : unSelRowAction,
 				"processing" : true,//加载时间长，显示加载中
 				"paging" :false,
 				"order" : []
-			});
+			}); */
 			
 			//$("#yy-btn-selObj-row").bind('click', selObj);//
 			$("#yy-btn-search").bind('click', onRefresh);//快速查询
@@ -200,7 +210,7 @@
 					//获取查询数据，在表格刷新的时候自动提交到后台
 					//_queryData = $("#yy-form-query").serializeArray();
 					//onRefresh();
-					var str ='<tr role="row" class="even"><td class="center">'+t_sweepCode+'</td></tr>';
+					var str ='<tr role="row" class="even"><td class="center trBarcodeCls">'+t_sweepCode+'<input name="barcode" id="barcode" type="hidden" value="'+t_sweepCode+'"> </td></tr>';
 					$("#barcodeBodyId").append(str);
 				}else{
 					YYUI.promAlert("没有对应的物料"+searchCode);
@@ -306,6 +316,46 @@
 			});
 		}
 		
+		function closeDialog(){
+			var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+			parent.layer.close(index); //再执行关闭 
+		}
+		
+		function onSaveBarcode(){
+			var trObj = $("#barcodeBodyId").find(".trBarcodeCls");
+			console.info(trObj);
+			if(trObj==null||trObj.length==0){
+				YYUI.promAlert("请添加条码");
+	        	return false;
+			}
+			var mainValidate=$('#yy-form-save').valid();
+			if(!mainValidate){
+				return false;
+			}
+			debugger;
+			var saveWaitLoad=layer.load(2);
+			var opt = {
+				url : "${serviceurl}/batchSaveBarcode",
+				type : "post",
+				data : {},
+				success : function(data) {
+					layer.close(saveWaitLoad);
+					if (data.success == true) {
+						_deletePKs = new Array();
+						if (isClose) {
+							window.parent.YYUI.succMsg('保存成功!');
+							window.parent.onRefresh(true);
+							closeEditView();
+						} else {
+							YYUI.succMsg('保存成功!');
+						}
+					} else {
+						YYUI.promAlert("保存失败：" + data.msg);
+					}
+				}
+			}
+			$("#yy-form-save").ajaxSubmit(opt);
+		}
 		
 	</script>
 </body>

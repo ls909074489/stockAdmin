@@ -389,6 +389,16 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 	
 	
 	
+	@ResponseBody
+	@RequestMapping(value = "/batchSaveBarcode")
+	public ActionResultModel<ProjectSubEntity> batchSaveBarcode(ServletRequest request,String []barcode) {
+		ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity>();
+		
+		
+		arm.setSuccess(true);
+		return arm;
+	}
+	
 	/**
 	 * 设置条码
 	 * @param subBarcodelist

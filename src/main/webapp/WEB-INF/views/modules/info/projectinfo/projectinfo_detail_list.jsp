@@ -792,7 +792,7 @@ th,td{
 				title : '条码扫描',
 				shadeClose : false,
 				shade : 0.8,
-				area : [ '800px', '200px' ],
+				area : [ '800px', '60%' ],
 				content : '${serviceurl}/toSelProjectBox'//iframe的url
 			});
 		}
