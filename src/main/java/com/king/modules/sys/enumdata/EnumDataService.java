@@ -4,11 +4,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+
 import com.king.frame.controller.ActionResultModel;
 import com.king.frame.dao.IBaseDAO;
 import com.king.frame.service.BaseServiceImpl;
@@ -23,7 +29,9 @@ import com.king.frame.service.BaseServiceImpl;
 // @Transactional(rollbackFor={Exception.class})
 @Transactional
 public class EnumDataService extends BaseServiceImpl<EnumDataEntity, String> {
-
+	
+	private static final Log logger = LogFactory.getLog(EnumDataService.class);
+	
 	@Autowired
 	private EnumDataDao dao;
 
@@ -37,6 +45,7 @@ public class EnumDataService extends BaseServiceImpl<EnumDataEntity, String> {
 
 	public ActionResultModel<EnumDataEntity> saveSelfAndSubList(EnumDataEntity entity, List<EnumDataSubEntity> subList,
 			String[] deletePKs) {
+		logger.info("saveSelfAndSubList>>>>>>>>>>>>>"+subList);
 		ActionResultModel<EnumDataEntity> arm = new ActionResultModel<EnumDataEntity>();
 		// try {
 		// 删除子表一数据
@@ -51,18 +60,14 @@ public class EnumDataService extends BaseServiceImpl<EnumDataEntity, String> {
 			sub.setEnumdata(savedEntity);
 		}
 		// 判断子表编码是否重复再保存
-		int result = 0;
-		if (subList != null && subList.size() > 0) {
-			result = checkEnumdataValidate(entity, subList);
-		}
+		ActionResultModel<EnumDataEntity> result = checkEnumdataValidate(entity, subList);
 
 		// boolean result = true;
-		if (result == 1) {
-			throw new ServiceException("枚举编码不能重复！");
-		} else if (result == 2) {
-			throw new ServiceException("显示名称不能重复！");
-		} else {
+		if (result.isSuccess()) {
 			subService.save(subList);
+		}else {
+//			throw new ServiceException(result.getMsg());
+			return result;
 		}
 		// 刷新缓存
 		refreshEnumCache(entity.getGroupcode());
@@ -102,48 +107,38 @@ public class EnumDataService extends BaseServiceImpl<EnumDataEntity, String> {
 	 * 表体编码唯一校验 需要判断编码和名称都不能重复 @Title: checkEnumdataValidate @author liusheng @date 2016年5月6日 下午2:54:43 @param @param
 	 * entity @param @param subList @param @return 设定文件 @return int 返回类型 0:正常 1：编码重复 2：名称重复 @throws
 	 */
-	private int checkEnumdataValidate(EnumDataEntity entity, List<EnumDataSubEntity> subList) {
-		// Boolean boo = true;
-		// Map<String , EnumDataSubEntity> map = new HashMap<String, EnumDataSubEntity>();
-		// if(entity.getUuid()!=null && !entity.getUuid().equals("")){
-		// List<EnumDataSubEntity> list = subService.findByGroupId(entity.getUuid());
-		// if(list!=null && list.size()>0){
-		// for (EnumDataSubEntity sub : list) {
-		// map.put(sub.getEnumdatakey(), sub);
-		// }
-		// }
-		// }
-		// if(subList!=null && subList.size()>0){
-		// for (EnumDataSubEntity sub : subList) {
-		// if(map.get(sub.getEnumdatakey())!=null){
-		// String subuuid = sub.getUuid() == null ? "" : sub.getUuid();
-		// String mapuuid = map.get(sub.getEnumdatakey()).getUuid() == null ? "" :
-		// map.get(sub.getEnumdatakey()).getUuid();
-		// if(subuuid.equals("")&&mapuuid.equals("")){
-		// boo=false;
-		// }else{
-		// if(!(subuuid.equals(mapuuid))){
-		// boo=false;
-		// }
-		// }
-		// }else{
-		// map.put(sub.getEnumdatakey(), sub);
-		// }
-		// }
-		// }
-		// return boo;
-
+	private ActionResultModel<EnumDataEntity> checkEnumdataValidate(EnumDataEntity entity, List<EnumDataSubEntity> subList) {
+		ActionResultModel<EnumDataEntity> arm = new ActionResultModel<EnumDataEntity>();
+		if(CollectionUtils.isEmpty(subList)){
+			arm.setSuccess(true);
+			return arm;
+		}
 		Map<String, String> keyMap = new HashMap<String, String>();
 		Map<String, String> nameMap = new HashMap<String, String>();
+		List<String> msgKeyList = new ArrayList<>();
+		List<String> msgNameList = new ArrayList<>();
 		for (EnumDataSubEntity newSub : subList) {
+			if(!StringUtils.isEmpty(keyMap.get(newSub.getEnumdatakey()))){
+				msgKeyList.add(newSub.getEnumdatakey());
+			}
 			keyMap.put(newSub.getEnumdatakey(), newSub.getEnumdatakey());
+			if(!StringUtils.isEmpty(nameMap.get(newSub.getEnumdataname()))){
+				msgNameList.add(newSub.getEnumdataname());
+			}
 			nameMap.put(newSub.getEnumdataname(), newSub.getEnumdataname());
 		}
+		
 		if (subList.size() > keyMap.size()) {
-			return 1;
+			arm.setSuccess(false);
+			arm.setMsg(org.apache.commons.lang.StringUtils.join(msgKeyList, ",")+"不能重复");
+			arm.setTotal(1);//设置页面判断类型
+			return arm;//1;
 		}
 		if (subList.size() > nameMap.size()) {
-			return 2;
+			arm.setSuccess(false);
+			arm.setMsg(org.apache.commons.lang.StringUtils.join(msgNameList, ",")+"不能重复");
+			arm.setTotal(2);//设置页面判断类型
+			return arm;// 2;
 		}
 		List<EnumDataSubEntity> list = subService.findByGroupId(entity.getUuid());
 		if (list != null && list.size() > 0) {
@@ -151,16 +146,24 @@ public class EnumDataService extends BaseServiceImpl<EnumDataEntity, String> {
 				for (EnumDataSubEntity newSub : subList) {
 					if (oldSub.getEnumdatakey().equals(newSub.getEnumdatakey())
 							&& !oldSub.getUuid().equals(newSub.getUuid())) {
-						return 1;
+						arm.setSuccess(false);
+						arm.setMsg(newSub.getEnumdatakey()+"不能重复");
+						arm.setTotal(1);//设置页面判断类型
+						return arm;// 1;
 					}
 					if (oldSub.getEnumdataname().equals(newSub.getEnumdataname())
 							&& !oldSub.getUuid().equals(newSub.getUuid())) {
-						return 2;
+						arm.setSuccess(false);
+						arm.setMsg(newSub.getEnumdataname()+"不能重复");
+						arm.setTotal(2);//设置页面判断类型
+						return arm;//  2;
 					}
 				}
 			}
 		}
-		return 0;
+		arm.setSuccess(true);
+		arm.setMsg("");
+		return arm;
 	}
 
 	/**
