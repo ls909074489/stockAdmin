@@ -289,6 +289,37 @@
 					}
 				} else {
 					//YYUI.failMsg("保存失败：" + data.msg);
+					var t_msg = data.msg.replace("不能重复","");
+					console.info(t_msg);
+					var arr = t_msg.split(",");
+					var subTable = $("#yy-table-sublist tbody tr:visible[role=row][rowType=edit]");
+					console.info(subTable);
+					var name="";
+					if(data.total==1){//enumdataKey
+						name="enumdatakey";
+					}else{
+						name="enumdataname";
+					}
+					for (var i = 0; i < subTable.length; i++) {
+						console.info(subTable[i]);
+						var obj = $('[reallyname=' + name + ']', subTable[i]);
+						if(obj == null || typeof(obj)=='undefined'||obj.length==0){
+							obj = $('[name=' + name + ']', subTable[i]);
+						}
+						if (obj != null) {
+							var value = $(obj).val();
+							console.info(value);
+							//debugger;
+							for(var j=0;j<arr.length;j++){
+								if(arr[j]===value){
+									//$('span.error', nRow).remove();
+									//$('input.error', nRow).removeClass('error');
+									$('[reallyname=' + name + ']', subTable[i]).addClass('error');
+									$('[name=' + name + ']', subTable[i]).addClass('error');
+								}
+							}
+						}	
+					}
 					YYUI.promAlert("保存失败：" + data.msg);
 				}
 			}

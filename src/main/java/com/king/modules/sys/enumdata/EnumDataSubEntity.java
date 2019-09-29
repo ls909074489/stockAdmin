@@ -110,5 +110,12 @@ public class EnumDataSubEntity extends BaseEntity {
 	public void setKeyLength(Integer keyLength) {
 		this.keyLength = keyLength;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "EnumDataSubEntity [enumdatakey=" + enumdatakey + ", enumdataname=" + enumdataname + ", icon=" + icon
+				+ ", keyLength=" + keyLength + ", showorder=" + showorder + ", isdefault=" + isdefault
+				+ ", description=" + description + ", enumdata=" + enumdata + "]";
+	}
+
 }
