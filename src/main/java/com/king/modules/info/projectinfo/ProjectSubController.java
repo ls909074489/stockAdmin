@@ -326,6 +326,69 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		return arm;
 	}
 	
+	
+	@RequestMapping("/toSelProjectBox")
+	public String toSelProjectBox(Model model) {
+		List<EnumDataSubEntity> subList = EnumDataUtils.getEnumSubList("barCodeExtract");
+		if(subList==null){
+			subList = new ArrayList<>();
+		}
+		model.addAttribute("subList", Json.toJson(subList));
+		model.addAttribute("curDate", DateUtil.getCurrentDate("yyyy-MM-dd"));
+		return "modules/info/projectinfo/projectinfo_detail_projectbox_select";
+	}
+	
+	@RequestMapping("/toScanBarcode")
+	public String toScanBarcode(Model model,String projectId,String boxNum) {
+		List<EnumDataSubEntity> subList = EnumDataUtils.getEnumSubList("barCodeExtract");
+		if(subList==null){
+			subList = new ArrayList<>();
+		}
+		model.addAttribute("subList", Json.toJson(subList));
+		model.addAttribute("curDate", DateUtil.getCurrentDate("yyyy-MM-dd"));
+		model.addAttribute("projectId", projectId);
+		model.addAttribute("boxNum", boxNum);
+		return "modules/info/projectinfo/projectinfo_detail_scan";
+	}
+	
+	
+	
+	@RequestMapping(value = "/dataUnOut")
+	@ResponseBody
+	public ActionResultModel<ProjectSubUnOutVo> dataUnOut(ServletRequest request) {
+		ActionResultModel<ProjectSubUnOutVo> resultArm = new ActionResultModel<ProjectSubUnOutVo>();
+		Map<String, Object> addParam = new HashMap<String, Object>();
+		addParam.put("EQ_stock.uuid", request.getParameter("stockId"));
+		addParam.put("EQ_material.uuid", request.getParameter("materialId"));
+		addParam.put("EQ_status", "1");
+		String mainId = request.getParameter("search_LIKE_main.uuid");
+		QueryRequest<ProjectSubEntity> qr = getQueryRequest(request, addParam);
+		ActionResultModel<ProjectSubEntity> arm =  execDetailQuery(request,qr, baseService);
+		List<ProjectSubEntity> subList = arm.getRecords();
+		if(CollectionUtils.isEmpty(subList)){
+			resultArm.setSuccess(true);
+			return resultArm;
+		}
+		List<ProjectSubUnOutVo> resultList = new ArrayList<>();
+		Set<String> projectIdSet = new HashSet<>();
+		Map<String,Long> subActualMap = new HashMap<String,Long>();
+		for(ProjectSubEntity sub : subList){
+			subActualMap.put(sub.getUuid(), sub.getSurplusAmount());
+			projectIdSet.add(sub.getMain().getUuid());
+		}
+		List<StockStreamEntity> streamList = streamService.findSurplusAllBySourceIdsIn(new ArrayList<String>(projectIdSet));
+		Map<String,List<StockStreamEntity>> streamMap = changeToStreamMap(streamList);
+		for(ProjectSubEntity sub : subList){
+			resultList.add(new ProjectSubUnOutVo(sub.getUuid(), sub.getMaterial(), sub.getLimitCount(), 
+					(sub.getPlanAmount()-calcOutAmount(sub,streamMap.get(sub.getUuid())))));
+		}
+		resultArm.setRecords(resultList);
+		arm.setTotal(resultList.size());
+		return resultArm;
+	}
+	
+	
+	
 	/**
 	 * 设置条码
 	 * @param subBarcodelist
@@ -366,6 +429,23 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 			suplusAmount += stream.getSurplusAmount();
 		}
 		return suplusAmount;
+	}
+	
+	/**
+	 * 计算出库的数量
+	 * @param sub
+	 * @param list
+	 * @return
+	 */
+	private Long calcOutAmount(ProjectSubEntity sub, List<StockStreamEntity> list) {
+		if(CollectionUtils.isEmpty(list)){
+			return 0l;
+		}
+		Long outAmount = 0l;
+		for(StockStreamEntity stream : list){
+			outAmount += (stream.getTotalAmount()-stream.getSurplusAmount());
+		}
+		return outAmount;
 	}
 
 	/**

@@ -49,12 +49,16 @@ th,td{
 						<i class="fa fa-check"></i> 审核
 					</button> -->
 					
-					<label for="sweepCode" class="control-label">扫描条码</label>
+					<button id="yy-btn-toscan" type="button" class="btn btn-sm btn-info">
+						<i class="fa fa-search"></i> 条码扫描
+					</button>
+					
+					<!-- <label for="sweepCode" class="control-label">扫描条码</label>
 					<input type="text" autocomplete="on" name="sweepCode"
 						id="sweepCode" class="input-sm" style="width: 380px;">
 					<button id="yy-btn-match" type="button" class="btn btn-sm btn-info">
 						<i class="fa fa-search"></i> 匹配
-					</button>
+					</button> -->
 					<!-- <button id="yy-btn-temp-receive" class="btn blue btn-sm">
 						<i class="fa fa-save"></i> 暂存收货
 					</button>
@@ -138,9 +142,9 @@ th,td{
 							</c:otherwise>
 						</c:choose>
 													
-						<label for="search_LIKE_boxNum" class="control-label">箱号</label>
-						<!-- <input type="text" autocomplete="on" name="search_LIKE_boxNum" id="search_LIKE_boxNum" style="width:120px;" class="form-control input-sm"> -->
-						<select class="yy-input-enumdata form-control" id="search_LIKE_boxNum" name="search_LIKE_boxNum" style="width:120px;"></select>
+						<label for="search_EQ_boxNum" class="control-label">箱号</label>
+						<!-- <input type="text" autocomplete="on" name="search_EQ_boxNum" id="search_EQ_boxNum" style="width:120px;" class="form-control input-sm"> -->
+						<select class="yy-input-enumdata form-control" id="search_EQ_boxNum" name="search_EQ_boxNum" style="width:120px;"></select>
 									 
 						<!-- <label for="search_LIKE_materialCode" class="control-label">物料编码</label>
 						<input type="text" autocomplete="on" name="search_LIKE_material.code" id="search_LIKE_materialCode" class="form-control input-sm"> -->
@@ -534,8 +538,6 @@ th,td{
 						}
 						var appendReceiveStr = "";
 						if(full.subReceiveType=="1"){
-							console.info(full.planAmount+"========"+full.actualAmount);
-							console.info(full.planAmount<=full.actualAmount);
 							if(full.planAmount<=full.actualAmount){
 								appendReceiveStr = '<shiro:hasPermission name="projectdetailAppendLog"><button class="btn btn-xs btn-info" onclick="appendLog(\''+data+'\');" data-rel="tooltip" title="修改收货记录"><i class="fa fa-edit"></i>修改收货记录</button></shiro:hasPermission>';
 							}else{
@@ -593,6 +595,8 @@ th,td{
 			});
 			serverPage('${serviceurl}/dataDetail?orderby=mid@desc;boxNum@asc');
 			
+			
+			$("#yy-btn-toscan").bind('click', toSelProjectBox);
 			$("#yy-btn-match").bind('click', matchMaterial);//
 			$("#yy-btn-approve-project").bind('click', approveProject);//
 			$("#yy-btn-unapprove-project").bind('click', unApproveProject);//
@@ -660,7 +664,7 @@ th,td{
 		        }
 		    });
 			
-			$("#search_LIKE_boxNum").select2({
+			$("#search_EQ_boxNum").select2({
 		        theme: "bootstrap",
 		        allowClear: true,
 		        placeholder: "请选择",
@@ -773,12 +777,35 @@ th,td{
 					}
 				},
 				"initComplete": function(settings, json) {
-					console.info("initComplete>>>>>>>>>>>>>>");
 					if(freshLoad != null) {
 						layer.close(freshLoad);
 					}
 					layer.close(serverPageWaitLoad);//关闭加载等待ceng edit by liusheng
 				}
+			});
+		}
+		
+		//扫码弹出框
+		function toSelProjectBox(){
+			layer.open({
+				type : 2,
+				title : '条码扫描',
+				shadeClose : false,
+				shade : 0.8,
+				area : [ '800px', '200px' ],
+				content : '${serviceurl}/toSelProjectBox'//iframe的url
+			});
+		}
+		
+		//跳转到扫码框
+		function callBackToScanBarcode(projectId,boxNum){
+			layer.open({
+				type : 2,
+				title : '条码扫描',
+				shadeClose : false,
+				shade : 0.8,
+				area : [ '90%', '90%' ],
+				content : '${serviceurl}/toScanBarcode?projectId='+projectId+'&boxNum='+boxNum//iframe的url
 			});
 		}
 		
@@ -791,7 +818,7 @@ th,td{
 				YYUI.promMsg("请选择项目");
 				return false;
 			}
-			var t_boxNum = $("#search_LIKE_boxNum").val();
+			var t_boxNum = $("#search_EQ_boxNum").val();
 			if(t_boxNum==null||t_boxNum==''){
 				YYUI.promMsg("请填写箱号");
 				return false;
