@@ -37,6 +37,8 @@ public class MyExceptionHandler implements HandlerExceptionResolver {
 		mv.addObject("success", false);
 		if (e instanceof ServiceException) {
 			mv.addObject("msg", e.getMessage());
+		}if (e instanceof org.hibernate.service.spi.ServiceException) {
+			mv.addObject("msg", e.getMessage());
 		} else if (e instanceof DataIntegrityViolationException) {
 			mv.addObject("msg", Constants.getConstraintMsg(e.getMessage()));
 		} else {

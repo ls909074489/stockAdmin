@@ -152,8 +152,8 @@ th,td{
 						<label for="search_LIKE_materialHwCode" class="control-label">华为物料编码</label>
 						<input type="text" autocomplete="on" name="search_LIKE_material.hwcode" id="search_LIKE_materialHwCode" class="form-control input-sm">
 						
-						<label for="search_LIKE_material.name" class="control-label">物料名称</label>
-						<input type="text" autocomplete="on" name="search_LIKE_material.name" id="search_LIKE_material.name" class="form-control input-sm">			 
+						<!-- <label for="search_LIKE_material.name" class="control-label">物料名称</label>
+						<input type="text" autocomplete="on" name="search_LIKE_material.name" id="search_LIKE_material.name" class="form-control input-sm"> -->			 
 								
 						<label for="custom_search_barcode" class="control-label">条码&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
 						<input type="text" autocomplete="on" name="custom_search_barcode" id="custom_search_barcode" class="form-control input-sm">
@@ -260,6 +260,7 @@ th,td{
 				width : "200",
 				className : "center",
 				orderable : false,
+				visible : false,
 				render : function(data, type, full) {
 					if(data==null){
 						data="";
@@ -950,10 +951,21 @@ th,td{
 		
 		//编辑变保存按钮
 		function changeToSave(t){
-			$(t).closest("tr").find(".saveBcBtn").show();
+			/* $(t).closest("tr").find(".saveBcBtn").show();
 			$(t).closest("tr").find(".newBarcodeInput").removeAttr("readonly");
 			$(t).closest("tr").find(".newBarcodeInput").attr("readonly",false);
-			$(t).hide();
+			$(t).hide(); */
+			var row = $(t).closest("tr");
+			var t_rowdata = _tableList.row(row).data();
+			console.info(t_rowdata);
+			layer.open({
+				type : 2,
+				title : '修改条码',
+				shadeClose : false,
+				shade : 0.8,
+				area : [ '400px', '200px' ],
+				content : '${serviceurl}/toModifyBarcode?projectSubId='+t_rowdata.uuid+'&barcodeUuid='+t_rowdata.barcodeUuid//iframe的url
+			});
 		}
 		
 		

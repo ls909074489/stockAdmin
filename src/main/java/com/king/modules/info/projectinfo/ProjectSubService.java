@@ -568,4 +568,63 @@ public class ProjectSubService extends BaseServiceImpl<ProjectSubEntity, String>
 	}
 
 
+	@Transactional
+	public ActionResultModel<ProjectSubEntity> batchSaveBarcode(String[] barcode, List<ProjectSubUnOutVo> voList) {
+		ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity>();
+		List<EnumDataSubEntity> enumList = EnumDataUtils.getEnumSubList("barCodeExtract");
+		for(String bc:barcode){
+			String hwcode = matchHwcode(bc, enumList);
+			if(StringUtils.isEmpty(hwcode)){
+				arm.setSuccess(false);
+				arm.setMsg("条码"+bc+"解析没有匹配对应的物料");
+				return arm;
+			}
+			boolean hasMatch = false;
+			for(ProjectSubUnOutVo vo:voList){
+				if(vo.getMaterial().getHwcode().equals(hwcode)){
+					hasMatch = true;
+					if(vo.getLimitCount()==ProjectSubEntity.LIMITCOUNT_UNIQUE){//唯一条码
+						updateBarcode(bc, "0_"+vo.getUuid(), 1l, null);
+					}else{
+						updateBarcodePc(bc, "0_"+vo.getUuid(), vo.getPlanAmount(), "add", null);
+					}
+				}
+			}
+			if(!hasMatch){
+				throw new ServiceException("清单中没有对应的物料"+hwcode);
+			}
+		}
+		arm.setSuccess(true);
+		arm.setMsg("保存成功");
+		return arm;
+	}
+
+	public String matchHwcode(String barcode,List<EnumDataSubEntity> enumList){
+		for(EnumDataSubEntity enumSub:enumList){
+			String t_pre = enumSub.getEnumdatakey();
+			if(barcode!=null&&barcode.indexOf(t_pre)==0){//以19,39...开头的
+				return barcode.substring(t_pre.length(), t_pre.length()+enumSub.getKeyLength());
+			}
+		}
+		return "";
+	}
+
+
+	@Transactional
+	public ActionResultModel<ProjectSubEntity> modifyBarcode(String projectSubId, String barcodeUuid, String barcode) {
+		ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity>();
+		ProjectSubEntity sub = getOne(projectSubId);
+		ProjectSubBarcodeEntity barcodeEntity = projectSubBarcodeService.getOne(barcodeUuid);
+		barcodeEntity.setBarcode(barcode);
+		//保存条码日志
+		ProjectBarcodeLogEntity barcodeLog = new ProjectBarcodeLogEntity();
+		barcodeLog.setProjectId(sub.getMain().getUuid());
+		barcodeLog.setProjectSubId(sub.getUuid());
+		barcodeLog.setBarcode(barcode);
+		projectBarcodeLogService.doAdd(barcodeLog);
+		arm.setSuccess(true);
+		arm.setMsg("修改成功");
+		return arm;
+	}
+
 }

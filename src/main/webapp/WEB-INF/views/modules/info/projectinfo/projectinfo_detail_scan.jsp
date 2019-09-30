@@ -32,6 +32,7 @@
 					<form id="yy-form-query" class="queryform">
 						<input name="search_EQ_main.uuid" id="search_LIKE_mainId" type="hidden" value="${projectId}" class="yy-input"> 
 						<input name="search_EQ_boxNum" id="search_EQ_boxNum" type="hidden" value="${boxNum}" class="yy-input">
+						<input type="hidden"  name="hwcode" id="search_EQ_materialHwCode" class="form-control input-sm">
 					</form>
 				</div>
 				<div class="row">
@@ -53,6 +54,8 @@
 				</div>
 				<div class="row">
 					<form id="yy-form-save" class="">
+						<input name="search_EQ_main.uuid" id="search_LIKE_mainId" type="hidden" value="${projectId}" class="yy-input"> 
+						<input name="search_EQ_boxNum" id="search_EQ_boxNum" type="hidden" value="${boxNum}" class="yy-input">
 						<table id="yy-table-listSelect" class="yy-table">
 							<thead>
 								<tr>
@@ -80,7 +83,7 @@
 				if(full.limitCount==1){//唯一条吗
 					return data.hwcode+"("+YYDataUtils.getEnumName("MaterialLimitCount", full.limitCount)+") "+full.unScanCount+data.unit;
 				}else {
-					return data.hwcode+"("+YYDataUtils.getEnumName("MaterialLimitCount", full.limitCount)+") ";
+					return data.hwcode+"("+YYDataUtils.getEnumName("MaterialLimitCount", full.limitCount)+") "+full.unScanCount+data.unit;
 				}
             }
 		}
@@ -165,6 +168,12 @@
 			});
 			$("#yy-btn-match").bind('click', matchMaterial);//
 			
+			$('#sweepCode').on('keyup', function(event){
+				if(event.keyCode == "13") {
+					matchMaterial();
+		        }
+			});
+			
 			//加载数据
 			loadList();
 			//已选入的用户
@@ -186,10 +195,22 @@
 			}
 			
 			_ismatchSearch=true;//设置为扫描条形码查询
-			
+			$("#search_EQ_materialHwCode").val("");
 			var searchCode = "";
 			var t_sweepCode = $("#sweepCode").val();
 			if(t_sweepCode!=null&&t_sweepCode!=''){
+				var repeatFlag = false;
+				var trObj = $("#barcodeBodyId").find(".trBarcodeCls").each(function(){
+					if($(this).val()==t_sweepCode){
+						repeatFlag = true;
+						return false;
+					}
+				});
+				if(repeatFlag){
+					YYUI.promAlert("条码"+t_sweepCode+"已添加，不能重复添加");
+					return false;
+				}
+				
 				var hasMatch=false;
 				if(jsonResp!=null&&jsonResp.length>0){
 					for (i = 0; i < jsonResp.length; i++) {
@@ -199,21 +220,37 @@
 						if(t_sweepCode.indexOf(t_pre)==0){//以19,39...开头的
 							searchCode = t_sweepCode.substring(t_pre.length,t_pre.length+materialLength);//截取位数
 							console.info("searchCode>>>>>>>>>"+searchCode);
-							$("#search_LIKE_materialHwCode").val(searchCode);
+							$("#search_EQ_materialHwCode").val(searchCode);
 							hasMatch=true;
 							break;
 						}
 					}
 				}
 				if(hasMatch){
-					$("#search_LIKE_materialHwCode").val(t_sweepCode);
-					//获取查询数据，在表格刷新的时候自动提交到后台
-					//_queryData = $("#yy-form-query").serializeArray();
-					//onRefresh();
-					var str ='<tr role="row" class="even"><td class="center trBarcodeCls">'+t_sweepCode+'<input name="barcode" id="barcode" type="hidden" value="'+t_sweepCode+'"> </td></tr>';
-					$("#barcodeBodyId").append(str);
+					var listWaitLoad=layer.load(2);
+					$.ajax({
+						url : '${serviceurl}/dataUnOut',
+						data : $("#yy-form-query").serializeArray(),
+						dataType : 'json',
+						type : 'post',
+						success : function(data) {
+							layer.close(listWaitLoad);
+							if(data.total==0){
+								YYUI.promMsg("条码没有匹配的物料"+$("#search_EQ_materialHwCode").val());
+							}else if(data.total==1){
+								var str ='<tr role="row" class="even"><td class="center">'+t_sweepCode+'<input name="barcode" id="barcode" class="trBarcodeCls" type="hidden" value="'+t_sweepCode+'"> </td></tr>';
+								$("#barcodeBodyId").append(str);
+							}else if(data.total>1){
+								YYUI.promMsg("物料"+$("#search_EQ_materialHwCode").val()+"存在"+data.total+"条记录，只能匹配一条才能保存");
+							}
+						},
+						error : function(data) {
+							layer.close(listWaitLoad);
+							YYUI.promMsg("操作失败，请联系管理员");
+						}
+					});
 				}else{
-					YYUI.promAlert("没有对应的物料"+searchCode);
+					YYUI.promAlert("条码解析没有对应的物料"+searchCode);
 				}
 			}else{
 				YYUI.promMsg("请填写条码");
@@ -332,7 +369,6 @@
 			if(!mainValidate){
 				return false;
 			}
-			debugger;
 			var saveWaitLoad=layer.load(2);
 			var opt = {
 				url : "${serviceurl}/batchSaveBarcode",
@@ -341,14 +377,10 @@
 				success : function(data) {
 					layer.close(saveWaitLoad);
 					if (data.success == true) {
-						_deletePKs = new Array();
-						if (isClose) {
-							window.parent.YYUI.succMsg('保存成功!');
-							window.parent.onRefresh(true);
-							closeEditView();
-						} else {
-							YYUI.succMsg('保存成功!');
-						}
+						window.parent.YYUI.succMsg('保存成功!');
+						window.parent.onRefresh(true);
+						var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+						parent.layer.close(index); //再执行关闭
 					} else {
 						YYUI.promAlert("保存失败：" + data.msg);
 					}

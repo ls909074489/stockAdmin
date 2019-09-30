@@ -358,10 +358,13 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 	public ActionResultModel<ProjectSubUnOutVo> dataUnOut(ServletRequest request) {
 		ActionResultModel<ProjectSubUnOutVo> resultArm = new ActionResultModel<ProjectSubUnOutVo>();
 		Map<String, Object> addParam = new HashMap<String, Object>();
-		addParam.put("EQ_stock.uuid", request.getParameter("stockId"));
-		addParam.put("EQ_material.uuid", request.getParameter("materialId"));
+//		addParam.put("EQ_stock.uuid", request.getParameter("stockId"));
+		
+		String hwcode = request.getParameter("hwcode");
+		if(StringUtils.isNotEmpty(hwcode)){
+			addParam.put("EQ_material.hwcode", hwcode);
+		}
 		addParam.put("EQ_status", "1");
-		String mainId = request.getParameter("search_LIKE_main.uuid");
 		QueryRequest<ProjectSubEntity> qr = getQueryRequest(request, addParam);
 		ActionResultModel<ProjectSubEntity> arm =  execDetailQuery(request,qr, baseService);
 		List<ProjectSubEntity> subList = arm.getRecords();
@@ -376,26 +379,44 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 			subActualMap.put(sub.getUuid(), sub.getSurplusAmount());
 			projectIdSet.add(sub.getMain().getUuid());
 		}
-		List<StockStreamEntity> streamList = streamService.findSurplusAllBySourceIdsIn(new ArrayList<String>(projectIdSet));
-		Map<String,List<StockStreamEntity>> streamMap = changeToStreamMap(streamList);
+//		List<StockStreamEntity> streamList = streamService.findSurplusAllBySourceIdsIn(new ArrayList<String>(projectIdSet));
+//		Map<String,List<StockStreamEntity>> streamMap = changeToStreamMap(streamList);
+		List<ProjectSubBarcodeEntity> barcodeList = projectSubBarcodeService.findByProjectIds(new ArrayList<String>(projectIdSet));
+		Map<String,List<ProjectSubBarcodeEntity>> barcodeMap = changeToBarcodeMap(barcodeList);
 		for(ProjectSubEntity sub : subList){
-			resultList.add(new ProjectSubUnOutVo(sub.getUuid(), sub.getMaterial(), sub.getLimitCount(), 
-					(sub.getPlanAmount()-calcOutAmount(sub,streamMap.get(sub.getUuid())))));
+			ProjectSubUnOutVo vo = new ProjectSubUnOutVo(sub.getUuid(), sub.getMaterial(), sub.getLimitCount(), 
+					(sub.getPlanAmount()-calcOutAmount(sub,barcodeMap.get(sub.getUuid()))),sub.getPlanAmount());
+			if(vo.getUnScanCount()>0){//未扫码的
+				resultList.add(vo);
+			}
 		}
 		resultArm.setRecords(resultList);
-		arm.setTotal(resultList.size());
+		resultArm.setTotal(resultList.size());
+		resultArm.setRecordsTotal(arm.getRecordsTotal());
+		resultArm.setSuccess(arm.isSuccess());
 		return resultArm;
 	}
 	
 	
-	
+	/**
+	 * 批量保存条码
+	 * @param request
+	 * @param barcode
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping(value = "/batchSaveBarcode")
 	public ActionResultModel<ProjectSubEntity> batchSaveBarcode(ServletRequest request,String []barcode) {
-		ActionResultModel<ProjectSubEntity> arm = new ActionResultModel<ProjectSubEntity>();
-		
-		
-		arm.setSuccess(true);
+		ActionResultModel<ProjectSubUnOutVo> voArm = dataUnOut(request);
+		List<ProjectSubUnOutVo> voList = voArm.getRecords();
+		ActionResultModel<ProjectSubEntity> arm =  new ActionResultModel<ProjectSubEntity>();
+		try {
+			arm = projectSubService.batchSaveBarcode(barcode,voList);
+		} catch (ServiceException e) {
+			e.printStackTrace();
+			arm.setMsg(e.getMessage());
+			arm.setSuccess(false);
+		}
 		return arm;
 	}
 	
@@ -447,13 +468,13 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 	 * @param list
 	 * @return
 	 */
-	private Long calcOutAmount(ProjectSubEntity sub, List<StockStreamEntity> list) {
+	private Long calcOutAmount(ProjectSubEntity sub, List<ProjectSubBarcodeEntity> list) {
 		if(CollectionUtils.isEmpty(list)){
 			return 0l;
 		}
 		Long outAmount = 0l;
-		for(StockStreamEntity stream : list){
-			outAmount += (stream.getTotalAmount()-stream.getSurplusAmount());
+		for(ProjectSubBarcodeEntity obj : list){
+			outAmount += obj.getSubAmount();
 		}
 		return outAmount;
 	}
@@ -647,5 +668,28 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		}
 		model.addAttribute("newBarcodeVal", newBarcodeVal);
 		return "modules/info/projectinfo/projectinfo_sub_confirm_count";
+	}
+	
+	
+	
+	@RequestMapping("/toModifyBarcode")
+	public String toModifyBarcode(Model model,String projectSubId,String barcodeUuid) {
+		model.addAttribute("projectSubId", projectSubId);
+		model.addAttribute("barcodeUuid", barcodeUuid);
+		return "modules/info/projectinfo/projectinfo_sub_modify_barcode";
+	}
+	
+	/**
+	 * 修改条码
+	 * @param model
+	 * @param projectSubId
+	 * @param barcodeUuid
+	 * @param barcode
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/modifyBarcode")
+	public ActionResultModel<ProjectSubEntity> modifyBarcode(Model model,String projectSubId,String barcodeUuid,String barcode) {
+		return projectSubService.modifyBarcode(projectSubId,barcodeUuid,barcode);
 	}
 }

@@ -23,15 +23,19 @@ public class ProjectSubUnOutVo {
 	
 	private Long unScanCount;
 
+	@MetaData(value = "计划数量")
+	@Column()
+	private Long planAmount;
 	
 	public ProjectSubUnOutVo() {
 	}
 	
-	public ProjectSubUnOutVo(String uuid, MaterialBaseEntity material, int limitCount, Long unScanCount) {
+	public ProjectSubUnOutVo(String uuid, MaterialBaseEntity material, int limitCount, Long unScanCount,Long planAmount) {
 		this.uuid = uuid;
 		this.material = material;
 		this.limitCount = limitCount;
 		this.unScanCount = unScanCount;
+		this.planAmount = planAmount;
 	}
 
 	public String getUuid() {
@@ -65,5 +69,14 @@ public class ProjectSubUnOutVo {
 	public void setUnScanCount(Long unScanCount) {
 		this.unScanCount = unScanCount;
 	}
+
+	public Long getPlanAmount() {
+		return planAmount;
+	}
+
+	public void setPlanAmount(Long planAmount) {
+		this.planAmount = planAmount;
+	}
+	
 	
 }
