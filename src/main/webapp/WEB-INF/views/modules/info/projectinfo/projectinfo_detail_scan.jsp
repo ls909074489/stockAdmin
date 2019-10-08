@@ -40,6 +40,8 @@
 						<thead>
 							<tr>
 								<th>剩余未扫物料</th>
+								<th>条码类型</th>
+								<th>未扫数量</th>
 								<th>计划数量</th>
 								<th>收货数量</th>
 								<th>收货状态</th>
@@ -79,16 +81,29 @@
 	var jsonResp = jQuery.parseJSON('${subList}');
 	var _tableCols = [{
 		data : 'material',
-			width : "70%",
+			width : "40%",
 			className : "center",
 			orderable : false,
 			render : function (data, type, full) {
 				if(full.limitCount==1){//唯一条吗
-					return data.hwcode+"("+YYDataUtils.getEnumName("MaterialLimitCount", full.limitCount)+") "+full.unScanCount+data.unit;
+					return data.hwcode
 				}else {
-					return data.hwcode+"("+YYDataUtils.getEnumName("MaterialLimitCount", full.limitCount)+") "+full.unScanCount+data.unit;
+					return data.hwcode;
 				}
             }
+		},{
+		data : 'limitCount',
+			width : "10%",
+			className : "center",
+			orderable : false,
+			render : function (data, type, full) {
+				return YYDataUtils.getEnumName("MaterialLimitCount", data);
+            }
+		},{
+		data : 'unScanCount',
+			width : "10%",
+			className : "center",
+			orderable : false
 		},{
 		data : 'planAmount',
 			width : "10%",
