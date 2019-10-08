@@ -242,13 +242,13 @@ th,td{
 					if(newStreamId[0].length>10){
 						unOutBtn = "<shiro:hasPermission name='projectdetailUnout'><button  onclick=\"unOuntSub('"+full.newUuid+"');\" "+btnAble+" rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info unOuntSubBtn' data-rel='tooltip' title='撤销出库'><i class='fa fa-undo'></i>撤销出库</button></shiro:hasPermission>";
 					}
-					if(full.barcode!=null&&full.barcode!=''){
+					if(full.barcode!=null&&full.barcode!=''){//条码不为空
 						return uuidInput+"<div class='yy-btn-actiongroup'>"
 						+ "<shiro:hasPermission name='projectdetailSaveBarcode'><button  onclick='changeToSave(this);' "+btnAble+" rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info' data-rel='tooltip' title='修改'><i class='fa yy-btn-save'></i>修改</button>"
 						+ "<button  onclick='saveNewBarcode(this);' "+btnAble+"  style='display: none;' rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info saveBcBtn' data-rel='tooltip' title='保存'><i class='fa yy-btn-save'></i>保存</button></shiro:hasPermission>"
 						+unOutBtn
 						+ "</div>";
-					}else{
+					}else{//条码为空
 						return uuidInput+"<div class='yy-btn-actiongroup'>"
 						+ "<shiro:hasPermission name='projectdetailSaveBarcode'><button  onclick='saveNewBarcode(this);' "+btnAble+" rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info saveBcBtn' data-rel='tooltip' title='保存'><i class='fa yy-btn-save'></i>保存</button></shiro:hasPermission>"
 						+ "</div>";
@@ -869,7 +869,7 @@ th,td{
 			$("#search_LIKE_mainName").val(selNode.name);
 		}
 		
-		function saveNewBarcode(t){
+		function saveNewBarcodeXXXX(t){
 			var newBarcodeVal = $(t).closest("tr").find("input[name='newBarcode']").val();
 			console.info(newBarcodeVal.trim()+"====");
 			if(newBarcodeVal==null||newBarcodeVal==''||newBarcodeVal.trim()==""){
@@ -923,6 +923,36 @@ th,td{
 						onCheckBarCode(newBarcodeVal,$(t).attr("rowUuid"),tr_planAmount,tr_limitCount);
 					});
 				}
+			}
+		}
+		
+		
+		function saveNewBarcode(t){
+			var row = $(t).closest("tr");
+			var tr_hwcode = _tableList.row(row).data().material.hwcode;
+			var tr_planAmount = _tableList.row(row).data().planAmount;
+			var tr_limitCount = _tableList.row(row).data().limitCount;
+			var subId = $(t).attr("rowUuid");
+			var newBarcodeVal = "";
+			
+			if(tr_limitCount==-1){//批次
+				layer.open({
+					type : 2,
+					title : '保存条码',
+					shadeClose : false,
+					shade : 0.8,
+					area : [ '600px', '300px' ],
+					content : '${serviceurl}/toSaveBcBatch?subId='+subId+'&planAmount='+tr_planAmount+'&newBarcodeVal='+newBarcodeVal+'&hwcode='+tr_hwcode//iframe的url
+				});
+			}else{
+				layer.open({
+					type : 2,
+					title : '保存条码',
+					shadeClose : false,
+					shade : 0.8,
+					area : [ '600px', '300px' ],
+					content : '${serviceurl}/toSaveBcUnique?subId='+subId+'&planAmount='+tr_planAmount+'&newBarcodeVal='+newBarcodeVal+'&hwcode='+tr_hwcode//iframe的url
+				});
 			}
 		}
 		
@@ -980,7 +1010,7 @@ th,td{
 					shadeClose : false,
 					shade : 0.8,
 					area : [ '600px', '300px' ],
-					content : '${serviceurl}/toConfrimCount?subId='+subId+'&planAmount='+tr_planAmount+'&newBarcodeVal='+newBarcodeVal//iframe的url
+					content : '${serviceurl}/toSaveBcBatch?subId='+subId+'&planAmount='+tr_planAmount+'&newBarcodeVal='+newBarcodeVal//iframe的url
 				});
 			}else{
 				onComparetBarcode(newBarcodeVal,subId);

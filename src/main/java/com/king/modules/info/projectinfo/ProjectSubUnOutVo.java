@@ -27,15 +27,20 @@ public class ProjectSubUnOutVo {
 	@Column()
 	private Long planAmount;
 	
+	@MetaData(value = "收货数量")
+	@Column()
+	private Long actualAmount;//只是收货的数量
+	
 	public ProjectSubUnOutVo() {
 	}
 	
-	public ProjectSubUnOutVo(String uuid, MaterialBaseEntity material, int limitCount, Long unScanCount,Long planAmount) {
+	public ProjectSubUnOutVo(String uuid, MaterialBaseEntity material, int limitCount, Long unScanCount,Long planAmount,Long actualAmount) {
 		this.uuid = uuid;
 		this.material = material;
 		this.limitCount = limitCount;
 		this.unScanCount = unScanCount;
 		this.planAmount = planAmount;
+		this.actualAmount = actualAmount;
 	}
 
 	public String getUuid() {
@@ -76,6 +81,14 @@ public class ProjectSubUnOutVo {
 
 	public void setPlanAmount(Long planAmount) {
 		this.planAmount = planAmount;
+	}
+
+	public Long getActualAmount() {
+		return actualAmount;
+	}
+
+	public void setActualAmount(Long actualAmount) {
+		this.actualAmount = actualAmount;
 	}
 	
 	

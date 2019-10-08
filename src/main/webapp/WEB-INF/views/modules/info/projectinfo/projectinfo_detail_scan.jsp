@@ -40,6 +40,9 @@
 						<thead>
 							<tr>
 								<th>剩余未扫物料</th>
+								<th>计划数量</th>
+								<th>收货数量</th>
+								<th>收货状态</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -76,14 +79,36 @@
 	var jsonResp = jQuery.parseJSON('${subList}');
 	var _tableCols = [{
 		data : 'material',
-			width : "15%",
+			width : "70%",
 			className : "center",
-			orderable : true,
+			orderable : false,
 			render : function (data, type, full) {
 				if(full.limitCount==1){//唯一条吗
 					return data.hwcode+"("+YYDataUtils.getEnumName("MaterialLimitCount", full.limitCount)+") "+full.unScanCount+data.unit;
 				}else {
 					return data.hwcode+"("+YYDataUtils.getEnumName("MaterialLimitCount", full.limitCount)+") "+full.unScanCount+data.unit;
+				}
+            }
+		},{
+		data : 'planAmount',
+			width : "10%",
+			className : "center",
+			orderable : false
+		},{
+		data : 'actualAmount',
+			width : "10%",
+			className : "center",
+			orderable : false
+		},{
+		data : 'planAmount',
+			width : "10%",
+			className : "center",
+			orderable : false,
+			render : function (data, type, full) {
+				if(full.planAmount>full.actualAmount){
+					return "<span style='color:#e02222;'>未收齐</span>";
+				}else{
+					return "<span style=''>已收齐</span>";
 				}
             }
 		}
@@ -238,7 +263,8 @@
 							if(data.total==0){
 								YYUI.promMsg("条码没有匹配的物料"+$("#search_EQ_materialHwCode").val());
 							}else if(data.total==1){
-								var str ='<tr role="row" class="even"><td class="center">'+t_sweepCode+'<input name="barcode" id="barcode" class="trBarcodeCls" type="hidden" value="'+t_sweepCode+'"> </td></tr>';
+								var delBtn = '<button type="button" onclick="delRow(this);" class="btn btn-xs btn-danger delete" data-rel="tooltip" title="删除"><i class="fa fa-trash-o"></i>删除</button>';
+								var str ='<tr role="row" class="even"><td class="center">'+t_sweepCode+'<input name="barcode" id="barcode" class="trBarcodeCls" type="hidden" value="'+t_sweepCode+'"> '+delBtn+'</td></tr>';
 								$("#barcodeBodyId").append(str);
 							}else if(data.total>1){
 								YYUI.promMsg("物料"+$("#search_EQ_materialHwCode").val()+"存在"+data.total+"条记录，只能匹配一条才能保存");
@@ -350,6 +376,14 @@
 			        	    });
 				        }
 			       }
+			});
+		}
+		
+		
+		function delRow(t){
+			layer.confirm("确定要删除吗?", function(index) {
+				layer.close(index);
+				$(t).closest("tr").remove();
 			});
 		}
 		

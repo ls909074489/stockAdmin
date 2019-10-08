@@ -385,7 +385,7 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 		Map<String,List<ProjectSubBarcodeEntity>> barcodeMap = changeToBarcodeMap(barcodeList);
 		for(ProjectSubEntity sub : subList){
 			ProjectSubUnOutVo vo = new ProjectSubUnOutVo(sub.getUuid(), sub.getMaterial(), sub.getLimitCount(), 
-					(sub.getPlanAmount()-calcOutAmount(sub,barcodeMap.get(sub.getUuid()))),sub.getPlanAmount());
+					(sub.getPlanAmount()-calcOutAmount(sub,barcodeMap.get(sub.getUuid()))),sub.getPlanAmount(),sub.getActualAmount());
 			if(vo.getUnScanCount()>0){//未扫码的
 				resultList.add(vo);
 			}
@@ -654,22 +654,51 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 	}
 	
 	/**
-	 * 保存条码确定数量
+	 * 保存条码确定数量-批次
 	 * @param model
 	 * @param subId
 	 * @return
 	 */
-	@RequestMapping("/toConfrimCount")
-	public String toConfrimCount(Model model,String subId,Long planAmount,String newBarcodeVal) {
+	@RequestMapping("/toSaveBcBatch")
+	public String toConfrimCount(Model model,String subId,Long planAmount,String newBarcodeVal,String hwcode) {
+		List<EnumDataSubEntity> subList = EnumDataUtils.getEnumSubList("barCodeExtract");
+		if(subList==null){
+			subList = new ArrayList<>();
+		}
+		model.addAttribute("subList", Json.toJson(subList));
 		model.addAttribute("subId", subId);
 		model.addAttribute("planAmount", planAmount);
 		if(newBarcodeVal!=null){
 			newBarcodeVal = newBarcodeVal.trim();
 		}
 		model.addAttribute("newBarcodeVal", newBarcodeVal);
-		return "modules/info/projectinfo/projectinfo_sub_confirm_count";
+		model.addAttribute("hwcode", StringUtils.isEmpty(hwcode)?"":hwcode);
+		return "modules/info/projectinfo/projectinfo_sub_barcode_batch";
 	}
 	
+	
+	/**
+	 * 保存条码确定数量-唯一
+	 * @param model
+	 * @param subId
+	 * @return
+	 */
+	@RequestMapping("/toSaveBcUnique")
+	public String toSaveBcUnique(Model model,String subId,Long planAmount,String newBarcodeVal,String hwcode) {
+		List<EnumDataSubEntity> subList = EnumDataUtils.getEnumSubList("barCodeExtract");
+		if(subList==null){
+			subList = new ArrayList<>();
+		}
+		model.addAttribute("subList", Json.toJson(subList));
+		model.addAttribute("subId", subId);
+		model.addAttribute("planAmount", planAmount);
+		if(newBarcodeVal!=null){
+			newBarcodeVal = newBarcodeVal.trim();
+		}
+		model.addAttribute("newBarcodeVal", newBarcodeVal);
+		model.addAttribute("hwcode", StringUtils.isEmpty(hwcode)?"":hwcode);
+		return "modules/info/projectinfo/projectinfo_sub_barcode_unique";
+	}
 	
 	
 	@RequestMapping("/toModifyBarcode")
