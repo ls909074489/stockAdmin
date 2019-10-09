@@ -285,9 +285,7 @@
 								$("#barcodeBodyId").append(str);
 								
 								var row = $("input[value='" + t_rowuuid + "']").closest("tr");
-								console.info(row);
 								var limitCount = _tableList.row(row).data().limitCount;
-								console.info(row.find('td:eq(0)'));
 								row.find('td:eq(0)').css("color","#32CD32"); 
 								if(limitCount==1){//唯一条码
 									var curCount = row.find('td:eq(2)').html();
