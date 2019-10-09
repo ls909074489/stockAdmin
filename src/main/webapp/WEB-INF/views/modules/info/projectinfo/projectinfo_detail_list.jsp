@@ -95,8 +95,9 @@ th,td{
 					<button id="yy-btn-check-unequal" class="btn green btn-sm btn-info">
 						<i class="fa fa-files-o"></i> 欠料查询
 					</button>
-					
-					
+					<button id="yy-btn-check-barcode" class="btn green btn-sm btn-info">
+						<i class="fa fa-files-o"></i> 条码审查
+					</button>
 					<button id="yy-btn-export-pks" queryformid="yy-form-query" class="btn green btn-sm btn-info">
 						<i class="fa fa-chevron-up"></i> 导出
 					</button>
@@ -619,7 +620,9 @@ th,td{
 			$("#yy-btn-check-unequal").bind("click", function() {
 				checkUnEqualAmount();
 			});
-			
+			$("#yy-btn-check-barcode").bind("click", function() {
+				checkBarcode();
+			});
 			
 			$("#yy-btn-export-pks").bind('click', exportPks);//选择导出
 			
@@ -1364,6 +1367,23 @@ th,td{
 			}
 			//onReset();
 			$("#checkVal").val("3");
+			onQuery();
+			$("#checkVal").val("");
+		}
+		//条码审查
+		function checkBarcode(){
+			var t_projectId = $("#search_LIKE_mainId").val();
+			console.info(">>>>>>>>>>>>"+t_projectId);
+			if(t_projectId==null||t_projectId==''){
+				YYUI.promMsg("请选择项目");
+				return false;
+			}
+			if($("#projectInfoId").val()!=$("#search_LIKE_mainId").val()){
+				YYUI.promMsg("请选择项目进行查询");
+				return false;
+			}
+			//onReset();
+			$("#checkVal").val("4");
 			onQuery();
 			$("#checkVal").val("");
 		}

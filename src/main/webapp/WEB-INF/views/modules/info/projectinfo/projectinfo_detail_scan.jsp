@@ -14,8 +14,11 @@
 			<button id="yy-btn-save" class="btn blue btn-sm" onclick="onSaveBarcode();">
 				<i class="fa fa-chevron-down"></i> 保存
 			</button>
+			<button id="" class="btn blue btn-sm" type="button" onclick="backProjectBox();">
+				<i class="fa fa-rotate-left"></i> 返回
+			</button>
 			<button id="yy-btn-cancel" class="btn blue btn-sm" type="button" onclick="closeDialog();">
-				<i class="fa fa-rotate-left"></i> 取消
+				<i class="fa fa-rotate-left"></i> 关闭
 			</button>
 		</div>
 		<div class="row" style="text-align: center;margin-top: 20px;">
@@ -251,6 +254,8 @@
 					return false;
 				}
 				
+				var newBarcodeVal = t_sweepCode;//条码
+				var showLengthConfirm=false;//是否弹出条码长度确认框
 				var hasMatch=false;
 				if(jsonResp!=null&&jsonResp.length>0){
 					for (i = 0; i < jsonResp.length; i++) {
@@ -262,52 +267,74 @@
 							console.info("searchCode>>>>>>>>>"+searchCode);
 							$("#search_EQ_materialHwCode").val(searchCode);
 							hasMatch=true;
+							var limitLength = jsonResp[i].description;
+							if(limitLength!=null&&limitLength!=''&&parseInt(limitLength)!=newBarcodeVal.length){
+								showLengthConfirm =true;
+							}
 							break;
 						}
 					}
 				}
+				var fontStyle="color:#34495e;";
 				if(hasMatch){
-					var listWaitLoad=layer.load(2);
-					$.ajax({
-						url : '${serviceurl}/dataUnOut',
-						data : $("#yy-form-query").serializeArray(),
-						dataType : 'json',
-						type : 'post',
-						success : function(data) {
-							layer.close(listWaitLoad);
-							if(data.total==0){
-								YYUI.promMsg("条码没有匹配的物料"+$("#search_EQ_materialHwCode").val());
-							}else if(data.total==1){
-								var recordFirst = data.records[0];
-								var t_rowuuid = recordFirst.uuid;
-								var delBtn = '<button type="button"  rowuuid="'+t_rowuuid+'" onclick="delRow(this);" class="btn btn-xs btn-danger delete" data-rel="tooltip" title="删除"><i class="fa fa-trash-o"></i>删除</button>';
-								var str ='<tr role="row" class="even"><td class="center">'+t_sweepCode+'<input name="barcode" id="barcode" class="trBarcodeCls" type="hidden" value="'+t_sweepCode+'"> '+delBtn+'</td></tr>';
-								$("#barcodeBodyId").append(str);
-								
-								var row = $("input[value='" + t_rowuuid + "']").closest("tr");
-								var limitCount = _tableList.row(row).data().limitCount;
-								row.find('td:eq(0)').css("color","#32CD32"); 
-								if(limitCount==1){//唯一条码
-									var curCount = row.find('td:eq(2)').html();
-									row.find('td:eq(2)').html((parseInt(curCount)-1));
-								}else{
-									row.find('td:eq(2)').html(0);
-								}
-							}else if(data.total>1){
-								YYUI.promMsg("物料"+$("#search_EQ_materialHwCode").val()+"存在"+data.total+"条记录，只能匹配一条才能保存");
-							}
-						},
-						error : function(data) {
-							layer.close(listWaitLoad);
-							YYUI.promMsg("操作失败，请联系管理员");
-						}
-					});
+					if(showLengthConfirm){
+						layer.confirm(jsonResp[i].enumdataname+'限制长度为'+limitLength+',确定要保存吗', function(index) {
+							layer.close(index);
+							fontStyle="color:#e02222;";
+							searchSub(fontStyle,t_sweepCode);
+						});
+					}else{
+						searchSub(fontStyle,t_sweepCode);
+					}
 				}else{
 					YYUI.promAlert("条码解析没有对应的物料"+searchCode);
 				}
 			}else{
 				YYUI.promMsg("请填写条码");
 			}
+		}
+		
+		function searchSub(fontStyle,t_sweepCode){
+			var listWaitLoad=layer.load(2);
+			$.ajax({
+				url : '${serviceurl}/dataUnOut',
+				data : $("#yy-form-query").serializeArray(),
+				dataType : 'json',
+				type : 'post',
+				success : function(data) {
+					layer.close(listWaitLoad);
+					if(data.total==0){
+						YYUI.promMsg("条码没有匹配的物料"+$("#search_EQ_materialHwCode").val());
+					}else if(data.total==1){
+						var recordFirst = data.records[0];
+						var t_rowuuid = recordFirst.uuid;
+						var row = $("input[value='" + t_rowuuid + "']").closest("tr");
+						var rowData = _tableList.row(row).data();
+						if(rowData.planAmount>rowData.actualAmount){//未收齐
+							YYUI.promMsg("物料"+rowData.material.hwcode+"未收齐，不能扫码");
+							return false;
+						}
+						var delBtn = '<button type="button"  rowuuid="'+t_rowuuid+'" onclick="delRow(this);" class="btn btn-xs btn-danger delete" data-rel="tooltip" title="删除"><i class="fa fa-trash-o"></i>删除</button>';
+						var str ='<tr role="row" class="even"><td class="center" style="'+fontStyle+'">'+t_sweepCode+'<input name="barcode" id="barcode" class="trBarcodeCls" type="hidden" value="'+t_sweepCode+'"> '+delBtn+'</td></tr>';
+						$("#barcodeBodyId").append(str);
+						
+						var limitCount = rowData.limitCount;
+						row.find('td:eq(0)').css("color","#32CD32"); 
+						if(limitCount==1){//唯一条码
+							var curCount = row.find('td:eq(2)').html();
+							row.find('td:eq(2)').html((parseInt(curCount)-1));
+						}else{
+							row.find('td:eq(2)').html(0);
+						}
+					}else if(data.total>1){
+						YYUI.promMsg("物料"+$("#search_EQ_materialHwCode").val()+"存在"+data.total+"条记录，只能匹配一条才能保存");
+					}
+				},
+				error : function(data) {
+					layer.close(listWaitLoad);
+					YYUI.promMsg("操作失败，请联系管理员");
+				}
+			});
 		}
 		
 		
@@ -426,6 +453,11 @@
 		function closeDialog(){
 			var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
 			parent.layer.close(index); //再执行关闭 
+		}
+		
+		//返回选择项目和箱号
+		function backProjectBox(){
+			window.location.href="${serviceurl}/toSelProjectBox";
 		}
 		
 		function onSaveBarcode(){

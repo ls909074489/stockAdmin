@@ -319,6 +319,27 @@ public class ProjectSubController extends BaseController<ProjectSubEntity> {
 			}
 			resultList = noEqualList;
 		}
+		if(checkVal!=null&&checkVal.equals("4")){//条码审查
+			List<ProjectSubEntity> wrongBarcodeList = new ArrayList<>();
+			for(ProjectSubEntity sub:resultList){
+				if(sub.getCheckStatus().equals(ProjectSubEntity.checkStatus_error)){//错误的料号
+					wrongBarcodeList.add(sub);
+				} else if(sub.getCheckStatus().equals(ProjectSubEntity.checkStatus_pass)){//通过的料号
+					if(sub.getBarcodeStatus().equals(ProjectSubEntity.BARCODE_STATUS_LENGTH_WRONG)){//条码长度不符
+						wrongBarcodeList.add(sub);
+					}else{
+						//
+					}
+				}else{
+					if(sub.getBarcodeStatus().equals(ProjectSubEntity.BARCODE_STATUS_LENGTH_WRONG)){
+						wrongBarcodeList.add(sub);
+					}else{
+						//
+					}
+				}
+			}
+			resultList = wrongBarcodeList;
+		}
 		arm.setRecords(resultList);
 		if(StringUtils.isNotEmpty(mainId)){
 			arm.setTotal(resultList.size());
