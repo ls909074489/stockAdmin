@@ -86,9 +86,9 @@
 			orderable : false,
 			render : function (data, type, full) {
 				if(full.limitCount==1){//唯一条吗
-					return data.hwcode
+					return data.hwcode+'<input name="subId" id="subId" type="hidden" value='+full.uuid+'>';
 				}else {
-					return data.hwcode;
+					return data.hwcode+'<input name="subId" id="subId" type="hidden" value='+full.uuid+'>';
 				}
             }
 		},{
@@ -278,9 +278,23 @@
 							if(data.total==0){
 								YYUI.promMsg("条码没有匹配的物料"+$("#search_EQ_materialHwCode").val());
 							}else if(data.total==1){
-								var delBtn = '<button type="button" onclick="delRow(this);" class="btn btn-xs btn-danger delete" data-rel="tooltip" title="删除"><i class="fa fa-trash-o"></i>删除</button>';
+								var recordFirst = data.records[0];
+								var t_rowuuid = recordFirst.uuid;
+								var delBtn = '<button type="button"  rowuuid="'+t_rowuuid+'" onclick="delRow(this);" class="btn btn-xs btn-danger delete" data-rel="tooltip" title="删除"><i class="fa fa-trash-o"></i>删除</button>';
 								var str ='<tr role="row" class="even"><td class="center">'+t_sweepCode+'<input name="barcode" id="barcode" class="trBarcodeCls" type="hidden" value="'+t_sweepCode+'"> '+delBtn+'</td></tr>';
 								$("#barcodeBodyId").append(str);
+								
+								var row = $("input[value='" + t_rowuuid + "']").closest("tr");
+								console.info(row);
+								var limitCount = _tableList.row(row).data().limitCount;
+								console.info(row.find('td:eq(0)'));
+								row.find('td:eq(0)').css("color","#32CD32"); 
+								if(limitCount==1){//唯一条码
+									var curCount = row.find('td:eq(2)').html();
+									row.find('td:eq(2)').html((parseInt(curCount)-1));
+								}else{
+									row.find('td:eq(2)').html(0);
+								}
 							}else if(data.total>1){
 								YYUI.promMsg("物料"+$("#search_EQ_materialHwCode").val()+"存在"+data.total+"条记录，只能匹配一条才能保存");
 							}
@@ -398,6 +412,15 @@
 		function delRow(t){
 			layer.confirm("确定要删除吗?", function(index) {
 				layer.close(index);
+				var row = $("input[value='" + $(t).attr("rowuuid") + "']").closest("tr");
+				var limitCount = _tableList.row(row).data().limitCount;
+				row.find('td:eq(0)').css("color","#34495e"); 
+				if(limitCount==1){//唯一条码
+					var curCount = row.find('td:eq(2)').html();
+					row.find('td:eq(2)').html((parseInt(curCount)+1));
+				}else{
+					row.find('td:eq(2)').html(_tableList.row(row).data().planAmount);
+				}
 				$(t).closest("tr").remove();
 			});
 		}

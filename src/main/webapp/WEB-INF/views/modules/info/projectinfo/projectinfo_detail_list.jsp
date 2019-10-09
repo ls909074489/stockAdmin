@@ -245,12 +245,12 @@ th,td{
 					if(full.barcode!=null&&full.barcode!=''){//条码不为空
 						return uuidInput+"<div class='yy-btn-actiongroup'>"
 						+ "<shiro:hasPermission name='projectdetailSaveBarcode'><button  onclick='changeToSave(this);' "+btnAble+" rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info' data-rel='tooltip' title='修改'><i class='fa yy-btn-save'></i>修改</button>"
-						+ "<button  onclick='saveNewBarcode(this);' "+btnAble+"  style='display: none;' rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info saveBcBtn' data-rel='tooltip' title='保存'><i class='fa yy-btn-save'></i>保存</button></shiro:hasPermission>"
+						+ "<button  onclick='saveNewBarcode(this);' "+btnAble+"  style='display: none;' rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info saveBcBtn' data-rel='tooltip' title='添加'><i class='fa yy-btn-save'></i>添加</button></shiro:hasPermission>"
 						+unOutBtn
 						+ "</div>";
 					}else{//条码为空
 						return uuidInput+"<div class='yy-btn-actiongroup'>"
-						+ "<shiro:hasPermission name='projectdetailSaveBarcode'><button  onclick='saveNewBarcode(this);' "+btnAble+" rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info saveBcBtn' data-rel='tooltip' title='保存'><i class='fa yy-btn-save'></i>保存</button></shiro:hasPermission>"
+						+ "<shiro:hasPermission name='projectdetailSaveBarcode'><button  onclick='saveNewBarcode(this);' "+btnAble+" rowUuid='"+full.newUuid+"'class='btn btn-xs btn-info saveBcBtn' data-rel='tooltip' title='添加'><i class='fa yy-btn-save'></i>添加</button></shiro:hasPermission>"
 						+ "</div>";
 					}
 				},
