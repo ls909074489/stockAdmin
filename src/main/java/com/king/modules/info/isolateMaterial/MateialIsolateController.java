@@ -66,11 +66,12 @@ public class MateialIsolateController extends BaseController<MateialIsolateEntit
 					subList.add(sub);
 					barcodeMap.put(sub.getBarcode(), subList);
 				}
-				for(MateialIsolateEntity mi:list){
-					subList = barcodeMap.get(mi.getBarcode());
+				for(MateialIsolateEntity mateialIsolate:list){
+					subList = barcodeMap.get(mateialIsolate.getBarcode());
 					if(CollectionUtils.isNotEmpty(subList)){
 						for(ProjectSubBarcodeEntity sub:subList){
-							mi = new MateialIsolateEntity();
+							MateialIsolateEntity mi = new MateialIsolateEntity();
+							mi.setUuid(mateialIsolate.getUuid());
 							mi.setBarcode(sub.getBarcode());
 							mi.setProjectCode(sub.getMain().getCode());
 							mi.setProjectBoxNum(sub.getSub().getBoxNum());
@@ -80,7 +81,7 @@ public class MateialIsolateController extends BaseController<MateialIsolateEntit
 							resultList.add(mi);
 						}
 					}else{
-						resultList.add(mi);
+						resultList.add(mateialIsolate);
 					}
 				}
 				arm.setRecords(resultList);
