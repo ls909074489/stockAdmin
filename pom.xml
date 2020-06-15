@@ -16,7 +16,7 @@
 		<hibernate.core.version>4.3.7.Final</hibernate.core.version>
 		<hibernate.ehcache.version>4.3.7.Final</hibernate.ehcache.version>
 		<hibernate.commons.annotaions.version>4.3.7.Final</hibernate.commons.annotaions.version>
-		<hibernate.validator.version>5.1.3.Final</hibernate.validator.version>
+		<hibernate.validator.version>5.3.5.Final</hibernate.validator.version>
 		<commons-dbutils.version>1.6</commons-dbutils.version>
 
 		<commons-dbcp.version>1.4</commons-dbcp.version>
