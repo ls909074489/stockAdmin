@@ -12,7 +12,7 @@
 		<spring.version>4.1.2.RELEASE</spring.version>
 		<spring.data.jpa.version>1.7.1.RELEASE</spring.data.jpa.version>
 
-		<hibernate.version>4.3.7.Final</hibernate.version>
+		<hibernate.version>5.4.24.Final</hibernate.version>
 		<hibernate.core.version>4.3.7.Final</hibernate.core.version>
 		<hibernate.ehcache.version>4.3.7.Final</hibernate.ehcache.version>
 		<hibernate.commons.annotaions.version>4.3.7.Final</hibernate.commons.annotaions.version>
